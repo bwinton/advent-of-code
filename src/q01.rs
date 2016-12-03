@@ -47,7 +47,7 @@ fn next_heading(heading: &mut Heading, dir: &str) {
     }
   }
   // println!("{}, {:?}", dir, heading);
-  
+
 }
 
 fn handle_turn(turn: String, heading: &mut Heading) -> i32 {
@@ -63,9 +63,9 @@ fn handle_turn(turn: String, heading: &mut Heading) -> i32 {
 
 fn a() {
   let mut heading:Heading = Heading::North;
-  let mut pos : [i32; 2] = [0, 0];
+  let mut pos : Pos = [0, 0];
 
-  fn run_turn(pos : &mut [i32; 2], heading: & Heading, length: i32) {
+  fn run_turn(pos : &mut Pos, heading: & Heading, length: i32) {
     // length = headings[heading].map(x => x * length);
     // pos = pos.map((x, i) => x + length[i]);
     match *heading {
@@ -87,9 +87,9 @@ fn a() {
 
 fn b() {
   let mut heading:Heading = Heading::North;
-  let mut pos : [i32; 2] = [0, 0];
+  let mut pos : Pos = [0, 0];
 
-  fn run_turn(pos : &mut [i32; 2], heading: & Heading, length: i32) {
+  fn run_turn(pos : &mut Pos, heading: & Heading, length: i32) {
     // length = headings[heading].map(x => x * length);
     // pos = pos.map((x, i) => x + length[i]);
     match *heading {
