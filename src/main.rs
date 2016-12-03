@@ -3,6 +3,8 @@ mod q02;
 mod q03;
 use std::env;
 
+#[macro_use] extern crate itertools;
+
 fn main() {
   let mut args: Vec<_> = env::args().skip(1).collect();
   if args.len() == 0 {

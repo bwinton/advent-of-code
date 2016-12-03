@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["Blake Winton <bwinton@latte.ca>"]
 
 [dependencies]
+
+itertools = "0.5.6"
