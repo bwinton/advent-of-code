@@ -1,5 +1,6 @@
 mod q01;
 mod q02;
+mod q03;
 use std::env;
 
 fn main() {
@@ -10,6 +11,7 @@ fn main() {
   for argument in args {
     q01::select(&argument);
     q02::select(&argument);
+    q03::select(&argument);
     println!("");
   }
 }

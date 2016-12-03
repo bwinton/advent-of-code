@@ -106,7 +106,7 @@ fn a() {
 
   let mut key: Key = [2,2];
 
-  print!("2A: Result - ");
+  print!("2A: Result = ");
   for line in INPUT.lines() {
     parse_line(&mut key, &keypad, String::from(line));
   }
@@ -127,7 +127,7 @@ fn b() {
 
   let mut key: Key = [3,1];
 
-  print!("2B: Result - ");
+  print!("2B: Result = ");
   for line in INPUT.lines() {
     parse_line(&mut key, &keypad, String::from(line));
   }
