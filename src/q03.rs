@@ -1925,13 +1925,17 @@ static INPUT : &'static str = "  541  588  421
  40  813  103
 436  766  254";
 // static INPUT : &'static str = "5 10 25";
+// static INPUT : &'static str = "101 301 501
+// 102 302 502
+// 103 303 503
+// 201 401 601
+// 202 402 602
+// 203 403 603";
 
-fn parse_line(line: String) -> bool {
+fn parse_line(line: String) -> Vec<u32> {
   let mut data = line.split_whitespace().map(|n| n.parse().expect("Wanted a number")).collect::<Vec<u32>>();
   data.sort();
-  let goal = data.pop().unwrap();
-  let total = data.iter().sum::<u32>();
-  return goal < total;
+  return data;
 }
 
 
@@ -1941,9 +1945,16 @@ fn parse_line(line: String) -> bool {
 fn a() {
   let mut possible = 0;
 
+  fn test_data(data: &mut Vec<u32>) -> bool {
+    let goal = data.pop().unwrap();
+    let total = data.iter().sum::<u32>();
+    return goal < total;
+  }
+
   print!("3A: ");
   for line in INPUT.lines() {
-    if parse_line(String::from(line)) {
+    let mut data = parse_line(String::from(line));
+    if test_data(&mut data) {
       possible += 1;
     }
   }
