@@ -23,39 +23,39 @@ enum Heading {
   North, East, South, West
 }
 
-type Pos = [i32; 2];
-
-fn next_heading(heading: &mut Heading, dir: &str) {
-  match *heading {
-    Heading::North => if dir == "R" {
-      *heading = Heading::East;
-    } else {
-      *heading = Heading::West;
-    },
-    Heading::East => if dir == "R" {
-      *heading = Heading::South;
-    } else {
-      *heading = Heading::North;
-    },
-    Heading::South => if dir == "R" {
-      *heading = Heading::West;
-    } else {
-      *heading = Heading::East;
-    },
-    Heading::West => if dir == "R" {
-      *heading = Heading::North;
-    } else {
-      *heading = Heading::South;
+impl Heading {
+  fn turn(&self, dir: &str) -> Heading {
+    match *self {
+      Heading::North => if dir == "R" {
+        return Heading::East;
+      } else {
+        return Heading::West;
+      },
+      Heading::East => if dir == "R" {
+        return Heading::South;
+      } else {
+        return Heading::North;
+      },
+      Heading::South => if dir == "R" {
+        return Heading::West;
+      } else {
+        return Heading::East;
+      },
+      Heading::West => if dir == "R" {
+        return Heading::North;
+      } else {
+        return Heading::South;
+      }
     }
   }
-  // println!("{}, {:?}", dir, heading);
-
 }
+
+type Pos = [i32; 2];
 
 fn handle_turn(turn: String, heading: &mut Heading) -> i32 {
   let (dir, len_str) = turn.split_at(1);
   let length : i32 = len_str.parse().expect("Wanted a number");
-  next_heading(heading, dir);
+  *heading = heading.turn(dir);
   return length;
 }
 
