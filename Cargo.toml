@@ -1,0 +1,6 @@
+[package]
+name = "adventofcode-2016"
+version = "0.1.0"
+authors = ["Blake Winton <bwinton@latte.ca>"]
+
+[dependencies]
