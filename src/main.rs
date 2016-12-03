@@ -8,7 +8,6 @@ fn main() {
     args = vec![String::from("*")];
   }
   for argument in args {
-    println!("{}", argument);
     q01::select(&argument);
     q02::select(&argument);
     println!("");
