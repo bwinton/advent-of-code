@@ -1,11 +1,11 @@
 //-----------------------------------------------------
 // Common Header.
 
-pub fn select(arg: String) {
+pub fn select(arg: &String) {
   match arg.as_ref() {
     "01a" => a(),
     "01b" => b(),
-    "01" => {a(); b()},
+    "01" | "*" => {a(); b()},
     _ => ()
   }
 }
@@ -77,12 +77,12 @@ fn a() {
     // println!("{:?}, {} {:?}", pos, length, heading);
   }
 
-  println!("A:");
+  print!("1A: ");
   for data in INPUT.split(", ") {
     let length = handle_turn(String::from(data), &mut heading);
     run_turn(&mut pos, &heading, length);
   }
-  println!("Result: {}", pos[0].abs() + pos[1].abs());
+  println!("Result = {}", pos[0].abs() + pos[1].abs());
 }
 
 fn b() {
@@ -107,12 +107,12 @@ fn b() {
     return false;
   }
 
-  println!("B:");
+  print!("1B: ");
   for data in INPUT.split(", ") {
     let length = handle_turn(String::from(data), &mut heading);
     if run_turn(&mut seen, &mut pos, &heading, length) {
       break;
     }
   }
-  println!("Result: {}", pos[0].abs() + pos[1].abs());
+  println!("Result = {}", pos[0].abs() + pos[1].abs());
 }
