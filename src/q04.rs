@@ -1082,7 +1082,8 @@ rwcnawjcrxwju-ljwmh-bqryyrwp-277[nxatm]";
 // static INPUT : &'static str = "aaaaa-bbb-z-y-x-123[abxyz]
 // a-b-c-d-e-f-g-h-987[abcde]
 // not-a-real-room-404[oarel]
-// totally-real-room-200[decoy]";
+// totally-real-room-200[decoy]
+// qzmt-zixmtkozy-ivhz-343[abcde]";
 
 use std::iter::FromIterator;
 use regex::Regex;
@@ -1113,6 +1114,24 @@ impl Room {
     // println!("{}.{} => {:?}    {}", self.name, self.checksum, data, self.checksum == data);
     return self.checksum == data;
   }
+
+  fn decrypt(&self) -> String {
+    let shift = (self.sector % 26) as u8;
+    let alphabet = [
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+    ];
+
+    // rot-n, where n is sector % 26…
+    let name :String = self.name.chars()
+      .map(|c| *alphabet.iter()
+        .chain(alphabet.iter())
+        .skip_while(|&x| *x != c)
+        .nth(usize::from(shift))
+        .unwrap_or(&c))
+      .collect();
+    return name.replace('-', " ");
+  }
 }
 
 use std::str::FromStr;
@@ -1138,7 +1157,6 @@ impl FromStr for Room {
 // Questions.
 
 fn a() {
-
   print!("4A: ");
   let mut sum : i32 = 0;
   for line in INPUT.lines() {
@@ -1148,10 +1166,16 @@ fn a() {
     }
   }
   println!("Result = {}", sum);
-
 }
 
 fn b() {
   print!("4B: ");
-  println!("Result = ");
+  for line in INPUT.lines() {
+    let room : Room = line.parse().unwrap();
+    let name = room.decrypt();
+    if name.find("northpole object storage") != None {
+      println!("Result = \"{}\" {}", room.decrypt(), room.sector);
+      return;
+    }
+  }
 }
