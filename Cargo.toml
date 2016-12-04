@@ -6,3 +6,4 @@ authors = ["Blake Winton <bwinton@latte.ca>"]
 [dependencies]
 
 itertools = "0.5.6"
+regex = "0.1.80"
