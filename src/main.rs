@@ -2,9 +2,12 @@ mod q01;
 mod q02;
 mod q03;
 mod q04;
+mod q05;
 use std::env;
 
 #[macro_use] extern crate itertools;
+
+extern crate crypto;
 extern crate regex;
 
 fn main() {
@@ -17,6 +20,7 @@ fn main() {
     q02::select(&argument);
     q03::select(&argument);
     q04::select(&argument);
+    q05::select(&argument);
     println!("");
   }
 }
