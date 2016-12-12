@@ -1,17 +1,7 @@
 //-----------------------------------------------------
-// Common Header.
-
-pub fn select(arg: &String) {
-  match arg.as_ref() {
-    "2a" => a(),
-    "2b" => b(),
-    "2" | "*" => {a(); b()},
-    _ => ()
-  }
-}
-
-//-----------------------------------------------------
 // Setup.
+
+use day;
 
 static INPUT : &'static str = "UULDRRRDDLRLURUUURUURDRUURRDRRURUDRURRDLLDRRRDLRUDULLRDURLULRUUURLDDRURUDRULRDDDUDRDLDDRDDRUURURRDDRLRLUDLUURURLULLLRRDRLDRLRDLULULRDRDDUURUDRRURDLRRDDDLUULDURDLDLLRLRLLUDUDLRDDLUURUUDDRDULDDLDLLDULULRLDDDUDDDRLLRURLRDUUUDUUDDURRDLDDLRDLLUDDLDRLDULDRURLUUDLURLUDRULRLRUUUURLUUUDDULLRLLURDRURLLRLRLDDRURURULRULLUUUULUDULDDDRDDLURLUURRLDDRDRUDDRRLURRDURRLDUULRRLLRDLLDDUURULLRUURRRRDRRURLULLRLRDDULULRDLDDLULLD
 UUDUDDRRURRUDDRLDLURURLRLLDRLULLUURLLURDRLLURLLRRLURDLDURUDRURURDLRDRRDULRLLLRDLULDRLLDLDRLDDRUUUUULRLDUURDUUUURUUDLRDLLDRLURULDURURLDLLRDLULLULLLLLUDUDDLRLLLUDLRUUDDUUDUDDDLULDDUDUULUUDUDRRULRRRURUDUUULDDRURLLULLULURLUDRDLUUUDLDRRLRRRULLRRURRUDDDRDLDDDLDUDLLDRRDURRURRURRLDLURUULRLDLUDUDUUULULUUDDDLDDULRDULLULDRDDURRURRRULRDURULUDURRDLLUURRUURLLLULDRRULUUUURLRLRDDDDULLUUUDRRLRRLRRLLLUDDDLRDDURURRDULLLUDLUDURRLRDURUURURDRDUUURURRUDRURRULLDDURRLRRRUULDRLDRRURUDLULRLLRRDLDDRLRRULDDLLUURUDDUDRLUD
@@ -94,41 +84,49 @@ fn parse_line(key: &mut Key, keypad: &Keypad, line: String) {
 //-----------------------------------------------------
 // Questions.
 
-fn a() {
-  let keypad : Keypad = vec![
-  vec![' ',' ',' ',' ',' '],
-  vec![' ','1','2','3',' '],
-  vec![' ','4','5','6',' '],
-  vec![' ','7','8','9',' '],
-  vec![' ',' ',' ',' ',' ']];
+pub struct Q;
 
-
-  let mut key: Key = [2,2];
-
-  print!("2A: Result = ");
-  for line in INPUT.lines() {
-    parse_line(&mut key, &keypad, String::from(line));
+impl day::Day for Q {
+  fn number(&self) -> String {
+    return String::from("2");
   }
-  println!("");
-}
 
-fn b() {
-  let keypad : Keypad = vec![
-  vec![' ',' ',' ',' ',' ',' ',' '],
-  vec![' ',' ',' ','1',' ',' ',' '],
-  vec![' ',' ','2','3','4',' ',' '],
-  vec![' ','5','6','7','8','9',' '],
-  vec![' ',' ','A','B','C',' ',' '],
-  vec![' ',' ',' ','D',' ',' ',' '],
-  vec![' ',' ',' ',' ',' ',' ',' '],
-  ];
+  fn a(&self) {
+    let keypad : Keypad = vec![
+    vec![' ',' ',' ',' ',' '],
+    vec![' ','1','2','3',' '],
+    vec![' ','4','5','6',' '],
+    vec![' ','7','8','9',' '],
+    vec![' ',' ',' ',' ',' ']];
 
 
-  let mut key: Key = [3,1];
+    let mut key: Key = [2,2];
 
-  print!("2B: Result = ");
-  for line in INPUT.lines() {
-    parse_line(&mut key, &keypad, String::from(line));
+    print!("2A: Result = ");
+    for line in INPUT.lines() {
+      parse_line(&mut key, &keypad, String::from(line));
+    }
+    println!("");
   }
-  println!("");
+
+  fn b(&self) {
+    let keypad : Keypad = vec![
+    vec![' ',' ',' ',' ',' ',' ',' '],
+    vec![' ',' ',' ','1',' ',' ',' '],
+    vec![' ',' ','2','3','4',' ',' '],
+    vec![' ','5','6','7','8','9',' '],
+    vec![' ',' ','A','B','C',' ',' '],
+    vec![' ',' ',' ','D',' ',' ',' '],
+    vec![' ',' ',' ',' ',' ',' ',' '],
+    ];
+
+
+    let mut key: Key = [3,1];
+
+    print!("2B: Result = ");
+    for line in INPUT.lines() {
+      parse_line(&mut key, &keypad, String::from(line));
+    }
+    println!("");
+  }
 }

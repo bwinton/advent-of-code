@@ -1,17 +1,7 @@
 //-----------------------------------------------------
-// Common Header.
-
-pub fn select(arg: &String) {
-  match arg.as_ref() {
-    "4a" => a(),
-    "4b" => b(),
-    "4" | "*" => {a(); b()},
-    _ => ()
-  }
-}
-
-//-----------------------------------------------------
 // Setup.
+
+use day;
 
 static INPUT : &'static str = "nzydfxpc-rclop-qwzhpc-qtylyntyr-769[oshgk]
 qzlozfhmf-bzmcx-bnzshmf-zbpthrhshnm-339[zmxdi]
@@ -1156,26 +1146,34 @@ impl FromStr for Room {
 //-----------------------------------------------------
 // Questions.
 
-fn a() {
-  print!("4A: ");
-  let mut sum : i32 = 0;
-  for line in INPUT.lines() {
-    let room : Room = line.parse().unwrap();
-    if room.is_valid() {
-      sum += room.sector;
-    }
-  }
-  println!("Result = {}", sum);
-}
+pub struct Q;
 
-fn b() {
-  print!("4B: ");
-  for line in INPUT.lines() {
-    let room : Room = line.parse().unwrap();
-    let name = room.decrypt();
-    if name.find("northpole object storage") != None {
-      println!("Result = \"{}\" {}", room.decrypt(), room.sector);
-      return;
+impl day::Day for Q {
+  fn number(&self) -> String {
+    return String::from("4");
+  }
+
+  fn a(&self) {
+    print!("4A: ");
+    let mut sum : i32 = 0;
+    for line in INPUT.lines() {
+      let room : Room = line.parse().unwrap();
+      if room.is_valid() {
+        sum += room.sector;
+      }
+    }
+    println!("Result = {}", sum);
+  }
+
+  fn b(&self) {
+    print!("4B: ");
+    for line in INPUT.lines() {
+      let room : Room = line.parse().unwrap();
+      let name = room.decrypt();
+      if name.find("northpole object storage") != None {
+        println!("Result = \"{}\" {}", room.decrypt(), room.sector);
+        return;
+      }
     }
   }
 }

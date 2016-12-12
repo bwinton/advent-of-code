@@ -1,17 +1,7 @@
 //-----------------------------------------------------
-// Common Header.
-
-pub fn select(arg: &String) {
-  match arg.as_ref() {
-    "3a" => a(),
-    "3b" => b(),
-    "3" | "*" => {a(); b()},
-    _ => ()
-  }
-}
-
-//-----------------------------------------------------
 // Setup.
+
+use day;
 
 static INPUT : &'static str = "  541  588  421
 827  272  126
@@ -1941,59 +1931,66 @@ fn parse_line(line: String) -> Vec<u32> {
 //-----------------------------------------------------
 // Questions.
 
-fn a() {
-  let mut possible = 0;
+pub struct Q;
 
-  fn test_data(data: &mut Vec<u32>) -> bool {
-    data.sort();
-    let goal = data.pop().unwrap();
-    let total = data.iter().sum::<u32>();
-    return goal < total;
+impl day::Day for Q {
+  fn number(&self) -> String {
+    return String::from("3");
   }
 
-  print!("3A: ");
-  for line in INPUT.lines() {
-    let mut data = parse_line(String::from(line));
-    if test_data(&mut data) {
-      possible += 1;
-    }
-  }
-  println!("Result = {}", possible);
-
-}
-
-fn b() {
-  let mut possible : u32 = 0;
-
-  fn test_data(data : &mut Vec<u32>) -> bool {
-    data.sort();
-    let goal = data.pop().unwrap();
-    let total = data.iter().sum::<u32>();
-    return goal < total;
-  }
-
-  fn handle_data(current : &mut Vec<Vec<u32>>) -> u32 {
+  fn a(&self) {
     let mut possible = 0;
-    for x in izip!(current[0].iter(), current[1].iter(), current[2].iter()) {
-      let mut data : Vec<u32> = vec![*x.0, *x.1, *x.2];
+
+    fn test_data(data: &mut Vec<u32>) -> bool {
+      data.sort();
+      let goal = data.pop().unwrap();
+      let total = data.iter().sum::<u32>();
+      return goal < total;
+    }
+
+    print!("3A: ");
+    for line in INPUT.lines() {
+      let mut data = parse_line(String::from(line));
       if test_data(&mut data) {
         possible += 1;
       }
     }
-    // println!("{:?}, {}", current, possible);
-    current.clear();
-    return possible;
+    println!("Result = {}", possible);
   }
 
-  let mut current : Vec<Vec<u32>> = Vec::new();
+  fn b(&self) {
+    let mut possible : u32 = 0;
 
-  print!("3B: ");
-  for line in INPUT.lines() {
-    let data = parse_line(String::from(line));
-    current.push(data);
-    if current.len() == 3 {
-      possible += handle_data(&mut current)
+    fn test_data(data : &mut Vec<u32>) -> bool {
+      data.sort();
+      let goal = data.pop().unwrap();
+      let total = data.iter().sum::<u32>();
+      return goal < total;
     }
+
+    fn handle_data(current : &mut Vec<Vec<u32>>) -> u32 {
+      let mut possible = 0;
+      for x in izip!(current[0].iter(), current[1].iter(), current[2].iter()) {
+        let mut data : Vec<u32> = vec![*x.0, *x.1, *x.2];
+        if test_data(&mut data) {
+          possible += 1;
+        }
+      }
+      // println!("{:?}, {}", current, possible);
+      current.clear();
+      return possible;
+    }
+
+    let mut current : Vec<Vec<u32>> = Vec::new();
+
+    print!("3B: ");
+    for line in INPUT.lines() {
+      let data = parse_line(String::from(line));
+      current.push(data);
+      if current.len() == 3 {
+        possible += handle_data(&mut current)
+      }
+    }
+    println!("Result = {}", possible);
   }
-  println!("Result = {}", possible);
 }
