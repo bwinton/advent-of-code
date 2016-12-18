@@ -5,11 +5,14 @@ mod q03;
 mod q04;
 mod q05;
 mod q06;
+mod q07;
+mod q08;
 
 use std::env;
 use std::ops::Deref;
 
 #[macro_use] extern crate itertools;
+#[macro_use] extern crate lazy_static;
 
 extern crate crypto;
 extern crate regex;
@@ -44,7 +47,7 @@ fn main() {
     args = vec![String::from("*")];
   }
 
-  let days = q_vec!(q01, q02, q03, q04, q05, q06);
+  let days = q_vec!(q01, q02, q03, q04, q05, q06, q07, q08);
 
   for argument in args {
     for day in &days {

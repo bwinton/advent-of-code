@@ -617,7 +617,7 @@ at the end
 
 */
 
-fn get_most_common(frequencies : Vec<Box<HashMap<char, i32>>>) -> String {
+fn get_most_common(frequencies : Vec<HashMap<char, i32>>) -> String {
   let mut result :Vec<char> = Vec::new();
   for frequency in frequencies {
     let mut count: Vec<_> = frequency.iter().collect();
@@ -627,7 +627,7 @@ fn get_most_common(frequencies : Vec<Box<HashMap<char, i32>>>) -> String {
   return result.into_iter().collect();
 }
 
-fn get_least_common(frequencies : Vec<Box<HashMap<char, i32>>>) -> String {
+fn get_least_common(frequencies : Vec<HashMap<char, i32>>) -> String {
   let mut result :Vec<char> = Vec::new();
   for frequency in frequencies {
     let mut count: Vec<_> = frequency.iter().collect();
@@ -649,11 +649,11 @@ impl day::Day for Q {
 
   fn a(&self) {
     print!("6A: ");
-    let mut frequencies : Vec<Box<HashMap<char, i32>>> = Vec::new();
+    let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {
         for _ in 0..line.len() {
-          frequencies.push(Box::new(HashMap::<char, i32>::new()))
+          frequencies.push(HashMap::<char, i32>::new().clone())
         }
       }
       for i in 0..line.len() {
@@ -668,11 +668,11 @@ impl day::Day for Q {
 
   fn b(&self) {
     print!("6B: ");
-    let mut frequencies : Vec<Box<HashMap<char, i32>>> = Vec::new();
+    let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {
         for _ in 0..line.len() {
-          frequencies.push(Box::new(HashMap::<char, i32>::new()))
+          frequencies.push(HashMap::<char, i32>::new().clone())
         }
       }
       for i in 0..line.len() {
