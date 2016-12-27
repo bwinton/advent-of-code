@@ -276,12 +276,12 @@ impl fmt::Debug for Display {
     for i in 0..ROWS {
       for j in 0..COLS {
         if self.cells[i][j] {
-          write!(formatter, "#");
+          write!(formatter, "#").unwrap();
         } else {
-          write!(formatter, ".");
+          write!(formatter, ".").unwrap();
         }
       }
-      write!(formatter, "\n");
+      write!(formatter, "\n").unwrap();
     }
     return Ok(());
   }
@@ -342,7 +342,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    print!("8A: ");
+    print!("{}A: ", self.number());
     let mut display = Display::new();
     // println!("{:?}", display);
     for line in INPUT.lines() {
@@ -354,7 +354,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
-    print!("8B: ");
+    print!("{}B: ", self.number());
     let mut display = Display::new();
     for line in INPUT.lines() {
       let turn : Turn = line.parse().unwrap();
