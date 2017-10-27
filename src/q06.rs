@@ -648,7 +648,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    print!("6A: ");
+    print!("{}A: ", self.number());
     let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {
@@ -667,7 +667,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
-    print!("6B: ");
+    print!("{}B: ", self.number());
     let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {

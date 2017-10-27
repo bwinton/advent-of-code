@@ -2081,7 +2081,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    print!("7A: ");
+    print!("{}A: ", self.number());
     let mut result = 0;
     for line in INPUT.lines() {
       if is_tls(line) {
@@ -2092,7 +2092,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
-    print!("7B: ");
+    print!("{}B: ", self.number());
     let mut result = 0;
     for line in INPUT.lines() {
       if is_ssl(line) {

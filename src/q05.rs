@@ -17,7 +17,8 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    print!("5A: Result = ");
+    print!("{}A: ", self.number());
+    print!("Result = ");
 
     let mut hasher = Md5::new();
     // let input = "abc".as_bytes();
@@ -43,7 +44,8 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
-    print!("5B: Result = ");
+    print!("{}B: ", self.number());
+    print!("Result = ");
 
     // let input = "abc".as_bytes();
     let input = "abbhdwsy".as_bytes();

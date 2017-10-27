@@ -61,6 +61,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
+    print!("{}A: ", self.number());
     let mut heading:Heading = Heading::North;
     let mut pos : Pos = [0, 0];
 
@@ -74,7 +75,6 @@ impl day::Day for Q {
       // println!("{:?}, {} {:?}", pos, length, heading);
     }
 
-    print!("1A: ");
     for data in INPUT.split(", ") {
       let length = handle_turn(String::from(data), &mut heading);
       run_turn(&mut pos, &heading, length);
@@ -83,6 +83,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
+    print!("{}B: ", self.number());
     let mut heading:Heading = Heading::North;
     let mut pos : Pos = [0, 0];
     let mut seen = HashSet::new();
@@ -104,7 +105,6 @@ impl day::Day for Q {
       return false;
     }
 
-    print!("1B: ");
     for data in INPUT.split(", ") {
       let length = handle_turn(String::from(data), &mut heading);
       if run_turn(&mut seen, &mut pos, &heading, length) {

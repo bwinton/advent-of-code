@@ -329,7 +329,7 @@ impl Bot {
     }
   }
 
-  fn propagate(&self, mut bots: &mut HashMap<i32, Bot>) -> HashMap<i32, i32> {
+  fn propagate(&self, bots: &mut HashMap<i32, Bot>) -> HashMap<i32, i32> {
     // println!("Propagating {:?}", self);
     let mut rv : HashMap<i32, i32> = HashMap::new();
     match self.low_dest {

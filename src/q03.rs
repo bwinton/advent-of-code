@@ -1939,6 +1939,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
+    print!("{}A: ", self.number());
     let mut possible = 0;
 
     fn test_data(data: &mut Vec<u32>) -> bool {
@@ -1948,7 +1949,6 @@ impl day::Day for Q {
       return goal < total;
     }
 
-    print!("3A: ");
     for line in INPUT.lines() {
       let mut data = parse_line(String::from(line));
       if test_data(&mut data) {
@@ -1959,6 +1959,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
+    print!("{}B: ", self.number());
     let mut possible : u32 = 0;
 
     fn test_data(data : &mut Vec<u32>) -> bool {
@@ -1983,7 +1984,6 @@ impl day::Day for Q {
 
     let mut current : Vec<Vec<u32>> = Vec::new();
 
-    print!("3B: ");
     for line in INPUT.lines() {
       let data = parse_line(String::from(line));
       current.push(data);

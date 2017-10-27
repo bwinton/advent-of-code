@@ -92,6 +92,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
+    print!("{}A: ", self.number());
     let keypad : Keypad = vec![
     vec![' ',' ',' ',' ',' '],
     vec![' ','1','2','3',' '],
@@ -102,7 +103,7 @@ impl day::Day for Q {
 
     let mut key: Key = [2,2];
 
-    print!("2A: Result = ");
+    print!("Result = ");
     for line in INPUT.lines() {
       parse_line(&mut key, &keypad, String::from(line));
     }
@@ -110,6 +111,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
+    print!("{}B: ", self.number());
     let keypad : Keypad = vec![
     vec![' ',' ',' ',' ',' ',' ',' '],
     vec![' ',' ',' ','1',' ',' ',' '],
@@ -123,7 +125,7 @@ impl day::Day for Q {
 
     let mut key: Key = [3,1];
 
-    print!("2B: Result = ");
+    print!("Result = ");
     for line in INPUT.lines() {
       parse_line(&mut key, &keypad, String::from(line));
     }

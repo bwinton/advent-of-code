@@ -405,7 +405,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    println!("{}A: ", self.number());
+    print!("{}A: ", self.number());
     println!("Result = {}", get_result(A_INPUT));
   }
 

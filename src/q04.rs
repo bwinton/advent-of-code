@@ -1154,7 +1154,7 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    print!("4A: ");
+    print!("{}A: ", self.number());
     let mut sum : i32 = 0;
     for line in INPUT.lines() {
       let room : Room = line.parse().unwrap();
@@ -1166,7 +1166,7 @@ impl day::Day for Q {
   }
 
   fn b(&self) {
-    print!("4B: ");
+    print!("{}B: ", self.number());
     for line in INPUT.lines() {
       let room : Room = line.parse().unwrap();
       let name = room.decrypt();
