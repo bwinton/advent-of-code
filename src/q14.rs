@@ -213,7 +213,36 @@ impl day::Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let result = 0;
-    println!("Result = {}", result);
+
+    let mut keys: Keys = Vec::new();
+    let mut quintuples = HashMap::new();
+
+    let mut hasher = Md5::new();
+    let mut i: usize = 0;
+    while !is_winning(&keys) {
+      let mut out_string = INPUT.to_string() + &i.to_string();
+      for _ in 0..2017 {
+        hasher.input(out_string.as_bytes());
+        let mut output = [0; 16]; // An MD5 is 16 bytes
+        hasher.result(&mut output);
+        hasher.reset();
+        out_string = to_hex_string(&output);
+      }
+      match get_triple(&out_string) {
+        None => {},
+        Some(triple) => {
+          keys.push(Key::Potential(i));
+          add_quintuple(i, triple, &mut quintuples);
+        }
+      }
+      remove_keys(i, &mut keys, &mut quintuples);
+      get_quintuple(&out_string, &mut keys, &mut quintuples, i);
+      i += 1;
+    }
+    println!("Keys:");
+    for key in &keys[0..64] {
+      println!(" {:?}", key);
+    }
+    println!("Result = {:?}", keys[63]);
   }
 }
