@@ -102,8 +102,6 @@ fn add_quintuple(i: usize, key: String, quintuples: &mut Quintuples) {
   quintuple.indices.push(i);
 }
 
-// Missing 8811
-
 fn remove_keys(count: usize, keys: &mut Keys, quintuples: &mut Quintuples) {
   quintuples.retain(|_, quintuple| {
     quintuple.indices.retain(|i| {
