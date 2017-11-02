@@ -139,10 +139,6 @@ impl day::Day for Q {
       for upcoming in &next_states {
         next.push(upcoming.clone());
       }
-
-      // println!("{:?}, {}", state, next.len());
-      // Get next states
-      // add them to next.
     }
     // println!("{:?}", next);
     println!("Result = {}", result);
@@ -150,7 +146,20 @@ impl day::Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let result = 0;
+    let mut result = 0;
+    let mut next = BinaryHeap::new();
+    next.push(State::new(&String::from(""), 0, 0));
+    while next.len() > 0 {
+      let state = next.pop().unwrap();
+      if state.is_winning() && state.path.len() > result {
+        result = state.path.len();
+      }
+      let next_states = get_next_states(&state);
+      for upcoming in &next_states {
+        next.push(upcoming.clone());
+      }
+    }
+    // println!("{:?}", next);
     println!("Result = {}", result);
   }
 }
