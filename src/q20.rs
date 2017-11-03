@@ -3,6 +3,7 @@
 
 use day;
 use std::ops::Range;
+use std::u32;
 
 // static INPUT : &'static str = "5-8
 // 0-2
@@ -1028,7 +1029,6 @@ fn get_first_allowed() -> u32 {
   let ranges = get_ranges();
   let mut rv = 0;
   for range in ranges.clone() {
-    // println!("{} in {:?}", rv, range);
     if rv < range.start {
       break;
     }
@@ -1036,7 +1036,6 @@ fn get_first_allowed() -> u32 {
       rv = range.end + 1;
     }
   }
-  // println!("{:?} {}", ranges, rv);
   rv
 }
 
@@ -1045,15 +1044,16 @@ fn get_num_allowed() -> u32 {
   let mut curr = 0;
   let mut rv = 0;
   for range in ranges.clone() {
-    // println!("{} in {:?}", rv, range);
     if curr < range.start {
+      rv += range.start - curr;
+    }
+    if range.end == u32::MAX {
       break;
     }
-    if curr <= range.end {
+    if curr < range.end {
       curr = range.end + 1;
     }
   }
-  // println!("{:?} {}", ranges, rv);
   rv
 }
 
