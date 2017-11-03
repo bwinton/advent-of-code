@@ -5,11 +5,12 @@ use day;
 use std::str::FromStr;
 
 // static INPUT : &'static str = "..^^.";
-// static LENGTH : usize = 3;
+// static LENGTH_A : usize = 3;
 // static INPUT : &'static str = ".^^.^.^^^^";
-// static LENGTH : usize = 10;
+// static LENGTH_A : usize = 10;
 static INPUT : &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
-static LENGTH : usize = 40;
+static LENGTH_A : usize = 40;
+static LENGTH_B : usize = 400000;
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -57,6 +58,21 @@ fn get_next_row(row: &Row) -> Row {
   return Row{data: data.into_iter().collect(), safe_count: safe_count}
 }
 
+fn get_result(length: usize) -> usize {
+  let mut result = 0;
+  let mut rows = Vec::new();
+  let mut row : Row = INPUT.parse().unwrap();
+  rows.push(row.clone());
+  for _ in 0..length - 1 {
+    row = get_next_row(&row);
+    rows.push(row.clone());
+  }
+  for row in rows {
+    result += row.safe_count;
+  }
+  return result;
+}
+
 //-----------------------------------------------------
 // Questions.
 
@@ -68,26 +84,12 @@ impl day::Day for Q {
   }
 
   fn a(&self) {
-    // print!("{}A: ", self.number());
-    let mut result = 0;
-    let mut rows = Vec::new();
-    let mut row : Row = INPUT.parse().unwrap();
-    rows.push(row.clone());
-    for i in 0..LENGTH - 1 {
-      row = get_next_row(&row);
-      rows.push(row.clone());
-      println!("{}: {:?}", i, row);
-    }
-    // println!("{:?}", rows);
-    for row in rows {
-      result += row.safe_count;
-    }
-    println!("Result = {}", result);
+    print!("{}A: ", self.number());
+    println!("Result = {}", get_result(LENGTH_A));
   }
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let result = 0;
-    println!("Result = {}", result);
+    println!("Result = {}", get_result(LENGTH_B));
   }
 }
