@@ -18,13 +18,12 @@ fn get_result_a() -> usize {
   for i in 0..INPUT {
     elves.push_back(Elf{position: i + 1, presents: 1});
   }
-  // println!("{:?}", elves);
-  while elves.len() > 1 {
-    let front = elves.pop_front().unwrap();
-    let next = elves.pop_front().unwrap();
-    elves.push_back(Elf{position: front.position, presents: front.presents + next.presents});
+  let mut n = 2;
+  while n < INPUT {
+    n *= 2;
   }
-  elves[0].position
+  let l = INPUT - (n / 2);
+  2 * l + 1
 }
 
 fn get_result_b() -> usize {
