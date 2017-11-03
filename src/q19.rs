@@ -2,22 +2,11 @@
 // Setup.
 
 use day;
-use std::collections::VecDeque;
 
 // static INPUT : usize = 5;
 static INPUT : usize = 3014603;
 
-#[derive(Debug)]
-struct Elf {
-  position: usize,
-  presents: usize
-}
-
 fn get_result_a() -> usize {
-  let mut elves = VecDeque::new();
-  for i in 0..INPUT {
-    elves.push_back(Elf{position: i + 1, presents: 1});
-  }
   let mut n = 2;
   while n < INPUT {
     n *= 2;
@@ -27,7 +16,18 @@ fn get_result_a() -> usize {
 }
 
 fn get_result_b() -> usize {
-  return 0;
+  let mut n = 3;
+  while n < INPUT {
+    n *= 3;
+  }
+  let mut l = INPUT - (n / 3);
+  let mut m = 0;
+  if l > n / 3  {
+    m = l - n / 3;
+    l = l - m;
+  }
+
+  l + 2 * m
 }
 
 //-----------------------------------------------------
