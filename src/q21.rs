@@ -115,6 +115,7 @@ rotate based on position of letter d
 rotate based on position of letter c
 rotate based on position of letter h
 move position 4 to position 7";
+static SCRAMBLED : &'static str = "fbgdceah";
 
 
 #[derive(Clone)]
@@ -132,7 +133,6 @@ enum Instruction {
 impl Instruction {
   fn execute(&self, state: &String) -> String {
     let mut rv = state.clone();
-    print!("{} => {:?} ", state, self);
     match (*self).clone() {
       Instruction::SwapPosition(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
@@ -185,7 +185,67 @@ impl Instruction {
         rv = temp.into_iter().collect();
       }
     }
-    println!("=> {}", rv);
+    rv
+  }
+
+  fn unexecute(&self, state: &String) -> String {
+    let mut rv = state.clone();
+    match (*self).clone() {
+      Instruction::SwapPosition(x, y) => {
+        let mut temp: Vec<char> = rv.chars().collect();
+        temp.swap(x, y);
+        rv = temp.into_iter().collect();
+      }
+      Instruction::SwapLetter(a, b) => {
+        rv = rv.replace(&a, "?");
+        rv = rv.replace(&b, &a);
+        rv = rv.replace("?", &b);
+      }
+      Instruction::RotateLeft(n) => {
+        let data: Vec<char> = rv.chars().collect();
+        let mut temp = Vec::new();
+        let index = data.len() - n;
+        temp.extend_from_slice(&data[index..]);
+        temp.extend_from_slice(&data[..index]);
+        rv = temp.into_iter().collect();
+      }
+      Instruction::RotateRight(n) => {
+        let data: Vec<char> = rv.chars().collect();
+        let mut temp = Vec::new();
+        temp.extend_from_slice(&data[n..]);
+        temp.extend_from_slice(&data[..n]);
+        rv = temp.into_iter().collect();
+      }
+      Instruction::RotateLetter(a) => {
+        let data: Vec<char> = rv.chars().collect();
+        let mut temp = Vec::new();
+        let mut new_index = data.iter().position(|e| e.to_string() == a).unwrap();
+        if new_index == 0 {
+          new_index = 8;
+        }
+        let mut index;
+        if new_index % 2 == 1 {
+          index = (new_index + 1) / 2;
+        } else {
+          index = 5 + new_index / 2;
+        }
+        index %= data.len();
+        temp.extend_from_slice(&data[index..]);
+        temp.extend_from_slice(&data[..index]);
+        rv = temp.into_iter().collect();
+      }
+      Instruction::Reverse(x, y) => {
+        let mut temp: Vec<char> = rv.chars().collect();
+        temp[x..y + 1].reverse();
+        rv = temp.into_iter().collect();
+      }
+      Instruction::Move(x, y) => {
+        let mut temp: Vec<char> = rv.chars().collect();
+        let element = temp.remove(y);
+        temp.insert(x, element);
+        rv = temp.into_iter().collect();
+      }
+    }
     rv
   }
 }
@@ -282,22 +342,6 @@ impl FromStr for Instruction {
   }
 }
 
-fn get_result() -> String {
-  let mut instructions : Vec<Instruction> = Vec::new();
-  for line in INPUT.lines() {
-    let instruction = line.parse().unwrap();
-    instructions.push(instruction);
-  }
-  // println!("{:?}, {}", instructions, instructions.len());
-
-  let mut rv = PASSCODE.to_string();
-  for instruction in instructions {
-    rv = instruction.execute(&rv);
-    // println!("{:?} => {}", instruction, rv)
-  }
-  return rv.to_string();
-}
-
 //-----------------------------------------------------
 // Questions.
 
@@ -310,12 +354,32 @@ impl day::Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    println!("Result = {}", get_result());
+    let mut instructions : Vec<Instruction> = Vec::new();
+    for line in INPUT.lines() {
+      let instruction = line.parse().unwrap();
+      instructions.push(instruction);
+    }
+
+    let mut rv = PASSCODE.to_string();
+    for instruction in instructions {
+      rv = instruction.execute(&rv);
+    }
+    println!("Result = {}", rv);
   }
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let result = 0;
-    println!("Result = {}", result);
+    let mut instructions : Vec<Instruction> = Vec::new();
+    for line in INPUT.lines() {
+      let instruction = line.parse().unwrap();
+      instructions.push(instruction);
+    }
+
+    instructions.reverse();
+    let mut rv = SCRAMBLED.to_string();
+    for instruction in &instructions {
+      rv = instruction.unexecute(&rv);
+    }
+    println!("Result = {}", rv);
   }
 }
