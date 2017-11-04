@@ -328,7 +328,17 @@ impl day::Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let result = 0;
+    let mut instructions : Vec<Instruction> = Vec::new();
+    for line in INPUT.lines() {
+      let instruction = line.parse().unwrap();
+      instructions.push(instruction);
+    }
+    let mut state = State{registers: [12,0,0,0], pc: 0, instructions: instructions};
+    while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
+      state = execute(state);
+    }
+
+    let result = state.registers[0];
     println!("Result = {}", result);
   }
 }
