@@ -13,7 +13,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    String::from("XX")
+    String::from("1")
   }
 
   fn a(&self) {
