@@ -3,8 +3,8 @@
 
 use day;
 
-static INPUT : &'static str = "";
-// static INPUT : &'static str = "";
+static INPUT: &'static str = "";
+// static INPUT: &'static str = "";
 
 //-----------------------------------------------------
 // Questions.

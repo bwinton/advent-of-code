@@ -7,8 +7,10 @@ mod day;
 use std::env;
 use std::ops::Deref;
 
-#[macro_use] extern crate itertools;
-#[macro_use] extern crate lazy_static;
+#[macro_use]
+extern crate itertools;
+#[macro_use]
+extern crate lazy_static;
 
 extern crate crypto;
 extern crate regex;
@@ -31,9 +33,15 @@ pub fn select(day: &day::Day, arg: &String) {
   match arg.as_ref() {
     q if q == format!("{}{}", day_num, "a") => day.a(),
     q if q == format!("{}{}", day_num, "b") => day.b(),
-    q if q == day.number() => {day.a(); day.b()}
-    "*" => {day.a(); day.b()},
-    _ => ()
+    q if q == day.number() => {
+      day.a();
+      day.b()
+    },
+    "*" => {
+      day.a();
+      day.b()
+    },
+    _ => (),
   }
 }
 
