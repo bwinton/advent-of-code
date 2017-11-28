@@ -18,21 +18,19 @@ fn process_chars_a(data: &str) -> i32 {
   rv
 }
 
-fn process_chars_b(data: &str) -> i32 {
+fn process_chars_b(data: &str) -> Option<usize> {
   let mut rv = 0;
-  let mut i = 0;
-  for character in data.chars() {
-    i += 1;
+  for (i, character) in data.chars().enumerate() {
     match character {
       '(' => rv += 1,
       ')' => rv -= 1,
       _ => panic!("Invalid Character \"{}\"", character)
     }
     if rv < 0 {
-      return i
+      return Some(i)
     }
   }
-  -1
+  None
 }
 
 //-----------------------------------------------------
@@ -42,7 +40,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("1");
+    String::from("1")
   }
 
   fn a(&self) {
@@ -54,6 +52,6 @@ impl day::Day for Q {
   fn b(&self) {
     print!("{}B: ", self.number());
     let result = process_chars_b(INPUT);
-    println!("Result = {}", result);
+    println!("Result = {}", result.unwrap());
   }
 }
