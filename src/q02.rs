@@ -1007,7 +1007,7 @@ static INPUT : &'static str = "20x3x11
 14x12x8";
 
 fn get_pieces(line: &str) -> Vec<u32> {
-  let mut rv: Vec<u32> = line.split("x").map(|i| i.parse().unwrap()).collect();
+  let mut rv: Vec<u32> = line.split('x').map(|i| i.parse().unwrap()).collect();
   rv.sort_unstable();
   rv
 }
