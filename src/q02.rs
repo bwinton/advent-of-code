@@ -3,8 +3,8 @@
 
 use day;
 
-// static INPUT : &'static str = "2x3x4
-// 10x1x1";
+static TEST_INPUT : &'static str = "2x3x4
+10x1x1";
 static INPUT : &'static str = "20x3x11
 15x27x5
 6x29x7
@@ -1045,15 +1045,23 @@ impl day::Day for Q {
     String::from("2")
   }
 
-  fn a(&self) {
+  fn a(&self, use_test_data: bool) {
     print!("{}A: ", self.number());
-    let result = process_lines_a(INPUT);
+    let result = if use_test_data {
+      process_lines_a(TEST_INPUT)
+    } else {
+      process_lines_a(INPUT)
+    };
     println!("Result = {}", result);
   }
 
-  fn b(&self) {
+  fn b(&self, use_test_data: bool) {
     print!("{}B: ", self.number());
-    let result = process_lines_b(INPUT);
+    let result = if use_test_data {
+      process_lines_b(TEST_INPUT)
+    } else {
+      process_lines_b(INPUT)
+    };
     println!("Result = {}", result);
   }
 }
