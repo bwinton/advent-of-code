@@ -9,7 +9,7 @@ use clap::Arg;
 
 #[macro_use] extern crate clap;
 // #[macro_use] extern crate itertools;
-// #[macro_use] extern crate lazy_static;
+#[macro_use] extern crate lazy_static;
 
 extern crate crypto;
 extern crate regex;
