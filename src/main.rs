@@ -56,12 +56,8 @@ fn main() {
       .default_value("*"))
     .get_matches();
 
-  let args: Vec<&str> = matches.args["day"].vals.iter().map(|v| v.to_str().unwrap()).collect();
-  let use_test_data = match matches.args.get("test") {
-    Some(_) => true,
-    None => false
-  };
-  println!("{:?}", use_test_data);
+  let args: Vec<&str> = matches.values_of("day").unwrap().collect();
+  let use_test_data = matches.is_present("test");
 
   let days = q_vec!(
     q01// , q02, q03, q04, q05, q06, q07, q08, q09, q10,
