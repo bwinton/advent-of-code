@@ -1,16 +1,15 @@
 mod day;
 
-mod q01; // mod q02; mod q03; mod q04; mod q05; mod q06; mod q07; mod q08; mod q09; mod q10;
+mod q01;//  mod q02; mod q03;mod q04; mod q05; mod q06; mod q07; mod q08; mod q09; mod q10;
 // mod q11; mod q12; mod q13; mod q14; mod q15; mod q16; mod q17; mod q18; mod q19; mod q20;
 // mod q21; mod q22; mod q23; mod q24; mod q25;
 
-use std::env;
 use std::ops::Deref;
+use clap::Arg;
 
-#[macro_use]
-extern crate itertools;
-#[macro_use]
-extern crate lazy_static;
+#[macro_use] extern crate clap;
+// #[macro_use] extern crate itertools;
+// #[macro_use] extern crate lazy_static;
 
 extern crate crypto;
 extern crate regex;
@@ -28,38 +27,51 @@ macro_rules! q_vec {
   };
 }
 
-pub fn select(day: &day::Day, arg: &str) {
+pub fn select(day: &day::Day, arg: &str, use_test_data: bool) {
   let day_num = day.number();
-  match arg {
-    q if q == format!("{}{}", day_num, "a") => day.a(),
-    q if q == format!("{}{}", day_num, "b") => day.b(),
-    q if q == day.number() => {
-      day.a();
-      day.b()
-    },
-    "*" => {
-      day.a();
-      day.b()
-    },
-    _ => (),
+  match arg.to_lowercase() {
+    ref q if *q == format!("{}{}", day_num, "a") => day.a(use_test_data),
+    ref q if *q == format!("{}{}", day_num, "b") => day.b(use_test_data),
+    ref q if *q == day.number() => {day.a(use_test_data); day.b(use_test_data)},
+    ref q if *q == "*" => {day.a(use_test_data); day.b(use_test_data)},
+    _ => ()
   }
 }
 
 fn main() {
-  let mut args: Vec<_> = env::args().skip(1).collect();
-  if args.is_empty() {
-    args = vec![String::from("*")];
-  }
+  let matches = app_from_crate!("\n")
+    .arg(Arg::with_name("test")
+      .short("t")
+      .long("test")
+      .help("Use test data"))
+    .arg(Arg::with_name("day")
+      .help("Which day(s) to run")
+      .long_help("Specify a day, or days, or parts of a day or days to run.
+ Putting a number and an 'a' or 'b' will run that part for that day.
+ Putting a number will run both parts for that day.
+ Putting '*' (the default) will run all parts for all days.
+")
+      .index(1)
+      .multiple(true)
+      .default_value("*"))
+    .get_matches();
+
+  let args: Vec<&str> = matches.args["day"].vals.iter().map(|v| v.to_str().unwrap()).collect();
+  let use_test_data = match matches.args.get("test") {
+    Some(_) => true,
+    None => false
+  };
+  println!("{:?}", use_test_data);
 
   let days = q_vec!(
-    q01 //, q02, q03, q04, q05, q06, q07, q08, q09, q10,
+    q01// , q02, q03, q04, q05, q06, q07, q08, q09, q10,
     // q11, q12, q13, q14, q15, q16, q17, q18, q19, q20,
     // q21, q22, q23, q24, q25
     );
 
   for argument in args {
     for day in &days {
-      select(day.deref(), &argument);
+      select(day.deref(), argument, use_test_data);
     }
     println!();
   }
