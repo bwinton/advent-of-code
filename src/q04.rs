@@ -7,8 +7,6 @@ use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::i32::MAX;
 
-static TEST_INPUT : &'static str = "abcdef";
-// static TEST_INPUT : &'static str = "pqrstuv";
 static INPUT : &'static str = "bgvyzdsv";
 
 fn process_data(data: &str, zeroes: usize) -> i32 {
@@ -46,23 +44,27 @@ impl day::Day for Q {
     String::from("4")
   }
 
-  fn a(&self, use_test_data: bool) {
+  fn a(&self) {
     print!("{}A: ", self.number());
-    let result = if use_test_data {
-      process_data(TEST_INPUT, 5)
-    } else {
-      process_data(INPUT, 5)
-    };
+    let result = process_data(INPUT, 5);
     println!("Result = {}", result);
   }
 
-  fn b(&self, use_test_data: bool) {
+  fn b(&self) {
     print!("{}B: ", self.number());
-    let result = if use_test_data {
-      process_data(TEST_INPUT, 6)
-    } else {
-      process_data(INPUT, 6)
-    };
+    let result = process_data(INPUT, 6);
     println!("Result = {}", result);
   }
+}
+
+#[test]
+fn a() {
+  assert_eq!(process_data("abcdef", 5), 609043);
+  assert_eq!(process_data("pqrstuv", 5), 1048970);
+}
+
+#[test]
+fn b() {
+  assert_eq!(process_data("abcdef", 6), 6742839);
+  assert_eq!(process_data("pqrstuv", 6), 5714438);
 }

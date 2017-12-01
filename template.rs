@@ -3,7 +3,6 @@
 
 use day;
 
-static TEST_INPUT : &'static str = "";
 static INPUT : &'static str = "";
 
 fn process_data_a(_data: &str) -> i32 {
@@ -24,23 +23,25 @@ impl day::Day for Q {
     String::from("XX")
   }
 
-  fn a(&self, use_test_data: bool) {
+  fn a(&self) {
     print!("{}A: ", self.number());
-    let result = if use_test_data {
-      process_data_a(TEST_INPUT)
-    } else {
-      process_data_a(INPUT)
-    };
+    let result = process_data_a(INPUT);
     println!("Result = {}", result);
   }
 
-  fn b(&self, use_test_data: bool) {
+  fn b(&self) {
     print!("{}B: ", self.number());
-    let result = if use_test_data {
-      process_data_b(TEST_INPUT)
-    } else {
-      process_data_b(INPUT)
-    };
+    let result = process_data_b(INPUT);
     println!("Result = {}", result);
   }
+}
+
+#[test]
+fn a() {
+  assert_eq!(process_data_a(""), 0);
+}
+
+#[test]
+fn b() {
+  assert_eq!(process_data_b(""), 0);
 }

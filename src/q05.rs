@@ -6,15 +6,6 @@ use day;
 use regex::Regex;
 use std::collections::HashSet;
 
-static TEST_INPUT : &'static str = "ugknbfddgicrmopn
-aaa
-jchzalrnumimnmhp
-haegwjzuvuyypxyu
-dvszwmarrgswjxmb
-qjhvhtzxzqqjkmpb
-xxyxx
-uurcxstgmygtbstg
-ieodomkazucvgmuy";
 static INPUT : &'static str = "rthkunfaakmwmush
 qxlnvjguikqcyfzt
 sleaoasjspnjctqt
@@ -1112,23 +1103,32 @@ impl day::Day for Q {
     String::from("5")
   }
 
-  fn a(&self, use_test_data: bool) {
+  fn a(&self) {
     print!("{}A: ", self.number());
-    let result = if use_test_data {
-      process_data_a(TEST_INPUT)
-    } else {
-      process_data_a(INPUT)
-    };
+    let result = process_data_a(INPUT);
     println!("Result = {}", result);
   }
 
-  fn b(&self, use_test_data: bool) {
+  fn b(&self) {
     print!("{}B: ", self.number());
-    let result = if use_test_data {
-      process_data_b(TEST_INPUT)
-    } else {
-      process_data_b(INPUT)
-    };
+    let result = process_data_b(INPUT);
     println!("Result = {}", result);
   }
+}
+
+#[test]
+fn a() {
+  assert_eq!(process_data_a("ugknbfddgicrmopn"), 1);
+  assert_eq!(process_data_a("aaa"), 1);
+  assert_eq!(process_data_a("jchzalrnumimnmhp"), 0);
+  assert_eq!(process_data_a("haegwjzuvuyypxyu"), 0);
+  assert_eq!(process_data_a("dvszwmarrgswjxmb"), 0);
+}
+
+#[test]
+fn b() {
+  assert_eq!(process_data_b("qjhvhtzxzqqjkmpb"), 1);
+  assert_eq!(process_data_b("xxyxx"), 1);
+  assert_eq!(process_data_b("uurcxstgmygtbstg"), 0);
+  assert_eq!(process_data_b("ieodomkazucvgmuy"), 0);
 }
