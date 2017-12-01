@@ -27,23 +27,19 @@ macro_rules! q_vec {
   };
 }
 
-pub fn select(day: &day::Day, arg: &str, use_test_data: bool) {
+pub fn select(day: &day::Day, arg: &str) {
   let day_num = day.number();
   match arg.to_lowercase() {
-    ref q if *q == format!("{}{}", day_num, "a") => day.a(use_test_data),
-    ref q if *q == format!("{}{}", day_num, "b") => day.b(use_test_data),
-    ref q if *q == day.number() => {day.a(use_test_data); day.b(use_test_data)},
-    ref q if *q == "*" => {day.a(use_test_data); day.b(use_test_data)},
+    ref q if *q == format!("{}{}", day_num, "a") => day.a(),
+    ref q if *q == format!("{}{}", day_num, "b") => day.b(),
+    ref q if *q == day.number() => {day.a(); day.b()},
+    ref q if *q == "*" => {day.a(); day.b()},
     _ => ()
   }
 }
 
 fn main() {
   let matches = app_from_crate!("\n")
-    .arg(Arg::with_name("test")
-      .short("t")
-      .long("test")
-      .help("Use test data"))
     .arg(Arg::with_name("day")
       .help("Which day(s) to run")
       .long_help("Specify a day, or days, or parts of a day or days to run.
@@ -57,7 +53,6 @@ fn main() {
     .get_matches();
 
   let args: Vec<&str> = matches.values_of("day").unwrap().collect();
-  let use_test_data = matches.is_present("test");
 
   let days = q_vec!(
     q01// , q02, q03, q04, q05, q06, q07, q08, q09, q10,
@@ -67,7 +62,7 @@ fn main() {
 
   for argument in args {
     for day in &days {
-      select(day.deref(), argument, use_test_data);
+      select(day.deref(), argument);
     }
     println!();
   }
