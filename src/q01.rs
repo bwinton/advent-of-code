@@ -8,7 +8,7 @@ static INPUT : &'static str = "6497139596828982595777779823495157848226849399661
 fn process_data(line: &str, offset: usize) -> u32 {
   let mut rv = 0;
   let chars = line.chars();
-  let nexts = line.chars().chain(line.chars()).skip(offset);
+  let nexts = line.chars().cycle().skip(offset);
   for (curr, next) in chars.zip(nexts) {
     if curr == next {
       rv += curr.to_digit(10).unwrap();
