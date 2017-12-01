@@ -19,16 +19,11 @@ fn process_data_a(data: &str) -> u32 {
   for line in data.lines() {
     rv = 0;
     let mut chars = line.chars();
-    let first = chars.next().unwrap();
-    let mut prev = first;
-    for curr in chars {
-      if prev == curr {
-        rv += prev.to_digit(10).unwrap();
+    let mut nexts = line.chars().chain(line.chars()).skip(1);
+    for (curr, next) in chars.zip(nexts) {
+      if curr == next {
+        rv += curr.to_digit(10).unwrap();
       }
-      prev = curr;
-    }
-    if prev == first {
-      rv += prev.to_digit(10).unwrap();
     }
   }
   rv
