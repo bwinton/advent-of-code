@@ -367,28 +367,28 @@ impl FromStr for Instruction {
 
 impl Instruction {
   fn execute_a(&self, state: &mut State) {
-    for x in self.start_x..self.end_x+1 {
-      for y in self.start_y..self.end_y+1 {
+     for mut row in state.iter_mut().take(self.end_x+1).skip(self.start_x) {
+      for mut cell in row.iter_mut().take(self.end_y+1).skip(self.start_y) {
         match self.op {
-          Operation::TurnOn => state[x][y] = 1,
-          Operation::TurnOff => state[x][y] = 0,
-          Operation::Toggle => state[x][y] = 1 - state[x][y],
+          Operation::TurnOn => *cell = 1,
+          Operation::TurnOff => *cell = 0,
+          Operation::Toggle => *cell = 1 - *cell,
         }
       }
     }
   }
 
   fn execute_b(&self, state: &mut State) {
-    for x in self.start_x..self.end_x+1 {
-      for y in self.start_y..self.end_y+1 {
+     for mut row in state.iter_mut().take(self.end_x+1).skip(self.start_x) {
+      for mut cell in row.iter_mut().take(self.end_y+1).skip(self.start_y) {
         match self.op {
-          Operation::TurnOn => state[x][y] += 1,
+          Operation::TurnOn => *cell += 1,
           Operation::TurnOff => {
-            if state[x][y] > 0 {
-              state[x][y] -= 1;
+            if *cell > 0 {
+              *cell -= 1;
             }
           },
-          Operation::Toggle => state[x][y] += 2,
+          Operation::Toggle => *cell += 2,
         }
       }
     }
