@@ -35,8 +35,8 @@ fn process_data_b(data: &str) -> i32 {
   let mut rv = 0;
   for line in data.lines() {
     let values: Vec<i32> = line.split_whitespace().map(|i| i.parse::<i32>().unwrap()).collect();
-    for x in values.iter() {
-      for y in values.iter() {
+    for x in &values {
+      for y in &values {
         if x != y && x / y * y == *x {
           rv += x / y;
         }
