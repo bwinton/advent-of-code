@@ -1,3 +1,4 @@
+#[macro_use] mod macros;
 mod day;
 
 mod q01; mod q02; mod q03; mod q04; mod q05; mod q06;// mod q07; mod q08; mod q09; mod q10;
@@ -13,19 +14,6 @@ use clap::Arg;
 
 extern crate crypto;
 extern crate regex;
-
-macro_rules! q_vec {
-  ( $( $x:ident ),* ) => {
-    {
-      let temp_vec:Vec<Box<day::Day>> = vec!(
-      $(
-        Box::new($x::Q),
-      )*
-      );
-      temp_vec
-    }
-  };
-}
 
 pub fn select(day: &day::Day, arg: &str) {
   let day_num = day.number();

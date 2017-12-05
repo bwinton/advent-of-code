@@ -3,6 +3,7 @@
 
 use day;
 
+use std;
 use std::collections::HashMap;
 
 static INPUT : i32 = 265_149;
@@ -14,68 +15,51 @@ enum Direction {
   Down
 }
 
-struct SpiralIter {
-  curr: [i32; 2],
-  dir: Direction,
-  len: usize,
-  remaining: usize
-}
+define_iterator!(SpiralIter (
+    &curr: [i32; 2] = [0, 0],
+    &dir: Direction = Direction::Left,
+    &len: usize = 1,
+    &remaining: usize = 1
+  ) -> Option<[i32;2]> {
+  let rv = *curr;
 
-impl SpiralIter {
-  fn new() -> SpiralIter {
-    SpiralIter {
-      curr: [0, 0],
-      dir: Direction::Left,
-      len: 1,
-      remaining: 1
-    }
-  }
-}
+  *remaining -= 1;
 
-impl Iterator for SpiralIter {
-  type Item = [i32;2];
-
-  fn next(&mut self) -> Option<[i32;2]> {
-    let rv = self.curr;
-
-    self.remaining -= 1;
-
-    match self.dir {
-      Direction::Left => {
-        self.curr[0] += 1;
-        if self.remaining == 0 {
-          self.dir = Direction::Up;
-          self.remaining = self.len;
-        }
-      },
-      Direction::Up => {
-        self.curr[1] -= 1;
-        if self.remaining == 0 {
-          self.dir = Direction::Right;
-          self.len += 1;
-          self.remaining = self.len;
-        }
-      },
-      Direction::Right => {
-        self.curr[0] -= 1;
-        if self.remaining == 0 {
-          self.dir = Direction::Down;
-          self.remaining = self.len;
-        }
-      },
-      Direction::Down => {
-        self.curr[1] += 1;
-        if self.remaining == 0 {
-          self.dir = Direction::Left;
-          self.len += 1;
-          self.remaining = self.len;
-        }
+  match *dir {
+    Direction::Left => {
+      curr[0] += 1;
+      if *remaining == 0 {
+        *dir = Direction::Up;
+        *remaining = *len;
+      }
+    },
+    Direction::Up => {
+      curr[1] -= 1;
+      if *remaining == 0 {
+        *dir = Direction::Right;
+        *len += 1;
+        *remaining = *len;
+      }
+    },
+    Direction::Right => {
+      curr[0] -= 1;
+      if *remaining == 0 {
+        *dir = Direction::Down;
+        *remaining = *len;
+      }
+    },
+    Direction::Down => {
+      curr[1] += 1;
+      if *remaining == 0 {
+        *dir = Direction::Left;
+        *len += 1;
+        *remaining = *len;
       }
     }
-
-    Some(rv)
   }
-}
+
+  Some(rv)
+});
 
 fn process_data_a(data: i32) -> i32 {
   if data == 1 { return 0; }
@@ -96,44 +80,29 @@ fn process_data_a(data: i32) -> i32 {
 }
 
 
-struct MultIter {
-  spiral: SpiralIter,
-  seen: HashMap<[i32;2], usize>
-}
-
-impl MultIter {
-  fn new() -> MultIter {
-    MultIter {
-      spiral: SpiralIter::new(),
-      seen: HashMap::new()
-    }
+define_iterator!(MultIter(
+    &spiral: SpiralIter = SpiralIter::default(),
+    &seen: HashMap<[i32;2], usize> = HashMap::new()
+  ) -> Option<usize> {
+  let mut rv = 0;
+  let curr = spiral.next().unwrap();
+  if curr == [0,0] {
+    rv = 1;
   }
-}
-
-
-impl Iterator for MultIter {
-  type Item = usize;
-
-  fn next(&mut self) -> Option<usize> {
-    let mut rv = 0;
-    let curr = self.spiral.next().unwrap();
-    if curr == [0,0] {
-      rv = 1;
-    }
-    for x in -1..2 {
-      for y in -1..2 {
-        if let Some(cell) = self.seen.get(&[curr[0] + x, curr[1] + y]) {
-          rv += cell;
-        }
+  for x in -1..2 {
+    for y in -1..2 {
+      if let Some(cell) = seen.get(&[curr[0] + x, curr[1] + y]) {
+        rv += cell;
       }
     }
-    self.seen.insert(curr, rv);
-    Some(rv)
   }
-}
+  seen.insert(curr, rv);
+  Some(rv)
+});
+
 
 fn process_data_b(data: i32) -> usize {
-  for number in MultIter::new() {
+  for number in MultIter::default() {
     if number > data as usize {
       return number;
     }
@@ -174,7 +143,7 @@ fn a() {
 
 #[test]
 fn b() {
-  let spiral_values: Vec<[i32;2]> = SpiralIter::new().take(25).collect();
+  let spiral_values: Vec<[i32;2]> = SpiralIter::default().take(25).collect();
   let spiral_expected: Vec<[i32;2]> = vec![
       [0,0],   [1,0],  [1,-1], [0,-1], [-1,-1],
      [-1,0],  [-1,1],   [0,1],  [1,1],   [2,1],
@@ -184,7 +153,7 @@ fn b() {
   ];
   assert_eq!(spiral_values, spiral_expected);
 
-  let mult_values: Vec<usize> = MultIter::new().take(23).collect();
+  let mult_values: Vec<usize> = MultIter::default().take(23).collect();
   let mult_expected: Vec<usize> = vec![
       1,   1,   2,   4,   5,
      10,  11,  23,  25,  26,
