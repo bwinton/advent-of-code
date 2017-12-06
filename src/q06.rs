@@ -3,14 +3,51 @@
 
 use day;
 
-static INPUT : &'static str = "";
+use std::collections::HashMap;
+use std::collections::HashSet;
 
-fn process_data_a(_data: &str) -> i32 {
-  0
+static INPUT : &'static str = "5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
+
+fn redistribute(cells: &[usize]) -> Vec<usize> {
+  let mut rv = cells.to_owned();
+  let max = cells.iter().enumerate().rev().max_by_key(|x| x.1).unwrap();
+  {
+    let elem = &mut rv[max.0];
+    *elem = 0;
+  }
+  {
+    for i in max.0 + 1 .. max.0 + 1 + max.1 {
+      let elem = &mut rv[i % cells.len()];
+      *elem += 1;
+    }
+  }
+  rv.clone()
 }
 
-fn process_data_b(_data: &str) -> i32 {
-  0
+fn process_data_a(data: &str) -> usize {
+  let mut cells: Vec<usize> = data.split_whitespace().map(|i| i.parse().unwrap()).collect();
+  let mut rv = 0;
+  let mut seen = HashSet::new();
+  while !seen.contains(&cells) {
+    rv += 1;
+    seen.insert(cells.clone());
+    cells = redistribute(&cells);
+  }
+
+  rv
+}
+
+fn process_data_b(data: &str) -> i32 {
+  let mut cells: Vec<usize> = data.split_whitespace().map(|i| i.parse().unwrap()).collect();
+  let mut rv = 0;
+  let mut seen = HashMap::new();
+  while !seen.contains_key(&cells) {
+    seen.insert(cells.clone(), rv);
+    rv += 1;
+    cells = redistribute(&cells);
+  }
+
+  rv - seen[&cells]
 }
 
 //-----------------------------------------------------
@@ -38,10 +75,10 @@ impl day::Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a(""), 0);
+  assert_eq!(process_data_a("0 2 7 0"), 5);
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b(""), 0);
+  assert_eq!(process_data_b("2 4 1 2"), 4);
 }
