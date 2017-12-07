@@ -107,7 +107,7 @@ fn process_data_b(data: i32) -> usize {
       return number;
     }
   }
-  0
+  unreachable!();
 }
 
 //-----------------------------------------------------

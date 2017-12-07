@@ -1265,16 +1265,16 @@ impl FromStr for Disc {
     let mut rv = Disc{name: "".to_string(), weight: 0, sum: 0, holdings: Vec::new()};
     let cap = MAIN_RE.captures(s);
     match cap {
-      None => return Err(()),
+      None => Err(()),
       Some(x) => {
         rv.name = x.at(1).unwrap().to_string();
         rv.weight = x.at(2).unwrap().parse().unwrap();
         if let Some(rest) = x.at(3) {
           rv.holdings = rest[4..].split(", ").map(|x| x.to_string()).collect();
         }
+        Ok(rv)
       }
     }
-    Ok(rv)
   }
 }
 
@@ -1286,15 +1286,11 @@ fn process_data_a(data: &str) -> String {
   }
   let mut roots = discs.clone();
   for disc in discs.values() {
-    // println!("{:?}", disc);
     for child in &disc.holdings {
       roots.remove(child);
     }
   }
-  for key in roots.keys() {
-    return key.to_string();
-  }
-  "".to_string()
+  roots.keys().next().unwrap().to_string()
 }
 
 fn get_sums(discs: &mut HashMap<String, Disc>) -> (HashMap<String, Disc>, Option<usize>) {
@@ -1352,7 +1348,7 @@ fn process_data_b(data: &str) -> usize {
       }
     }
   }
-  0
+  unreachable!();
 }
 
 //-----------------------------------------------------

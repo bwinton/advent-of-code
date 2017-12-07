@@ -1079,8 +1079,7 @@ static INPUT : &'static str = "1
 -647";
 
 fn parse(data: &str) -> Vec<i32> {
-  let rv: Vec<i32> = data.lines().map(|i| i.parse::<i32>().unwrap()).collect();
-  rv
+  data.lines().map(|i| i.parse::<i32>().unwrap()).collect()
 }
 
 fn process_data_a(data: &str) -> i32 {
