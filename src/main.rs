@@ -12,6 +12,8 @@ use clap::Arg;
 #[macro_use] extern crate maplit;
 
 extern crate crypto;
+extern crate itertools;
+extern crate permutohedron;
 extern crate regex;
 
 macro_rules! q_vec {
