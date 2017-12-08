@@ -1,3 +1,4 @@
+#[macro_use] mod macros;
 mod day;
 
 mod q01; mod q02; mod q03; mod q04; mod q05; mod q06; mod q07; mod q08; mod q09;
@@ -8,26 +9,16 @@ use std::ops::Deref;
 use clap::Arg;
 
 #[macro_use] extern crate clap;
+// #[macro_use] extern crate itertools;
 #[macro_use] extern crate lazy_static;
+
+#[cfg(test)]
 #[macro_use] extern crate maplit;
 
 extern crate crypto;
 extern crate itertools;
 extern crate permutohedron;
 extern crate regex;
-
-macro_rules! q_vec {
-  ( $( $x:ident ),* ) => {
-    {
-      let temp_vec:Vec<Box<day::Day>> = vec!(
-      $(
-        Box::new($x::Q),
-      )*
-      );
-      temp_vec
-    }
-  };
-}
 
 pub fn select(day: &day::Day, arg: &str) {
   let day_num = day.number();
