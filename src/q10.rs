@@ -5,8 +5,32 @@ use day;
 
 static INPUT : &'static str = "3113322113";
 
+define_iterator!(UniqIter(
+    &iter: Iterator<i32> = [].iter(),
+    &prev: Option<i32> = None,
+    &count: usize = 0
+  ) -> Option<(i32, usize)> {
+  if prev == None {
+    prev = iter.next();
+    if prev == None {
+      return None;
+    }
+    count += 1;
+  }
+  let curr = iter.next().unwrap();
+  while curr == prev {
+    rv.1 += 1;
+  }
+  let mut rv = (prev, count);
+  prev = curr;
+  count = 1;
+  Some(rv)
+});
+
 fn process_data_a(data: &str, iterations: usize) -> &str {
-  "0"
+  for i in 0..iterations {
+    UniqIter
+  }
 }
 
 fn process_data_b(_data: &str) -> i32 {
