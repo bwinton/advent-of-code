@@ -3,10 +3,10 @@
 
 use day;
 
-static INPUT : &'static str = "";
+static INPUT : &'static str = "3113322113";
 
-fn process_data_a(_data: &str) -> i32 {
-  0
+fn process_data_a(data: &str, iterations: usize) -> &str {
+  "0"
 }
 
 fn process_data_b(_data: &str) -> i32 {
@@ -25,7 +25,7 @@ impl day::Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let result = process_data_a(INPUT);
+    let result = process_data_a(INPUT, 40);
     println!("Result = {}", result);
   }
 
@@ -38,7 +38,11 @@ impl day::Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a(""), 0);
+  assert_eq!(process_data_a("1", 1), "11");
+  assert_eq!(process_data_a("1", 2), "21");
+  assert_eq!(process_data_a("1", 3), "1211");
+  assert_eq!(process_data_a("1", 4), "111221");
+  assert_eq!(process_data_a("1", 5), "312211");
 }
 
 #[test]
