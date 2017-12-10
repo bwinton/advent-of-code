@@ -9,13 +9,13 @@ use std::ops::Deref;
 use clap::Arg;
 
 #[macro_use] extern crate clap;
-// #[macro_use] extern crate itertools;
 #[macro_use] extern crate lazy_static;
 
 #[cfg(test)]
 #[macro_use] extern crate maplit;
 
 extern crate crypto;
+extern crate itertools;
 extern crate regex;
 
 pub fn select(day: &day::Day, arg: &str) {
