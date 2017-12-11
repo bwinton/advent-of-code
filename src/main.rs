@@ -10,8 +10,6 @@ use clap::Arg;
 
 #[macro_use] extern crate clap;
 #[macro_use] extern crate lazy_static;
-
-#[cfg(test)]
 #[macro_use] extern crate maplit;
 
 extern crate crypto;
