@@ -11,6 +11,7 @@ macro_rules! q_vec {
   };
 }
 
+#[allow(unused_macros)]
 macro_rules! define_iterator {
   ($itname:ident ($(&$name:ident : $ty:ty = $e:expr),*) -> Option<$rty:ty> { $($body:tt)* }) => {
     struct $itname {
