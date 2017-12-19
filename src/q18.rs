@@ -52,7 +52,8 @@ jgz a -19";
 #[derive(Clone)]
 #[derive(Debug)]
 enum Instruction {
-  Sound(char),
+  SendReg(char),
+  SendLit(i64),
   SetReg(char, char),
   SetLit(char, i64),
   AddReg(char, char),
@@ -61,8 +62,7 @@ enum Instruction {
   MulLit(char, i64),
   ModReg(char, char),
   ModLit(char, i64),
-  RecoverReg(char),
-  RecoverLit(i64),
+  Receive(char),
   JumpRegReg(char, char),
   JumpRegLit(char, i64),
   JumpLitReg(i64, char),
@@ -73,11 +73,14 @@ impl Instruction {
   fn execute(&self, state: &State) -> (State, Option<i64>) {
     let mut rv = state.clone();
     let mut value = None;
-    // println!("Executing {:?} on {:?}\n", self, state);
     match (*self).clone() {
-      Instruction::Sound(reg) => {
+      Instruction::SendReg(reg) => {
         rv.pc += 1;
-        rv.sound(state.registers[&reg]);
+        rv.outgoing.push(state.registers[&reg]);
+      }
+      Instruction::SendLit(lit) => {
+        rv.pc += 1;
+        rv.outgoing.push(lit);
       }
       Instruction::SetReg(dst, src) => {
         rv.pc += 1;
@@ -111,16 +114,21 @@ impl Instruction {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] % lit);
       }
-      Instruction::RecoverReg(reg) => {
-        rv.pc += 1;
-        if state.registers[&reg] != 0 {
-          value = Some(*state.out.last().unwrap());
-        }
-      }
-      Instruction::RecoverLit(lit) => {
-        rv.pc += 1;
-        if lit != 0 {
-          value = Some(*state.out.last().unwrap());
+      Instruction::Receive(reg) => {
+        if state.kind == 'A' {
+          rv.pc += 1;
+          if state.registers[&reg] != 0 {
+            value = rv.incoming.pop();
+          }
+        } else {
+          value = rv.incoming.pop();
+          match value {
+            None => rv.waiting = true,
+            Some(x) => {
+              rv.pc += 1;
+              rv.registers.insert(reg, x);
+            }
+          }
         }
       }
       Instruction::JumpRegReg(reg_test, reg_offset) => {
@@ -157,21 +165,21 @@ impl Instruction {
 
   fn registers(&self) -> Vec<char> {
     match (*self).clone() {
-      Instruction::Sound(reg) => { vec![reg] }
-      Instruction::SetReg(dst, src) => { vec![dst, src] }
-      Instruction::SetLit(reg, _) => { vec![reg] }
-      Instruction::AddReg(dst, src) => { vec![dst, src] }
-      Instruction::AddLit(reg, _) => { vec![reg] }
-      Instruction::MulReg(dst, src) => { vec![dst, src] }
-      Instruction::MulLit(reg, _) => { vec![reg] }
-      Instruction::ModReg(dst, src) => { vec![dst, src] }
-      Instruction::ModLit(reg, _) => { vec![reg] }
-      Instruction::RecoverReg(reg) => { vec![reg] }
-      Instruction::RecoverLit(_) => { vec![] }
-      Instruction::JumpRegReg(test, offset) => { vec![test, offset] }
-      Instruction::JumpRegLit(reg, _) => { vec![reg] }
-      Instruction::JumpLitReg(_, reg) => { vec![reg] }
-      Instruction::JumpLitLit(_, _) => { vec![] }
+      Instruction::SendReg(reg) |
+        Instruction::SetLit(reg, _) |
+        Instruction::AddLit(reg, _) |
+        Instruction::MulLit(reg, _) |
+        Instruction::ModLit(reg, _) |
+        Instruction::Receive(reg) |
+        Instruction::JumpRegLit(reg, _) |
+        Instruction::JumpLitReg(_, reg) => { vec![reg] }
+      Instruction::SendLit(_) |
+        Instruction::JumpLitLit(_, _) => { vec![] }
+      Instruction::SetReg(a, b) |
+        Instruction::AddReg(a, b) |
+        Instruction::MulReg(a, b) |
+        Instruction::ModReg(a, b) |
+        Instruction::JumpRegReg(a, b) => { vec![a, b] }
     }
   }
 }
@@ -181,7 +189,8 @@ impl FromStr for Instruction {
 
   fn from_str(s: &str) -> Result<Instruction, ()> {
     lazy_static! {
-      static ref SOUND_RE: Regex = Regex::new(r"^snd ([a-z])$").unwrap();
+      static ref SEND_REG_RE: Regex = Regex::new(r"^snd ([a-z])$").unwrap();
+      static ref SEND_LIT_RE: Regex = Regex::new(r"^snd (-?\d+)$").unwrap();
       static ref SET_REG_RE: Regex = Regex::new(r"^set ([a-z]) ([a-z])$").unwrap();
       static ref SET_LIT_RE: Regex = Regex::new(r"^set ([a-z]) (-?\d+)$").unwrap();
       static ref ADD_REG_RE: Regex = Regex::new(r"^add ([a-z]) ([a-z])$").unwrap();
@@ -190,16 +199,21 @@ impl FromStr for Instruction {
       static ref MUL_LIT_RE: Regex = Regex::new(r"^mul ([a-z]) (-?\d+)$").unwrap();
       static ref MOD_REG_RE: Regex = Regex::new(r"^mod ([a-z]) ([a-z])$").unwrap();
       static ref MOD_LIT_RE: Regex = Regex::new(r"^mod ([a-z]) (-?\d+)$").unwrap();
-      static ref RECOVER_REG_RE: Regex = Regex::new(r"^rcv ([a-z])$").unwrap();
-      static ref RECOVER_LIT_RE: Regex = Regex::new(r"^rcv (-?\d+)$").unwrap();
+      static ref RECEIVE_RE: Regex = Regex::new(r"^rcv ([a-z])$").unwrap();
       static ref JUMP_LITLIT_RE: Regex = Regex::new(r"^jgz (-?[0-9]+) (-?[0-9]+)$").unwrap();
       static ref JUMP_LITREG_RE: Regex = Regex::new(r"^jgz (-?[0-9]+) ([a-z])$").unwrap();
       static ref JUMP_REGLIT_RE: Regex = Regex::new(r"^jgz ([a-z]) (-?[0-9]+)$").unwrap();
       static ref JUMP_REGREG_RE: Regex = Regex::new(r"^jgz ([a-z]) ([a-z])$").unwrap();
     }
 
-    if let Some(cap) = SOUND_RE.captures(s) {
-      return Ok(Instruction::Sound(
+    if let Some(cap) = SEND_REG_RE.captures(s) {
+      return Ok(Instruction::SendReg(
+        cap.at(1).unwrap().parse().unwrap()
+      ));
+    }
+
+    if let Some(cap) = SEND_LIT_RE.captures(s) {
+      return Ok(Instruction::SendLit(
         cap.at(1).unwrap().parse().unwrap()
       ));
     }
@@ -260,14 +274,8 @@ impl FromStr for Instruction {
       ));
     }
 
-    if let Some(cap) = RECOVER_REG_RE.captures(s) {
-      return Ok(Instruction::RecoverReg(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
-    }
-
-    if let Some(cap) = RECOVER_LIT_RE.captures(s) {
-      return Ok(Instruction::RecoverLit(
+    if let Some(cap) = RECEIVE_RE.captures(s) {
+      return Ok(Instruction::Receive(
         cap.at(1).unwrap().parse().unwrap()
       ));
     }
@@ -308,44 +316,31 @@ impl FromStr for Instruction {
 #[derive(Clone)]
 #[derive(Debug)]
 struct State {
+  kind: char,
   registers: HashMap<char, i64>,
   pc: i64,
-  out: Vec<i64>,
-  instructions: Vec<Instruction>
+  incoming: Vec<i64>,
+  outgoing: Vec<i64>,
+  instructions: Vec<Instruction>,
+  waiting: bool
 }
 
-// impl PartialEq for State {
-//   fn eq(&self, other: &State) -> bool {
-//     self.pc == other.pc && self.registers == other.registers
-//   }
-// }
-//
-// impl Eq for State {}
-//
-// impl Hash for State {
-//   fn hash<H: Hasher>(&self, state: &mut H) {
-//     self.pc.hash(state);
-//     self.registers.hash(state);
-//   }
-// }
-//
 impl State {
-  pub fn new(instructions: Vec<Instruction>, registers: HashMap<char, i64>) -> State {
+  pub fn new(kind: char, instructions: Vec<Instruction>, registers: HashMap<char, i64>) -> State {
     State {
+      kind: kind,
       registers: registers,
       pc: 0,
-      out: Vec::new(),
-      instructions:instructions
+      incoming: Vec::new(),
+      outgoing: Vec::new(),
+      instructions:instructions,
+      waiting: false
     }
-  }
-
-  fn sound(&mut self, data: i64) {
-    self.out.push(data);
   }
 
   fn execute(&self) -> (State, Option<i64>) {
     let instruction = &self.instructions[self.pc as usize];
-    instruction.execute(&self)
+    instruction.execute(self)
   }
 }
 
@@ -362,13 +357,15 @@ fn process_data_a(data: &str) -> i64 {
     }
   }
   // println!("{:?}", instructions);
-  let mut state = State::new(instructions, registers);
+  let mut state = State::new('A', instructions, registers);
   let mut value = None;
   while value == None && (state.pc as usize) < state.instructions.len() {
     let temp = state.execute();
     state = temp.0; value = temp.1;
+    while let Some(data) = state.outgoing.pop() {
+      state.incoming.insert(0, data);
+    }
   }
-  println!("{:?}", state);
   value.unwrap_or(0)
 }
 
@@ -385,18 +382,32 @@ fn process_data_b(data: &str) -> i64 {
   // println!("{:?}", instructions);
   let mut regs_a = registers.clone();
   regs_a.insert('p', 0);
-  let mut state_a = State::new(instructions, regs_a);
-  // let regs_b = registers.clone();
-  // regs_b.insert('p', 1);
-  // let mut state_b = State::new(instructions, regs_b);
+  let mut state_a = State::new('B', instructions.clone(), regs_a);
+  let mut regs_b = registers.clone();
+  regs_b.insert('p', 1);
+  let mut state_b = State::new('B', instructions, regs_b);
 
-  let mut value = None;
-  while value == None && (state_a.pc as usize) < state_a.instructions.len() {
-    let temp = state_a.execute();
-    state_a = temp.0; value = temp.1;
+  let mut value = 0;
+  while !(state_a.waiting && state_b.waiting) {
+    while !state_a.waiting && (state_a.pc as usize) < state_a.instructions.len() {
+      let temp = state_a.execute();
+      state_a = temp.0;
+      while let Some(data) = state_a.outgoing.pop() {
+        state_b.incoming.insert(0, data);
+        state_b.waiting = false;
+      }
+    }
+    while !state_b.waiting && (state_b.pc as usize) < state_b.instructions.len() {
+      let temp = state_b.execute();
+      state_b = temp.0;
+      while let Some(data) = state_b.outgoing.pop() {
+        value += 1;
+        state_a.incoming.insert(0, data);
+        state_a.waiting = false;
+      }
+    }
   }
-  println!("{:?}", state_a);
-  value.unwrap_or(0)
+  value
 }
 
 //-----------------------------------------------------
@@ -444,5 +455,5 @@ snd p
 rcv a
 rcv b
 rcv c
-rcv d"), 0);
+rcv d"), 3);
 }
