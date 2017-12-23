@@ -5,32 +5,32 @@ use day;
 
 static INPUT : &'static str = "";
 
-enum Direction {
-  Left,
-  Up,
-  Right,
-  Down
-}
+// enum Direction {
+//   Left,
+//   Up,
+//   Right,
+//   Down
+// }
 
 struct Carrier {
-  position: (i32, i32),
-  direction: Direction
+  // position: (i32, i32),
+  // direction: Direction
 }
 
 impl Carrier {
-  pub fn new(grid: &[Vec<bool>]) -> Carrier {
+  pub fn new(_grid: &[Vec<bool>]) -> Carrier {
     Carrier {
-      position: (
-        ((grid.len() + 1) / 2) as i32,
-        ((grid[0].len() + 1) / 2) as i32
-      ),
-      direction: Direction::Up
+      // position: (
+      //   ((grid.len() + 1) / 2) as i32,
+      //   ((grid[0].len() + 1) / 2) as i32
+      // ),
+      // direction: Direction::Up
     }
   }
 
   fn step(&self, grid: &[Vec<bool>]) -> Vec<Vec<bool>>{
     // pass
-    let mut rv: Vec<Vec<bool>> = grid.to_vec();
+    let rv: Vec<Vec<bool>> = grid.to_vec();
     rv
   }
 }
@@ -40,13 +40,13 @@ fn process_data_a(data: &str, iterations: usize) -> i32 {
   for line in data.lines() {
     let mut row = Vec::new();
     for cell in line.chars() {
-      row.push(if cell == '#' { true } else { false });
+      row.push(cell == '#');
     }
     grid.push(row);
   }
-  let mut carrier = Carrier::new(&grid);
+  let carrier = Carrier::new(&grid);
   println!("{:?}", grid);
-  for i in 0..iterations {
+  for _ in 0..iterations {
     grid = carrier.step(&grid);
   }
   0
@@ -68,7 +68,7 @@ impl day::Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let result = process_data_a(INPUT, 10000);
+    let result = process_data_a(INPUT, 10_000);
     println!("Result = {}", result);
   }
 
@@ -89,7 +89,7 @@ assert_eq!(process_data_a("..#
 ...", 70), 41);
 assert_eq!(process_data_a("..#
 #..
-...", 10000), 5587);
+...", 10_000), 5587);
 }
 
 #[test]
