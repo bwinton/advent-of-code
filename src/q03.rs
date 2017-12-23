@@ -15,6 +15,8 @@ enum Direction {
   Down
 }
 
+// SpiralIter { len: 5, dir: Direction::Up, .. Default::default() }
+
 define_iterator!(SpiralIter (
     &curr: [i32; 2] = [0, 0],
     &dir: Direction = Direction::Left,
