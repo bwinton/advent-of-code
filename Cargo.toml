@@ -4,10 +4,13 @@ version = "0.1.0"
 authors = ["Blake Winton <bwinton@latte.ca>"]
 
 [dependencies]
-
-rust-crypto = "0.2.36"
-itertools = "0.5.6"
-regex = "0.1.80"
-lazy_static = "0.2.2"
 clap = "2.28.0"
+itertools = "0.5.6"
+lazy_static = "0.2.2"
 maplit = "1.0.0"
+regex = "0.1.80"
+rust-crypto = "0.2.36"
+
+[dependencies.nom]
+version = "3.2.1"
+features = ["verbose-errors"]
