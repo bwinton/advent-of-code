@@ -12,6 +12,7 @@ use clap::Arg;
 // #[macro_use] extern crate itertools;
 #[macro_use] extern crate lazy_static;
 #[macro_use] extern crate maplit;
+#[macro_use] extern crate nom;
 
 extern crate crypto;
 extern crate itertools;

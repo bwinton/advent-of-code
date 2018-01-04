@@ -3,8 +3,11 @@
 
 use day;
 
+use nom;
+use nom::alpha;
+use std::collections::HashMap;
+use std::str;
 use std::str::FromStr;
-use regex::Regex;
 
 static INPUT : &'static str = "Sue 1: cars: 9, akitas: 3, goldfish: 0
 Sue 2: akitas: 9, children: 3, samoyeds: 9
@@ -509,101 +512,122 @@ Sue 500: pomeranians: 10, cats: 3, vizslas: 5";
 
 #[derive(Debug)]
 struct AuntSue {
-  number: Option<u32>,
-  children: Option<u32>,
-  cats: Option<u32>,
-  samoyeds: Option<u32>,
-  pomeranians: Option<u32>,
-  akitas: Option<u32>,
-  vizslas: Option<u32>,
-  goldfish: Option<u32>,
-  trees: Option<u32>,
-  cars: Option<u32>,
-  perfumes: Option<u32>
-}
-
-impl FromStr for AuntSue {
-  type Err = ();
-
-  fn from_str(s: &str) -> Result<AuntSue, ()> {
-    lazy_static! {
-      static ref RE: Regex = Regex::new(r"^([A-Za-z]+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)$").unwrap();
-    }
-    let captures = RE.captures(s);
-    match captures {
-      Some(cap) => {
-        Ok(AuntSue{
-          name: cap.at(1).unwrap().to_string(),
-          capacity: cap.at(2).unwrap().parse().unwrap(),
-          durability: cap.at(3).unwrap().parse().unwrap(),
-          flavor: cap.at(4).unwrap().parse().unwrap(),
-          texture: cap.at(5).unwrap().parse().unwrap(),
-          calories: cap.at(6).unwrap().parse().unwrap(),
-        })
-      },
-      None => Err(())
-    }
-  }
+  name: Option<u32>,
+  features: HashMap<String, u32>
 }
 
 impl AuntSue {
-  fn matches(&self, other: &AuntSue) -> bool {
+  fn matches_a(&self, other: &AuntSue) -> bool {
     let mut rv = true;
+    for feature in other.features.keys() {
+      rv &= other.features[feature] == self.features[feature];
+    }
+    rv
+  }
 
-    if let Some(children) = other.children {
-      rv |= self.children == Some(children);
-    }
-    if let Some(cats) = other.cats {
-      rv |= self.cats == Some(cats);
-    }
-    if let Some(samoyeds) = other.samoyeds {
-      rv |= self.samoyeds == Some(samoyeds);
-    }
-    if let Some(pomeranians) = other.pomeranians {
-      rv |= self.pomeranians == Some(pomeranians);
-    }
-    if let Some(akitas) = other.akitas {
-      rv |= self.akitas == Some(akitas);
-    }
-    if let Some(vizslas) = other.vizslas {
-      rv |= self.vizslas == Some(vizslas);
-    }
-    if let Some(goldfish) = other.goldfish {
-      rv |= self.goldfish == Some(goldfish);
-    }
-    if let Some(trees) = other.trees {
-      rv |= self.trees == Some(trees);
-    }
-    if let Some(cars) = other.cars {
-      rv |= self.cars == Some(cars);
-    }
-    if let Some(perfumes) = other.perfumes {
-      rv |= self.perfumes == Some(perfumes);
-    }
 
+  fn matches_b(&self, other: &AuntSue) -> bool {
+    let mut rv = true;
+    for feature in other.features.keys() {
+      match feature.as_str() {
+        "cats" | "trees" => {
+          rv &= other.features[feature] > self.features[feature];
+        }
+        "pomeranians" | "goldfish" => {
+          rv &= other.features[feature] < self.features[feature];
+        }
+        _ => {
+          rv &= other.features[feature] == self.features[feature];
+        }
+      }
+    }
     rv
   }
 }
 
-fn process_data_a(_data: &str) -> i32 {
+named!(digits<&str, u32>, map_res!(
+  nom::digit,
+  u32::from_str
+));
+
+named!(aunt_name_parser<&str, u32>, do_parse!(
+  tag!("Sue ") >>
+  name: digits >>
+  tag!(": ") >>
+  (name)
+));
+
+named!(feature_parser<&str, (String, u32)>, do_parse!(
+  pair: separated_pair!(alpha, tag!(": "), digits) >>
+  (pair.0.to_owned(), pair.1)
+));
+
+named!(aunt_parser<&str, AuntSue>, complete!(do_parse!(
+  name: aunt_name_parser >>
+  features: separated_list_complete!(tag!(", "), feature_parser) >>
+  (AuntSue {
+    name: Some(name),
+    features: features.iter().cloned().collect()
+  }))
+));
+
+fn process_data_a(data: &str) -> u32 {
   let gifter = AuntSue {
-    number: None,
-    children: Some(3),
-    cats: Some(7),
-    samoyeds: Some(2),
-    pomeranians: Some(3),
-    akitas: Some(0),
-    vizslas: Some(0),
-    goldfish: Some(5),
-    trees: Some(3),
-    cars: Some(2),
-    perfumes: Some(1)
+    name: None,
+    features: hashmap!{
+      "children".to_string() => 3,
+      "cats".to_string() => 7,
+      "samoyeds".to_string() => 2,
+      "pomeranians".to_string() => 3,
+      "akitas".to_string() => 0,
+      "vizslas".to_string() => 0,
+      "goldfish".to_string() => 5,
+      "trees".to_string() => 3,
+      "cars".to_string() => 2,
+      "perfumes".to_string() => 1
+    }
   };
-  // println!("Gifter: {:?}, {}", gifter, gifter.matches(&gifter));
+  let mut aunts_sue = Vec::new();
+  for line in data.lines() {
+    let mut aunt_sue = aunt_parser(line).unwrap().1;
+    aunts_sue.push(aunt_sue);
+  }
+  for aunt_sue in aunts_sue {
+    if gifter.matches_a(&aunt_sue) {
+      return aunt_sue.name.unwrap();
+    }
+  }
   0
 }
 
-fn process_data_b(_data: &str) -> i32 {
+fn process_data_b(data: &str) -> u32 {
+  let gifter = AuntSue {
+    name: None,
+    features: hashmap!{
+      "children".to_string() => 3,
+      "cats".to_string() => 7,
+      "samoyeds".to_string() => 2,
+      "pomeranians".to_string() => 3,
+      "akitas".to_string() => 0,
+      "vizslas".to_string() => 0,
+      "goldfish".to_string() => 5,
+      "trees".to_string() => 3,
+      "cars".to_string() => 2,
+      "perfumes".to_string() => 1
+    }
+  };
+
+  let mut aunts_sue = Vec::new();
+  for line in data.lines() {
+    let mut aunt_sue = aunt_parser(line).unwrap().1;
+    aunts_sue.push(aunt_sue);
+  }
+  for aunt_sue in aunts_sue {
+    if gifter.matches_b(&aunt_sue) {
+      // println!("Found match: {:?}", aunt_sue);
+      return aunt_sue.name.unwrap();
+    }
+  }
   0
 }
 
@@ -632,10 +656,11 @@ impl day::Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a(""), 0);
+  // println!("{:?}", aunt_parser("Sue 1: cars: 9, akitas: 3, goldfish: 0"));
+  // assert_eq!(1, 0);
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b(""), 0);
+  // assert_eq!(process_data_b(""), 0);
 }
