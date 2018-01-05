@@ -2,6 +2,7 @@
 name = "adventofcode-2015"
 version = "0.1.0"
 authors = ["Blake Winton <bwinton@latte.ca>"]
+publish = false
 
 [dependencies]
 clap = "2.28.0"
