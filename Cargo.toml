@@ -5,11 +5,14 @@ authors = ["Blake Winton <bwinton@latte.ca>"]
 
 [dependencies]
 clap = "2.28.0"
-itertools = "0.5.6"
+itertools = "0.7.4"
 lazy_static = "0.2.2"
 maplit = "1.0.0"
+permutohedron = "0.2.4"
 regex = "0.1.80"
 rust-crypto = "0.2.36"
+serde = "1.0.23"
+serde_json = "1.0.8"
 
 [dependencies.nom]
 version = "3.2.1"
@@ -22,3 +25,7 @@ path = "src/2017/main.rs"
 [[bin]]
 name = "2016"
 path = "src/2016/main.rs"
+
+[[bin]]
+name = "2015"
+path = "src/2015/main.rs"
