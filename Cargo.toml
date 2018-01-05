@@ -1,5 +1,5 @@
 [package]
-name = "adventofcode-2017"
+name = "adventofcode"
 version = "0.1.0"
 authors = ["Blake Winton <bwinton@latte.ca>"]
 
@@ -14,3 +14,7 @@ rust-crypto = "0.2.36"
 [dependencies.nom]
 version = "3.2.1"
 features = ["verbose-errors"]
+
+[[bin]]
+name = "2017"
+path = "src/2017/main.rs"
