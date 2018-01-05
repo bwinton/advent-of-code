@@ -1,0 +1,246 @@
+//-----------------------------------------------------
+// Setup.
+
+use day;
+use crypto::md5::Md5;
+use crypto::digest::Digest;
+use std::collections::HashMap;
+use std::cmp::Ordering;
+use std::mem;
+use regex::Regex;
+
+// static INPUT : &'static str = "abc";
+static INPUT : &'static str = "zpqevtbw";
+
+#[derive(Debug)]
+#[derive(Eq)]
+#[derive(PartialEq)]
+enum Key {
+  Potential(usize),
+  Confirmed(usize, String)
+}
+
+impl Ord for Key {
+  fn cmp(&self, other: &Key) -> Ordering {
+    match *self {
+      Key::Potential(ref me) => {
+        match *other {
+          Key::Potential(ref them) => {
+            return me.cmp(&them);
+          },
+          Key::Confirmed(ref them, _) => {
+            return me.cmp(&them);
+          }
+        }
+      },
+      Key::Confirmed(ref me, _) => {
+        match *other {
+          Key::Potential(ref them) => {
+            return me.cmp(&them);
+          },
+          Key::Confirmed(ref them, _) => {
+            return me.cmp(&them);
+          }
+        }
+      }
+    }
+  }
+}
+
+impl PartialOrd for Key {
+  fn partial_cmp(&self, other: &Key) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
+type Keys = Vec<Key>;
+
+#[derive(Clone)]
+#[derive(Debug)]
+struct Quintuple {
+  key: String,
+  regex: Regex,
+  indices: Vec<usize>
+}
+
+impl Quintuple {
+  pub fn new(key: &String) -> Quintuple {
+    Quintuple {
+      key: key.to_string(),
+      regex: Regex::new(&key.repeat(5)).unwrap(),
+      indices: Vec::new()
+    }
+  }
+}
+
+type Quintuples = HashMap<String, Quintuple>;
+
+pub fn to_hex_string(bytes: &[u8; 16]) -> String {
+  let strs: Vec<String> = bytes.iter()
+                               .map(|b| format!("{:02x}", b))
+                               .collect();
+  strs.join("")
+}
+
+pub fn get_triple(input: &String) -> Option<String> {
+  lazy_static! {
+    static ref RE: Regex = Regex::new("(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}").unwrap();
+  }
+  match RE.captures(input) {
+    None => {
+      return None;
+    },
+    Some(key) => {
+      return Some(key[0].chars().next().unwrap().to_string());
+    }
+  }
+}
+
+fn add_quintuple(i: usize, key: String, quintuples: &mut Quintuples) {
+  let cloned_key = key.clone();
+  let quintuple = quintuples.entry(key.clone()).or_insert(Quintuple::new(&cloned_key));
+  quintuple.indices.push(i);
+}
+
+fn remove_keys(count: usize, keys: &mut Keys, quintuples: &mut Quintuples) {
+  quintuples.retain(|_, quintuple| {
+    quintuple.indices.retain(|i| {
+      if i + 1001 > count {
+        return true;
+      }
+      return false;
+    });
+    return quintuple.indices.len() > 0;
+  });
+  keys.retain(|key| {
+    match key {
+      &Key::Confirmed(_, _) => { return true },
+      &Key::Potential(i) => {
+        if i + 1001 >= count {
+          return true;
+        }
+        return false;
+      }
+    };
+  });
+}
+
+fn get_quintuple(input: &String, keys: &mut Keys, quintuples: &mut Quintuples, count: usize) -> usize {
+  let mut rv = 0;
+  for (key, quintuple) in &mut quintuples.clone() {
+    if quintuple.regex.is_match(input) {
+      let len = quintuple.indices.len();
+      for index in quintuple.indices.clone() {
+        if index == count {
+          continue;
+        }
+        let new_key = Key::Confirmed(index, input.clone());
+        let key_index = keys.binary_search(&new_key).unwrap();
+        mem::replace(&mut keys[key_index], new_key);
+      }
+      quintuple.indices.retain(|i| *i == count);
+
+      if quintuple.indices.len() == 0 {
+        quintuples.remove(key);
+      }
+      rv += len;
+    }
+  }
+  return rv;
+}
+
+fn is_winning(keys: &Keys) -> bool {
+  if keys.len() < 64 {
+    return false;
+  }
+  for key in &keys[0..64] {
+    match key {
+      &Key::Potential(_) => { return false ;},
+      _ => {}
+    }
+  }
+  return true;
+}
+
+
+//-----------------------------------------------------
+// Questions.
+
+pub struct Q;
+
+impl day::Day for Q {
+
+  fn number(&self) -> String {
+    return String::from("14");
+  }
+
+  fn a(&self) {
+    print!("{}A: ", self.number());
+
+    let mut keys: Keys = Vec::new();
+    let mut quintuples = HashMap::new();
+
+    let mut hasher = Md5::new();
+    let mut i: usize = 0;
+    while !is_winning(&keys) {
+    // while i < 818 {
+      hasher.input(INPUT.as_bytes());
+      hasher.input(i.to_string().as_bytes());
+      let mut output = [0; 16]; // An MD5 is 16 bytes
+      hasher.result(&mut output);
+      hasher.reset();
+      // to_hex_string(&output);
+      let out_string = to_hex_string(&output);
+      match get_triple(&out_string) {
+        None => {},
+        Some(triple) => {
+          keys.push(Key::Potential(i));
+          add_quintuple(i, triple, &mut quintuples);
+        }
+      }
+      remove_keys(i, &mut keys, &mut quintuples);
+      get_quintuple(&out_string, &mut keys, &mut quintuples, i);
+      i += 1;
+    }
+    println!("Keys:");
+    for key in &keys[0..64] {
+      println!(" {:?}", key);
+    }
+    println!("Result = {:?}", keys[63]);
+  }
+
+  fn b(&self) {
+    print!("{}B: ", self.number());
+
+    let mut keys: Keys = Vec::new();
+    let mut quintuples = HashMap::new();
+
+    let mut hasher = Md5::new();
+    let mut i: usize = 0;
+    while !is_winning(&keys) {
+      let mut out_string = INPUT.to_string() + &i.to_string();
+      for _ in 0..2017 {
+        hasher.input(out_string.as_bytes());
+        let mut output = [0; 16]; // An MD5 is 16 bytes
+        hasher.result(&mut output);
+        hasher.reset();
+        out_string = to_hex_string(&output);
+      }
+      match get_triple(&out_string) {
+        None => {},
+        Some(triple) => {
+          keys.push(Key::Potential(i));
+          add_quintuple(i, triple, &mut quintuples);
+        }
+      }
+      remove_keys(i, &mut keys, &mut quintuples);
+      get_quintuple(&out_string, &mut keys, &mut quintuples, i);
+      i += 1;
+    }
+    println!("Keys:");
+    for key in &keys[0..64] {
+      println!(" {:?}", key);
+    }
+    println!("Result = {:?}", keys[63]);
+  }
+}

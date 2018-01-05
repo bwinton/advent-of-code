@@ -18,3 +18,7 @@ features = ["verbose-errors"]
 [[bin]]
 name = "2017"
 path = "src/2017/main.rs"
+
+[[bin]]
+name = "2016"
+path = "src/2016/main.rs"
