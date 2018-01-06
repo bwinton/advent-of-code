@@ -220,20 +220,10 @@ impl Display {
   }
 
   fn on(&self) -> i32 {
-    // let mut rv = 0;
-    // for i in 0..ROWS {
-    //   for j in 0..COLS {
-    //     if self.cells[i][j] {
-    //       rv += 1;
-    //     }
-    //   }
-    // }
-    // println!("On, {} == {}", self.on, rv);
-    // return rv;
-    return self.on;
+    self.on
   }
 
-  fn run(&mut self, turn: Turn) {
+  fn run(&mut self, turn: &Turn) {
     // println!("{:?}", turn);
     match turn.kind.as_ref() {
       "rect" => {
@@ -248,23 +238,21 @@ impl Display {
       },
       "rotate column" => {
         let mut new = [false; ROWS];
-        for i in 0..ROWS {
+        for (i, cell) in new.iter_mut().enumerate().take(ROWS) {
           // println!("cell[{}][{}] from [{}][{}]", i, turn.arg1, (ROWS + i - turn.arg2) % ROWS, turn.arg1);
-          new[i] = self.cells[(ROWS + i - turn.arg2) % ROWS][turn.arg1];
+          *cell = self.cells[(ROWS + i - turn.arg2) % ROWS][turn.arg1];
         }
-        for i in 0..ROWS {
-          self.cells[i][turn.arg1] = new[i];
+        for (i, &row) in new.iter().enumerate().take(ROWS) {
+          self.cells[i][turn.arg1] = row;
         }
       },
       "rotate row" => {
         let mut new = [false; COLS];
-        for i in 0..COLS {
+        for (i, cell) in new.iter_mut().enumerate().take(COLS) {
           // println!("cell[{}][{}] from [{}][{}]", turn.arg1, i, turn.arg1, (COLS + i - turn.arg2) % COLS);
-          new[i] = self.cells[turn.arg1][(COLS + i - turn.arg2) % COLS];
+          *cell = self.cells[turn.arg1][(COLS + i - turn.arg2) % COLS];
         }
-        for i in 0..COLS {
-          self.cells[turn.arg1][i] = new[i];
-        }
+        self.cells[turn.arg1][..COLS].clone_from_slice(&new[..COLS]);
       },
       _ => {println!("Error!")},
     }
@@ -283,7 +271,7 @@ impl fmt::Debug for Display {
       }
       write!(formatter, "\n").unwrap();
     }
-    return Ok(());
+    Ok(())
   }
 }
 
@@ -325,8 +313,7 @@ impl FromStr for Turn {
         _ => {println!("Error!")},
       }
     }
-    return Ok(rv);
-    // on fail, return Err(());
+    Ok(rv)
   }
 }
 
@@ -338,7 +325,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("8");
+    String::from("8")
   }
 
   fn a(&self) {
@@ -347,7 +334,7 @@ impl day::Day for Q {
     // println!("{:?}", display);
     for line in INPUT.lines() {
       let turn : Turn = line.parse().unwrap();
-      display.run(turn);
+      display.run(&turn);
       // println!("{:?}", display);
     }
     println!("Result = {}", display.on());
@@ -358,7 +345,7 @@ impl day::Day for Q {
     let mut display = Display::new();
     for line in INPUT.lines() {
       let turn : Turn = line.parse().unwrap();
-      display.run(turn);
+      display.run(&turn);
     }
     println!("Result =");
     println!("{:?}", display);

@@ -24,7 +24,7 @@ struct Disc {
 
 impl Disc {
   fn is_valid(&self, time: usize) -> bool {
-    return (time + self.number + self.current) % self.positions == 0;
+    (time + self.number + self.current) % self.positions == 0
   }
 }
 
@@ -35,12 +35,12 @@ impl FromStr for Disc {
     let re: Regex = Regex::new(r"^Disc #([0-9]+) has ([0-9]+) positions; at time=0, it is at position ([0-9]+)\.$").unwrap();
     let captures = re.captures(s);
     match captures {
-      None => return Err(()),
+      None => Err(()),
       Some(cap) => {
         let number = cap.at(1).unwrap().parse().unwrap();
         let positions = cap.at(2).unwrap().parse().unwrap();
         let current = cap.at(3).unwrap().parse().unwrap();
-        return Ok(Disc{number: number, positions: positions, current: current});
+        Ok(Disc{number: number, positions: positions, current: current})
       }
     }
   }
@@ -55,7 +55,7 @@ fn get_result(input: &str) -> usize {
   let mut is_valid = false;
   let mut i : i32 = -1;
   while !is_valid {
-    i = i + 1;
+    i += 1;
     is_valid = true;
     for disc in state.clone() {
       is_valid &= disc.is_valid(i as usize);
@@ -64,7 +64,7 @@ fn get_result(input: &str) -> usize {
       }
     }
   }
-  return i as usize;
+  i as usize
 }
 
 //-----------------------------------------------------
@@ -74,7 +74,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("15");
+    String::from("15")
   }
 
   fn a(&self) {

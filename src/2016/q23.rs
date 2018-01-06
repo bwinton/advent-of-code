@@ -125,25 +125,18 @@ impl Instruction {
               Instruction::Increment(reg) => {
                 rv.instructions[index] = Instruction::Decrement(reg);
               }
-              Instruction::Decrement(reg) => {
+              Instruction::Decrement(reg) | Instruction::Toggle(reg) => {
                 rv.instructions[index] = Instruction::Increment(reg);
               }
-              Instruction::JumpLitLit(_test, _offset) => {
+              Instruction::JumpLitLit(_test, _offset) | Instruction::JumpRegLit(_test, _offset) => {
                 println!("GAAAAHHHH!!!!");
                 // rv.instructions[index] = Instruction::CopyLiteral(test, offset);
               }
               Instruction::JumpLitReg(test, offset) => {
                 rv.instructions[index] = Instruction::CopyLiteral(test, offset);
               }
-              Instruction::JumpRegLit(_reg_test, _reg_offset) => {
-                println!("GAAAAHHHH!!!!");
-                // rv.instructions[index] = Instruction::CopyRegister(reg_test, reg_offset);
-              }
               Instruction::JumpRegReg(reg_test, reg_offset) => {
                 rv.instructions[index] = Instruction::CopyRegister(reg_test, reg_offset);
-              }
-              Instruction::Toggle(reg) => {
-                rv.instructions[index] = Instruction::Increment(reg);
               }
             }
           }
@@ -151,7 +144,7 @@ impl Instruction {
         rv.pc += 1;
       }
     }
-    return rv;
+    rv
   }
 }
 
@@ -171,104 +164,68 @@ impl FromStr for Instruction {
       static ref TOGGLE_RE: Regex = Regex::new(r"^tgl ([a-z])$").unwrap();
     }
 
-    let copy_literal_captures = COPY_LITERAL_RE.captures(s);
-    match copy_literal_captures {
-      Some(cap) => {
-        return Ok(Instruction::CopyLiteral(
-          cap.at(1).unwrap().parse().unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = COPY_LITERAL_RE.captures(s) {
+      return Ok(Instruction::CopyLiteral(
+        cap.at(1).unwrap().parse().unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
-    let copy_register_captures = COPY_REGISTER_RE.captures(s);
-    match copy_register_captures {
-      Some(cap) => {
-        return Ok(Instruction::CopyRegister(
-          reg_index(cap.at(1)).unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = COPY_REGISTER_RE.captures(s) {
+      return Ok(Instruction::CopyRegister(
+        reg_index(cap.at(1)).unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
-    let increment_captures = INCREMENT_RE.captures(s);
-    match increment_captures {
-      Some(cap) => {
-        return Ok(Instruction::Increment(
-          reg_index(cap.at(1)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = INCREMENT_RE.captures(s) {
+      return Ok(Instruction::Increment(
+        reg_index(cap.at(1)).unwrap()
+      ));
     }
 
-    let decrement_captures = DECREMENT_RE.captures(s);
-    match decrement_captures {
-      Some(cap) => {
-        return Ok(Instruction::Decrement(
-          reg_index(cap.at(1)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = DECREMENT_RE.captures(s) {
+      return Ok(Instruction::Decrement(
+        reg_index(cap.at(1)).unwrap()
+      ));
     }
 
-    let jump_litlit_captures = JUMP_LITLIT_RE.captures(s);
-    match jump_litlit_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpLitLit(
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
+      return Ok(Instruction::JumpLitLit(
+        cap.at(1).unwrap().parse().unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    let jump_litreg_captures = JUMP_LITREG_RE.captures(s);
-    match jump_litreg_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpLitReg(
-          cap.at(1).unwrap().parse().unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = JUMP_LITREG_RE.captures(s) {
+      return Ok(Instruction::JumpLitReg(
+        cap.at(1).unwrap().parse().unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
-    let jump_reglit_captures = JUMP_REGLIT_RE.captures(s);
-    match jump_reglit_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpRegLit(
-          reg_index(cap.at(1)).unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
+      return Ok(Instruction::JumpRegLit(
+        reg_index(cap.at(1)).unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    let jump_regreg_captures = JUMP_REGREG_RE.captures(s);
-    match jump_regreg_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpRegReg(
-          reg_index(cap.at(1)).unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = JUMP_REGREG_RE.captures(s) {
+      return Ok(Instruction::JumpRegReg(
+        reg_index(cap.at(1)).unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
-    let toggle_captures = TOGGLE_RE.captures(s);
-    match toggle_captures {
-      Some(cap) => {
-        return Ok(Instruction::Toggle(
-          reg_index(cap.at(1)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = TOGGLE_RE.captures(s) {
+      return Ok(Instruction::Toggle(
+        reg_index(cap.at(1)).unwrap()
+      ));
     }
 
     println!("Unknown instruction! '{}'", s);
-    return Err(());
+    Err(())
   }
 }
 
@@ -294,9 +251,8 @@ fn reg_valid(reg: i32, state: &State) -> bool {
   reg >= 0 && reg < state.registers.len() as i32
 }
 
-fn execute(state: State) -> State {
-  let instruction = &state.instructions[state.pc as usize];
-  return instruction.execute(&state);
+fn execute(state: &State) -> State {
+  state.instructions[state.pc as usize].execute(state)
 }
 
 //-----------------------------------------------------
@@ -306,7 +262,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("23");
+    String::from("23")
   }
 
   fn a(&self) {
@@ -319,7 +275,7 @@ impl day::Day for Q {
     let mut state = State{registers: [7,0,0,0], pc: 0, instructions: instructions};
 
     while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
-      state = execute(state);
+      state = execute(&state);
     }
 
     let result = state.registers[0];
@@ -335,7 +291,7 @@ impl day::Day for Q {
     }
     let mut state = State{registers: [12,0,0,0], pc: 0, instructions: instructions};
     while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
-      state = execute(state);
+      state = execute(&state);
     }
 
     let result = state.registers[0];

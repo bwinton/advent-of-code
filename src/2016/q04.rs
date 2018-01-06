@@ -1094,7 +1094,7 @@ impl Room {
         let pos = chars.iter().position(|&r| r.1 == char);
         match pos {
           None => chars.push((-1, char)),
-          Some(i) => chars.get_mut(i).unwrap().0 -= 1
+          Some(i) => chars[i].0 -= 1
         }
       }
     }
@@ -1102,7 +1102,7 @@ impl Room {
     chars.truncate(5);
     let data = String::from_iter(chars.iter().map(|x| x.1));
     // println!("{}.{} => {:?}    {}", self.name, self.checksum, data, self.checksum == data);
-    return self.checksum == data;
+    self.checksum == data
   }
 
   fn decrypt(&self) -> String {
@@ -1120,7 +1120,7 @@ impl Room {
         .nth(usize::from(shift))
         .unwrap_or(&c))
       .collect();
-    return name.replace('-', " ");
+    name.replace('-', " ")
   }
 }
 
@@ -1137,8 +1137,8 @@ impl FromStr for Room {
       rv.sector = cap.at(2).unwrap_or("-1").parse().unwrap();
       rv.checksum = String::from(cap.at(3).unwrap_or(""));
     }
-    return Ok(rv);
-    // on fail, return Err(());
+    Ok(rv)
+    // on fail, Err(())
   }
 }
 
@@ -1150,7 +1150,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("4");
+    String::from("4")
   }
 
   fn a(&self) {

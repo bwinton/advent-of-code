@@ -10,7 +10,7 @@ use std::str::FromStr;
 // static LENGTH_A : usize = 10;
 static INPUT : &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
 static LENGTH_A : usize = 40;
-static LENGTH_B : usize = 400000;
+static LENGTH_B : usize = 400_000;
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -29,15 +29,16 @@ impl FromStr for Row {
         safe_count += 1;
       }
     }
-    return Ok(Row{data: s.to_string(), safe_count: safe_count});
+    Ok(Row{data: s.to_string(), safe_count: safe_count})
   }
 }
 
 fn is_a_trap(cells: &str) -> char {
   if cells == "^^." || cells == ".^^" || cells == "^.." || cells == "..^" {
-    return '^';
+    '^'
+  } else {
+    '.'
   }
-  return '.';
 }
 
 fn get_next_row(row: &Row) -> Row {
@@ -55,7 +56,7 @@ fn get_next_row(row: &Row) -> Row {
     data.push(curr);
   }
 
-  return Row{data: data.into_iter().collect(), safe_count: safe_count}
+  Row { data: data.into_iter().collect(), safe_count: safe_count }
 }
 
 fn get_result(length: usize) -> usize {
@@ -70,7 +71,7 @@ fn get_result(length: usize) -> usize {
   for row in rows {
     result += row.safe_count;
   }
-  return result;
+  result
 }
 
 //-----------------------------------------------------
@@ -80,7 +81,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("18");
+    String::from("18")
   }
 
   fn a(&self) {

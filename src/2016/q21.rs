@@ -131,8 +131,8 @@ enum Instruction {
 }
 
 impl Instruction {
-  fn execute(&self, state: &String) -> String {
-    let mut rv = state.clone();
+  fn execute(&self, state: &str) -> String {
+    let mut rv = state.to_string();
     match (*self).clone() {
       Instruction::SwapPosition(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
@@ -188,8 +188,8 @@ impl Instruction {
     rv
   }
 
-  fn unexecute(&self, state: &String) -> String {
-    let mut rv = state.clone();
+  fn unexecute(&self, state: &str) -> String {
+    let mut rv = state.to_string();
     match (*self).clone() {
       Instruction::SwapPosition(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
@@ -223,12 +223,7 @@ impl Instruction {
         if new_index == 0 {
           new_index = 8;
         }
-        let mut index;
-        if new_index % 2 == 1 {
-          index = (new_index + 1) / 2;
-        } else {
-          index = 5 + new_index / 2;
-        }
+        let mut index = if new_index % 2 == 1 { (new_index + 1) / 2 } else { 5 + new_index / 2 };
         index %= data.len();
         temp.extend_from_slice(&data[index..]);
         temp.extend_from_slice(&data[..index]);
@@ -264,81 +259,53 @@ impl FromStr for Instruction {
       static ref MOVE_RE: Regex = Regex::new("move position ([0-9]+) to position ([0-9]+)").unwrap();
     }
 
-    let swap_position_captures = SWAP_POSITION_RE.captures(s);
-    match swap_position_captures {
-      Some(cap) => {
-        return Ok(Instruction::SwapPosition(
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = SWAP_POSITION_RE.captures(s) {
+      return Ok(Instruction::SwapPosition(
+        cap.at(1).unwrap().parse().unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    let swap_letter_captures = SWAP_LETTER_RE.captures(s);
-    match swap_letter_captures {
-      Some(cap) => {
-        return Ok(Instruction::SwapLetter(
-          cap.at(1).unwrap().to_string(),
-          cap.at(2).unwrap().to_string()
-        ));
-      },
-      None => {}
+    if let Some(cap) = SWAP_LETTER_RE.captures(s) {
+      return Ok(Instruction::SwapLetter(
+        cap.at(1).unwrap().to_string(),
+        cap.at(2).unwrap().to_string()
+      ));
     }
 
-    let rotate_left_captures = ROTATE_LEFT_RE.captures(s);
-    match rotate_left_captures {
-      Some(cap) => {
-        return Ok(Instruction::RotateLeft(
-          cap.at(1).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = ROTATE_LEFT_RE.captures(s) {
+      return Ok(Instruction::RotateLeft(
+        cap.at(1).unwrap().parse().unwrap()
+      ));
     }
 
-    let rotate_right_captures = ROTATE_RIGHT_RE.captures(s);
-    match rotate_right_captures {
-      Some(cap) => {
-        return Ok(Instruction::RotateRight(
-          cap.at(1).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = ROTATE_RIGHT_RE.captures(s) {
+      return Ok(Instruction::RotateRight(
+        cap.at(1).unwrap().parse().unwrap()
+      ));
     }
 
-    let rotate_letter_captures = ROTATE_LETTER_RE.captures(s);
-    match rotate_letter_captures {
-      Some(cap) => {
-        return Ok(Instruction::RotateLetter(
-          cap.at(1).unwrap().to_string()
-        ));
-      },
-      None => {}
+    if let Some(cap) = ROTATE_LETTER_RE.captures(s) {
+      return Ok(Instruction::RotateLetter(
+        cap.at(1).unwrap().to_string()
+      ));
     }
 
-    let reverse_captures = REVERSE_RE.captures(s);
-    match reverse_captures {
-      Some(cap) => {
-        return Ok(Instruction::Reverse(
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = REVERSE_RE.captures(s) {
+      return Ok(Instruction::Reverse(
+        cap.at(1).unwrap().parse().unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    let move_captures = MOVE_RE.captures(s);
-    match move_captures {
-      Some(cap) => {
-        return Ok(Instruction::Move(
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = MOVE_RE.captures(s) {
+      return Ok(Instruction::Move(
+        cap.at(1).unwrap().parse().unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    return Err(());
+    Err(())
   }
 }
 
@@ -349,7 +316,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("21");
+    String::from("21")
   }
 
   fn a(&self) {

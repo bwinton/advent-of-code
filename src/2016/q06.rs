@@ -624,7 +624,7 @@ fn get_most_common(frequencies : Vec<HashMap<char, i32>>) -> String {
     count.sort_by(|a, b| b.1.cmp(a.1));
     result.push(*count[0].0);
   }
-  return result.into_iter().collect();
+  result.into_iter().collect()
 }
 
 fn get_least_common(frequencies : Vec<HashMap<char, i32>>) -> String {
@@ -634,7 +634,7 @@ fn get_least_common(frequencies : Vec<HashMap<char, i32>>) -> String {
     count.sort_by(|a, b| a.1.cmp(b.1));
     result.push(*count[0].0);
   }
-  return result.into_iter().collect();
+  result.into_iter().collect()
 }
 
 //-----------------------------------------------------
@@ -644,7 +644,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("6");
+    String::from("6")
   }
 
   fn a(&self) {
@@ -656,10 +656,10 @@ impl day::Day for Q {
           frequencies.push(HashMap::<char, i32>::new().clone())
         }
       }
-      for i in 0..line.len() {
+      for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
         let curr = line.chars().nth(i).unwrap();
-        let freq = frequencies.get_mut(i).unwrap().entry(curr).or_insert(0);
-        *freq += 1;
+        let value = freq.entry(curr).or_insert(0);
+        *value += 1;
       }
     }
     let result = get_most_common(frequencies);
@@ -675,10 +675,10 @@ impl day::Day for Q {
           frequencies.push(HashMap::<char, i32>::new().clone())
         }
       }
-      for i in 0..line.len() {
+      for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
         let curr = line.chars().nth(i).unwrap();
-        let freq = frequencies.get_mut(i).unwrap().entry(curr).or_insert(0);
-        *freq += 1;
+        let value = freq.entry(curr).or_insert(0);
+        *value += 1;
       }
     }
     let result = get_least_common(frequencies);

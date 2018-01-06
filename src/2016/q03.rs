@@ -1922,9 +1922,8 @@ static INPUT : &'static str = "  541  588  421
 // 202 402 602
 // 203 403 603";
 
-fn parse_line(line: String) -> Vec<u32> {
-  let data = line.split_whitespace().map(|n| n.parse().expect("Wanted a number")).collect::<Vec<u32>>();
-  return data;
+fn parse_line(line: &str) -> Vec<u32> {
+  line.split_whitespace().map(|n| n.parse().expect("Wanted a number")).collect::<Vec<u32>>()
 }
 
 
@@ -1935,7 +1934,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("3");
+    String::from("3")
   }
 
   fn a(&self) {
@@ -1946,11 +1945,11 @@ impl day::Day for Q {
       data.sort();
       let goal = data.pop().unwrap();
       let total = data.iter().sum::<u32>();
-      return goal < total;
+      goal < total
     }
 
     for line in INPUT.lines() {
-      let mut data = parse_line(String::from(line));
+      let mut data = parse_line(line);
       if test_data(&mut data) {
         possible += 1;
       }
@@ -1966,7 +1965,7 @@ impl day::Day for Q {
       data.sort();
       let goal = data.pop().unwrap();
       let total = data.iter().sum::<u32>();
-      return goal < total;
+      goal < total
     }
 
     fn handle_data(current : &mut Vec<Vec<u32>>) -> u32 {
@@ -1979,13 +1978,13 @@ impl day::Day for Q {
       }
       // println!("{:?}, {}", current, possible);
       current.clear();
-      return possible;
+      possible
     }
 
     let mut current : Vec<Vec<u32>> = Vec::new();
 
     for line in INPUT.lines() {
-      let data = parse_line(String::from(line));
+      let data = parse_line(line);
       current.push(data);
       if current.len() == 3 {
         possible += handle_data(&mut current)

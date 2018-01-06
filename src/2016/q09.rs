@@ -41,7 +41,7 @@ fn decompress(line: &str) -> String {
     }
   }
   // println!(" => {}", rv);
-  return rv;
+  rv
 }
 
 fn double_decompress(line: &str) -> String {
@@ -71,7 +71,7 @@ fn double_decompress(line: &str) -> String {
     }
   }
   // println!(" => {}", rv);
-  return rv;
+  rv
 }
 //-----------------------------------------------------
 // Questions.
@@ -80,7 +80,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("9");
+    String::from("9")
   }
 
   fn a(&self) {

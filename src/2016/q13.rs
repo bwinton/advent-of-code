@@ -38,9 +38,10 @@ impl Ord for State {
   fn cmp(&self, other: &State) -> Ordering {
     let move_cmp = (-self.moves).cmp(&-other.moves);
     if move_cmp == Ordering::Equal {
-      return self.dist.cmp(&other.dist);
+      self.dist.cmp(&other.dist)
+    } else {
+      move_cmp
     }
-    move_cmp
   }
 }
 
@@ -60,13 +61,13 @@ fn cell_is_wall(x: i32, y: i32) -> bool {
   let mut number = x*x + 3*x + 2*x*y + y + y*y + INPUT_NUMBER;
   let mut count = 0;
   while number != 0 {
-    number = number & (number-1);
+    number &= number - 1;
     count += 1;
   }
   count % 2 == 1
 }
 
-fn get_next_states(current: &State, seen: &Vec<State>) -> Vec<State> {
+fn get_next_states(current: &State, seen: &[State]) -> Vec<State> {
   let mut rv = Vec::new();
 
   rv.push(State::new(current.x + 1, current.y, current.moves + 1));
@@ -80,11 +81,11 @@ fn get_next_states(current: &State, seen: &Vec<State>) -> Vec<State> {
 
   let mut temp = seen.to_vec();
   rv.retain(|item| {
-    if !temp.contains(&item) {
+    let missing = !temp.contains(item);
+    if missing {
       temp.push(item.clone());
-      return true;
     }
-    return false;
+    missing
   });
 
   rv
@@ -97,12 +98,12 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("13");
+    String::from("13")
   }
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    println!("");
+    println!();
     let mut result = 0;
 
     let mut next = BinaryHeap::new();
@@ -110,7 +111,7 @@ impl day::Day for Q {
     let initial_state = State::new(1, 1, 0);
     next.push(initial_state);
 
-    while next.len() > 0 {
+    while !next.is_empty() {
       let current = next.pop().unwrap();
 
       if current.x == INPUT_TARGET_X && current.y == INPUT_TARGET_Y {
@@ -144,7 +145,7 @@ impl day::Day for Q {
     let initial_state = State::new(1, 1, 0);
     next.push(initial_state);
 
-    while next.len() > 0 {
+    while !next.is_empty() {
       let current = next.remove(0);
 
       if current.moves > 50 {

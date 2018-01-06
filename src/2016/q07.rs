@@ -2020,12 +2020,12 @@ pub struct Q;
 
 fn is_abba(line: &str) -> bool {
   let chars : Vec<char> = line.chars().collect();
-  for i in 0..chars.len()-3 {
-    if chars[i] == chars[i+3] && chars[i+1] == chars[i+2] && chars[i] != chars[i+1] {
+  for (i, &value) in chars.iter().take(chars.len()-3).enumerate() {
+    if value == chars[i+3] && chars[i+1] == chars[i+2] && value != chars[i+1] {
       return true;
     }
   }
-  return false;
+  false
 }
 
 fn is_tls(line: &str) -> bool {
@@ -2038,25 +2038,22 @@ fn is_tls(line: &str) -> bool {
     }
   }
   let non_hypernet = HYPERNET.replace_all(line, "|");
-  if is_abba(&non_hypernet) {
-    return true;
-  }
-  return false;
+  is_abba(&non_hypernet)
 }
 
 fn get_babs(line: &str) -> Vec<String> {
   let chars : Vec<char> = line.chars().collect();
   let mut rv : Vec<String> = Vec::new();
-  for i in 0..chars.len()-2 {
-    if chars[i] == chars[i+2] && chars[i] != chars[i+1] {
+  for (i, &value) in chars.iter().take(chars.len()-2).enumerate() {
+    if value == chars[i+2] && value != chars[i+1] {
       let mut bab = String::new();
       bab.push(chars[i+1]);
-      bab.push(chars[i]);
+      bab.push(value);
       bab.push(chars[i+1]);
       rv.push(bab.clone());
     }
   }
-  return rv;
+  rv
 }
 
 fn is_ssl(line: &str) -> bool {
@@ -2072,12 +2069,12 @@ fn is_ssl(line: &str) -> bool {
       }
     }
   }
-  return false;
+  false
 }
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("7");
+    String::from("7")
   }
 
   fn a(&self) {

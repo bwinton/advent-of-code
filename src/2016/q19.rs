@@ -4,7 +4,7 @@
 use day;
 
 // static INPUT : usize = 5;
-static INPUT : usize = 3014603;
+static INPUT : usize = 3_014_603;
 
 fn get_result_a() -> usize {
   let mut n = 2;
@@ -24,7 +24,7 @@ fn get_result_b() -> usize {
   let mut m = 0;
   if l > n / 3  {
     m = l - n / 3;
-    l = l - m;
+    l -= m;
   }
 
   l + 2 * m
@@ -37,7 +37,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("19");
+    String::from("19")
   }
 
   fn a(&self) {

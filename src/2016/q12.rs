@@ -47,7 +47,7 @@ enum Instruction {
 }
 
 impl Instruction {
-  fn execute(&self, state: State) -> State {
+  fn execute(&self, state: &State) -> State {
     let mut rv = state.clone();
     match (*self).clone() {
       Instruction::CopyLiteral(lit, reg) => {
@@ -82,7 +82,7 @@ impl Instruction {
       }
     }
     // println!("{:?} {:?}", self, rv);
-    return rv;
+    rv
   }
 }
 
@@ -91,76 +91,52 @@ impl FromStr for Instruction {
 
   fn from_str(s: &str) -> Result<Instruction, ()> {
     let copy_literal_re: Regex = Regex::new(r"^cpy (-?[0-9]+) ([a-z])$").unwrap();
-    let copy_literal_captures = copy_literal_re.captures(s);
-    match copy_literal_captures {
-      Some(cap) => {
-        return Ok(Instruction::CopyLiteral(
-          cap.at(1).unwrap().parse().unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = copy_literal_re.captures(s) {
+      return Ok(Instruction::CopyLiteral(
+        cap.at(1).unwrap().parse().unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
     let copy_register_re: Regex = Regex::new(r"^cpy ([a-z]) ([a-z])$").unwrap();
-    let copy_register_captures = copy_register_re.captures(s);
-    match copy_register_captures {
-      Some(cap) => {
-        return Ok(Instruction::CopyRegister(
-          reg_index(cap.at(1)).unwrap(),
-          reg_index(cap.at(2)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = copy_register_re.captures(s) {
+      return Ok(Instruction::CopyRegister(
+        reg_index(cap.at(1)).unwrap(),
+        reg_index(cap.at(2)).unwrap()
+      ));
     }
 
     let increment_re: Regex = Regex::new(r"^inc ([a-z])$").unwrap();
-    let increment_captures = increment_re.captures(s);
-    match increment_captures {
-      Some(cap) => {
-        return Ok(Instruction::Increment(
-          reg_index(cap.at(1)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = increment_re.captures(s) {
+      return Ok(Instruction::Increment(
+        reg_index(cap.at(1)).unwrap()
+      ));
     }
 
     let decrement_re: Regex = Regex::new(r"^dec ([a-z])$").unwrap();
-    let decrement_captures = decrement_re.captures(s);
-    match decrement_captures {
-      Some(cap) => {
-        return Ok(Instruction::Decrement(
-          reg_index(cap.at(1)).unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = decrement_re.captures(s) {
+      return Ok(Instruction::Decrement(
+        reg_index(cap.at(1)).unwrap()
+      ));
     }
 
     let jump_literal_re: Regex = Regex::new(r"^jnz (-?[0-9]+) (-?[0-9]+)$").unwrap();
-    let jump_literal_captures = jump_literal_re.captures(s);
-    match jump_literal_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpLiteral(
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = jump_literal_re.captures(s) {
+      return Ok(Instruction::JumpLiteral(
+        cap.at(1).unwrap().parse().unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
     let jump_register_re: Regex = Regex::new(r"^jnz ([a-z]) (-?[0-9]+)$").unwrap();
-    let jump_register_captures = jump_register_re.captures(s);
-    match jump_register_captures {
-      Some(cap) => {
-        return Ok(Instruction::JumpRegister(
-          reg_index(cap.at(1)).unwrap(),
-          cap.at(2).unwrap().parse().unwrap()
-        ));
-      },
-      None => {}
+    if let Some(cap) = jump_register_re.captures(s) {
+      return Ok(Instruction::JumpRegister(
+        reg_index(cap.at(1)).unwrap(),
+        cap.at(2).unwrap().parse().unwrap()
+      ));
     }
 
-    return Err(());
+    Err(())
   }
 }
 
@@ -181,9 +157,8 @@ fn reg_index(s: Option<&str>) -> Option<usize> {
   }
 }
 
-fn execute(state: State, instructions: &Vec<Instruction>) -> State {
-  let instruction = &instructions[state.pc as usize];
-  return instruction.execute(state);
+fn execute(state: &State, instructions: &[Instruction]) -> State {
+  instructions[state.pc as usize].execute(state)
 }
 
 //-----------------------------------------------------
@@ -193,7 +168,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("12");
+    String::from("12")
   }
 
   fn a(&self) {
@@ -206,7 +181,7 @@ impl day::Day for Q {
     let mut state = State{registers: [0,0,0,0], pc: 0};
 
     while 0 <= state.pc && state.pc < instructions.len() as i32 {
-      state = execute(state, &instructions);
+      state = execute(&state, &instructions);
     }
 
     let result = state.registers[0];
@@ -223,7 +198,7 @@ impl day::Day for Q {
     let mut state = State{registers: [0,0,1,0], pc: 0};
 
     while 0 <= state.pc && state.pc < instructions.len() as i32 {
-      state = execute(state, &instructions);
+      state = execute(&state, &instructions);
     }
 
     let result = state.registers[0];

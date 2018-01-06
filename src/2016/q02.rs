@@ -15,39 +15,40 @@ URDLUDUDLULURUDRLUDLUDLRLRLLDDDDDLURURUURLRDUDLRRUUDUURDURUULDRRRDDDLDUURRRDLRUL
 
 type Key = [usize; 2];
 type Keypad = Vec<Vec<char>>;
+type KeypadRef<'a> = &'a [Vec<char>];
 
 #[derive(Debug)]
 enum Direction {
   Up, Left, Down, Right
 }
 
-fn get(keypad: &Keypad, key: Key) -> char {
-  return keypad[key[0]][key[1]];
+fn get(keypad: KeypadRef, key: Key) -> char {
+  keypad[key[0]][key[1]]
 }
 
 
 impl Direction {
-  fn shift(&self, key: Key, keypad: &Keypad) -> Key {
+  fn shift(&self, key: Key, keypad: KeypadRef) -> Key {
     match *self {
       Direction::Up => if get(keypad, [key[0]-1, key[1]]) == ' ' {
-        return key;
+        key
       } else {
-        return [key[0]-1, key[1]];
+        [key[0]-1, key[1]]
       },
       Direction::Left => if get(keypad, [key[0], key[1]-1]) == ' ' {
-        return key;
+        key
       } else {
-        return [key[0], key[1]-1];
+        [key[0], key[1]-1]
       },
       Direction::Down => if get(keypad, [key[0]+1, key[1]]) == ' ' {
-        return key;
+        key
       } else {
-        return [key[0]+1, key[1]];
+        [key[0]+1, key[1]]
       },
       Direction::Right => if get(keypad, [key[0], key[1]+1]) == ' ' {
-        return key;
+        key
       } else {
-        return [key[0], key[1]+1];
+        [key[0], key[1]+1]
       },
     }
   }
@@ -68,13 +69,13 @@ impl FromStr for Direction {
   }
 }
 
-fn handle_direction(key: Key, keypad: &Keypad, next: char) ->Key {
+fn handle_direction(key: Key, keypad: KeypadRef, next: char) ->Key {
   let direction: Direction = next.to_string().parse().unwrap();
   // println!("{:?}, {:?}", direction, direction.shift(key));
-  return direction.shift(key, keypad);
+  direction.shift(key, keypad)
 }
 
-fn parse_line(key: &mut Key, keypad: &Keypad, line: String) {
+fn parse_line(key: &mut Key, keypad: KeypadRef, line: &str) {
   for direction in line.chars() {
     *key = handle_direction(*key, keypad, direction);
   }
@@ -88,7 +89,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("2");
+    String::from("2")
   }
 
   fn a(&self) {
@@ -105,9 +106,9 @@ impl day::Day for Q {
 
     print!("Result = ");
     for line in INPUT.lines() {
-      parse_line(&mut key, &keypad, String::from(line));
+      parse_line(&mut key, &keypad, line);
     }
-    println!("");
+    println!();
   }
 
   fn b(&self) {
@@ -127,8 +128,8 @@ impl day::Day for Q {
 
     print!("Result = ");
     for line in INPUT.lines() {
-      parse_line(&mut key, &keypad, String::from(line));
+      parse_line(&mut key, &keypad, line);
     }
-    println!("");
+    println!();
   }
 }

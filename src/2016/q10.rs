@@ -256,21 +256,14 @@ impl FromStr for Value {
 
   fn from_str(s: &str) -> Result<Value, ()> {
     let re: Regex = Regex::new(r"^value (\d+) goes to bot (\d+)$").unwrap();
-    let mut rv = Value{number: -1, bot: -1};
-    let cap = re.captures(s);
-    match cap {
-      None => return Err(()),
-      Some(x) => {
-        rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
-        rv.bot = x.at(2).unwrap_or("").parse().unwrap();
-      }
+    let mut rv = Value{ number: -1, bot: -1 };
+    if let Some(x) = re.captures(s) {
+      rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
+      rv.bot = x.at(2).unwrap_or("").parse().unwrap();
+      Ok(rv)
+    } else {
+      Err(())
     }
-
-    if rv.number == -1 {
-      return Err(());
-    }
-    return Ok(rv);
-
   }
 }
 
@@ -295,7 +288,7 @@ impl FromStr for Destination {
     } else if s.starts_with("output") {
       rv = Destination::Output(cap.unwrap().at(2).unwrap_or("-1").parse().unwrap());
     }
-    return Ok(rv);
+    Ok(rv)
   }
 }
 
@@ -315,7 +308,7 @@ impl Bot {
     match self.first {
       None => {
         self.first = Some(value);
-        return false;
+        false
       }
       Some(value_one) => {
         if value > value_one {
@@ -324,7 +317,7 @@ impl Bot {
           self.second = self.first;
           self.first = Some(value);
         }
-        return true;
+        true
       }
     }
   }
@@ -365,19 +358,19 @@ impl Bot {
         rv.insert(number, self.second.unwrap());
       }
     }
-    return rv;
+    rv
   }
 }
 
 impl Clone for Bot {
   fn clone(&self) -> Self {
-    return Bot{
+    Bot {
       number: self.number,
       first: self.first,
       second: self.second,
       low_dest: self.low_dest.clone(),
       high_dest: self.high_dest.clone()
-    };
+    }
   }
 
   fn clone_from(&mut self, source: &Self) {
@@ -409,9 +402,10 @@ impl FromStr for Bot {
     }
 
     if rv.number == -1 {
-      return Err(());
+      Err(())
+    } else {
+      Ok(rv)
     }
-    return Ok(rv);
   }
 }
 
@@ -423,7 +417,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("10");
+    String::from("10")
   }
 
   fn a(&self) {
@@ -496,11 +490,8 @@ impl day::Day for Q {
       bots.insert(bot.number, bot);
     }
     // println!("\n  O:{:?}", outputs);
-    let result = outputs.get(&0).unwrap() * outputs.get(&1).unwrap() * outputs.get(&2).unwrap();
+    let result = outputs[&0] * outputs[&1] * outputs[&2];
     println!("Result = {:?}*{:?}*{:?} = {:?}",
-      outputs.get(&0).unwrap(),
-      outputs.get(&1).unwrap(),
-      outputs.get(&2).unwrap(),
-      result);
+      outputs[&0], outputs[&1], outputs[&2], result);
   }
 }

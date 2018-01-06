@@ -8,9 +8,9 @@ use std::iter::FromIterator;
 // static LENGTH_A : usize = 20;
 static INPUT : &'static str = "10111100110001111";
 static LENGTH_A : usize = 272;
-static LENGTH_B : usize = 35651584;
+static LENGTH_B : usize = 35_651_584;
 
-fn get_checksum(input: &String) -> String {
+fn get_checksum(input: &str) -> String {
   let mut rv = Vec::from_iter(input.chars());
   while rv.len() % 2 == 0 {
     let mut new = Vec::new();
@@ -23,10 +23,10 @@ fn get_checksum(input: &String) -> String {
     }
     rv = new;
   }
-  return rv.into_iter().collect();
+  rv.into_iter().collect()
 }
 
-fn dragon(input: &String) -> String {
+fn dragon(input: &str) -> String {
   let mut rv = String::from("0");
   let temp = input.chars().rev().map(|c| {
     match c {
@@ -35,7 +35,7 @@ fn dragon(input: &String) -> String {
     }
   }).collect::<String>();
   rv.push_str(&temp);
-  return rv;
+  rv
 }
 
 fn get_result(input: &str, length: usize) -> String {
@@ -45,7 +45,7 @@ fn get_result(input: &str, length: usize) -> String {
     data.push_str(&extra);
   }
   data = data[0..length].to_string();
-  return get_checksum(&data);
+  get_checksum(&data)
 }
 
 //-----------------------------------------------------
@@ -55,7 +55,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("16");
+    String::from("16")
   }
 
   fn a(&self) {

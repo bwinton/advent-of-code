@@ -36,20 +36,20 @@ impl Ord for Item {
       Item::Generator(ref me) => {
         match *other {
           Item::Generator(ref them) => {
-            return me.cmp(&them);
+            me.cmp(them)
           },
           Item::Microchip(ref _them) => {
-            return Ordering::Less;
+            Ordering::Less
           }
         }
       },
       Item::Microchip(ref me) => {
         match *other {
           Item::Generator(ref _them) => {
-            return Ordering::Greater;
+            Ordering::Greater
           },
           Item::Microchip(ref them) => {
-            return me.cmp(&them);
+            me.cmp(them)
           }
         }
       }
@@ -68,23 +68,16 @@ impl FromStr for Item {
 
   fn from_str(s: &str) -> Result<Item, ()> {
     let gen_re: Regex = Regex::new(r"^an? ([a-z]+) generator$").unwrap();
-    let gen_captures = gen_re.captures(s);
-    match gen_captures {
-      Some(cap) => {
-        return Ok(Item::Generator(String::from(cap.at(1).unwrap_or(""))));
-      },
-      None => {}
+    if let Some(cap) = gen_re.captures(s) {
+      return Ok(Item::Generator(String::from(cap.at(1).unwrap_or(""))));
     }
 
     let chip_re: Regex = Regex::new(r"^an? ([a-z]+)-compatible microchip$").unwrap();
-    let chip_captures = chip_re.captures(s);
-    match chip_captures {
-      Some(cap) => {
-        return Ok(Item::Microchip(String::from(cap.at(1).unwrap_or(""))));
-      },
-      None => {}
+    if let Some(cap) = chip_re.captures(s) {
+      return Ok(Item::Microchip(String::from(cap.at(1).unwrap_or(""))));
     }
-    return Err(());
+
+    Err(())
   }
 }
 
@@ -167,45 +160,37 @@ impl FromStr for Floor {
   fn from_str(s: &str) -> Result<Floor, ()> {
     let re: Regex = Regex::new(r"^The ([a-z]*) floor contains (.*)\.$").unwrap();
     let mut rv = Floor{number: -1, items: Vec::new(), desc: FloorDesc{pairs: 0, generators: 0, microchips: 0}};
-    let captures = re.captures(s);
-    match captures {
-      None => return Err(()),
-      Some(cap) => {
-        match cap.at(1).unwrap_or("").as_ref() {
-          "first" => {rv.number = 1},
-          "second" => {rv.number = 2},
-          "third" => {rv.number = 3},
-          "fourth" => {rv.number = 4},
-          _ => {return Err(())}
-        }
-        let items = cap.at(2).unwrap_or("");
-        let item_re: Regex = Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
-        for item_captures in item_re.captures_iter(items) {
-          let item_opt :Result<Item, ()> = item_captures.at(0).unwrap().parse();
-          match item_opt {
-            Err(()) => {},
-            Ok(item) => {
-              rv.add_item(item);
-            }
+    if let Some(cap) = re.captures(s) {
+      match cap.at(1).unwrap_or("") {
+        "first" => {rv.number = 1},
+        "second" => {rv.number = 2},
+        "third" => {rv.number = 3},
+        "fourth" => {rv.number = 4},
+        _ => {return Err(())}
+      }
+      let items = cap.at(2).unwrap_or("");
+      let item_re: Regex = Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
+      for item_captures in item_re.captures_iter(items) {
+        let item_opt :Result<Item, ()> = item_captures.at(0).unwrap().parse();
+        match item_opt {
+          Err(()) => {},
+          Ok(item) => {
+            rv.add_item(item);
           }
         }
       }
+      Ok(rv)
+    } else {
+      Err(())
     }
-    return Ok(rv);
   }
 }
 
 impl fmt::Display for Floor {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut result = write!(f, "F{}: ", self.number);
-    if result.is_err() {
-      return result;
-    }
+    write!(f, "F{}: ", self.number).expect("couldn't write number");
     for item in self.items.clone() {
-      result = write!(f, "{} ", item);
-      if result.is_err() {
-        return result;
-      }
+      write!(f, "{} ", item).expect("couldn't write item");
     }
     write!(f, "")
   }
@@ -233,7 +218,7 @@ struct State {
 }
 
 impl State {
-  fn is_valid(&self, seen: &Vec<State>) -> bool {
+  fn is_valid(&self, seen: &[State]) -> bool {
     for floor in self.floors.clone() {
       if floor.desc.microchips > 0 && floor.desc.pairs + floor.desc.generators > 0 {
         return false;
@@ -241,15 +226,13 @@ impl State {
     }
 
     // Check to see if this is already in the seen states with our crazy comparison function.
-    return !seen.contains(self);
+    !seen.contains(self)
   }
 
   fn is_winning(&self) -> bool {
     for floor in self.floors.clone() {
-      if floor.number != self.floors.len() as i32 {
-        if floor.items.len() != 0 {
-          return false;
-        }
+      if floor.number != self.floors.len() as i32 && !floor.items.is_empty() {
+        return false;
       }
     }
     true
@@ -300,10 +283,7 @@ impl fmt::Display for State {
 
 fn move_items(state: &State, going_up: bool, states: &mut Vec<State>) {
   let items = &state.floors[state.elevator].items;
-  let mut next_stop = state.elevator + 1;
-  if !going_up {
-    next_stop = state.elevator - 1;
-  }
+  let next_stop = if going_up { state.elevator + 1 } else { state.elevator - 1 };
 
   let mut template = state.clone();
   template.moves += 1;
@@ -329,7 +309,7 @@ fn move_items(state: &State, going_up: bool, states: &mut Vec<State>) {
   }
 }
 
-fn get_next_state(state: &State, seen: &Vec<State>) -> Vec<State> {
+fn get_next_state(state: &State, seen: &[State]) -> Vec<State> {
   // generate all possible turns, pruning already-seen and invalid states.
   let mut rv = Vec::new();
   if state.elevator < state.floors.len()-1 {
@@ -343,9 +323,10 @@ fn get_next_state(state: &State, seen: &Vec<State>) -> Vec<State> {
   rv.retain(|item| {
     if item.is_valid(&temp) {
       temp.push(item.clone());
-      return true;
+      true
+    } else {
+      false
     }
-    return false;
   });
   rv
 }
@@ -363,7 +344,7 @@ fn get_result(input: &'static str) -> i32 {
     next.push(initial_state);
 
     let mut count = 0;
-    while next.len() > 0 {
+    while !next.is_empty() {
       let mut current = next.remove(0);
       // If the current is everything on the 4th floor, we win!!!
       if current.is_winning() {
@@ -371,7 +352,7 @@ fn get_result(input: &'static str) -> i32 {
         println!("{}", current);
         result = current.moves;
         // while let Some(i) = current.previous {
-        //   println!("");
+        //   println!();
         //   current = seen[i].clone();
         //   println!("{}", current);
         // }
@@ -382,16 +363,16 @@ fn get_result(input: &'static str) -> i32 {
       let mut upcoming = seen.clone();
       upcoming.extend(next.clone());
       next.append(&mut get_next_state(&current, &upcoming));
-      if count % 100 == 0 {
-        // println!("{}: {}", count, next.len());
-        if count % 3000 == 0 {
-          println!("{}", current);
-        }
-      }
+      // if count % 100 == 0 {
+      //   println!("{}: {}", count, next.len());
+      //   if count % 3000 == 0 {
+      //     println!("{}", current);
+      //   }
+      // }
       count += 1;
     }
 
-    return result;
+    result
 }
 
 //-----------------------------------------------------
@@ -401,7 +382,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("11");
+    String::from("11")
   }
 
   fn a(&self) {

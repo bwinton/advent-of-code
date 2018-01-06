@@ -17,24 +17,24 @@ impl Heading {
   fn turn(&self, dir: &str) -> Heading {
     match *self {
       Heading::North => if dir == "R" {
-        return Heading::East;
+        Heading::East
       } else {
-        return Heading::West;
+        Heading::West
       },
       Heading::East => if dir == "R" {
-        return Heading::South;
+        Heading::South
       } else {
-        return Heading::North;
+        Heading::North
       },
       Heading::South => if dir == "R" {
-        return Heading::West;
+        Heading::West
       } else {
-        return Heading::East;
+        Heading::East
       },
       Heading::West => if dir == "R" {
-        return Heading::North;
+        Heading::North
       } else {
-        return Heading::South;
+        Heading::South
       }
     }
   }
@@ -42,11 +42,11 @@ impl Heading {
 
 type Pos = [i32; 2];
 
-fn handle_turn(turn: String, heading: &mut Heading) -> i32 {
+fn handle_turn(turn: &str, heading: &mut Heading) -> i32 {
   let (dir, len_str) = turn.split_at(1);
   let length : i32 = len_str.parse().expect("Wanted a number");
   *heading = heading.turn(dir);
-  return length;
+  length
 }
 
 
@@ -57,7 +57,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("1");
+    String::from("1")
   }
 
   fn a(&self) {
@@ -76,7 +76,7 @@ impl day::Day for Q {
     }
 
     for data in INPUT.split(", ") {
-      let length = handle_turn(String::from(data), &mut heading);
+      let length = handle_turn(data, &mut heading);
       run_turn(&mut pos, &heading, length);
     }
     println!("Result = {}", pos[0].abs() + pos[1].abs());
@@ -102,11 +102,11 @@ impl day::Day for Q {
           seen.insert(*pos);
         }
       }
-      return false;
+      false
     }
 
     for data in INPUT.split(", ") {
-      let length = handle_turn(String::from(data), &mut heading);
+      let length = handle_turn(data, &mut heading);
       if run_turn(&mut seen, &mut pos, &heading, length) {
         break;
       }

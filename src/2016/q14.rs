@@ -23,23 +23,10 @@ enum Key {
 impl Ord for Key {
   fn cmp(&self, other: &Key) -> Ordering {
     match *self {
-      Key::Potential(ref me) => {
+      Key::Potential(ref me) | Key::Confirmed(ref me, _) => {
         match *other {
-          Key::Potential(ref them) => {
-            return me.cmp(&them);
-          },
-          Key::Confirmed(ref them, _) => {
-            return me.cmp(&them);
-          }
-        }
-      },
-      Key::Confirmed(ref me, _) => {
-        match *other {
-          Key::Potential(ref them) => {
-            return me.cmp(&them);
-          },
-          Key::Confirmed(ref them, _) => {
-            return me.cmp(&them);
+          Key::Potential(ref them) | Key::Confirmed(ref them, _) => {
+            me.cmp(them)
           }
         }
       }
@@ -54,6 +41,7 @@ impl PartialOrd for Key {
 }
 
 type Keys = Vec<Key>;
+type KeysRef<'a> = &'a [Key];
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -64,7 +52,7 @@ struct Quintuple {
 }
 
 impl Quintuple {
-  pub fn new(key: &String) -> Quintuple {
+  pub fn new(key: &str) -> Quintuple {
     Quintuple {
       key: key.to_string(),
       regex: Regex::new(&key.repeat(5)).unwrap(),
@@ -82,50 +70,39 @@ pub fn to_hex_string(bytes: &[u8; 16]) -> String {
   strs.join("")
 }
 
-pub fn get_triple(input: &String) -> Option<String> {
+pub fn get_triple(input: &str) -> Option<String> {
   lazy_static! {
     static ref RE: Regex = Regex::new("(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}").unwrap();
   }
   match RE.captures(input) {
     None => {
-      return None;
+      None
     },
     Some(key) => {
-      return Some(key[0].chars().next().unwrap().to_string());
+      Some(key[0].chars().next().unwrap().to_string())
     }
   }
 }
 
-fn add_quintuple(i: usize, key: String, quintuples: &mut Quintuples) {
-  let cloned_key = key.clone();
-  let quintuple = quintuples.entry(key.clone()).or_insert(Quintuple::new(&cloned_key));
+fn add_quintuple(i: usize, key: &str, quintuples: &mut Quintuples) {
+  let quintuple = quintuples.entry(key.to_string()).or_insert_with(|| Quintuple::new(key));
   quintuple.indices.push(i);
 }
 
 fn remove_keys(count: usize, keys: &mut Keys, quintuples: &mut Quintuples) {
   quintuples.retain(|_, quintuple| {
-    quintuple.indices.retain(|i| {
-      if i + 1001 > count {
-        return true;
-      }
-      return false;
-    });
-    return quintuple.indices.len() > 0;
+    quintuple.indices.retain(|i| { i + 1001 > count });
+    !quintuple.indices.is_empty()
   });
   keys.retain(|key| {
-    match key {
-      &Key::Confirmed(_, _) => { return true },
-      &Key::Potential(i) => {
-        if i + 1001 >= count {
-          return true;
-        }
-        return false;
-      }
-    };
+    match *key {
+      Key::Confirmed(_, _) => { true },
+      Key::Potential(i) => { i + 1001 >= count }
+    }
   });
 }
 
-fn get_quintuple(input: &String, keys: &mut Keys, quintuples: &mut Quintuples, count: usize) -> usize {
+fn get_quintuple(input: &str, keys: &mut Keys, quintuples: &mut Quintuples, count: usize) -> usize {
   let mut rv = 0;
   for (key, quintuple) in &mut quintuples.clone() {
     if quintuple.regex.is_match(input) {
@@ -134,32 +111,29 @@ fn get_quintuple(input: &String, keys: &mut Keys, quintuples: &mut Quintuples, c
         if index == count {
           continue;
         }
-        let new_key = Key::Confirmed(index, input.clone());
+        let new_key = Key::Confirmed(index, input.to_string());
         let key_index = keys.binary_search(&new_key).unwrap();
         mem::replace(&mut keys[key_index], new_key);
       }
       quintuple.indices.retain(|i| *i == count);
 
-      if quintuple.indices.len() == 0 {
+      if quintuple.indices.is_empty() {
         quintuples.remove(key);
       }
       rv += len;
     }
   }
-  return rv;
+  rv
 }
 
-fn is_winning(keys: &Keys) -> bool {
+fn is_winning(keys: KeysRef) -> bool {
   if keys.len() < 64 {
     return false;
   }
   for key in &keys[0..64] {
-    match key {
-      &Key::Potential(_) => { return false ;},
-      _ => {}
-    }
+    if let Key::Potential(_) = *key { return false ;}
   }
-  return true;
+  true
 }
 
 
@@ -171,7 +145,7 @@ pub struct Q;
 impl day::Day for Q {
 
   fn number(&self) -> String {
-    return String::from("14");
+    String::from("14")
   }
 
   fn a(&self) {
@@ -195,7 +169,7 @@ impl day::Day for Q {
         None => {},
         Some(triple) => {
           keys.push(Key::Potential(i));
-          add_quintuple(i, triple, &mut quintuples);
+          add_quintuple(i, &triple, &mut quintuples);
         }
       }
       remove_keys(i, &mut keys, &mut quintuples);
@@ -230,7 +204,7 @@ impl day::Day for Q {
         None => {},
         Some(triple) => {
           keys.push(Key::Potential(i));
-          add_quintuple(i, triple, &mut quintuples);
+          add_quintuple(i, &triple, &mut quintuples);
         }
       }
       remove_keys(i, &mut keys, &mut quintuples);

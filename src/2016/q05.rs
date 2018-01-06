@@ -13,7 +13,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("5");
+    String::from("5")
   }
 
   fn a(&self) {
@@ -22,7 +22,7 @@ impl day::Day for Q {
 
     let mut hasher = Md5::new();
     // let input = "abc".as_bytes();
-    let input = "abbhdwsy".as_bytes();
+    let input = b"abbhdwsy";
     let mut len = 0;
 
     for i in 0..MAX {
@@ -31,7 +31,7 @@ impl day::Day for Q {
 
       let mut output = [0; 16]; // An MD5 is 16 bytes
       hasher.result(&mut output);
-      let first_five = output[0] as i32 + output[1] as i32 + (output[2] >> 4) as i32;
+      let first_five = i32::from(output[0]) + i32::from(output[1]) + i32::from(output[2] >> 4);
       if first_five == 0 {
         print!("{:x}", output[2]);
         len += 1
@@ -48,7 +48,7 @@ impl day::Day for Q {
     print!("Result = ");
 
     // let input = "abc".as_bytes();
-    let input = "abbhdwsy".as_bytes();
+    let input = b"abbhdwsy";
 
     let mut hasher = Md5::new();
     let mut password = [0xff as u8; 8];
@@ -60,7 +60,7 @@ impl day::Day for Q {
 
       let mut output = [0; 16]; // An MD5 is 16 bytes
       hasher.result(&mut output);
-      let first_five = output[0] as i32 + output[1] as i32 + (output[2] >> 4) as i32;
+      let first_five = i32::from(output[0]) + i32::from(output[1]) + i32::from(output[2] >> 4);
       if first_five == 0 {
         let index = output[2] as usize;
         if index > 7 {
@@ -78,9 +78,9 @@ impl day::Day for Q {
       hasher.reset();
     }
 
-    for value in password.iter() {
+    for value in &password {
       print!("{:x}", value);
     }
-    println!("");
+    println!();
   }
 }

@@ -49,7 +49,7 @@ impl PartialEq for State {
 impl Eq for State {}
 
 impl State {
-  pub fn new(path: &String, x: usize, y: usize) -> State {
+  pub fn new(path: &str, x: usize, y: usize) -> State {
     // println!("{:?}", path);
     let mut hasher = Md5::new();
     hasher.input(INPUT.as_bytes());
@@ -60,18 +60,21 @@ impl State {
     let mut open_doors = Vec::new();
     if output[0] >> 4 > 10 && y > 0 {
       open_doors.push(Direction::Up);
-    } if output[0] & 0xf > 10 && y < 3 {
+    }
+    if output[0] & 0xf > 10 && y < 3 {
       open_doors.push(Direction::Down);
-    } if output[1] >> 4 > 10 && x > 0 {
+    }
+    if output[1] >> 4 > 10 && x > 0 {
       open_doors.push(Direction::Left);
-    } if output[1] & 0xf > 10 && x < 3 {
+    }
+    if output[1] & 0xf > 10 && x < 3 {
       open_doors.push(Direction::Right);
     }
 
     State {
       x: x,
       y: y,
-      path: path.clone(),
+      path: path.to_string(),
       open_doors: open_doors
     }
   }
@@ -121,7 +124,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("17");
+    String::from("17")
   }
 
   fn a(&self) {
@@ -129,7 +132,7 @@ impl day::Day for Q {
     let mut result = String::from("No path found.");
     let mut next = BinaryHeap::new();
     next.push(State::new(&String::from(""), 0, 0));
-    while next.len() > 0 {
+    while !next.is_empty() {
       let state = next.pop().unwrap();
       if state.is_winning() {
         result = state.path;
@@ -149,7 +152,7 @@ impl day::Day for Q {
     let mut result = 0;
     let mut next = BinaryHeap::new();
     next.push(State::new(&String::from(""), 0, 0));
-    while next.len() > 0 {
+    while !next.is_empty() {
       let state = next.pop().unwrap();
       if state.is_winning() && state.path.len() > result {
         result = state.path.len();

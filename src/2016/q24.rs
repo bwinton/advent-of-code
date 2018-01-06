@@ -72,11 +72,11 @@ enum Direction {
 impl fmt::Debug for Direction {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let out;
-    match self {
-      &Direction::Up => { out = 'U' }
-      &Direction::Left => { out = 'L' }
-      &Direction::Down => { out = 'D' }
-      &Direction::Right => { out = 'R' }
+    match *self {
+      Direction::Up => { out = 'U' }
+      Direction::Left => { out = 'L' }
+      Direction::Down => { out = 'D' }
+      Direction::Right => { out = 'R' }
     }
     fmt::Debug::fmt(&out, f)
   }
@@ -131,11 +131,11 @@ impl FromStr for Contents {
         let captures = RE.captures(s);
         match captures {
           Some(cap) => {
-           return Ok(Contents::Something(Location{loc: cap.at(1).unwrap().parse().unwrap(), x:0, y:0}));
+           Ok(Contents::Something(Location{loc: cap.at(1).unwrap().parse().unwrap(), x:0, y:0}))
           },
           None => {
             println!("Could not parse '{}'!", s);
-            return Err(());
+            Err(())
           }
         }
       }
@@ -191,33 +191,30 @@ fn get_board(input: &str, locations: &mut Vec<Location>) -> Vec<Vec<Contents>> {
     let mut row = Vec::new();
     for character in line.chars() {
       let mut last: Contents = character.to_string().parse().unwrap();
-      match last {
-        Contents::Something(curr) => {
-          let new = Location{loc:curr.loc, x:row.len(), y:board.len()};
-          locations.push(new.clone());
-          last = Contents::Something(new);
-        }
-        _ => {}
+      if let Contents::Something(curr) = last {
+        let new = Location{loc:curr.loc, x:row.len(), y:board.len()};
+        locations.push(new.clone());
+        last = Contents::Something(new);
       }
       row.push(last.clone());
     }
     board.push(row);
   }
   locations.sort();
-  return board;
+  board
 }
 
-fn get_next_states(current: &State, board: &Vec<Vec<Contents>>, seen: &Vec<State>) -> Vec<State> {
+fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> Vec<State> {
   let mut rv = Vec::new();
 
   for direction in &[Direction::Up, Direction::Left, Direction:: Down, Direction::Right] {
     let mut i = current.x;
     let mut j = current.y;
-    match direction {
-      &Direction::Up => { j -= 1 }
-      &Direction::Left => { i -= 1 }
-      &Direction::Down => { j += 1 }
-      &Direction::Right => { i += 1 }
+    match *direction {
+      Direction::Up => { j -= 1 }
+      Direction::Left => { i -= 1 }
+      Direction::Down => { j += 1 }
+      Direction::Right => { i += 1 }
     }
     let location = &board[j][i];
     if location == &Contents::Wall() {
@@ -237,17 +234,17 @@ fn get_next_states(current: &State, board: &Vec<Vec<Contents>>, seen: &Vec<State
   let mut temp = seen.to_vec();
 
   rv.retain(|item| {
-    if temp.contains(&item) {
-      return false;
+    let missing = !temp.contains(item);
+    if missing {
+      temp.push(item.clone());
     }
-    temp.push(item.clone());
-    return true;
+    missing
   });
 
   rv
 }
 
-fn find_shortest_path(start: &Location, target: &Location, board: &Vec<Vec<Contents>>) -> usize {
+fn find_shortest_path(start: &Location, target: &Location, board: &[Vec<Contents>]) -> usize {
   let initial_state = State{
     x: start.x,
     y: start.y,
@@ -257,14 +254,14 @@ fn find_shortest_path(start: &Location, target: &Location, board: &Vec<Vec<Conte
   let mut next = BinaryHeap::new();
   let mut seen = HashSet::new();
   next.push(initial_state);
-  while next.len() > 0 {
+  while !next.is_empty() {
     let state = next.pop().unwrap();
     if state.is_winning(target) {
       return state.moves.len();
     }
     seen.insert(state.clone());
-    let upcoming = seen.clone().into_iter().chain(next.clone().into_iter()).collect();
-    let next_states = get_next_states(&state, &board, &upcoming);
+    let upcoming: Vec<_> = seen.clone().into_iter().chain(next.clone().into_iter()).collect();
+    let next_states = get_next_states(&state, board, &upcoming);
     for state in &next_states {
       next.push(state.clone());
     }
@@ -272,7 +269,7 @@ fn find_shortest_path(start: &Location, target: &Location, board: &Vec<Vec<Conte
     //   println!("Gone through {} states. Current len: {}", &seen.len(), &state.moves.len());
     // }
   }
-  return std::usize::MAX;
+  std::usize::MAX
 }
 
 fn get_permutations(input: &[Location]) -> Vec<Vec<Location>> {
@@ -297,12 +294,9 @@ fn get_permutations(input: &[Location]) -> Vec<Vec<Location>> {
 }
 
 fn get_distance(start: &Location, target: &Location, distances: &HashMap<(&Location, &Location), usize>) -> usize {
-  let mut key = (start, target);
-  if start > target  {
-    key = (target, start);
-  }
+  let key = if start > target { (target, start) } else { (start, target) };
   // println!("Checking for {:?} in {:?}", &key, &distances);
-  *distances.get(&key.clone()).unwrap()
+  *distances.get(&key).unwrap()
 }
 
 //-----------------------------------------------------
@@ -312,7 +306,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("24");
+    String::from("24")
   }
 
   fn a(&self) {

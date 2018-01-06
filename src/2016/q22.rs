@@ -999,16 +999,16 @@ impl FromStr for Node {
     let captures = RE.captures(s);
     match captures {
       Some(cap) => {
-        return Ok(Node {
+        Ok(Node {
           x: cap.at(1).unwrap().parse().unwrap(),
           y: cap.at(2).unwrap().parse().unwrap(),
           size: cap.at(3).unwrap().parse().unwrap(),
           used: cap.at(4).unwrap().parse().unwrap(),
           avail: cap.at(5).unwrap().parse().unwrap(),
           goal: false
-        });
+        })
       },
-      _ => {return Err(());}
+      _ => {Err(())}
     }
   }
 }
@@ -1071,7 +1071,7 @@ pub struct Q;
 
 impl day::Day for Q {
   fn number(&self) -> String {
-    return String::from("22");
+    String::from("22")
   }
 
   fn a(&self) {
