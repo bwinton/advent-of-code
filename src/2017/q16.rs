@@ -108,10 +108,11 @@ fn process_data_b(max: u8, data: &str, iterations: usize) -> String {
       rv = curr.execute(&rv);
     }
     if seen.contains(&rv) {
+      rv = seen[iterations % seen.len()].clone();
       break;
     }
   }
-  String::from_iter(&seen[iterations % seen.len()])
+  String::from_iter(&rv)
 }
 
 //-----------------------------------------------------
