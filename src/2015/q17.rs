@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use itertools::Itertools;
 
@@ -68,7 +68,7 @@ fn process_data_b(data: &str, amount: u32) -> usize {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("17")
   }

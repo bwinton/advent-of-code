@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 static INPUT : &'static str = "  541  588  421
 827  272  126
@@ -1932,7 +1932,7 @@ fn parse_line(line: &str) -> Vec<u32> {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("3")
   }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use std::iter::repeat;
 use std::str::FromStr;
@@ -425,7 +425,7 @@ fn process_data_b(data: &str) -> i32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("6")
   }

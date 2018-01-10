@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use nom;
 use std::collections::HashMap;
@@ -242,7 +242,7 @@ fn process_data_b(_data: &str) -> i32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("25")
   }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use std::ops::Range;
 use std::u32;
 
@@ -1062,7 +1062,7 @@ fn get_num_allowed() -> u32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("20")
   }

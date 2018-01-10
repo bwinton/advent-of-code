@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use regex::Regex;
 use std::str::FromStr;
 use std::cmp::Ordering;
@@ -1069,7 +1069,7 @@ impl fmt::Debug for State {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("22")
   }

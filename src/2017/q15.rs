@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 static INPUT : &[u64;2] = &[591, 393];
 
@@ -64,7 +64,7 @@ fn process_data_b(data: &[u64;2]) -> u64 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("15")
   }

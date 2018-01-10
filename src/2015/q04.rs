@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use crypto::md5::Md5;
 use crypto::digest::Digest;
@@ -39,7 +39,7 @@ fn process_data(data: &str, zeroes: usize) -> i32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("4")
   }

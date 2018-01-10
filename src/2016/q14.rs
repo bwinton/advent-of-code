@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::collections::HashMap;
@@ -142,7 +142,7 @@ fn is_winning(keys: KeysRef) -> bool {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
 
   fn number(&self) -> String {
     String::from("14")

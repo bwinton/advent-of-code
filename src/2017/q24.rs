@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
@@ -216,7 +216,7 @@ fn process_data_b(data: &str) -> usize {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("24")
   }

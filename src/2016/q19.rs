@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 // static INPUT : usize = 5;
 static INPUT : usize = 3_014_603;
@@ -35,7 +35,7 @@ fn get_result_b() -> usize {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("19")
   }

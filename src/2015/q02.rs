@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 static INPUT : &'static str = "20x3x11
 15x27x5
@@ -1038,7 +1038,7 @@ fn process_lines_b(data: &str) -> u32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("2")
   }

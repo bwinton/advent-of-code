@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use regex::Regex;
 use std::collections::HashMap;
@@ -1356,7 +1356,7 @@ fn process_data_b(data: &str) -> usize {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("7")
   }

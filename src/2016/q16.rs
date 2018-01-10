@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use std::iter::FromIterator;
 
 // static INPUT : &'static str = "10000";
@@ -53,7 +53,7 @@ fn get_result(input: &str, length: usize) -> String {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("16")
   }

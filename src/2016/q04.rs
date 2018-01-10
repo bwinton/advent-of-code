@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 static INPUT : &'static str = "nzydfxpc-rclop-qwzhpc-qtylyntyr-769[oshgk]
 qzlozfhmf-bzmcx-bnzshmf-zbpthrhshnm-339[zmxdi]
@@ -1148,7 +1148,7 @@ impl FromStr for Room {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("4")
   }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::cmp::Ordering;
@@ -122,7 +122,7 @@ fn get_next_states(state: &State) -> Vec<State> {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("17")
   }

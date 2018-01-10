@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use regex::Regex;
 use std::str::FromStr;
@@ -604,7 +604,7 @@ fn process_data(data: &str) -> HashMap<String, Wire> {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("7")
   }

@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use regex::Regex;
 use std;
@@ -304,7 +304,7 @@ fn get_distance(start: &Location, target: &Location, distances: &HashMap<(&Locat
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("24")
   }

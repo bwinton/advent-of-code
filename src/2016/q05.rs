@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::u64::MAX;
@@ -11,7 +11,7 @@ use std::u64::MAX;
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("5")
   }

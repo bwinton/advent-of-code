@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 static INPUT : &'static str = "1208	412	743	57	1097	53	71	1029	719	133	258	69	1104	373	367	365
 4011	4316	1755	4992	228	240	3333	208	247	3319	4555	717	1483	4608	1387	3542
@@ -51,7 +51,7 @@ fn process_data_b(data: &str) -> i32 {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("2")
   }

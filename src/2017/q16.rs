@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 
 use regex::Regex;
 use std::iter::FromIterator;
@@ -119,7 +119,7 @@ fn process_data_b(max: u8, data: &str, iterations: usize) -> String {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("16")
   }

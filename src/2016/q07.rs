@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use regex::Regex;
 
 static INPUT : &'static str = "dnwtsgywerfamfv[gwrhdujbiowtcirq]bjbhmuxdcasenlctwgh
@@ -2072,7 +2072,7 @@ fn is_ssl(line: &str) -> bool {
   false
 }
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("7")
   }

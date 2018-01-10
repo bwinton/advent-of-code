@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use std::str::FromStr;
 use regex::Regex;
 use std::collections::HashMap;
@@ -415,7 +415,7 @@ impl FromStr for Bot {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("10")
   }

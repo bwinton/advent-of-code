@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use day;
+use aoc::Day;
 use std::collections::HashMap;
 
 static INPUT : &'static str = "ciglthza
@@ -642,7 +642,7 @@ fn get_least_common(frequencies : Vec<HashMap<char, i32>>) -> String {
 
 pub struct Q;
 
-impl day::Day for Q {
+impl Day for Q {
   fn number(&self) -> String {
     String::from("6")
   }
