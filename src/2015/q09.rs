@@ -131,7 +131,7 @@ impl Day for Q {
 fn a() {
   assert_eq!(process_data_a("London to Dublin = 464
 London to Belfast = 518
-Dublin to Belfast = 141"), (vec!["Belfast", "Dublin", "London"], 605));
+Dublin to Belfast = 141"), (vec!["London", "Dublin", "Belfast"], 605));
 }
 
 #[test]
