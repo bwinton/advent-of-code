@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "  541  588  421
+static INPUT: &'static str = "  541  588  421
 827  272  126
 660  514  367
  39  703  839
@@ -1923,7 +1923,10 @@ static INPUT : &'static str = "  541  588  421
 // 203 403 603";
 
 fn parse_line(line: &str) -> Vec<u32> {
-  line.split_whitespace().map(|n| n.parse().expect("Wanted a number")).collect::<Vec<u32>>()
+  line
+    .split_whitespace()
+    .map(|n| n.parse().expect("Wanted a number"))
+    .collect::<Vec<u32>>()
 }
 
 
@@ -1959,19 +1962,19 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut possible : u32 = 0;
+    let mut possible: u32 = 0;
 
-    fn test_data(data : &mut Vec<u32>) -> bool {
+    fn test_data(data: &mut Vec<u32>) -> bool {
       data.sort();
       let goal = data.pop().unwrap();
       let total = data.iter().sum::<u32>();
       goal < total
     }
 
-    fn handle_data(current : &mut Vec<Vec<u32>>) -> u32 {
+    fn handle_data(current: &mut Vec<Vec<u32>>) -> u32 {
       let mut possible = 0;
       for x in izip!(current[0].iter(), current[1].iter(), current[2].iter()) {
-        let mut data : Vec<u32> = vec![*x.0, *x.1, *x.2];
+        let mut data: Vec<u32> = vec![*x.0, *x.1, *x.2];
         if test_data(&mut data) {
           possible += 1;
         }
@@ -1981,7 +1984,7 @@ impl Day for Q {
       possible
     }
 
-    let mut current : Vec<Vec<u32>> = Vec::new();
+    let mut current: Vec<Vec<u32>> = Vec::new();
 
     for line in INPUT.lines() {
       let data = parse_line(line);

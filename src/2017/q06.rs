@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-static INPUT : &'static str = "5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
+static INPUT: &'static str = "5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
 
 fn redistribute(cells: &[usize]) -> Vec<usize> {
   let mut rv = cells.to_owned();
@@ -16,7 +16,7 @@ fn redistribute(cells: &[usize]) -> Vec<usize> {
     *elem = 0;
   }
   {
-    for i in max.0 + 1 .. max.0 + 1 + max.1 {
+    for i in max.0 + 1..max.0 + 1 + max.1 {
       let elem = &mut rv[i % cells.len()];
       *elem += 1;
     }
@@ -25,7 +25,10 @@ fn redistribute(cells: &[usize]) -> Vec<usize> {
 }
 
 fn process_data_a(data: &str) -> usize {
-  let mut cells: Vec<usize> = data.split_whitespace().map(|i| i.parse().unwrap()).collect();
+  let mut cells: Vec<usize> = data
+    .split_whitespace()
+    .map(|i| i.parse().unwrap())
+    .collect();
   let mut rv = 0;
   let mut seen = HashSet::new();
   while !seen.contains(&cells) {
@@ -38,7 +41,10 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> i32 {
-  let mut cells: Vec<usize> = data.split_whitespace().map(|i| i.parse().unwrap()).collect();
+  let mut cells: Vec<usize> = data
+    .split_whitespace()
+    .map(|i| i.parse().unwrap())
+    .collect();
   let mut rv = 0;
   let mut seen = HashMap::new();
   while !seen.contains_key(&cells) {

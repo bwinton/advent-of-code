@@ -6,7 +6,7 @@ use aoc::Day;
 use itertools::Itertools;
 use itertools::enumerate;
 
-static INPUT : &'static str = "uugsqrei";
+static INPUT: &'static str = "uugsqrei";
 
 fn get_input(input: &str) -> Vec<usize> {
   let mut rv: Vec<usize> = input.chars().map(|x| x as usize).collect();
@@ -49,22 +49,22 @@ fn process_data(input: &str) -> Vec<i64> {
   densify(&numbers)
 }
 
-fn find_groups(cells:&[[i32;128];128], row: usize, col: usize, group: i32) -> [[i32;128]; 128] {
+fn find_groups(cells: &[[i32; 128]; 128], row: usize, col: usize, group: i32) -> [[i32; 128]; 128] {
   let mut rv = *cells;
   let mut upcoming = Vec::new();
-  upcoming.push((row,col));
+  upcoming.push((row, col));
   while let Some(pos) = upcoming.pop() {
     rv[pos.0][pos.1] = group;
-    if pos.0 > 0 && rv[pos.0 - 1][pos.1]  == -1 {
+    if pos.0 > 0 && rv[pos.0 - 1][pos.1] == -1 {
       upcoming.push((pos.0 - 1, pos.1));
     }
-    if pos.0 < 127 && rv[pos.0 + 1][pos.1]  == -1 {
+    if pos.0 < 127 && rv[pos.0 + 1][pos.1] == -1 {
       upcoming.push((pos.0 + 1, pos.1));
     }
-    if pos.1 > 0 && rv[pos.0][pos.1 - 1]  == -1 {
+    if pos.1 > 0 && rv[pos.0][pos.1 - 1] == -1 {
       upcoming.push((pos.0, pos.1 - 1));
     }
-    if pos.1 < 127 && rv[pos.0][pos.1 + 1]  == -1 {
+    if pos.1 < 127 && rv[pos.0][pos.1 + 1] == -1 {
       upcoming.push((pos.0, pos.1 + 1));
     }
   }
@@ -85,13 +85,13 @@ fn process_data_a(data: &str) -> u32 {
 
 fn process_data_b(data: &str) -> i32 {
   let mut rv = 0;
-  let mut cells = [[0;128]; 128];
+  let mut cells = [[0; 128]; 128];
   for (i, row) in cells.iter_mut().enumerate().take(128) {
     let key = format!("{}-{}", data, i);
     let value = process_data(&key);
     let bits = value.iter().map(|x| format!("{:08b}", x)).join("");
     for (j, curr) in enumerate(bits.chars()) {
-      row[j] = if curr == '1' {-1} else {0};
+      row[j] = if curr == '1' { -1 } else { 0 };
     }
   }
   for row in 0..128 {

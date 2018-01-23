@@ -5,7 +5,7 @@ use aoc::Day;
 
 use itertools::Itertools;
 
-static INPUT : &'static str = "43
+static INPUT: &'static str = "43
 3
 4
 10
@@ -27,10 +27,9 @@ static INPUT : &'static str = "43
 38";
 
 fn process_data_a(data: &str, amount: u32) -> usize {
-  let containers: Vec<u32> = data.lines()
-    .map(|x| x.parse().unwrap()).collect();
+  let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
   let mut count = 0;
-  for len in 1..containers.len()+1 {
+  for len in 1..containers.len() + 1 {
     for permutation in containers.iter().combinations(len) {
       // print!("{:?} = ", &permutation);
       let sum: u32 = permutation.into_iter().sum();
@@ -44,10 +43,9 @@ fn process_data_a(data: &str, amount: u32) -> usize {
 }
 
 fn process_data_b(data: &str, amount: u32) -> usize {
-  let containers: Vec<u32> = data.lines()
-    .map(|x| x.parse().unwrap()).collect();
+  let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
   let mut smallest: Vec<Vec<_>> = Vec::new();
-  for len in 1..containers.len()+1 {
+  for len in 1..containers.len() + 1 {
     for permutation in containers.iter().combinations(len) {
       let sum: u32 = permutation.iter().cloned().sum();
       if sum == amount {
@@ -88,18 +86,30 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("20
+  assert_eq!(
+    process_data_a(
+      "20
 15
 10
 5
-5", 25), 4);
+5",
+      25,
+    ),
+    4
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("20
+  assert_eq!(
+    process_data_b(
+      "20
 15
 10
 5
-5", 25), 3);
+5",
+      25,
+    ),
+    3
+  );
 }

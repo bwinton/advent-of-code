@@ -3,12 +3,12 @@
 
 use aoc::Day;
 
-static INPUT : &[u64;2] = &[591, 393];
+static INPUT: &[u64; 2] = &[591, 393];
 
 struct Generator {
   value: u64,
   factor: u64,
-  multiple: u64
+  multiple: u64,
 }
 
 impl Generator {
@@ -16,7 +16,7 @@ impl Generator {
     Generator {
       value: start,
       factor: factor,
-      multiple: multiple
+      multiple: multiple,
     }
   }
 
@@ -29,7 +29,7 @@ impl Generator {
   }
 }
 
-fn process_data_a(data: &[u64;2]) -> u64 {
+fn process_data_a(data: &[u64; 2]) -> u64 {
   let mut a = Generator::new(data[0], 16_807, 1);
   let mut b = Generator::new(data[1], 48_271, 1);
   let mut rv = 0;
@@ -44,7 +44,7 @@ fn process_data_a(data: &[u64;2]) -> u64 {
   rv
 }
 
-fn process_data_b(data: &[u64;2]) -> u64 {
+fn process_data_b(data: &[u64; 2]) -> u64 {
   let mut a = Generator::new(data[0], 16_807, 4);
   let mut b = Generator::new(data[1], 48_271, 8);
   let mut rv = 0;

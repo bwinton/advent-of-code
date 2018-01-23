@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std::collections::HashSet;
 
-static INPUT : &'static str = "pphsv ojtou brvhsj cer ntfhlra udeh ccgtyzc zoyzmh jum lugbnk
+static INPUT: &'static str = "pphsv ojtou brvhsj cer ntfhlra udeh ccgtyzc zoyzmh jum lugbnk
 vxjnf fzqitnj uyfck blnl impo kxoow nngd worcm bdesehw
 caibh nfuk kfnu llfdbz uxjty yxjut jcea
 qiho qif eupwww avyglnj nxzotsu hio lws

@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashSet;
 use std::str::FromStr;
 
-static INPUT : &'static str = "../.. => .##/..#/##.
+static INPUT: &'static str = "../.. => .##/..#/##.
 #./.. => ##./#../#..
 ##/.. => ###/#.#/..#
 .#/#. => .../#../##.
@@ -123,7 +123,7 @@ static INPUT : &'static str = "../.. => .##/..#/##.
 struct Rule {
   size: usize,
   input: Vec<Vec<bool>>,
-  output: Vec<Vec<bool>>
+  output: Vec<Vec<bool>>,
 }
 
 impl FromStr for Rule {
@@ -135,7 +135,7 @@ impl FromStr for Rule {
     Ok(Rule {
       size: if input.len() == 5 { 2 } else { 3 },
       input: get_state(input),
-      output: get_state(parts[1])
+      output: get_state(parts[1]),
     })
   }
 }
@@ -162,7 +162,7 @@ impl Rule {
     Rule {
       size: self.size,
       input: input,
-      output: self.output.clone()
+      output: self.output.clone(),
     }
   }
 
@@ -174,13 +174,16 @@ impl Rule {
     Rule {
       size: self.size,
       input: input,
-      output: self.output.clone()
+      output: self.output.clone(),
     }
   }
 }
 
 fn get_state(input: &str) -> Vec<Vec<bool>> {
-  input.split('/').map(|row| row.chars().map(|col| col == '#').collect()).collect()
+  input
+    .split('/')
+    .map(|row| row.chars().map(|col| col == '#').collect())
+    .collect()
 }
 
 // fn print_board(state: &[Vec<bool>]) {
@@ -209,7 +212,7 @@ fn step(state: &[Vec<bool>], rules: &[Rule]) -> Vec<Vec<bool>> {
 
   for rows in state.chunks(size) {
     let mut new_row = Vec::new();
-    for _ in 0..size+1 {
+    for _ in 0..size + 1 {
       new_row.push(Vec::new());
     }
     let mut cols: Vec<_> = rows.iter().map(|row| row.chunks(size)).collect();
@@ -249,10 +252,13 @@ fn process_data(data: &str, iterations: usize) -> usize {
     state = step(&state, &rules);
   }
   // print_board(&state);
-  state.iter().map(|row| {
-    let new_row:Vec<_> = row.iter().filter(|&x| *x).collect();
-    new_row.len()
-  }).sum()
+  state
+    .iter()
+    .map(|row| {
+      let new_row: Vec<_> = row.iter().filter(|&x| *x).collect();
+      new_row.len()
+    })
+    .sum()
 }
 
 //-----------------------------------------------------
@@ -280,10 +286,15 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data("../.# => ##./#../...
-.#./..#/### => #..#/..../..../#..#", 2), 12);
+  assert_eq!(
+    process_data(
+      "../.# => ##./#../...
+.#./..#/### => #..#/..../..../#..#",
+      2,
+    ),
+    12
+  );
 }
 
 #[test]
-fn b() {
-}
+fn b() {}

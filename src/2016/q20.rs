@@ -8,7 +8,7 @@ use std::u32;
 // static INPUT : &'static str = "5-8
 // 0-2
 // 4-7";
-static INPUT : &'static str = "3382920125-3384842620
+static INPUT: &'static str = "3382920125-3384842620
 274395476-292717439
 2930989217-2931442098
 3567238438-3585628354
@@ -1017,9 +1017,11 @@ static INPUT : &'static str = "3382920125-3384842620
 fn get_ranges() -> Vec<Range<u32>> {
   let mut ranges = Vec::new();
   for line in INPUT.lines() {
-    let data: Vec<u32> = line.split('-')
-      .map(|i| i.parse::<u32>().unwrap()).collect();
-    ranges.push(Range{start: data[0], end: data[1]});
+    let data: Vec<u32> = line.split('-').map(|i| i.parse::<u32>().unwrap()).collect();
+    ranges.push(Range {
+      start: data[0],
+      end: data[1],
+    });
   }
   ranges.sort_by_key(|k| k.start);
   ranges

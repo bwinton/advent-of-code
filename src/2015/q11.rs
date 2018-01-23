@@ -5,7 +5,7 @@ use aoc::Day;
 
 use itertools::Itertools;
 
-static INPUT : &'static str = "hxbxwxba";
+static INPUT: &'static str = "hxbxwxba";
 
 fn next_char(c: char) -> char {
   let mut rv = (c as u8 + 1) as char;
@@ -118,5 +118,4 @@ fn a() {
 }
 
 #[test]
-fn b() {
-}
+fn b() {}

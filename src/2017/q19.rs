@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std::iter::FromIterator;
 
-static INPUT : &'static str = "                                                                                                                 |                                                                                       
+static INPUT: &'static str = "                                                                                                                 |                                                                                       
                +-+ +---------+     +-------------+                                   +---------------------------|-+         +-------------------------------------------+             +---------+       
                | | |         |     |             |                                   |                           | |         |                                           |             |         |       
            +-------|---------------|-------------------------------------------------|-----+                     | |         |         +---------+                       | +-----------|-------+ +-----+ 
@@ -215,7 +215,7 @@ enum Cell {
   Vertical,
   Horizontal,
   Both,
-  Letter(char)
+  Letter(char),
 }
 
 #[derive(Debug)]
@@ -224,7 +224,7 @@ enum Direction {
   Up,
   Down,
   Left,
-  Right
+  Right,
 }
 
 #[derive(Debug)]
@@ -232,7 +232,7 @@ struct Packet {
   pos: (usize, usize),
   dir: Direction,
   seen_letters: Vec<char>,
-  steps: u64
+  steps: u64,
 }
 
 impl Packet {
@@ -241,7 +241,7 @@ impl Packet {
       pos: get_starting_pos(board).unwrap(),
       dir: Direction::Down,
       seen_letters: Vec::new(),
-      steps: 0
+      steps: 0,
     }
   }
 
@@ -255,7 +255,7 @@ impl Packet {
       Direction::Up => (self.pos.0 - 1, self.pos.1),
       Direction::Down => (self.pos.0 + 1, self.pos.1),
       Direction::Left => (self.pos.0, self.pos.1 - 1),
-      Direction::Right => (self.pos.0, self.pos.1 + 1)
+      Direction::Right => (self.pos.0, self.pos.1 + 1),
     };
     let mut next = get_cell(next_pos, board);
     // println!("Going from {:?}/{:?} to {:?}/{:?}", self.pos, curr, next_pos, next);
@@ -301,7 +301,7 @@ impl Packet {
             self.dir = Direction::Down;
           }
         }
-      }
+      },
     }
     true
   }
@@ -330,7 +330,7 @@ fn get_board(data: &str) -> Board {
         '|' => Cell::Vertical,
         '-' => Cell::Horizontal,
         '+' => Cell::Both,
-        x => Cell::Letter(x)
+        x => Cell::Letter(x),
       })
     }
     board.push(row);
@@ -398,21 +398,31 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("     |          
+  assert_eq!(
+    process_data_a(
+      "     |          
      |  +--+    
      A  |  C    
  F---|----E|--+ 
      |  |  |  D 
-     +B-+  +--+ "), "ABCDEF");
+     +B-+  +--+ ",
+    ),
+    "ABCDEF"
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("     |          
+  assert_eq!(
+    process_data_b(
+      "     |          
      |  +--+    
      A  |  C    
  F---|--|-E---+ 
      |  |  |  D 
      +B-+  +--+ 
-"), 38);
+",
+    ),
+    38
+  );
 }

@@ -8,15 +8,15 @@ use std::str::FromStr;
 // static LENGTH_A : usize = 3;
 // static INPUT : &'static str = ".^^.^.^^^^";
 // static LENGTH_A : usize = 10;
-static INPUT : &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
-static LENGTH_A : usize = 40;
-static LENGTH_B : usize = 400_000;
+static INPUT: &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
+static LENGTH_A: usize = 40;
+static LENGTH_B: usize = 400_000;
 
 #[derive(Clone)]
 #[derive(Debug)]
 struct Row {
   data: String,
-  safe_count: usize
+  safe_count: usize,
 }
 
 impl FromStr for Row {
@@ -29,7 +29,10 @@ impl FromStr for Row {
         safe_count += 1;
       }
     }
-    Ok(Row{data: s.to_string(), safe_count: safe_count})
+    Ok(Row {
+      data: s.to_string(),
+      safe_count: safe_count,
+    })
   }
 }
 
@@ -56,13 +59,16 @@ fn get_next_row(row: &Row) -> Row {
     data.push(curr);
   }
 
-  Row { data: data.into_iter().collect(), safe_count: safe_count }
+  Row {
+    data: data.into_iter().collect(),
+    safe_count: safe_count,
+  }
 }
 
 fn get_result(length: usize) -> usize {
   let mut result = 0;
   let mut rows = Vec::new();
-  let mut row : Row = INPUT.parse().unwrap();
+  let mut row: Row = INPUT.parse().unwrap();
   rows.push(row.clone());
   for _ in 0..length - 1 {
     row = get_next_row(&row);

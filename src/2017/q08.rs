@@ -7,7 +7,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "ba dec 37 if znx != 0
+static INPUT: &'static str = "ba dec 37 if znx != 0
 zrn inc -344 if znx > -9
 ffz inc -928 if kjt > 3
 al inc -562 if py == 0
@@ -1012,7 +1012,7 @@ ax dec 329 if ga <= 3826";
 #[derive(Debug)]
 enum Operation {
   Inc(i32),
-  Dec(i32)
+  Dec(i32),
 }
 
 impl FromStr for Operation {
@@ -1033,9 +1033,9 @@ impl FromStr for Operation {
           _ => {
             println!("Unknown Operation {}", s);
             Err(())
-          }
+          },
         }
-      }
+      },
     }
   }
 }
@@ -1048,7 +1048,7 @@ enum Test {
   Equal,
   NotEqual,
   LessEqual,
-  Less
+  Less,
 }
 
 impl FromStr for Test {
@@ -1065,7 +1065,7 @@ impl FromStr for Test {
       _ => {
         println!("Unknown Test {}", s);
         Err(())
-      }
+      },
     }
   }
 }
@@ -1075,7 +1075,7 @@ impl FromStr for Test {
 struct Condition {
   source: String,
   test: Test,
-  value: i32
+  value: i32,
 }
 
 impl FromStr for Condition {
@@ -1092,12 +1092,12 @@ impl FromStr for Condition {
         Err(())
       },
       Some(x) => {
-        Ok(Condition{
+        Ok(Condition {
           source: x.at(1).unwrap().to_string(),
           test: x.at(2).unwrap().parse().unwrap(),
-          value: x.at(3).unwrap().parse().unwrap()
+          value: x.at(3).unwrap().parse().unwrap(),
         })
-      }
+      },
     }
   }
 }
@@ -1106,12 +1106,12 @@ impl Condition {
   fn evaluate(&self, regs: &mut HashMap<String, i32>) -> bool {
     let reg = regs.entry(self.source.clone()).or_insert(0);
     match self.test {
-      Test::Greater => {*reg > self.value},
-      Test::GreaterEqual => {*reg >= self.value},
-      Test::Equal => {*reg == self.value},
-      Test::NotEqual => {*reg != self.value},
-      Test::LessEqual => {*reg <= self.value},
-      Test::Less => {*reg < self.value},
+      Test::Greater => *reg > self.value,
+      Test::GreaterEqual => *reg >= self.value,
+      Test::Equal => *reg == self.value,
+      Test::NotEqual => *reg != self.value,
+      Test::LessEqual => *reg <= self.value,
+      Test::Less => *reg < self.value,
     }
   }
 }
@@ -1122,7 +1122,7 @@ impl Condition {
 struct Instruction {
   dest: String,
   op: Operation,
-  cond: Condition
+  cond: Condition,
 }
 
 impl FromStr for Instruction {
@@ -1139,12 +1139,12 @@ impl FromStr for Instruction {
         Err(())
       },
       Some(x) => {
-        Ok(Instruction{
+        Ok(Instruction {
           dest: x.at(1).unwrap().to_string(),
           op: x.at(2).unwrap().parse().unwrap(),
-          cond: x.at(3).unwrap().parse().unwrap()
+          cond: x.at(3).unwrap().parse().unwrap(),
         })
-      }
+      },
     }
   }
 }
@@ -1154,8 +1154,8 @@ impl Instruction {
     if self.cond.evaluate(regs) {
       let reg = regs.entry(self.dest.clone()).or_insert(0);
       match self.op {
-        Operation::Inc(value) => {*reg += value},
-        Operation::Dec(value) => {*reg -= value},
+        Operation::Inc(value) => *reg += value,
+        Operation::Dec(value) => *reg -= value,
       }
       Some((self.dest.clone(), *reg))
     } else {
@@ -1216,21 +1216,32 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  let expected = hashmap!{
+  let expected =
+    hashmap!{
     "a".to_string() => 1,
     "b".to_string() => 0,
     "c".to_string() => -10,
   };
-  assert_eq!(process_data_a("b inc 5 if a > 1
+  assert_eq!(
+    process_data_a(
+      "b inc 5 if a > 1
 a inc 1 if b < 5
 c dec -10 if a >= 1
-c inc -20 if c == 10"), expected);
+c inc -20 if c == 10",
+    ),
+    expected
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("b inc 5 if a > 1
+  assert_eq!(
+    process_data_b(
+      "b inc 5 if a > 1
 a inc 1 if b < 5
 c dec -10 if a >= 1
-c inc -20 if c == 10"), ("c".to_string(), 10));
+c inc -20 if c == 10",
+    ),
+    ("c".to_string(), 10)
+  );
 }

@@ -3,11 +3,11 @@
 
 use aoc::Day;
 
-use std::str::FromStr;
 use regex::Regex;
+use std::str::FromStr;
 
 
-static INPUT : &'static str = "Dancer can fly 27 km/s for 5 seconds, but then must rest for 132 seconds.
+static INPUT: &'static str = "Dancer can fly 27 km/s for 5 seconds, but then must rest for 132 seconds.
 Cupid can fly 22 km/s for 2 seconds, but then must rest for 41 seconds.
 Rudolph can fly 11 km/s for 5 seconds, but then must rest for 48 seconds.
 Donner can fly 28 km/s for 5 seconds, but then must rest for 134 seconds.
@@ -27,7 +27,7 @@ struct Reindeer {
   speed: u32,
   duration: u32,
   rest: u32,
-  points: u32
+  points: u32,
 }
 
 impl FromStr for Reindeer {
@@ -40,7 +40,7 @@ impl FromStr for Reindeer {
     let captures = RE.captures(s);
     match captures {
       Some(cap) => {
-        Ok(Reindeer{
+        Ok(Reindeer {
           name: cap.at(1).unwrap().to_string(),
           speed: cap.at(2).unwrap().parse().unwrap(),
           duration: cap.at(3).unwrap().parse().unwrap(),
@@ -48,7 +48,7 @@ impl FromStr for Reindeer {
           points: 0,
         })
       },
-      None => Err(())
+      None => Err(()),
     }
   }
 }
@@ -75,9 +75,12 @@ fn process_data_b(data: &str, count: u32) -> u32 {
   for line in data.lines() {
     reindeers.push(line.parse().unwrap());
   }
-  for i in 1..count+1 {
+  for i in 1..count + 1 {
     let lead = reindeers.iter().map(|x| x.distance(i)).max().unwrap();
-    reindeers.iter_mut().filter(|x| x.distance(i) == lead).for_each(|x| x.points += 1);
+    reindeers
+      .iter_mut()
+      .filter(|x| x.distance(i) == lead)
+      .for_each(|x| x.points += 1);
   }
   reindeers.iter().map(|x| x.points).max().unwrap()
 }
@@ -107,8 +110,12 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  let comet: Reindeer = "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.".parse().unwrap();
-  let dancer: Reindeer = "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.".parse().unwrap();
+  let comet: Reindeer = "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds."
+    .parse()
+    .unwrap();
+  let dancer: Reindeer = "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
+    .parse()
+    .unwrap();
   assert_eq!(comet.distance(1), 14);
   assert_eq!(comet.distance(10), 140);
   assert_eq!(comet.distance(11), 140);
@@ -121,6 +128,12 @@ fn a() {
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
-Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.", 1000), 689);
+  assert_eq!(
+    process_data_b(
+      "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
+Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.",
+      1000,
+    ),
+    689
+  );
 }

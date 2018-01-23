@@ -7,7 +7,7 @@ use nom;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "jio a, +16
+static INPUT: &'static str = "jio a, +16
 inc a
 inc a
 tpl a
@@ -62,7 +62,7 @@ enum Instruction {
   Increment(char),
   Jump(i64),
   JumpEven(char, i64),
-  JumpOne(char, i64)
+  JumpOne(char, i64),
 }
 
 impl Instruction {
@@ -83,12 +83,8 @@ impl Instruction {
       Instruction::Jump(offset) => {
         state.pc += offset;
       },
-      Instruction::JumpEven(reg, offset) => {
-        state.pc += if state.registers[&reg] % 2 == 0 { offset } else { 1 }
-      },
-      Instruction::JumpOne(reg, offset) => {
-        state.pc += if state.registers[&reg] == 1 { offset } else { 1 }
-      },
+      Instruction::JumpEven(reg, offset) => state.pc += if state.registers[&reg] % 2 == 0 { offset } else { 1 },
+      Instruction::JumpOne(reg, offset) => state.pc += if state.registers[&reg] == 1 { offset } else { 1 },
     }
   }
 }
@@ -98,7 +94,7 @@ impl Instruction {
 struct State {
   registers: HashMap<char, i64>,
   pc: i64,
-  instructions: Vec<Instruction>
+  instructions: Vec<Instruction>,
 }
 
 impl State {
@@ -174,7 +170,7 @@ fn process_data_a(data: &str, reg: char) -> i64 {
   let mut state = State {
     registers: hashmap!{ 'a' => 0, 'b' => 0 },
     pc: 0,
-    instructions: instructions
+    instructions: instructions,
   };
   while let Some(new) = state.execute() {
     state = new;
@@ -187,7 +183,7 @@ fn process_data_b(data: &str, reg: char) -> i64 {
   let mut state = State {
     registers: hashmap!{ 'a' => 1, 'b' => 0 },
     pc: 0,
-    instructions: instructions
+    instructions: instructions,
   };
   while let Some(new) = state.execute() {
     state = new;
@@ -220,10 +216,16 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("inc a
+  assert_eq!(
+    process_data_a(
+      "inc a
 jio a, +2
 tpl a
-inc a", 'a'), 2);
+inc a",
+      'a',
+    ),
+    2
+  );
 }
 
 #[test]

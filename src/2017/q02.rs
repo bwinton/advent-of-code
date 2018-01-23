@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "1208	412	743	57	1097	53	71	1029	719	133	258	69	1104	373	367	365
+static INPUT: &'static str = "1208	412	743	57	1097	53	71	1029	719	133	258	69	1104	373	367	365
 4011	4316	1755	4992	228	240	3333	208	247	3319	4555	717	1483	4608	1387	3542
 675	134	106	115	204	437	1035	1142	195	1115	569	140	1133	190	701	1016
 4455	2184	5109	221	3794	246	5214	4572	3571	3395	2054	5050	216	878	237	3880
@@ -23,7 +23,10 @@ static INPUT : &'static str = "1208	412	743	57	1097	53	71	1029	719	133	258	69	11
 fn process_data_a(data: &str) -> i32 {
   let mut rv = 0;
   for line in data.lines() {
-    let values: Vec<i32> = line.split_whitespace().map(|i| i.parse::<i32>().unwrap()).collect();
+    let values: Vec<i32> = line
+      .split_whitespace()
+      .map(|i| i.parse::<i32>().unwrap())
+      .collect();
     let max = values.iter().max().unwrap();
     let min = values.iter().min().unwrap();
     rv += max - min;
@@ -34,7 +37,10 @@ fn process_data_a(data: &str) -> i32 {
 fn process_data_b(data: &str) -> i32 {
   let mut rv = 0;
   for line in data.lines() {
-    let values: Vec<i32> = line.split_whitespace().map(|i| i.parse::<i32>().unwrap()).collect();
+    let values: Vec<i32> = line
+      .split_whitespace()
+      .map(|i| i.parse::<i32>().unwrap())
+      .collect();
     for x in &values {
       for y in &values {
         if x != y && x / y * y == *x {
@@ -74,9 +80,14 @@ fn a() {
   assert_eq!(process_data_a("5 1 9 5"), 8);
   assert_eq!(process_data_a("7 5 3"), 4);
   assert_eq!(process_data_a("2 4 6 8"), 6);
-  assert_eq!(process_data_a("5 1 9 5
+  assert_eq!(
+    process_data_a(
+      "5 1 9 5
 7 5 3
-2 4 6 8"), 18);
+2 4 6 8",
+    ),
+    18
+  );
 }
 
 #[test]
@@ -84,7 +95,12 @@ fn b() {
   assert_eq!(process_data_b("5 9 2 8"), 4);
   assert_eq!(process_data_b("9 4 7 3"), 3);
   assert_eq!(process_data_b("3 8 6 5"), 2);
-  assert_eq!(process_data_b("5 9 2 8
+  assert_eq!(
+    process_data_b(
+      "5 9 2 8
 9 4 7 3
-3 8 6 5"), 9);
+3 8 6 5",
+    ),
+    9
+  );
 }

@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "31/13
+static INPUT: &'static str = "31/13
 34/4
 49/49
 23/37
@@ -73,7 +73,7 @@ static INPUT : &'static str = "31/13
 struct Pipe {
   input: usize,
   output: usize,
-  strength: usize
+  strength: usize,
 }
 
 impl FromStr for Pipe {
@@ -82,10 +82,10 @@ impl FromStr for Pipe {
   fn from_str(s: &str) -> Result<Pipe, ()> {
     let mut values: Vec<usize> = s.split('/').map(|i| i.parse().unwrap()).collect();
     values.sort();
-    Ok(Pipe{
+    Ok(Pipe {
       input: values[0],
       output: values[1],
-      strength: values[0] + values[1]
+      strength: values[0] + values[1],
     })
   }
 }
@@ -95,7 +95,7 @@ impl Pipe {
     match expecting {
       x if x == self.input => Some(self.output),
       x if x == self.output => Some(self.input),
-      _ => None
+      _ => None,
     }
   }
 }
@@ -109,7 +109,7 @@ struct Bridge {
   pipes: Vec<Pipe>,
   remaining: Vec<Pipe>,
   strength: usize,
-  expecting: usize
+  expecting: usize,
 }
 
 impl Ord for Bridge {
@@ -128,7 +128,7 @@ impl Bridge {
       pipes: Vec::new(),
       remaining: pipes.to_owned(),
       strength: 0,
-      expecting: 0
+      expecting: 0,
     }
   }
 
@@ -192,8 +192,8 @@ fn process_data_b(data: &str) -> usize {
   while !next.is_empty() {
     let current = next.pop().unwrap();
     if current.pipes.len() > rv.pipes.len() ||
-      (current.pipes.len() == rv.pipes.len() &&
-       current.strength > rv.strength) {
+      (current.pipes.len() == rv.pipes.len() && current.strength > rv.strength)
+    {
       rv = current.clone();
     }
     for (index, pipe) in current.remaining.iter().enumerate() {
@@ -236,24 +236,34 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("0/2
+  assert_eq!(
+    process_data_a(
+      "0/2
 2/2
 2/3
 3/4
 3/5
 0/1
 10/1
-9/10"), 31);
+9/10",
+    ),
+    31
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("0/2
+  assert_eq!(
+    process_data_b(
+      "0/2
 2/2
 2/3
 3/4
 3/5
 0/1
 10/1
-9/10"), 19);
+9/10",
+    ),
+    19
+  );
 }

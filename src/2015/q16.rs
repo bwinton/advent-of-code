@@ -9,7 +9,7 @@ use std::collections::HashMap;
 use std::str;
 use std::str::FromStr;
 
-static INPUT : &'static str = "Sue 1: cars: 9, akitas: 3, goldfish: 0
+static INPUT: &'static str = "Sue 1: cars: 9, akitas: 3, goldfish: 0
 Sue 2: akitas: 9, children: 3, samoyeds: 9
 Sue 3: trees: 6, cars: 6, children: 4
 Sue 4: trees: 4, vizslas: 4, goldfish: 9
@@ -513,7 +513,7 @@ Sue 500: pomeranians: 10, cats: 3, vizslas: 5";
 #[derive(Debug)]
 struct AuntSue {
   name: Option<u32>,
-  features: HashMap<String, u32>
+  features: HashMap<String, u32>,
 }
 
 impl AuntSue {
@@ -532,13 +532,13 @@ impl AuntSue {
       match feature.as_str() {
         "cats" | "trees" => {
           rv &= other.features[feature] > self.features[feature];
-        }
+        },
         "pomeranians" | "goldfish" => {
           rv &= other.features[feature] < self.features[feature];
-        }
+        },
         _ => {
           rv &= other.features[feature] == self.features[feature];
-        }
+        },
       }
     }
     rv
@@ -585,7 +585,7 @@ fn process_data_a(data: &str) -> u32 {
       "trees".to_string() => 3,
       "cars".to_string() => 2,
       "perfumes".to_string() => 1
-    }
+    },
   };
   let mut aunts_sue = Vec::new();
   for line in data.lines() {
@@ -614,7 +614,7 @@ fn process_data_b(data: &str) -> u32 {
       "trees".to_string() => 3,
       "cars".to_string() => 2,
       "perfumes".to_string() => 1
-    }
+    },
   };
 
   let mut aunts_sue = Vec::new();

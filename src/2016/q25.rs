@@ -7,8 +7,8 @@ use regex::Regex;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::str::FromStr;
 use std::i32::MAX;
+use std::str::FromStr;
 
 
 // static INPUT : &'static str = "cpy a b
@@ -16,7 +16,7 @@ use std::i32::MAX;
 // cpy 0 b
 // out b
 // jnz 1 -4";
-static INPUT : &'static str = "cpy a d
+static INPUT: &'static str = "cpy a d
 cpy 14 c
 cpy 182 b
 inc d
@@ -60,7 +60,7 @@ enum Instruction {
   JumpRegLit(i32, i32),
   JumpRegReg(i32, i32),
   Out(i32),
-  Toggle(i32)
+  Toggle(i32),
 }
 
 impl Instruction {
@@ -72,53 +72,53 @@ impl Instruction {
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] = lit;
         }
-      }
+      },
       Instruction::CopyRegister(reg_a, reg_b) => {
         rv.pc += 1;
         if reg_valid(reg_a, &rv) && reg_valid(reg_b, &rv) {
           rv.registers[reg_b as usize] = rv.registers[reg_a as usize];
         }
-      }
+      },
       Instruction::Increment(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] += 1;
         }
-      }
+      },
       Instruction::Decrement(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] -= 1;
         }
-      }
+      },
       Instruction::JumpLitLit(test, offset) => {
         if test != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpLitReg(test, reg) => {
         if reg_valid(reg, &rv) && test != 0 {
           rv.pc += rv.registers[reg as usize];
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpRegLit(reg, offset) => {
         if reg_valid(reg, &rv) && rv.registers[reg as usize] != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpRegReg(reg_test, reg_offset) => {
-        if reg_valid(reg_test, &rv) && reg_valid(reg_offset, &rv) && rv.registers[reg_test as usize]  != 0 {
+        if reg_valid(reg_test, &rv) && reg_valid(reg_offset, &rv) && rv.registers[reg_test as usize] != 0 {
           rv.pc += rv.registers[reg_offset as usize];
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::Out(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
@@ -126,7 +126,7 @@ impl Instruction {
           rv.out(data);
           print!("{} ", data);
         }
-      }
+      },
       Instruction::Toggle(reg) => {
         if reg_valid(reg, &rv) {
           let index = (rv.pc + rv.registers[reg as usize]) as usize;
@@ -135,31 +135,34 @@ impl Instruction {
             match new_instruction {
               Instruction::CopyLiteral(lit, reg) => {
                 rv.instructions[index] = Instruction::JumpLitReg(lit, reg);
-              }
+              },
               Instruction::CopyRegister(reg_a, reg_b) => {
                 rv.instructions[index] = Instruction::JumpRegReg(reg_a, reg_b);
-              }
+              },
               Instruction::Increment(reg) => {
                 rv.instructions[index] = Instruction::Decrement(reg);
-              }
-              Instruction::Decrement(reg) | Instruction::Out(reg) | Instruction::Toggle(reg) => {
+              },
+              Instruction::Decrement(reg) |
+              Instruction::Out(reg) |
+              Instruction::Toggle(reg) => {
                 rv.instructions[index] = Instruction::Increment(reg);
-              }
-              Instruction::JumpLitLit(_test, _offset) | Instruction::JumpRegLit(_test, _offset) => {
+              },
+              Instruction::JumpLitLit(_test, _offset) |
+              Instruction::JumpRegLit(_test, _offset) => {
                 println!("GAAAAHHHH!!!!");
                 // rv.instructions[index] = Instruction::CopyLiteral(test, offset);
-              }
+              },
               Instruction::JumpLitReg(test, offset) => {
                 rv.instructions[index] = Instruction::CopyLiteral(test, offset);
-              }
+              },
               Instruction::JumpRegReg(reg_test, reg_offset) => {
                 rv.instructions[index] = Instruction::CopyRegister(reg_test, reg_offset);
-              }
+              },
             }
           }
         }
         rv.pc += 1;
-      }
+      },
     }
     rv
   }
@@ -185,67 +188,59 @@ impl FromStr for Instruction {
     if let Some(cap) = COPY_LITERAL_RE.captures(s) {
       return Ok(Instruction::CopyLiteral(
         cap.at(1).unwrap().parse().unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
     if let Some(cap) = COPY_REGISTER_RE.captures(s) {
       return Ok(Instruction::CopyRegister(
         reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
     if let Some(cap) = INCREMENT_RE.captures(s) {
-      return Ok(Instruction::Increment(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Increment(reg_index(cap.at(1)).unwrap()));
     }
 
     if let Some(cap) = DECREMENT_RE.captures(s) {
-      return Ok(Instruction::Decrement(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Decrement(reg_index(cap.at(1)).unwrap()));
     }
 
     if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
       return Ok(Instruction::JumpLitLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITREG_RE.captures(s) {
       return Ok(Instruction::JumpLitReg(
         cap.at(1).unwrap().parse().unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
       return Ok(Instruction::JumpRegLit(
         reg_index(cap.at(1)).unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGREG_RE.captures(s) {
       return Ok(Instruction::JumpRegReg(
         reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
     if let Some(cap) = OUT_RE.captures(s) {
-      return Ok(Instruction::Out(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Out(reg_index(cap.at(1)).unwrap()));
     }
 
     if let Some(cap) = TOGGLE_RE.captures(s) {
-      return Ok(Instruction::Toggle(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Toggle(reg_index(cap.at(1)).unwrap()));
     }
 
     println!("Unknown instruction! '{}'", s);
@@ -260,7 +255,7 @@ struct State {
   pc: i32,
   instructions: Vec<Instruction>,
   expected: i32,
-  valid: bool
+  valid: bool,
 }
 
 impl PartialEq for State {
@@ -280,9 +275,13 @@ impl Hash for State {
 
 impl State {
   pub fn new(registers: [i32; 4], instructions: Vec<Instruction>) -> State {
-    State{registers: registers, pc: 0,
-      instructions:instructions, expected: -1,
-      valid: true}
+    State {
+      registers: registers,
+      pc: 0,
+      instructions: instructions,
+      expected: -1,
+      valid: true,
+    }
   }
 
   fn out(&mut self, data: i32) {
@@ -291,7 +290,7 @@ impl State {
         match data {
           0 => self.expected = 1,
           1 => self.expected = 0,
-          _ => self.valid = false
+          _ => self.valid = false,
         }
       },
       0 => {
@@ -308,7 +307,7 @@ impl State {
           self.valid = false;
         }
       },
-      _ => self.valid = false
+      _ => self.valid = false,
     }
   }
 }
@@ -320,7 +319,7 @@ fn reg_index(s: Option<&str>) -> Option<i32> {
     "b" => Some(1),
     "c" => Some(2),
     "d" => Some(3),
-    &_ => None
+    &_ => None,
   }
 }
 
@@ -344,7 +343,7 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut instructions : Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<Instruction> = Vec::new();
     for line in INPUT.lines() {
       let instruction = line.parse().unwrap();
       instructions.push(instruction);
@@ -353,14 +352,14 @@ impl Day for Q {
     let mut result = MAX;
     for a in 0..MAX {
       print!("Running {}: ", a);
-      let mut state = State::new([a,0,0,0], instructions.clone());
+      let mut state = State::new([a, 0, 0, 0], instructions.clone());
       let mut seen = HashSet::new();
       seen.insert(state.clone());
 
       let mut count = 0;
       while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
         state = execute(&state);
-        if !state.valid || seen.contains(&state){
+        if !state.valid || seen.contains(&state) {
           break;
         }
         seen.insert(state.clone());

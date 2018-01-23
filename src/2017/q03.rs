@@ -6,13 +6,13 @@ use aoc::Day;
 use std;
 use std::collections::HashMap;
 
-static INPUT : i32 = 265_149;
+static INPUT: i32 = 265_149;
 
 enum Direction {
   Left,
   Up,
   Right,
-  Down
+  Down,
 }
 
 // SpiralIter { len: 5, dir: Direction::Up, .. Default::default() }
@@ -64,16 +64,21 @@ define_iterator!(SpiralIter (
 });
 
 fn process_data_a(data: i32) -> i32 {
-  if data == 1 { return 0; }
+  if data == 1 {
+    return 0;
+  }
   let numbers = 0..;
   let mut rv = 0;
   for i in numbers {
     let block = 2 * i + 1;
-    if block*block >= data {
-      let remainder = data - (block-2)*(block-2);
+    if block * block >= data {
+      let remainder = data - (block - 2) * (block - 2);
       let low = i;
-      let high = 2*i;
-      let mut seesaw = (low..high).chain(high-1..low+1).cycle().skip(remainder as usize);
+      let high = 2 * i;
+      let mut seesaw = (low..high).chain(high - 1..low + 1).cycle().skip(
+        remainder as
+          usize,
+      );
       rv = seesaw.next().unwrap();
       break;
     }
@@ -145,22 +150,61 @@ fn a() {
 
 #[test]
 fn b() {
-  let spiral_values: Vec<[i32;2]> = SpiralIter::default().take(25).collect();
-  let spiral_expected: Vec<[i32;2]> = vec![
-      [0,0],   [1,0],  [1,-1], [0,-1], [-1,-1],
-     [-1,0],  [-1,1],   [0,1],  [1,1],   [2,1],
-      [2,0],  [2,-1],  [2,-2], [1,-2],  [0,-2],
-    [-1,-2], [-2,-2], [-2,-1], [-2,0],  [-2,1],
-     [-2,2],  [-1,2],   [0,2],  [1,2],   [2,2]
+  let spiral_values: Vec<[i32; 2]> = SpiralIter::default().take(25).collect();
+  let spiral_expected: Vec<[i32; 2]> = vec![
+    [0, 0],
+    [1, 0],
+    [1, -1],
+    [0, -1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [2, 0],
+    [2, -1],
+    [2, -2],
+    [1, -2],
+    [0, -2],
+    [-1, -2],
+    [-2, -2],
+    [-2, -1],
+    [-2, 0],
+    [-2, 1],
+    [-2, 2],
+    [-1, 2],
+    [0, 2],
+    [1, 2],
+    [2, 2],
   ];
   assert_eq!(spiral_values, spiral_expected);
 
   let mult_values: Vec<usize> = MultIter::default().take(23).collect();
   let mult_expected: Vec<usize> = vec![
-      1,   1,   2,   4,   5,
-     10,  11,  23,  25,  26,
-     54,  57,  59, 122, 133,
-    142, 147, 304, 330, 351,
-    362, 747, 806];
+    1,
+    1,
+    2,
+    4,
+    5,
+    10,
+    11,
+    23,
+    25,
+    26,
+    54,
+    57,
+    59,
+    122,
+    133,
+    142,
+    147,
+    304,
+    330,
+    351,
+    362,
+    747,
+    806,
+  ];
   assert_eq!(mult_values, mult_expected);
 }

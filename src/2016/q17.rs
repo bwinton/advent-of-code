@@ -2,8 +2,8 @@
 // Setup.
 
 use aoc::Day;
-use crypto::md5::Md5;
 use crypto::digest::Digest;
+use crypto::md5::Md5;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 
@@ -11,12 +11,15 @@ use std::collections::BinaryHeap;
 // static INPUT : &'static str = "ihgpwlah";
 // static INPUT : &'static str = "kglvqrro";
 // static INPUT : &'static str = "ulqzkmiv";
-static INPUT : &'static str = "yjjvjgan";
+static INPUT: &'static str = "yjjvjgan";
 
 #[derive(Clone)]
 #[derive(Debug)]
 enum Direction {
-  Up, Left, Down, Right
+  Up,
+  Left,
+  Down,
+  Right,
 }
 
 #[derive(Clone)]
@@ -25,7 +28,7 @@ struct State {
   x: usize,
   y: usize,
   path: String,
-  open_doors: Vec<Direction>
+  open_doors: Vec<Direction>,
 }
 
 impl Ord for State {
@@ -75,14 +78,13 @@ impl State {
       x: x,
       y: y,
       path: path.to_string(),
-      open_doors: open_doors
+      open_doors: open_doors,
     }
   }
 
   pub fn is_winning(&self) -> bool {
     self.x == 3 && self.y == 3
   }
-
 }
 
 fn get_next_states(state: &State) -> Vec<State> {
@@ -111,7 +113,7 @@ fn get_next_states(state: &State) -> Vec<State> {
         let mut path = state.path.clone();
         path.push('R');
         rv.push(State::new(&path, state.x + 1, state.y));
-      }
+      },
     }
   }
   rv

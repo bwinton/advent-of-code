@@ -7,7 +7,7 @@ use nom::alpha;
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT : &'static str = "Al => ThF
+static INPUT: &'static str = "Al => ThF
 Al => ThRnFAr
 B => BCa
 B => TiB
@@ -57,7 +57,7 @@ CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRn
 #[derive(Debug)]
 struct Rule {
   source: Regex,
-  dest: String
+  dest: String,
 }
 
 impl Rule {
@@ -65,7 +65,7 @@ impl Rule {
     let mut rv = Vec::new();
     for found in self.source.find_iter(start) {
       let mut dest = start.to_owned();
-      dest.splice(found.0 .. found.1, &self.dest);
+      dest.splice(found.0..found.1, &self.dest);
       rv.push(dest);
     }
     rv
@@ -99,8 +99,15 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
   let (_, goal) = parser(data).unwrap().1;
-  let tokens: Vec<String> = Regex::new("[A-Z][a-z]?").unwrap().captures_iter(&goal).map(|x| x[0].to_owned()).collect();
-  let brackets: Vec<&String> = tokens.iter().filter(|&x| *x == "Rn" || *x == "Ar").collect();
+  let tokens: Vec<String> = Regex::new("[A-Z][a-z]?")
+    .unwrap()
+    .captures_iter(&goal)
+    .map(|x| x[0].to_owned())
+    .collect();
+  let brackets: Vec<&String> = tokens
+    .iter()
+    .filter(|&x| *x == "Rn" || *x == "Ar")
+    .collect();
   let commas: Vec<&String> = tokens.iter().filter(|&x| *x == "Y").collect();
   tokens.len() - brackets.len() - 2 * commas.len() - 1
 }
@@ -135,7 +142,7 @@ H => OH
 O => HH
 
 HOH"), 4);
-assert_eq!(process_data_a("H => HO
+  assert_eq!(process_data_a("H => HO
 H => OH
 O => HH
 
@@ -143,5 +150,4 @@ HOHOHO"), 7);
 }
 
 #[test]
-fn b() {
-}
+fn b() {}

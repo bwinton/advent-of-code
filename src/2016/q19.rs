@@ -4,7 +4,7 @@
 use aoc::Day;
 
 // static INPUT : usize = 5;
-static INPUT : usize = 3_014_603;
+static INPUT: usize = 3_014_603;
 
 fn get_result_a() -> usize {
   let mut n = 2;
@@ -22,7 +22,7 @@ fn get_result_b() -> usize {
   }
   let mut l = INPUT - (n / 3);
   let mut m = 0;
-  if l > n / 3  {
+  if l > n / 3 {
     m = l - n / 3;
     l -= m;
   }

@@ -9,7 +9,7 @@ use std::collections::HashSet;
 use std::str;
 use std::str::FromStr;
 
-static INPUT : &'static str = "Begin in state A.
+static INPUT: &'static str = "Begin in state A.
 Perform a diagnostic checksum after 12656374 steps.
 
 In state A:
@@ -81,7 +81,7 @@ struct Action {
   test: bool,
   write: bool,
   direction: i32,
-  next: char
+  next: char,
 }
 
 #[derive(Clone)]
@@ -90,7 +90,7 @@ struct Action {
 #[derive(PartialEq)]
 struct State {
   name: char,
-  actions: HashMap<bool, Action>
+  actions: HashMap<bool, Action>,
 }
 
 #[derive(Clone)]
@@ -103,7 +103,7 @@ struct Machine {
   state: char,
   checksum: usize,
   steps: usize,
-  states: HashMap<char, State>
+  states: HashMap<char, State>,
 }
 
 impl Machine {
@@ -279,14 +279,14 @@ fn a() {
     test: false,
     write: true,
     direction: 1,
-    next: 'B'
+    next: 'B',
   };
 
   let action_a1 = Action {
     test: true,
     write: false,
     direction: -1,
-    next: 'B'
+    next: 'B',
   };
 
   let state_a = State {
@@ -294,21 +294,21 @@ fn a() {
     actions: hashmap!{
       false => action_a0.clone(),
       true => action_a1.clone()
-    }
+    },
   };
 
   let action_b0 = Action {
     test: false,
     write: true,
     direction: -1,
-    next: 'A'
+    next: 'A',
   };
 
   let action_b1 = Action {
     test: true,
     write: true,
     direction: 1,
-    next: 'A'
+    next: 'A',
   };
 
   let state_b = State {
@@ -316,7 +316,7 @@ fn a() {
     actions: hashmap!{
       false => action_b0.clone(),
       true => action_b1.clone()
-    }
+    },
   };
 
   let machine = Machine {
@@ -328,7 +328,7 @@ fn a() {
     states: hashmap!{
       'A' => state_a.clone(),
       'B' => state_b.clone()
-    }
+    },
   };
 
   assert_eq!(action_parser("  If the current value is 0:

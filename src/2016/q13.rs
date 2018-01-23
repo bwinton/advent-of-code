@@ -8,9 +8,9 @@ use std::collections::BinaryHeap;
 // static INPUT_NUMBER : i32 = 10;
 // static INPUT_TARGET_X : i32 = 7;
 // static INPUT_TARGET_Y : i32 = 4;
-static INPUT_NUMBER : i32 = 1362;
-static INPUT_TARGET_X : i32 = 31;
-static INPUT_TARGET_Y : i32 = 39;
+static INPUT_NUMBER: i32 = 1362;
+static INPUT_TARGET_X: i32 = 31;
+static INPUT_TARGET_Y: i32 = 39;
 
 #[derive(Clone)]
 #[derive(Debug)]
@@ -20,7 +20,7 @@ struct State {
   y: i32,
   moves: i32,
   wall: bool,
-  dist: i32
+  dist: i32,
 }
 
 impl State {
@@ -28,8 +28,12 @@ impl State {
     let wall = cell_is_wall(x, y);
     let delta_x = INPUT_TARGET_X - x;
     let delta_y = INPUT_TARGET_Y - y;
-    State { x: x, y: y, moves: moves, wall: wall,
-      dist: delta_x * delta_x + delta_y * delta_y
+    State {
+      x: x,
+      y: y,
+      moves: moves,
+      wall: wall,
+      dist: delta_x * delta_x + delta_y * delta_y,
     }
   }
 }
@@ -37,11 +41,7 @@ impl State {
 impl Ord for State {
   fn cmp(&self, other: &State) -> Ordering {
     let move_cmp = (-self.moves).cmp(&-other.moves);
-    if move_cmp == Ordering::Equal {
-      self.dist.cmp(&other.dist)
-    } else {
-      move_cmp
-    }
+    if move_cmp == Ordering::Equal { self.dist.cmp(&other.dist) } else { move_cmp }
   }
 }
 
@@ -58,7 +58,7 @@ impl PartialEq for State {
 }
 
 fn cell_is_wall(x: i32, y: i32) -> bool {
-  let mut number = x*x + 3*x + 2*x*y + y + y*y + INPUT_NUMBER;
+  let mut number = x * x + 3 * x + 2 * x * y + y + y * y + INPUT_NUMBER;
   let mut count = 0;
   while number != 0 {
     number &= number - 1;
@@ -107,7 +107,7 @@ impl Day for Q {
     let mut result = 0;
 
     let mut next = BinaryHeap::new();
-    let mut seen : Vec<State> = Vec::new();
+    let mut seen: Vec<State> = Vec::new();
     let initial_state = State::new(1, 1, 0);
     next.push(initial_state);
 
@@ -140,8 +140,8 @@ impl Day for Q {
     print!("{}B: ", self.number());
     let mut result = 0;
 
-    let mut next : Vec<State> = Vec::new();
-    let mut seen : Vec<State> = Vec::new();
+    let mut next: Vec<State> = Vec::new();
+    let mut seen: Vec<State> = Vec::new();
     let initial_state = State::new(1, 1, 0);
     next.push(initial_state);
 

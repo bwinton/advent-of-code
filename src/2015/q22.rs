@@ -17,7 +17,7 @@ struct Spell {
   healing: i32,
   armor: i32,
   mana: i32,
-  duration: i32
+  duration: i32,
 }
 
 impl PartialEq for Spell {
@@ -33,7 +33,7 @@ impl PartialEq for Spell {
 struct Player {
   hp: i32,
   mana: i32,
-  armor: i32
+  armor: i32,
 }
 
 impl Player {
@@ -41,7 +41,7 @@ impl Player {
     Player {
       hp: 50,
       mana: 500,
-      armor: 0
+      armor: 0,
     }
   }
 }
@@ -57,10 +57,7 @@ struct Boss {
 
 impl Boss {
   pub fn new() -> Boss {
-    Boss {
-      hp: 55,
-      damage: 8
-    }
+    Boss { hp: 55, damage: 8 }
   }
 }
 
@@ -72,7 +69,7 @@ struct State {
   cost: i32,
   player: Player,
   boss: Boss,
-  effects: Vec<Spell>
+  effects: Vec<Spell>,
 }
 
 impl Ord for State {
@@ -87,11 +84,11 @@ impl PartialOrd for State {
   }
 }
 
-static MAGIC_MISSLE : &'static str = "Magic Missle";
-static DRAIN : &'static str = "Drain";
-static SHIELD : &'static str = "Shield";
-static POISON : &'static str = "Poison";
-static RECHARGE : &'static str = "Recharge";
+static MAGIC_MISSLE: &'static str = "Magic Missle";
+static DRAIN: &'static str = "Drain";
+static SHIELD: &'static str = "Shield";
+static POISON: &'static str = "Poison";
+static RECHARGE: &'static str = "Recharge";
 
 lazy_static! {
   static ref SPELLS: HashMap<&'static str, Spell> = {
@@ -112,7 +109,7 @@ impl State {
       cost: 0,
       player: Player::new(),
       boss: Boss::new(),
-      effects: Vec::new()
+      effects: Vec::new(),
     }
   }
 
@@ -159,11 +156,7 @@ impl State {
 
     rv.player.hp -= 1.max(rv.boss.damage - rv.player.armor);
 
-    if rv.player.hp <= 0 {
-      None
-    } else {
-      Some(rv)
-    }
+    if rv.player.hp <= 0 { None } else { Some(rv) }
   }
 
   fn apply_effects(&mut self) {

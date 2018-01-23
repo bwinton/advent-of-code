@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "....##.#.#.#...#.##.##.#.
+static INPUT: &'static str = "....##.#.#.#...#.##.##.#.
 ##.####..###..#.#.#.###.#
 .#.#...#.##....#......###
 ...#.....##.###....##.###
@@ -37,7 +37,7 @@ enum Direction {
   Left,
   Up,
   Right,
-  Down
+  Down,
 }
 
 #[derive(Clone)]
@@ -47,14 +47,14 @@ enum Cell {
   Clean,
   Weakened,
   Infected,
-  Flagged
+  Flagged,
 }
 
 #[derive(Clone)]
 #[derive(Debug)]
-struct Board{
+struct Board {
   cells: HashMap<(i32, i32), Cell>,
-  simple: bool
+  simple: bool,
 }
 
 impl FromStr for Board {
@@ -84,7 +84,7 @@ impl FromStr for Board {
 
     Ok(Board {
       cells: cells,
-      simple: true
+      simple: true,
     })
   }
 }
@@ -110,11 +110,11 @@ impl Board {
           },
           Cell::Flagged => {
             new_cells.remove(&position);
-          }
+          },
         }
       }
     } else {
-      new_cells.insert(position, if self.simple {Cell::Infected} else {Cell::Weakened});
+      new_cells.insert(position, if self.simple { Cell::Infected } else { Cell::Weakened });
     }
     self.cells = new_cells;
     (prev, self.cells.get(&position).unwrap_or(&Cell::Clean).clone())
@@ -124,45 +124,51 @@ impl Board {
 #[derive(Debug)]
 struct Carrier {
   position: (i32, i32),
-  direction: Direction
+  direction: Direction,
 }
 
 impl Carrier {
   pub fn new() -> Carrier {
     Carrier {
       position: (0, 0),
-      direction: Direction::Up
+      direction: Direction::Up,
     }
   }
 
   fn step(&mut self, cell_type: &Cell) {
     // println!("At {:?}, found {:?}", &self, &cell_type);
     match *cell_type {
-      Cell::Clean => self.direction = match self.direction {
-        Direction::Left => Direction::Down,
-        Direction::Up => Direction::Left,
-        Direction::Right => Direction::Up,
-        Direction::Down => Direction::Right
+      Cell::Clean => {
+        self.direction = match self.direction {
+          Direction::Left => Direction::Down,
+          Direction::Up => Direction::Left,
+          Direction::Right => Direction::Up,
+          Direction::Down => Direction::Right,
+        }
       },
       Cell::Weakened => {},
-      Cell::Infected => self.direction = match self.direction {
-        Direction::Left => Direction::Up,
-        Direction::Up => Direction::Right,
-        Direction::Right => Direction::Down,
-        Direction::Down => Direction::Left
+      Cell::Infected => {
+        self.direction = match self.direction {
+          Direction::Left => Direction::Up,
+          Direction::Up => Direction::Right,
+          Direction::Right => Direction::Down,
+          Direction::Down => Direction::Left,
+        }
       },
-      Cell::Flagged => self.direction = match self.direction {
-        Direction::Left => Direction::Right,
-        Direction::Up => Direction::Down,
-        Direction::Right => Direction::Left,
-        Direction::Down => Direction::Up
+      Cell::Flagged => {
+        self.direction = match self.direction {
+          Direction::Left => Direction::Right,
+          Direction::Up => Direction::Down,
+          Direction::Right => Direction::Left,
+          Direction::Down => Direction::Up,
+        }
       },
     }
     self.position = match self.direction {
       Direction::Left => (self.position.0 - 1, self.position.1),
       Direction::Up => (self.position.0, self.position.1 - 1),
       Direction::Right => (self.position.0 + 1, self.position.1),
-      Direction::Down => (self.position.0, self.position.1 + 1)
+      Direction::Down => (self.position.0, self.position.1 + 1),
     };
     // println!("  Moved to {:?}\n", &self);
   }
@@ -226,26 +232,56 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("..#
+  assert_eq!(
+    process_data_a(
+      "..#
 #..
-...", 7), 5);
-  assert_eq!(process_data_a("..#
+...",
+      7,
+    ),
+    5
+  );
+  assert_eq!(
+    process_data_a(
+      "..#
 #..
-...", 70), 41);
-  assert_eq!(process_data_a("..#
+...",
+      70,
+    ),
+    41
+  );
+  assert_eq!(
+    process_data_a(
+      "..#
 #..
-...", 10_000), 5587);
+...",
+      10_000,
+    ),
+    5587
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("..#
+  assert_eq!(
+    process_data_b(
+      "..#
 #..
-...", 7), 1);
-  assert_eq!(process_data_b("..#
+...",
+      7,
+    ),
+    1
+  );
+  assert_eq!(
+    process_data_b(
+      "..#
 #..
-...", 100), 26);
-//   assert_eq!(process_data_b("..#
-// #..
-// ...", 10_000_000), 2_511_944);
+...",
+      100,
+    ),
+    26
+  );
+  //   assert_eq!(process_data_b("..#
+  // #..
+  // ...", 10_000_000), 2_511_944);
 }

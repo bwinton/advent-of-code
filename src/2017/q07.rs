@@ -7,7 +7,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "dihjv (2158) -> gausx, ncdmp, hozgrub
+static INPUT: &'static str = "dihjv (2158) -> gausx, ncdmp, hozgrub
 qhvca (428) -> odttvb, ymehff, ymyzbqc, jtdtmsi, wciuyuh
 kuvqhnm (77)
 eauol (56)
@@ -1262,7 +1262,12 @@ impl FromStr for Disc {
     lazy_static! {
       static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) \((\d+)\)( -> ([a-z]+(, )?)+)?$").unwrap();
     }
-    let mut rv = Disc{name: "".to_string(), weight: 0, sum: 0, holdings: Vec::new()};
+    let mut rv = Disc {
+      name: "".to_string(),
+      weight: 0,
+      sum: 0,
+      holdings: Vec::new(),
+    };
     let cap = MAIN_RE.captures(s);
     match cap {
       None => Err(()),
@@ -1273,7 +1278,7 @@ impl FromStr for Disc {
           rv.holdings = rest[4..].split(", ").map(|x| x.to_string()).collect();
         }
         Ok(rv)
-      }
+      },
     }
   }
 }
@@ -1308,7 +1313,11 @@ fn get_sums(discs: &mut HashMap<String, Disc>) -> (HashMap<String, Disc>, Option
     }
     let child_sums: Vec<&usize> = new.holdings.iter().map(|key| &lookup[key].sum).collect();
     if child_sums.iter().all(|x| *x != &0) && !child_sums.iter().all(|x| *x == child_sums[0]) {
-      let temp: Vec<_> = child_sums.iter().enumerate().filter(|i| *i.1 != child_sums[0]).collect();
+      let temp: Vec<_> = child_sums
+        .iter()
+        .enumerate()
+        .filter(|i| *i.1 != child_sums[0])
+        .collect();
       let mut regular = *child_sums[0];
       let mut odd = temp[0];
       if temp.len() > 1 {
@@ -1342,10 +1351,10 @@ fn process_data_b(data: &str) -> usize {
     rv = get_sums(&mut discs);
     discs = rv.0;
     match rv.1 {
-      None => {}
+      None => {},
       Some(value) => {
         return value;
-      }
+      },
     }
   }
   unreachable!();
@@ -1376,7 +1385,9 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("pbga (66)
+  assert_eq!(
+    process_data_a(
+      "pbga (66)
 xhth (57)
 ebii (61)
 havc (66)
@@ -1388,12 +1399,17 @@ tknk (41) -> ugml, padx, fwft
 jptl (61)
 ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
-cntj (57)"), "tknk");
+cntj (57)",
+    ),
+    "tknk"
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("pbga (66)
+  assert_eq!(
+    process_data_b(
+      "pbga (66)
 xhth (57)
 ebii (61)
 havc (66)
@@ -1405,5 +1421,8 @@ tknk (41) -> ugml, padx, fwft
 jptl (61)
 ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
-cntj (57)"), 60);
+cntj (57)",
+    ),
+    60
+  );
 }

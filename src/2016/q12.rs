@@ -11,7 +11,7 @@ use std::str::FromStr;
 // dec a
 // jnz a 2
 // dec a";
-static INPUT : &'static str = "cpy 1 a
+static INPUT: &'static str = "cpy 1 a
 cpy 1 b
 cpy 26 d
 jnz c 2
@@ -43,7 +43,7 @@ enum Instruction {
   Increment(usize),
   Decrement(usize),
   JumpLiteral(i32, i32),
-  JumpRegister(usize, i32)
+  JumpRegister(usize, i32),
 }
 
 impl Instruction {
@@ -53,33 +53,33 @@ impl Instruction {
       Instruction::CopyLiteral(lit, reg) => {
         rv.pc += 1;
         rv.registers[reg] = lit;
-      }
+      },
       Instruction::CopyRegister(reg_a, reg_b) => {
         rv.pc += 1;
         rv.registers[reg_b] = rv.registers[reg_a];
-      }
+      },
       Instruction::Increment(reg) => {
         rv.pc += 1;
         rv.registers[reg] += 1;
-      }
+      },
       Instruction::Decrement(reg) => {
         rv.pc += 1;
         rv.registers[reg] -= 1;
-      }
+      },
       Instruction::JumpLiteral(test, offset) => {
         if test != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpRegister(reg, offset) => {
         if rv.registers[reg] != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
     }
     // println!("{:?} {:?}", self, rv);
     rv
@@ -94,7 +94,7 @@ impl FromStr for Instruction {
     if let Some(cap) = copy_literal_re.captures(s) {
       return Ok(Instruction::CopyLiteral(
         cap.at(1).unwrap().parse().unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
@@ -102,29 +102,25 @@ impl FromStr for Instruction {
     if let Some(cap) = copy_register_re.captures(s) {
       return Ok(Instruction::CopyRegister(
         reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap()
+        reg_index(cap.at(2)).unwrap(),
       ));
     }
 
     let increment_re: Regex = Regex::new(r"^inc ([a-z])$").unwrap();
     if let Some(cap) = increment_re.captures(s) {
-      return Ok(Instruction::Increment(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Increment(reg_index(cap.at(1)).unwrap()));
     }
 
     let decrement_re: Regex = Regex::new(r"^dec ([a-z])$").unwrap();
     if let Some(cap) = decrement_re.captures(s) {
-      return Ok(Instruction::Decrement(
-        reg_index(cap.at(1)).unwrap()
-      ));
+      return Ok(Instruction::Decrement(reg_index(cap.at(1)).unwrap()));
     }
 
     let jump_literal_re: Regex = Regex::new(r"^jnz (-?[0-9]+) (-?[0-9]+)$").unwrap();
     if let Some(cap) = jump_literal_re.captures(s) {
       return Ok(Instruction::JumpLiteral(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
@@ -132,7 +128,7 @@ impl FromStr for Instruction {
     if let Some(cap) = jump_register_re.captures(s) {
       return Ok(Instruction::JumpRegister(
         reg_index(cap.at(1)).unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
@@ -144,7 +140,7 @@ impl FromStr for Instruction {
 #[derive(Debug)]
 struct State {
   registers: [i32; 4],
-  pc: i32
+  pc: i32,
 }
 
 fn reg_index(s: Option<&str>) -> Option<usize> {
@@ -153,7 +149,7 @@ fn reg_index(s: Option<&str>) -> Option<usize> {
     "b" => Some(1),
     "c" => Some(2),
     "d" => Some(3),
-    &_ => None
+    &_ => None,
   }
 }
 
@@ -173,12 +169,15 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut instructions : Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<Instruction> = Vec::new();
     for line in INPUT.lines() {
       let instruction = line.parse().unwrap();
       instructions.push(instruction);
     }
-    let mut state = State{registers: [0,0,0,0], pc: 0};
+    let mut state = State {
+      registers: [0, 0, 0, 0],
+      pc: 0,
+    };
 
     while 0 <= state.pc && state.pc < instructions.len() as i32 {
       state = execute(&state, &instructions);
@@ -190,12 +189,15 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut instructions : Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<Instruction> = Vec::new();
     for line in INPUT.lines() {
       let instruction = line.parse().unwrap();
       instructions.push(instruction);
     }
-    let mut state = State{registers: [0,0,1,0], pc: 0};
+    let mut state = State {
+      registers: [0, 0, 1, 0],
+      pc: 0,
+    };
 
     while 0 <= state.pc && state.pc < instructions.len() as i32 {
       state = execute(&state, &instructions);

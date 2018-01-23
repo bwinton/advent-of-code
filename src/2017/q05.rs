@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "1
+static INPUT: &'static str = "1
 2
 -1
 -2
@@ -1102,7 +1102,7 @@ fn process_data_b(data: &str) -> i32 {
   while pc < jumps.len() as i32 && pc >= 0 {
     let prev = jumps[pc as usize];
     // println!("{}: {:?}", pc, jumps);
-    jumps[pc as usize] += if prev >=3 {-1} else {1};
+    jumps[pc as usize] += if prev >= 3 { -1 } else { 1 };
     pc += prev;
     count += 1;
   }
@@ -1134,18 +1134,28 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("0
+  assert_eq!(
+    process_data_a(
+      "0
 3
 0
 1
--3"), 5);
+-3",
+    ),
+    5
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("0
+  assert_eq!(
+    process_data_b(
+      "0
 3
 0
 1
--3"), 10);
+-3",
+    ),
+    10
+  );
 }

@@ -2,8 +2,8 @@
 // Setup.
 
 use aoc::Day;
-use crypto::md5::Md5;
 use crypto::digest::Digest;
+use crypto::md5::Md5;
 use std::u64::MAX;
 
 //-----------------------------------------------------

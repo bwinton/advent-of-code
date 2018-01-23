@@ -14,8 +14,8 @@ use std::str::FromStr;
 // move position 3 to position 0
 // rotate based on position of letter b
 // rotate based on position of letter d";
-static PASSCODE : &'static str = "abcdefgh";
-static INPUT : &'static str = "reverse positions 1 through 6
+static PASSCODE: &'static str = "abcdefgh";
+static INPUT: &'static str = "reverse positions 1 through 6
 rotate based on position of letter a
 swap position 4 with position 1
 reverse positions 1 through 5
@@ -115,7 +115,7 @@ rotate based on position of letter d
 rotate based on position of letter c
 rotate based on position of letter h
 move position 4 to position 7";
-static SCRAMBLED : &'static str = "fbgdceah";
+static SCRAMBLED: &'static str = "fbgdceah";
 
 
 #[derive(Clone)]
@@ -127,7 +127,7 @@ enum Instruction {
   RotateRight(usize),
   RotateLetter(String),
   Reverse(usize, usize),
-  Move(usize, usize)
+  Move(usize, usize),
 }
 
 impl Instruction {
@@ -138,19 +138,19 @@ impl Instruction {
         let mut temp: Vec<char> = rv.chars().collect();
         temp.swap(x, y);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::SwapLetter(a, b) => {
         rv = rv.replace(&a, "?");
         rv = rv.replace(&b, &a);
         rv = rv.replace("?", &b);
-      }
+      },
       Instruction::RotateLeft(n) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
         temp.extend_from_slice(&data[n..]);
         temp.extend_from_slice(&data[..n]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::RotateRight(n) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
@@ -158,7 +158,7 @@ impl Instruction {
         temp.extend_from_slice(&data[index..]);
         temp.extend_from_slice(&data[..index]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::RotateLetter(a) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
@@ -172,18 +172,18 @@ impl Instruction {
         temp.extend_from_slice(&data[index..]);
         temp.extend_from_slice(&data[..index]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::Reverse(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
         temp[x..y + 1].reverse();
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::Move(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
         let element = temp.remove(x);
         temp.insert(y, element);
         rv = temp.into_iter().collect();
-      }
+      },
     }
     rv
   }
@@ -195,12 +195,12 @@ impl Instruction {
         let mut temp: Vec<char> = rv.chars().collect();
         temp.swap(x, y);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::SwapLetter(a, b) => {
         rv = rv.replace(&a, "?");
         rv = rv.replace(&b, &a);
         rv = rv.replace("?", &b);
-      }
+      },
       Instruction::RotateLeft(n) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
@@ -208,14 +208,14 @@ impl Instruction {
         temp.extend_from_slice(&data[index..]);
         temp.extend_from_slice(&data[..index]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::RotateRight(n) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
         temp.extend_from_slice(&data[n..]);
         temp.extend_from_slice(&data[..n]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::RotateLetter(a) => {
         let data: Vec<char> = rv.chars().collect();
         let mut temp = Vec::new();
@@ -228,18 +228,18 @@ impl Instruction {
         temp.extend_from_slice(&data[index..]);
         temp.extend_from_slice(&data[..index]);
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::Reverse(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
         temp[x..y + 1].reverse();
         rv = temp.into_iter().collect();
-      }
+      },
       Instruction::Move(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
         let element = temp.remove(y);
         temp.insert(x, element);
         rv = temp.into_iter().collect();
-      }
+      },
     }
     rv
   }
@@ -262,46 +262,40 @@ impl FromStr for Instruction {
     if let Some(cap) = SWAP_POSITION_RE.captures(s) {
       return Ok(Instruction::SwapPosition(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SWAP_LETTER_RE.captures(s) {
       return Ok(Instruction::SwapLetter(
         cap.at(1).unwrap().to_string(),
-        cap.at(2).unwrap().to_string()
+        cap.at(2).unwrap().to_string(),
       ));
     }
 
     if let Some(cap) = ROTATE_LEFT_RE.captures(s) {
-      return Ok(Instruction::RotateLeft(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
+      return Ok(Instruction::RotateLeft(cap.at(1).unwrap().parse().unwrap()));
     }
 
     if let Some(cap) = ROTATE_RIGHT_RE.captures(s) {
-      return Ok(Instruction::RotateRight(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
+      return Ok(Instruction::RotateRight(cap.at(1).unwrap().parse().unwrap()));
     }
 
     if let Some(cap) = ROTATE_LETTER_RE.captures(s) {
-      return Ok(Instruction::RotateLetter(
-        cap.at(1).unwrap().to_string()
-      ));
+      return Ok(Instruction::RotateLetter(cap.at(1).unwrap().to_string()));
     }
 
     if let Some(cap) = REVERSE_RE.captures(s) {
       return Ok(Instruction::Reverse(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MOVE_RE.captures(s) {
       return Ok(Instruction::Move(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
@@ -321,7 +315,7 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut instructions : Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<Instruction> = Vec::new();
     for line in INPUT.lines() {
       let instruction = line.parse().unwrap();
       instructions.push(instruction);
@@ -336,7 +330,7 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut instructions : Vec<Instruction> = Vec::new();
+    let mut instructions: Vec<Instruction> = Vec::new();
     for line in INPUT.lines() {
       let instruction = line.parse().unwrap();
       instructions.push(instruction);

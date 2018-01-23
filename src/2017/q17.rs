@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : usize = 369;
+static INPUT: usize = 369;
 
 fn process_data_a(steps: usize) -> usize {
   let mut buffer: Vec<usize> = Vec::with_capacity(2019);

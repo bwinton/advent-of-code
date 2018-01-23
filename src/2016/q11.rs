@@ -11,11 +11,11 @@ use std::str::FromStr;
 // The second floor contains a hydrogen generator.
 // The third floor contains a lithium generator.
 // The fourth floor contains nothing relevant.";
-static A_INPUT : &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, and a plutonium-compatible microchip.
+static A_INPUT: &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, and a plutonium-compatible microchip.
 The second floor contains a thulium generator, a ruthenium generator, a ruthenium-compatible microchip, a curium generator, and a curium-compatible microchip.
 The third floor contains a thulium-compatible microchip.
 The fourth floor contains nothing relevant.";
-static B_INPUT : &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, an elerium generator, an elerium-compatible microchip, a dilithium generator, a dilithium-compatible microchip, and a plutonium-compatible microchip.
+static B_INPUT: &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, an elerium generator, an elerium-compatible microchip, a dilithium generator, a dilithium-compatible microchip, and a plutonium-compatible microchip.
 The second floor contains a thulium generator, a ruthenium generator, a ruthenium-compatible microchip, a curium generator, and a curium-compatible microchip.
 The third floor contains a thulium-compatible microchip.
 The fourth floor contains nothing relevant.";
@@ -27,7 +27,7 @@ The fourth floor contains nothing relevant.";
 #[derive(PartialEq)]
 enum Item {
   Generator(String),
-  Microchip(String)
+  Microchip(String),
 }
 
 impl Ord for Item {
@@ -35,24 +35,16 @@ impl Ord for Item {
     match *self {
       Item::Generator(ref me) => {
         match *other {
-          Item::Generator(ref them) => {
-            me.cmp(them)
-          },
-          Item::Microchip(ref _them) => {
-            Ordering::Less
-          }
+          Item::Generator(ref them) => me.cmp(them),
+          Item::Microchip(ref _them) => Ordering::Less,
         }
       },
       Item::Microchip(ref me) => {
         match *other {
-          Item::Generator(ref _them) => {
-            Ordering::Greater
-          },
-          Item::Microchip(ref them) => {
-            me.cmp(them)
-          }
+          Item::Generator(ref _them) => Ordering::Greater,
+          Item::Microchip(ref them) => me.cmp(them),
         }
-      }
+      },
     }
   }
 }
@@ -84,12 +76,8 @@ impl FromStr for Item {
 impl fmt::Display for Item {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match *self {
-      Item::Generator(ref me) => {
-        write!(f, "{}G", me.to_uppercase().chars().next().unwrap_or('?'))
-      }
-      Item::Microchip(ref me) => {
-        write!(f, "{}M", me.to_uppercase().chars().next().unwrap_or('?'))
-      }
+      Item::Generator(ref me) => write!(f, "{}G", me.to_uppercase().chars().next().unwrap_or('?')),
+      Item::Microchip(ref me) => write!(f, "{}M", me.to_uppercase().chars().next().unwrap_or('?')),
     }
   }
 }
@@ -103,7 +91,7 @@ impl fmt::Display for Item {
 struct FloorDesc {
   pairs: usize,
   generators: usize,
-  microchips: usize
+  microchips: usize,
 }
 
 #[derive(Clone)]
@@ -113,7 +101,7 @@ struct FloorDesc {
 struct Floor {
   number: i32,
   items: Vec<Item>,
-  desc: FloorDesc
+  desc: FloorDesc,
 }
 
 impl Floor {
@@ -128,26 +116,30 @@ impl Floor {
     self.desc = self.get_desc();
   }
 
-  fn get_desc(&self) -> FloorDesc{
-    let mut rv = FloorDesc{pairs:0, generators:0, microchips:0};
-    let mut generators : Vec<String> = Vec::new();
-    let mut microchips : Vec<String> = Vec::new();
+  fn get_desc(&self) -> FloorDesc {
+    let mut rv = FloorDesc {
+      pairs: 0,
+      generators: 0,
+      microchips: 0,
+    };
+    let mut generators: Vec<String> = Vec::new();
+    let mut microchips: Vec<String> = Vec::new();
     for item in self.items.clone() {
       match item {
-        Item::Generator(data) => {generators.push(data)},
-        Item::Microchip(data) => {microchips.push(data)}
+        Item::Generator(data) => generators.push(data),
+        Item::Microchip(data) => microchips.push(data),
       }
     }
     for chip in microchips.clone() {
       match generators.binary_search(&chip) {
-        Ok(_) => {rv.pairs += 1},
-        Err(_) => {rv.microchips += 1}
+        Ok(_) => rv.pairs += 1,
+        Err(_) => rv.microchips += 1,
       }
     }
     for chip in generators.clone() {
       match microchips.binary_search(&chip) {
         Ok(_) => {},
-        Err(_) => {rv.generators += 1}
+        Err(_) => rv.generators += 1,
       }
     }
     rv
@@ -159,24 +151,32 @@ impl FromStr for Floor {
 
   fn from_str(s: &str) -> Result<Floor, ()> {
     let re: Regex = Regex::new(r"^The ([a-z]*) floor contains (.*)\.$").unwrap();
-    let mut rv = Floor{number: -1, items: Vec::new(), desc: FloorDesc{pairs: 0, generators: 0, microchips: 0}};
+    let mut rv = Floor {
+      number: -1,
+      items: Vec::new(),
+      desc: FloorDesc {
+        pairs: 0,
+        generators: 0,
+        microchips: 0,
+      },
+    };
     if let Some(cap) = re.captures(s) {
       match cap.at(1).unwrap_or("") {
-        "first" => {rv.number = 1},
-        "second" => {rv.number = 2},
-        "third" => {rv.number = 3},
-        "fourth" => {rv.number = 4},
-        _ => {return Err(())}
+        "first" => rv.number = 1,
+        "second" => rv.number = 2,
+        "third" => rv.number = 3,
+        "fourth" => rv.number = 4,
+        _ => return Err(()),
       }
       let items = cap.at(2).unwrap_or("");
       let item_re: Regex = Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
       for item_captures in item_re.captures_iter(items) {
-        let item_opt :Result<Item, ()> = item_captures.at(0).unwrap().parse();
+        let item_opt: Result<Item, ()> = item_captures.at(0).unwrap().parse();
         match item_opt {
           Err(()) => {},
           Ok(item) => {
             rv.add_item(item);
-          }
+          },
         }
       }
       Ok(rv)
@@ -214,7 +214,7 @@ struct State {
   previous: Option<usize>,
   index: Option<usize>,
   elevator: usize,
-  floors: Vec<Floor>
+  floors: Vec<Floor>,
 }
 
 impl State {
@@ -298,7 +298,7 @@ fn move_items(state: &State, going_up: bool, states: &mut Vec<State>) {
     next.floors[next.elevator].add_item(items[i].clone());
     states.push(next);
 
-    for j in i+1..items.len() {
+    for j in i + 1..items.len() {
       next = template.clone();
       next.floors[state.elevator].remove_item(j);
       next.floors[state.elevator].remove_item(i);
@@ -312,7 +312,7 @@ fn move_items(state: &State, going_up: bool, states: &mut Vec<State>) {
 fn get_next_state(state: &State, seen: &[State]) -> Vec<State> {
   // generate all possible turns, pruning already-seen and invalid states.
   let mut rv = Vec::new();
-  if state.elevator < state.floors.len()-1 {
+  if state.elevator < state.floors.len() - 1 {
     move_items(state, true, rv.as_mut());
   }
   // }
@@ -320,59 +320,63 @@ fn get_next_state(state: &State, seen: &[State]) -> Vec<State> {
     move_items(state, false, rv.as_mut());
   }
   let mut temp = seen.to_vec();
-  rv.retain(|item| {
-    if item.is_valid(&temp) {
-      temp.push(item.clone());
-      true
-    } else {
-      false
-    }
+  rv.retain(|item| if item.is_valid(&temp) {
+    temp.push(item.clone());
+    true
+  } else {
+    false
   });
   rv
 }
 
 fn get_result(input: &'static str) -> i32 {
-    let mut result = 0;
-    let mut next : Vec<State> = Vec::new();
-    let mut seen : Vec<State> = Vec::new();
+  let mut result = 0;
+  let mut next: Vec<State> = Vec::new();
+  let mut seen: Vec<State> = Vec::new();
 
-    let mut initial_state = State{index: None, previous: None, moves: 0, elevator: 0, floors:Vec::new()};
-    for line in input.lines() {
-      let floor : Floor = line.parse().unwrap();
-      initial_state.floors.push(floor);
-    }
-    next.push(initial_state);
+  let mut initial_state = State {
+    index: None,
+    previous: None,
+    moves: 0,
+    elevator: 0,
+    floors: Vec::new(),
+  };
+  for line in input.lines() {
+    let floor: Floor = line.parse().unwrap();
+    initial_state.floors.push(floor);
+  }
+  next.push(initial_state);
 
-    let mut count = 0;
-    while !next.is_empty() {
-      let mut current = next.remove(0);
-      // If the current is everything on the 4th floor, we win!!!
-      if current.is_winning() {
-        println!("Found a winner at {}!", count);
-        println!("{}", current);
-        result = current.moves;
-        // while let Some(i) = current.previous {
-        //   println!();
-        //   current = seen[i].clone();
-        //   println!("{}", current);
-        // }
-        break;
-      }
-      current.index = Some(seen.len());
-      seen.push(current.clone());
-      let mut upcoming = seen.clone();
-      upcoming.extend(next.clone());
-      next.append(&mut get_next_state(&current, &upcoming));
-      // if count % 100 == 0 {
-      //   println!("{}: {}", count, next.len());
-      //   if count % 3000 == 0 {
-      //     println!("{}", current);
-      //   }
+  let mut count = 0;
+  while !next.is_empty() {
+    let mut current = next.remove(0);
+    // If the current is everything on the 4th floor, we win!!!
+    if current.is_winning() {
+      println!("Found a winner at {}!", count);
+      println!("{}", current);
+      result = current.moves;
+      // while let Some(i) = current.previous {
+      //   println!();
+      //   current = seen[i].clone();
+      //   println!("{}", current);
       // }
-      count += 1;
+      break;
     }
+    current.index = Some(seen.len());
+    seen.push(current.clone());
+    let mut upcoming = seen.clone();
+    upcoming.extend(next.clone());
+    next.append(&mut get_next_state(&current, &upcoming));
+    // if count % 100 == 0 {
+    //   println!("{}: {}", count, next.len());
+    //   if count % 3000 == 0 {
+    //     println!("{}", current);
+    //   }
+    // }
+    count += 1;
+  }
 
-    result
+  result
 }
 
 //-----------------------------------------------------

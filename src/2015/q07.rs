@@ -4,10 +4,10 @@
 use aoc::Day;
 
 use regex::Regex;
-use std::str::FromStr;
 use std::collections::HashMap;
+use std::str::FromStr;
 
-static INPUT : &'static str = "NOT dq -> dr
+static INPUT: &'static str = "NOT dq -> dr
 kg OR kf -> kh
 ep OR eo -> eq
 NOT gs -> gt
@@ -352,14 +352,14 @@ he RSHIFT 2 -> hf";
 #[derive(PartialEq)]
 struct Wire {
   name: String,
-  number: Option<u16>
+  number: Option<u16>,
 }
 
 impl Wire {
   pub fn new(name: &str, number: Option<u16>) -> Wire {
     Wire {
       name: name.to_string(),
-      number: number
+      number: number,
     }
   }
 }
@@ -369,14 +369,14 @@ impl Wire {
 #[derive(Eq)]
 #[derive(PartialEq)]
 enum Gate {
-  ValueWire{a: String, out: String},
-  ValueVal{a: u16, out: String},
-  AndWire{a: String, b: String, out:String},
-  AndVal{a: u16, b: String, out:String},
-  Or{a: String, b: String, out:String},
-  LShift{a: String, b: u16, out:String},
-  RShift{a: String, b: u16, out:String},
-  Not{a: String, out:String},
+  ValueWire { a: String, out: String },
+  ValueVal { a: u16, out: String },
+  AndWire { a: String, b: String, out: String },
+  AndVal { a: u16, b: String, out: String },
+  Or { a: String, b: String, out: String },
+  LShift { a: String, b: u16, out: String },
+  RShift { a: String, b: u16, out: String },
+  Not { a: String, out: String },
 }
 
 impl FromStr for Gate {
@@ -395,63 +395,63 @@ impl FromStr for Gate {
     }
 
     if let Some(cap) = VALUE_WIRE_RE.captures(s) {
-      return Ok(Gate::ValueWire{
+      return Ok(Gate::ValueWire {
         a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap()
+        out: cap.at(2).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = VALUE_VAL_RE.captures(s) {
-      return Ok(Gate::ValueVal{
+      return Ok(Gate::ValueVal {
         a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap()
+        out: cap.at(2).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = AND_WIRE_RE.captures(s) {
-      return Ok(Gate::AndWire{
+      return Ok(Gate::AndWire {
         a: cap.at(1).unwrap().parse().unwrap(),
         b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap()
+        out: cap.at(3).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = AND_VAL_RE.captures(s) {
-      return Ok(Gate::AndVal{
+      return Ok(Gate::AndVal {
         a: cap.at(1).unwrap().parse().unwrap(),
         b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap()
+        out: cap.at(3).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = OR_RE.captures(s) {
-      return Ok(Gate::Or{
+      return Ok(Gate::Or {
         a: cap.at(1).unwrap().parse().unwrap(),
         b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap()
+        out: cap.at(3).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = LSHIFT_RE.captures(s) {
-      return Ok(Gate::LShift{
+      return Ok(Gate::LShift {
         a: cap.at(1).unwrap().parse().unwrap(),
         b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap()
+        out: cap.at(3).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = RSHIFT_RE.captures(s) {
-      return Ok(Gate::RShift{
+      return Ok(Gate::RShift {
         a: cap.at(1).unwrap().parse().unwrap(),
         b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap()
+        out: cap.at(3).unwrap().parse().unwrap(),
       });
     }
 
     if let Some(cap) = NOT_RE.captures(s) {
-      return Ok(Gate::Not{
+      return Ok(Gate::Not {
         a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap()
+        out: cap.at(2).unwrap().parse().unwrap(),
       });
     }
 
@@ -463,7 +463,7 @@ impl FromStr for Gate {
 impl Gate {
   fn execute(&self, wires: &mut HashMap<String, Wire>) -> bool {
     match *self {
-      Gate::ValueWire{ref a, ref out} => {
+      Gate::ValueWire { ref a, ref out } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         match wires[a].number {
@@ -471,17 +471,21 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x);
             true
-          }
+          },
         }
       },
 
-      Gate::ValueVal{ref a, ref out} => {
+      Gate::ValueVal { ref a, ref out } => {
         ensure_wire(wires, out);
         wires.get_mut(out).unwrap().number = Some(*a);
         true
       },
 
-      Gate::AndWire{ref a, ref b, ref out} => {
+      Gate::AndWire {
+        ref a,
+        ref b,
+        ref out,
+      } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         ensure_wire(wires, b);
@@ -493,13 +497,17 @@ impl Gate {
               Some(y) => {
                 wires.get_mut(out).unwrap().number = Some(x & y);
                 true
-              }
+              },
             }
-          }
+          },
         }
       },
 
-      Gate::AndVal{ref a, ref b, ref out} => {
+      Gate::AndVal {
+        ref a,
+        ref b,
+        ref out,
+      } => {
         ensure_wire(wires, out);
         ensure_wire(wires, b);
         match wires[b].number {
@@ -507,11 +515,15 @@ impl Gate {
           Some(y) => {
             wires.get_mut(out).unwrap().number = Some(a & y);
             true
-          }
+          },
         }
       },
 
-      Gate::Or{ref a, ref b, ref out} => {
+      Gate::Or {
+        ref a,
+        ref b,
+        ref out,
+      } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         ensure_wire(wires, b);
@@ -523,13 +535,17 @@ impl Gate {
               Some(y) => {
                 wires.get_mut(out).unwrap().number = Some(x | y);
                 true
-              }
+              },
             }
-          }
+          },
         }
       },
 
-      Gate::LShift{ref a, ref b, ref out} => {
+      Gate::LShift {
+        ref a,
+        ref b,
+        ref out,
+      } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         match wires[a].number {
@@ -537,11 +553,15 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x << b);
             true
-          }
+          },
         }
       },
 
-      Gate::RShift{ref a, ref b, ref out} => {
+      Gate::RShift {
+        ref a,
+        ref b,
+        ref out,
+      } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         match wires[a].number {
@@ -549,11 +569,11 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x >> b);
             true
-          }
+          },
         }
       },
 
-      Gate::Not{ref a, ref out} => {
+      Gate::Not { ref a, ref out } => {
         ensure_wire(wires, out);
         ensure_wire(wires, a);
         match wires[a].number {
@@ -561,9 +581,9 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(!x);
             true
-          }
+          },
         }
-      }
+      },
 
     }
   }
@@ -626,14 +646,18 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data("123 -> x
+  assert_eq!(
+    process_data(
+      "123 -> x
 456 -> y
 x AND y -> d
 x OR y -> e
 x LSHIFT 2 -> f
 y RSHIFT 2 -> g
 NOT x -> h
-NOT y -> i"), hashmap!{
+NOT y -> i",
+    ),
+    hashmap!{
     "d".to_string() => Wire::new("d", Some(72)),
     "e".to_string() => Wire::new("e", Some(507)),
     "f".to_string() => Wire::new("f", Some(492)),
@@ -642,9 +666,9 @@ NOT y -> i"), hashmap!{
     "i".to_string() => Wire::new("i", Some(65079)),
     "x".to_string() => Wire::new("x", Some(123)),
     "y".to_string() => Wire::new("y", Some(456)),
-  });
+  }
+  );
 }
 
 #[test]
-fn b() {
-}
+fn b() {}

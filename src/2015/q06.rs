@@ -3,13 +3,13 @@
 
 use aoc::Day;
 
+use regex::Regex;
 use std::iter::repeat;
 use std::str::FromStr;
-use regex::Regex;
 
 // use itertools::Itertools;
 
-static INPUT : &'static str = "turn on 489,959 through 759,964
+static INPUT: &'static str = "turn on 489,959 through 759,964
 turn off 820,516 through 871,914
 turn off 427,423 through 929,502
 turn on 774,14 through 977,877
@@ -310,13 +310,13 @@ turn on 550,460 through 964,782
 turn on 31,760 through 655,892
 toggle 628,958 through 811,992";
 
-type State = Vec<[i32;1000]>;
+type State = Vec<[i32; 1000]>;
 
 #[derive(Debug)]
 enum Operation {
   TurnOn,
   TurnOff,
-  Toggle
+  Toggle,
 }
 
 impl FromStr for Operation {
@@ -327,7 +327,7 @@ impl FromStr for Operation {
       "turn on" => Ok(Operation::TurnOn),
       "turn off" => Ok(Operation::TurnOff),
       "toggle" => Ok(Operation::Toggle),
-      _ => Err(())
+      _ => Err(()),
     }
   }
 }
@@ -339,7 +339,7 @@ struct Instruction {
   start_x: usize,
   start_y: usize,
   end_x: usize,
-  end_y: usize
+  end_y: usize,
 }
 
 impl FromStr for Instruction {
@@ -352,7 +352,7 @@ impl FromStr for Instruction {
     let captures = RE.captures(s);
     match captures {
       Some(cap) => {
-        Ok(Instruction{
+        Ok(Instruction {
           op: cap.at(1).unwrap().parse().unwrap(),
           start_x: cap.at(2).unwrap().parse().unwrap(),
           start_y: cap.at(3).unwrap().parse().unwrap(),
@@ -360,15 +360,15 @@ impl FromStr for Instruction {
           end_y: cap.at(5).unwrap().parse().unwrap(),
         })
       },
-      None => Err(())
+      None => Err(()),
     }
   }
 }
 
 impl Instruction {
   fn execute_a(&self, state: &mut State) {
-     for mut row in state.iter_mut().take(self.end_x+1).skip(self.start_x) {
-      for mut cell in row.iter_mut().take(self.end_y+1).skip(self.start_y) {
+    for mut row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
+      for mut cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
         match self.op {
           Operation::TurnOn => *cell = 1,
           Operation::TurnOff => *cell = 0,
@@ -379,8 +379,8 @@ impl Instruction {
   }
 
   fn execute_b(&self, state: &mut State) {
-     for mut row in state.iter_mut().take(self.end_x+1).skip(self.start_x) {
-      for mut cell in row.iter_mut().take(self.end_y+1).skip(self.start_y) {
+    for mut row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
+      for mut cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
         match self.op {
           Operation::TurnOn => *cell += 1,
           Operation::TurnOff => {
@@ -396,28 +396,24 @@ impl Instruction {
 }
 
 fn process_data_a(data: &str) -> i32 {
-  let mut state: State = repeat([0 as i32;1000]).take(1000).collect();
+  let mut state: State = repeat([0 as i32; 1000]).take(1000).collect();
 
   for line in data.lines() {
     let inst: Instruction = line.parse().unwrap();
     inst.execute_a(&mut state);
   }
 
-  state.iter()
-    .flat_map(|row| row.iter())
-    .sum()
+  state.iter().flat_map(|row| row.iter()).sum()
 }
 
 fn process_data_b(data: &str) -> i32 {
-  let mut state: State = repeat([0 as i32;1000]).take(1000).collect();
+  let mut state: State = repeat([0 as i32; 1000]).take(1000).collect();
 
   for line in data.lines() {
     let inst: Instruction = line.parse().unwrap();
     inst.execute_b(&mut state);
   }
-  state.iter()
-    .flat_map(|row| row.iter())
-    .sum()
+  state.iter().flat_map(|row| row.iter()).sum()
 }
 
 //-----------------------------------------------------
@@ -445,9 +441,14 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("turn on 0,0 through 999,999
+  assert_eq!(
+    process_data_a(
+      "turn on 0,0 through 999,999
   toggle 0,0 through 999,0
-  turn off 499,499 through 500,500"), 998996);
+  turn off 499,499 through 500,500",
+    ),
+    998996
+  );
 }
 
 #[test]

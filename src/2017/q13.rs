@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std;
 
-static INPUT : &'static str = "0: 3
+static INPUT: &'static str = "0: 3
 1: 2
 2: 4
 4: 6
@@ -51,7 +51,7 @@ static INPUT : &'static str = "0: 3
 
 
 fn get_range(max: usize) -> Vec<usize> {
-  ((0..max).chain((1..max-1).rev())).collect()
+  ((0..max).chain((1..max - 1).rev())).collect()
 }
 
 define_iterator!(MultiIter(
@@ -80,9 +80,15 @@ fn process_data_a(data: &str) -> usize {
   let ranges = get_ranges(data);
   let max = &ranges.iter().map(|x| x.0).max().unwrap() + 1;
   let mut rv = 0;
-  let scanners = MultiIter{ranges: ranges.clone(), .. Default::default() };
+  let scanners = MultiIter {
+    ranges: ranges.clone(),
+    ..Default::default()
+  };
   for tick in scanners.enumerate().take(max) {
-    if let Some(scanner) = tick.1.iter().find(|scanner| scanner.0 == tick.0 && scanner.2 == 0) {
+    if let Some(scanner) = tick.1.iter().find(
+      |scanner| scanner.0 == tick.0 && scanner.2 == 0,
+    )
+    {
       rv += scanner.0 * scanner.1;
     }
   }
@@ -95,9 +101,15 @@ fn process_data_b(data: &str) -> usize {
   let mut rv = 0;
   for delay in 0.. {
     let mut caught = false;
-    let scanners = MultiIter{ranges: ranges.clone(), curr: delay};
+    let scanners = MultiIter {
+      ranges: ranges.clone(),
+      curr: delay,
+    };
     for tick in scanners.enumerate().take(max) {
-      if tick.1.iter().any(|scanner| scanner.0 == tick.0 && scanner.2 == 0) {
+      if tick.1.iter().any(
+        |scanner| scanner.0 == tick.0 && scanner.2 == 0,
+      )
+      {
         caught = true;
         break;
       }
@@ -137,16 +149,26 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("0: 3
+  assert_eq!(
+    process_data_a(
+      "0: 3
 1: 2
 4: 4
-6: 4"), 24);
+6: 4",
+    ),
+    24
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("0: 3
+  assert_eq!(
+    process_data_b(
+      "0: 3
 1: 2
 4: 4
-6: 4"), 10);
+6: 4",
+    ),
+    10
+  );
 }

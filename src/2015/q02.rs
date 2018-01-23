@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "20x3x11
+static INPUT: &'static str = "20x3x11
 15x27x5
 6x29x7
 30x15x9
@@ -1014,7 +1014,7 @@ fn process_lines_a(data: &str) -> u32 {
   let mut rv = 0;
   for line in data.lines() {
     let pieces = get_pieces(line);
-    let size = 3*pieces[0]*pieces[1] + 2*pieces[0]*pieces[2] + 2*pieces[1]*pieces[2];
+    let size = 3 * pieces[0] * pieces[1] + 2 * pieces[0] * pieces[2] + 2 * pieces[1] * pieces[2];
     // println!("{:?} => {}", pieces, size);
     rv += size;
   }
@@ -1025,7 +1025,7 @@ fn process_lines_b(data: &str) -> u32 {
   let mut rv = 0;
   for line in data.lines() {
     let pieces = get_pieces(line);
-    let size = 2*pieces[0] + 2*pieces[1] + pieces[0]*pieces[1]*pieces[2];
+    let size = 2 * pieces[0] + 2 * pieces[1] + pieces[0] * pieces[1] * pieces[2];
     // println!("{:?} => {}", pieces, size);
     rv += size;
   }

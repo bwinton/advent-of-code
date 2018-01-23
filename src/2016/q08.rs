@@ -5,7 +5,7 @@ use aoc::Day;
 use regex::Regex;
 use std::fmt;
 
-static INPUT : &'static str = "rect 1x1
+static INPUT: &'static str = "rect 1x1
 rotate row y=0 by 5
 rect 1x1
 rotate row y=0 by 5
@@ -203,20 +203,23 @@ rotate column x=0 by 4";
 // rotate row y=0 by 4
 // rotate column x=1 by 1";
 
-const COLS : usize = 50;
-const ROWS : usize = 6;
+const COLS: usize = 50;
+const ROWS: usize = 6;
 // const COLS : usize = 7;
 // const ROWS : usize = 3;
 
 struct Display {
   // 50 wide by 6 high.
   on: i32,
-  cells: [ [bool; COLS]; ROWS]
+  cells: [[bool; COLS]; ROWS],
 }
 
 impl Display {
   fn new() -> Display {
-    Display{ on:0, cells: [[false; COLS]; ROWS]}
+    Display {
+      on: 0,
+      cells: [[false; COLS]; ROWS],
+    }
   }
 
   fn on(&self) -> i32 {
@@ -254,7 +257,7 @@ impl Display {
         }
         self.cells[turn.arg1][..COLS].clone_from_slice(&new[..COLS]);
       },
-      _ => {println!("Error!")},
+      _ => println!("Error!"),
     }
   }
 }
@@ -283,8 +286,7 @@ struct Turn {
   arg2: usize,
 }
 
-impl Turn {
-}
+impl Turn {}
 
 use std::str::FromStr;
 impl FromStr for Turn {
@@ -295,7 +297,11 @@ impl FromStr for Turn {
     let rect_re = Regex::new(r"^(\d+)x(\d+)$").unwrap();
     let rotate_re = Regex::new(r"^(x|y)=(\d+) by (\d+)$").unwrap();
     let blank = String::from("");
-    let mut rv = Turn{kind: blank.clone(), arg1: 0, arg2: 0};
+    let mut rv = Turn {
+      kind: blank.clone(),
+      arg1: 0,
+      arg2: 0,
+    };
     for cap in turn_re.captures_iter(s) {
       rv.kind = String::from(cap.at(1).unwrap_or(""));
       let rest = cap.at(2).unwrap_or("");
@@ -310,7 +316,7 @@ impl FromStr for Turn {
           rv.arg1 = extra.at(2).unwrap_or("0").parse().unwrap();
           rv.arg2 = extra.at(3).unwrap_or("0").parse().unwrap();
         },
-        _ => {println!("Error!")},
+        _ => println!("Error!"),
       }
     }
     Ok(rv)
@@ -333,7 +339,7 @@ impl Day for Q {
     let mut display = Display::new();
     // println!("{:?}", display);
     for line in INPUT.lines() {
-      let turn : Turn = line.parse().unwrap();
+      let turn: Turn = line.parse().unwrap();
       display.run(&turn);
       // println!("{:?}", display);
     }
@@ -344,7 +350,7 @@ impl Day for Q {
     print!("{}B: ", self.number());
     let mut display = Display::new();
     for line in INPUT.lines() {
-      let turn : Turn = line.parse().unwrap();
+      let turn: Turn = line.parse().unwrap();
       display.run(&turn);
     }
     println!("Result =");

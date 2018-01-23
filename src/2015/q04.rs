@@ -3,11 +3,11 @@
 
 use aoc::Day;
 
-use crypto::md5::Md5;
 use crypto::digest::Digest;
+use crypto::md5::Md5;
 use std::i32::MAX;
 
-static INPUT : &'static str = "bgvyzdsv";
+static INPUT: &'static str = "bgvyzdsv";
 
 fn process_data(data: &str, zeroes: usize) -> i32 {
   let mut hasher = Md5::new();
@@ -20,14 +20,14 @@ fn process_data(data: &str, zeroes: usize) -> i32 {
     let mut output = [0; 16]; // An MD5 is 16 bytes
     hasher.result(&mut output);
     let mut first = 0;
-    for value in output.iter().take(zeroes/2) {
+    for value in output.iter().take(zeroes / 2) {
       first += i32::from(*value);
     }
     if zeroes % 2 == 1 {
-      first += i32::from(output[zeroes/2] >> 4);
+      first += i32::from(output[zeroes / 2] >> 4);
     }
     if first == 0 {
-      return i
+      return i;
     }
     hasher.reset();
   }

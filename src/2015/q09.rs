@@ -6,11 +6,11 @@ use aoc::Day;
 use itertools::Itertools;
 use permutohedron::Heap;
 use regex::Regex;
-use std::usize;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::usize;
 
-static INPUT : &'static str = "Faerun to Tristram = 65
+static INPUT: &'static str = "Faerun to Tristram = 65
 Faerun to Tambi = 129
 Faerun to Norrath = 144
 Faerun to Snowdin = 71
@@ -39,16 +39,16 @@ Straylight to AlphaCentauri = 107
 Straylight to Arbre = 14
 AlphaCentauri to Arbre = 46";
 
-fn parse(data: &str) -> (HashSet<&str>, HashMap<[&str;2], usize>) {
+fn parse(data: &str) -> (HashSet<&str>, HashMap<[&str; 2], usize>) {
   lazy_static! {
     static ref RE: Regex = Regex::new("^([A-Za-z]+) to ([A-Za-z]+) = ([0-9]+)$").unwrap();
   }
   let mut cities: HashSet<&str> = HashSet::new();
-  let mut distances: HashMap<[&str;2], usize> = HashMap::new();
+  let mut distances: HashMap<[&str; 2], usize> = HashMap::new();
   for line in data.lines() {
     let cap = RE.captures(line);
     match cap {
-      None => {println!("Unknown format: {}", line)},
+      None => println!("Unknown format: {}", line),
       Some(x) => {
         let mut key = [x.at(1).unwrap(), x.at(2).unwrap()];
         key.sort();
@@ -56,13 +56,13 @@ fn parse(data: &str) -> (HashSet<&str>, HashMap<[&str;2], usize>) {
           cities.insert(city);
         }
         distances.insert(key, x.at(3).unwrap().parse().unwrap());
-      }
+      },
     }
   }
   (cities, distances)
 }
 
-fn get_distance(perm: &[&str], distances: &HashMap<[&str;2], usize>) -> usize {
+fn get_distance(perm: &[&str], distances: &HashMap<[&str; 2], usize>) -> usize {
   let mut rv = 0;
   let lookup = distances.clone();
   for pair in perm.iter().tuple_windows::<(_, _)>() {
@@ -129,14 +129,24 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("London to Dublin = 464
+  assert_eq!(
+    process_data_a(
+      "London to Dublin = 464
 London to Belfast = 518
-Dublin to Belfast = 141"), (vec!["London", "Dublin", "Belfast"], 605));
+Dublin to Belfast = 141",
+    ),
+    (vec!["London", "Dublin", "Belfast"], 605)
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("London to Dublin = 464
+  assert_eq!(
+    process_data_b(
+      "London to Dublin = 464
 London to Belfast = 518
-Dublin to Belfast = 141"), (vec!["Belfast", "London", "Dublin"], 982));
+Dublin to Belfast = 141",
+    ),
+    (vec!["Belfast", "London", "Dublin"], 982)
+  );
 }

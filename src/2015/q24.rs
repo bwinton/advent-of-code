@@ -4,10 +4,10 @@
 use aoc::Day;
 
 use itertools::Itertools;
-use std::u32;
 use std::collections::HashSet;
+use std::u32;
 
-static INPUT : &'static str = "1
+static INPUT: &'static str = "1
 2
 3
 7
@@ -51,7 +51,7 @@ struct PowersetIter {
   items: Vec<usize>,
   len: usize,
   combinations: Vec<Vec<usize>>,
-  curr: usize
+  curr: usize,
 }
 
 impl PowersetIter {
@@ -60,7 +60,7 @@ impl PowersetIter {
       items: items.to_vec(),
       len: 0,
       combinations: vec![],
-      curr: 0
+      curr: 0,
     }
   }
 }
@@ -71,7 +71,12 @@ impl Iterator for PowersetIter {
     if self.curr >= self.combinations.len() {
       self.len += 1;
       self.curr = 0;
-      self.combinations = self.items.clone().into_iter().combinations(self.len).collect();
+      self.combinations = self
+        .items
+        .clone()
+        .into_iter()
+        .combinations(self.len)
+        .collect();
     }
     if self.len > self.items.len() {
       None
@@ -84,17 +89,25 @@ impl Iterator for PowersetIter {
   }
 }
 
-fn split(first: &[usize], all: &[usize], target: usize, groups: usize, seen: &mut HashSet<Vec<usize>>) -> Vec<Vec<Vec<usize>>> {
-  if seen.contains(first) ||
-      first.iter().sum::<usize>() != target ||
-      groups == 0 {
+fn split(
+  first: &[usize],
+  all: &[usize],
+  target: usize,
+  groups: usize,
+  seen: &mut HashSet<Vec<usize>>,
+) -> Vec<Vec<Vec<usize>>> {
+  if seen.contains(first) || first.iter().sum::<usize>() != target || groups == 0 {
     return vec![];
   }
   seen.insert(first.to_vec());
   if groups == 1 {
     return vec![vec![first.to_vec()]];
   }
-  let rest: Vec<usize> = all.into_iter().filter(|x| !first.contains(x)).cloned().collect();
+  let rest: Vec<usize> = all
+    .into_iter()
+    .filter(|x| !first.contains(x))
+    .cloned()
+    .collect();
   // println!("{}Splitting {:?}/{:?} / {}:{}", "  ".repeat(4 - groups), first, rest, target, groups);
   let mut rv = vec![];
   let powerset = PowersetIter::new(&rest);
@@ -105,7 +118,9 @@ fn split(first: &[usize], all: &[usize], target: usize, groups: usize, seen: &mu
       group.iter_mut().for_each(|x| x.sort());
       group.sort_unstable_by(|a, b| {
         a.len().cmp(&b.len()).then_with(|| {
-          a.iter().product::<usize>().cmp(&b.iter().product::<usize>())
+          a.iter().product::<usize>().cmp(
+            &b.iter().product::<usize>(),
+          )
         })
       });
       // println!("{}Found {:?} {}", "  ".repeat(4 - groups), group, groups);
@@ -161,7 +176,9 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data("1
+  assert_eq!(
+    process_data(
+      "1
 2
 3
 4
@@ -170,12 +187,18 @@ fn a() {
 8
 9
 10
-11", 3), 99);
+11",
+      3,
+    ),
+    99
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data("1
+  assert_eq!(
+    process_data(
+      "1
 2
 3
 4
@@ -184,5 +207,9 @@ fn b() {
 8
 9
 10
-11", 4), 44);
+11",
+      4,
+    ),
+    44
+  );
 }

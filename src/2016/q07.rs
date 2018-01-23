@@ -4,7 +4,7 @@
 use aoc::Day;
 use regex::Regex;
 
-static INPUT : &'static str = "dnwtsgywerfamfv[gwrhdujbiowtcirq]bjbhmuxdcasenlctwgh
+static INPUT: &'static str = "dnwtsgywerfamfv[gwrhdujbiowtcirq]bjbhmuxdcasenlctwgh
 rnqfzoisbqxbdlkgfh[lwlybvcsiupwnsyiljz]kmbgyaptjcsvwcltrdx[ntrpwgkrfeljpye]jxjdlgtntpljxaojufe
 jgltdnjfjsbrffzwbv[nclpjchuobdjfrpavcq]sbzanvbimpahadkk[yyoasqmddrzunoyyk]knfdltzlirrbypa
 vvrchszuidkhtwx[ebqaetowcthddea]cxgxbffcoudllbtxsa
@@ -2019,9 +2019,9 @@ xuabbxdwkutpsogcfea[tgetfqpgstsxrokcemk]cbftstsldgcqbxf[vwjejomptmifhdulc]ejeros
 pub struct Q;
 
 fn is_abba(line: &str) -> bool {
-  let chars : Vec<char> = line.chars().collect();
-  for (i, &value) in chars.iter().take(chars.len()-3).enumerate() {
-    if value == chars[i+3] && chars[i+1] == chars[i+2] && value != chars[i+1] {
+  let chars: Vec<char> = line.chars().collect();
+  for (i, &value) in chars.iter().take(chars.len() - 3).enumerate() {
+    if value == chars[i + 3] && chars[i + 1] == chars[i + 2] && value != chars[i + 1] {
       return true;
     }
   }
@@ -2042,14 +2042,14 @@ fn is_tls(line: &str) -> bool {
 }
 
 fn get_babs(line: &str) -> Vec<String> {
-  let chars : Vec<char> = line.chars().collect();
-  let mut rv : Vec<String> = Vec::new();
-  for (i, &value) in chars.iter().take(chars.len()-2).enumerate() {
-    if value == chars[i+2] && value != chars[i+1] {
+  let chars: Vec<char> = line.chars().collect();
+  let mut rv: Vec<String> = Vec::new();
+  for (i, &value) in chars.iter().take(chars.len() - 2).enumerate() {
+    if value == chars[i + 2] && value != chars[i + 1] {
       let mut bab = String::new();
-      bab.push(chars[i+1]);
+      bab.push(chars[i + 1]);
       bab.push(value);
-      bab.push(chars[i+1]);
+      bab.push(chars[i + 1]);
       rv.push(bab.clone());
     }
   }

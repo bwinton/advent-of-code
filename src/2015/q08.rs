@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "\"\\xa8br\\x8bjr\\\"\"
+static INPUT: &'static str = "\"\\xa8br\\x8bjr\\\"\"
 \"nq\"
 \"zjrfcpbktjmrzgsz\\xcaqsc\\x03n\\\"huqab\"
 \"daz\\\\zyyxddpwk\"
@@ -321,11 +321,11 @@ fn process_data_a(data: &str) -> i32 {
           rv += 3;
           rest.next();
           rest.next();
-        }
+        },
         _ => {
           println!("Got \\{:?}", next);
           panic!("Unknown escape sequence!!!")
-        }
+        },
       }
     }
   }
@@ -341,7 +341,7 @@ fn process_data_b(data: &str) -> i32 {
       match curr {
         '\\' => rv += 1,
         '"' => rv += 1,
-        _ => {}
+        _ => {},
       }
     }
   }
@@ -377,10 +377,15 @@ fn a() {
   assert_eq!(process_data_a("\"abc\""), 2);
   assert_eq!(process_data_a("\"aaa\\\"aaa\""), 3);
   assert_eq!(process_data_a("\"\\x27\""), 5);
-  assert_eq!(process_data_a("\"\"
+  assert_eq!(
+    process_data_a(
+      "\"\"
 \"abc\"
 \"aaa\\\"aaa\"
-\"\\x27\""), 12);
+\"\\x27\"",
+    ),
+    12
+  );
 }
 
 #[test]
@@ -389,8 +394,13 @@ fn b() {
   assert_eq!(process_data_b("\"abc\""), 4);
   assert_eq!(process_data_b("\"aaa\\\"aaa\""), 6);
   assert_eq!(process_data_b("\"\\x27\""), 5);
-  assert_eq!(process_data_b("\"\"
+  assert_eq!(
+    process_data_b(
+      "\"\"
 \"abc\"
 \"aaa\\\"aaa\"
-\"\\x27\""), 19);
+\"\\x27\"",
+    ),
+    19
+  );
 }

@@ -2,12 +2,12 @@
 // Setup.
 
 use aoc::Day;
-use std::str::FromStr;
 use regex::Regex;
 use std::collections::HashMap;
+use std::str::FromStr;
 
 
-static INPUT : &'static str = "bot 49 gives low to bot 118 and high to bot 182
+static INPUT: &'static str = "bot 49 gives low to bot 118 and high to bot 182
 bot 192 gives low to bot 40 and high to bot 177
 bot 195 gives low to output 4 and high to bot 130
 bot 176 gives low to bot 32 and high to bot 168
@@ -248,7 +248,7 @@ bot 96 gives low to bot 10 and high to bot 152";
 #[derive(Debug)]
 struct Value {
   number: i32,
-  bot: i32
+  bot: i32,
 }
 
 impl FromStr for Value {
@@ -256,7 +256,10 @@ impl FromStr for Value {
 
   fn from_str(s: &str) -> Result<Value, ()> {
     let re: Regex = Regex::new(r"^value (\d+) goes to bot (\d+)$").unwrap();
-    let mut rv = Value{ number: -1, bot: -1 };
+    let mut rv = Value {
+      number: -1,
+      bot: -1,
+    };
     if let Some(x) = re.captures(s) {
       rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
       rv.bot = x.at(2).unwrap_or("").parse().unwrap();
@@ -273,7 +276,7 @@ impl FromStr for Value {
 enum Destination {
   Unknown,
   Bot(i32),
-  Output(i32)
+  Output(i32),
 }
 
 impl FromStr for Destination {
@@ -299,7 +302,7 @@ struct Bot {
   first: Option<i32>,
   second: Option<i32>,
   low_dest: Destination,
-  high_dest: Destination
+  high_dest: Destination,
 }
 
 impl Bot {
@@ -309,7 +312,7 @@ impl Bot {
       None => {
         self.first = Some(value);
         false
-      }
+      },
       Some(value_one) => {
         if value > value_one {
           self.second = Some(value);
@@ -318,13 +321,13 @@ impl Bot {
           self.first = Some(value);
         }
         true
-      }
+      },
     }
   }
 
   fn propagate(&self, bots: &mut HashMap<i32, Bot>) -> HashMap<i32, i32> {
     // println!("Propagating {:?}", self);
-    let mut rv : HashMap<i32, i32> = HashMap::new();
+    let mut rv: HashMap<i32, i32> = HashMap::new();
     match self.low_dest {
       Destination::Unknown => {
         println!("ERROR!!!  Bot {} has no low_dest!!!  {:?}", self.number, self);
@@ -339,7 +342,7 @@ impl Bot {
       Destination::Output(number) => {
         // println!("Bot {} output {} to {}", self.number, self.first.unwrap(), number);
         rv.insert(number, self.first.unwrap());
-      }
+      },
     };
 
     match self.high_dest {
@@ -356,7 +359,7 @@ impl Bot {
       Destination::Output(number) => {
         // println!("Bot {} output {} to {}", self.number, self.second.unwrap(), number);
         rv.insert(number, self.second.unwrap());
-      }
+      },
     }
     rv
   }
@@ -369,7 +372,7 @@ impl Clone for Bot {
       first: self.first,
       second: self.second,
       low_dest: self.low_dest.clone(),
-      high_dest: self.high_dest.clone()
+      high_dest: self.high_dest.clone(),
     }
   }
 
@@ -388,9 +391,13 @@ impl FromStr for Bot {
 
   fn from_str(s: &str) -> Result<Bot, ()> {
     let re: Regex = Regex::new(r"^bot (\d+) gives low to ((bot|output) \d+) and high to ((bot|output) \d+)$").unwrap();
-    let mut rv = Bot{number: -1,
-      first: Option::None, second: Option::None,
-      low_dest: Destination::Unknown, high_dest: Destination::Unknown};
+    let mut rv = Bot {
+      number: -1,
+      first: Option::None,
+      second: Option::None,
+      low_dest: Destination::Unknown,
+      high_dest: Destination::Unknown,
+    };
     let cap = re.captures(s);
     match cap {
       None => return Err(()),
@@ -398,14 +405,10 @@ impl FromStr for Bot {
         rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
         rv.low_dest = x.at(2).unwrap_or("-1").parse().unwrap();
         rv.high_dest = x.at(4).unwrap_or("-1").parse().unwrap();
-      }
+      },
     }
 
-    if rv.number == -1 {
-      Err(())
-    } else {
-      Ok(rv)
-    }
+    if rv.number == -1 { Err(()) } else { Ok(rv) }
   }
 }
 
@@ -422,22 +425,22 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut values : Vec<Value> = Vec::new();
-    let mut bots : HashMap<i32, Bot> = HashMap::new();
+    let mut values: Vec<Value> = Vec::new();
+    let mut bots: HashMap<i32, Bot> = HashMap::new();
     for line in INPUT.lines() {
-      let value_opt :Result<Value, ()> = line.parse();
+      let value_opt: Result<Value, ()> = line.parse();
       match value_opt {
         Err(()) => {},
         Ok(value) => {
           values.push(value);
-        }
+        },
       }
-      let bot_opt :Result<Bot, ()> = line.parse();
+      let bot_opt: Result<Bot, ()> = line.parse();
       match bot_opt {
         Err(()) => {},
         Ok(bot) => {
           bots.insert(bot.number, bot);
-        }
+        },
       }
     }
     values.sort_by(|a, b| a.number.cmp(&b.number));
@@ -453,34 +456,33 @@ impl Day for Q {
     // println!("\n  V:{:?}\n  B:{:?}", values, bots);
     let result = bots.values().find(|bot|
       // bot.first == Some(2) && bot.second == Some(5)
-      bot.first == Some(17) && bot.second == Some(61)
-    );
+      bot.first == Some(17) && bot.second == Some(61));
     println!("Result = Bot {:?}", result.unwrap().number);
   }
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut values : Vec<Value> = Vec::new();
-    let mut bots : HashMap<i32, Bot> = HashMap::new();
+    let mut values: Vec<Value> = Vec::new();
+    let mut bots: HashMap<i32, Bot> = HashMap::new();
     for line in INPUT.lines() {
-      let value_opt :Result<Value, ()> = line.parse();
+      let value_opt: Result<Value, ()> = line.parse();
       match value_opt {
         Err(()) => {},
         Ok(value) => {
           values.push(value);
-        }
+        },
       }
-      let bot_opt :Result<Bot, ()> = line.parse();
+      let bot_opt: Result<Bot, ()> = line.parse();
       match bot_opt {
         Err(()) => {},
         Ok(bot) => {
           bots.insert(bot.number, bot);
-        }
+        },
       }
     }
     values.sort_by(|a, b| a.number.cmp(&b.number));
     // bots.sort_by(|a, b| a.number.cmp(&b.number));
-    let mut outputs : HashMap<i32, i32> = HashMap::new();
+    let mut outputs: HashMap<i32, i32> = HashMap::new();
 
     for value in &values {
       let mut bot = bots.get_mut(&value.bot).unwrap().clone();
@@ -491,7 +493,6 @@ impl Day for Q {
     }
     // println!("\n  O:{:?}", outputs);
     let result = outputs[&0] * outputs[&1] * outputs[&2];
-    println!("Result = {:?}*{:?}*{:?} = {:?}",
-      outputs[&0], outputs[&1], outputs[&2], result);
+    println!("Result = {:?}*{:?}*{:?} = {:?}", outputs[&0], outputs[&1], outputs[&2], result);
   }
 }

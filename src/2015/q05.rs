@@ -6,7 +6,7 @@ use aoc::Day;
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT : &'static str = "rthkunfaakmwmush
+static INPUT: &'static str = "rthkunfaakmwmush
 qxlnvjguikqcyfzt
 sleaoasjspnjctqt
 lactpmehuhmzwfjl
@@ -1037,7 +1037,7 @@ fn is_disallowed(line: &str) -> bool {
 fn has_two_pair(line: &str) -> bool {
   let mut rv = false;
   let mut seen_pairs = HashSet::new();
-  let mut prev_pair = ('\0','\0');
+  let mut prev_pair = ('\0', '\0');
   let one = line.chars();
   let two = line.chars().skip(1);
   let pairs = one.zip(two);

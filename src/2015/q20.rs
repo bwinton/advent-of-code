@@ -6,7 +6,7 @@ use aoc::Day;
 use std;
 use std::collections::HashSet;
 
-static INPUT : usize = 33_100_000;
+static INPUT: usize = 33_100_000;
 
 define_iterator!(FactorsIter (
     // &seen: Vec<HashSet<usize>> = Vec::new(),
@@ -30,7 +30,7 @@ fn process_data_a(data: usize) -> usize {
   for (i, factors) in FactorsIter::default().enumerate() {
     let value: usize = factors.iter().sum();
     if value as usize * 10 >= data {
-      return i+1;
+      return i + 1;
     }
   }
   0

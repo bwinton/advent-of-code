@@ -1,4 +1,5 @@
-#[macro_use] extern crate clap;
+#[macro_use]
+extern crate clap;
 
 use clap::Arg;
 use std::ops::Deref;
@@ -54,24 +55,34 @@ fn select(day: &Day, arg: &str) {
   match arg.to_lowercase() {
     ref q if *q == format!("{}{}", day_num, "a") => day.a(),
     ref q if *q == format!("{}{}", day_num, "b") => day.b(),
-    ref q if *q == day.number() => {day.a(); day.b()},
-    ref q if *q == "*" => {day.a(); day.b()},
-    _ => ()
+    ref q if *q == day.number() => {
+      day.a();
+      day.b()
+    },
+    ref q if *q == "*" => {
+      day.a();
+      day.b()
+    },
+    _ => (),
   }
 }
 
 pub fn main(days: &[Box<Day>]) {
   let matches = app_from_crate!("\n")
-    .arg(Arg::with_name("day")
-      .help("Which day(s) to run")
-      .long_help("Specify a day, or days, or parts of a day or days to run.
+    .arg(
+      Arg::with_name("day")
+        .help("Which day(s) to run")
+        .long_help(
+          "Specify a day, or days, or parts of a day or days to run.
  Putting a number and an 'a' or 'b' will run that part for that day.
  Putting a number will run both parts for that day.
  Putting '*' (the default) will run all parts for all days.
-")
-      .index(1)
-      .multiple(true)
-      .default_value("*"))
+",
+        )
+        .index(1)
+        .multiple(true)
+        .default_value("*"),
+    )
     .get_matches();
 
   let args: Vec<&str> = matches.values_of("day").unwrap().collect();

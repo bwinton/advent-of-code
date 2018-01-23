@@ -8,7 +8,7 @@ use nom::alpha;
 use nom::digit;
 use nom::space;
 
-static INPUT : &'static str = "Weapons:    Cost  Damage  Armor
+static INPUT: &'static str = "Weapons:    Cost  Damage  Armor
 Dagger        8     4       0
 Shortsword   10     5       0
 Warhammer    25     6       0
@@ -38,14 +38,14 @@ struct Item {
   name: String,
   cost: i32,
   damage: i32,
-  armor: i32
+  armor: i32,
 }
 
 #[derive(Clone)]
 #[derive(Debug)]
 struct Group {
   name: String,
-  items: Vec<Item>
+  items: Vec<Item>,
 }
 
 #[derive(Clone)]
@@ -55,7 +55,7 @@ struct Player {
   hp: i32,
   damage: i32,
   armor: i32,
-  items: Vec<Item>
+  items: Vec<Item>,
 }
 
 impl Player {
@@ -74,14 +74,18 @@ impl Player {
       hp: 100,
       damage: damage,
       armor: armor,
-      items: items
+      items: items,
     }
   }
 
   fn wins(&mut self) -> bool {
     let mut me = self.clone();
     let mut boss = Player {
-      cost: 0, hp: 104, damage: 8, armor: 1, items: Vec::new()
+      cost: 0,
+      hp: 104,
+      damage: 8,
+      armor: 1,
+      items: Vec::new(),
     };
     while me.hp > 0 {
       boss.hp -= 1.max(me.damage - boss.armor);
@@ -159,8 +163,14 @@ fn process_data_a(data: &str) -> i32 {
   for items in iproduct!(
     store[0].items.iter(),
     store[1].items.iter(),
-    store[2].items.iter().combinations(2).collect::<Vec<_>>().iter()
-  ) {
+    store[2]
+      .items
+      .iter()
+      .combinations(2)
+      .collect::<Vec<_>>()
+      .iter()
+  )
+  {
     players.push(Player::new(&items));
   }
   players.sort_by_key(|x| x.cost);
@@ -182,8 +192,14 @@ fn process_data_b(data: &str) -> i32 {
   for items in iproduct!(
     store[0].items.iter(),
     store[1].items.iter(),
-    store[2].items.iter().combinations(2).collect::<Vec<_>>().iter()
-  ) {
+    store[2]
+      .items
+      .iter()
+      .combinations(2)
+      .collect::<Vec<_>>()
+      .iter()
+  )
+  {
     players.push(Player::new(&items));
   }
   players.sort_by_key(|x| -x.cost);
@@ -195,12 +211,12 @@ fn process_data_b(data: &str) -> i32 {
   }
   0
   // let (tx, rx) = mpsc::channel();
-  // 
+  //
   // thread::spawn(move || {
   //     let val = String::from("hi");
   //     tx.send(val).unwrap();
   // });
-  // 
+  //
   // let received = rx.recv().unwrap();
   // println!("Got: {}", received);
 }
@@ -230,14 +246,37 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(header_parser("Weapons:    Cost  Damage  Armor").unwrap().1, "Weapons".to_owned());
+  assert_eq!(
+    header_parser("Weapons:    Cost  Damage  Armor").unwrap().1,
+    "Weapons".to_owned()
+  );
   assert_eq!(header_parser("Armor:      Cost  Damage  Armor").unwrap().1, "Armor".to_owned());
   assert_eq!(header_parser("Rings:      Cost  Damage  Armor").unwrap().1, "Rings".to_owned());
 
-  let dagger = Item { name: "Dagger".to_owned(), cost: 8, damage: 4, armor: 0 };
-  let banded_mail = Item { name: "Bandedmail".to_owned(), cost: 75, damage: 0, armor: 4 };
-  let damage_3 = Item { name: "Damage +3".to_owned(), cost: 100, damage: 3, armor: 0 };
-  let defense_2 = Item { name: "Defense +2".to_owned(), cost: 40, damage: 0, armor: 2 };
+  let dagger = Item {
+    name: "Dagger".to_owned(),
+    cost: 8,
+    damage: 4,
+    armor: 0,
+  };
+  let banded_mail = Item {
+    name: "Bandedmail".to_owned(),
+    cost: 75,
+    damage: 0,
+    armor: 4,
+  };
+  let damage_3 = Item {
+    name: "Damage +3".to_owned(),
+    cost: 100,
+    damage: 3,
+    armor: 0,
+  };
+  let defense_2 = Item {
+    name: "Defense +2".to_owned(),
+    cost: 40,
+    damage: 0,
+    armor: 2,
+  };
   assert_eq!(item_parser("Dagger        8     4       0").unwrap().1, dagger);
   assert_eq!(item_parser("Bandedmail   75     0       4").unwrap().1, banded_mail);
   assert_eq!(item_parser("Damage +3   100     3       0").unwrap().1, damage_3);
@@ -248,7 +287,7 @@ fn a() {
     hp: 8,
     damage: 5,
     armor: 5,
-    items: Vec::new()
+    items: Vec::new(),
   };
   assert_eq!(player.wins(), true);
 }

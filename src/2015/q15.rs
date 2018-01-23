@@ -3,12 +3,12 @@
 
 use aoc::Day;
 
+use regex::Regex;
 use std;
 use std::str::FromStr;
-use regex::Regex;
 
 
-static INPUT : &'static str = "Sprinkles: capacity 5, durability -1, flavor 0, texture 0, calories 5
+static INPUT: &'static str = "Sprinkles: capacity 5, durability -1, flavor 0, texture 0, calories 5
 PeanutButter: capacity -1, durability 3, flavor 0, texture 0, calories 1
 Frosting: capacity 0, durability -1, flavor 4, texture 0, calories 6
 Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8";
@@ -20,7 +20,7 @@ struct Ingredient {
   durability: i32,
   flavor: i32,
   texture: i32,
-  calories: i32
+  calories: i32,
 }
 
 impl FromStr for Ingredient {
@@ -33,7 +33,7 @@ impl FromStr for Ingredient {
     let captures = RE.captures(s);
     match captures {
       Some(cap) => {
-        Ok(Ingredient{
+        Ok(Ingredient {
           name: cap.at(1).unwrap().to_string(),
           capacity: cap.at(2).unwrap().parse().unwrap(),
           durability: cap.at(3).unwrap().parse().unwrap(),
@@ -42,7 +42,7 @@ impl FromStr for Ingredient {
           calories: cap.at(6).unwrap().parse().unwrap(),
         })
       },
-      None => Err(())
+      None => Err(()),
     }
   }
 }
@@ -112,7 +112,7 @@ define_iterator!(HundredIter (
 });
 
 fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
-  let mut sum = Ingredient{
+  let mut sum = Ingredient {
     name: "Sum".to_string(),
     capacity: 0,
     durability: 0,
@@ -122,7 +122,7 @@ fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
   };
   for (i, amount) in amounts.iter().enumerate() {
     sum.add(&ingredients[i], *amount);
-  };
+  }
   sum.floor();
   (sum.capacity * sum.durability * sum.flavor * sum.texture, sum.calories)
 }
@@ -134,7 +134,10 @@ fn process_data_a(data: &str) -> i32 {
   }
 
   let mut max = 0;
-  let iter = HundredIter{ len: ingredients.len() as usize, ..Default::default() };
+  let iter = HundredIter {
+    len: ingredients.len() as usize,
+    ..Default::default()
+  };
   for x in iter {
     let score = get_score(&x, &ingredients).0;
     if score > max {
@@ -152,7 +155,10 @@ fn process_data_b(data: &str) -> i32 {
   }
 
   let mut max = 0;
-  let iter = HundredIter{ len: ingredients.len() as usize, ..Default::default() };
+  let iter = HundredIter {
+    len: ingredients.len() as usize,
+    ..Default::default()
+  };
   for x in iter {
     let (score, calories) = get_score(&x, &ingredients);
     if score > max && calories == 500 {
@@ -188,12 +194,22 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
-Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"), 62842880);
+  assert_eq!(
+    process_data_a(
+      "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
+    ),
+    62842880
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
-Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"), 57600000);
+  assert_eq!(
+    process_data_b(
+      "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
+    ),
+    57600000
+  );
 }

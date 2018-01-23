@@ -6,7 +6,7 @@ use aoc::Day;
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT : &'static str = "0 <-> 412, 480, 777, 1453
+static INPUT: &'static str = "0 <-> 412, 480, 777, 1453
 1 <-> 132, 1209
 2 <-> 1614
 3 <-> 3
@@ -2014,7 +2014,12 @@ fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
   }
   for line in data.lines() {
     let cap = MAIN_RE.captures(line).unwrap();
-    let mut dests: HashSet<u32> = cap.at(2).unwrap().split(", ").map(|x| x.parse().unwrap()).collect();
+    let mut dests: HashSet<u32> = cap
+      .at(2)
+      .unwrap()
+      .split(", ")
+      .map(|x| x.parse().unwrap())
+      .collect();
     dests.insert(cap.at(1).unwrap().parse().unwrap());
     for item in &mut rv {
       if !dests.is_disjoint(item) {
@@ -2064,30 +2069,50 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("0 <-> 2
+  assert_eq!(
+    process_data_a(
+      "0 <-> 2
 1 <-> 1
 2 <-> 0, 3, 4
 3 <-> 2, 4
 4 <-> 2, 3, 6
 5 <-> 6
-6 <-> 4, 5"), 6);
-  assert_eq!(process_data_a("0 <-> 0
+6 <-> 4, 5",
+    ),
+    6
+  );
+  assert_eq!(
+    process_data_a(
+      "0 <-> 0
 1 <-> 10
 2 <-> 21
-3 <-> 10, 21"), 1);
+3 <-> 10, 21",
+    ),
+    1
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("0 <-> 2
+  assert_eq!(
+    process_data_b(
+      "0 <-> 2
 1 <-> 1
 2 <-> 0, 3, 4
 3 <-> 2, 4
 4 <-> 2, 3, 6
 5 <-> 6
-6 <-> 4, 5"), 2);
-  assert_eq!(process_data_b("0 <-> 0
+6 <-> 4, 5",
+    ),
+    2
+  );
+  assert_eq!(
+    process_data_b(
+      "0 <-> 0
 1 <-> 10
 2 <-> 21
-3 <-> 10, 21"), 2);
+3 <-> 10, 21",
+    ),
+    2
+  );
 }

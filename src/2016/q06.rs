@@ -4,7 +4,7 @@
 use aoc::Day;
 use std::collections::HashMap;
 
-static INPUT : &'static str = "ciglthza
+static INPUT: &'static str = "ciglthza
 yoqarfik
 rcjoirth
 vlxkrdxh
@@ -617,8 +617,8 @@ at the end
 
 */
 
-fn get_most_common(frequencies : Vec<HashMap<char, i32>>) -> String {
-  let mut result :Vec<char> = Vec::new();
+fn get_most_common(frequencies: Vec<HashMap<char, i32>>) -> String {
+  let mut result: Vec<char> = Vec::new();
   for frequency in frequencies {
     let mut count: Vec<_> = frequency.iter().collect();
     count.sort_by(|a, b| b.1.cmp(a.1));
@@ -627,8 +627,8 @@ fn get_most_common(frequencies : Vec<HashMap<char, i32>>) -> String {
   result.into_iter().collect()
 }
 
-fn get_least_common(frequencies : Vec<HashMap<char, i32>>) -> String {
-  let mut result :Vec<char> = Vec::new();
+fn get_least_common(frequencies: Vec<HashMap<char, i32>>) -> String {
+  let mut result: Vec<char> = Vec::new();
   for frequency in frequencies {
     let mut count: Vec<_> = frequency.iter().collect();
     count.sort_by(|a, b| a.1.cmp(b.1));
@@ -649,7 +649,7 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
+    let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {
         for _ in 0..line.len() {
@@ -668,7 +668,7 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut frequencies : Vec<HashMap<char, i32>> = Vec::new();
+    let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
     for line in INPUT.lines() {
       if frequencies.is_empty() {
         for _ in 0..line.len() {

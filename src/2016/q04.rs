@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "nzydfxpc-rclop-qwzhpc-qtylyntyr-769[oshgk]
+static INPUT: &'static str = "nzydfxpc-rclop-qwzhpc-qtylyntyr-769[oshgk]
 qzlozfhmf-bzmcx-bnzshmf-zbpthrhshnm-339[zmxdi]
 xtwtelcj-rclop-upwwjmply-zapcletzyd-743[itbds]
 mrxivrexmsrep-fewoix-ywiv-xiwxmrk-308[kzypw]
@@ -1075,8 +1075,8 @@ rwcnawjcrxwju-ljwmh-bqryyrwp-277[nxatm]";
 // totally-real-room-200[decoy]
 // qzmt-zixmtkozy-ivhz-343[abcde]";
 
-use std::iter::FromIterator;
 use regex::Regex;
+use std::iter::FromIterator;
 
 #[derive(Debug)]
 struct Room {
@@ -1094,7 +1094,7 @@ impl Room {
         let pos = chars.iter().position(|&r| r.1 == char);
         match pos {
           None => chars.push((-1, char)),
-          Some(i) => chars[i].0 -= 1
+          Some(i) => chars[i].0 -= 1,
         }
       }
     }
@@ -1108,17 +1108,46 @@ impl Room {
   fn decrypt(&self) -> String {
     let shift = (self.sector % 26) as u8;
     let alphabet = [
-      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-      'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z',
     ];
 
     // rot-n, where n is sector % 26…
-    let name :String = self.name.chars()
-      .map(|c| *alphabet.iter()
-        .chain(alphabet.iter())
-        .skip_while(|&x| *x != c)
-        .nth(usize::from(shift))
-        .unwrap_or(&c))
+    let name: String = self
+      .name
+      .chars()
+      .map(|c| {
+        *alphabet
+          .iter()
+          .chain(alphabet.iter())
+          .skip_while(|&x| *x != c)
+          .nth(usize::from(shift))
+          .unwrap_or(&c)
+      })
       .collect();
     name.replace('-', " ")
   }
@@ -1131,7 +1160,11 @@ impl FromStr for Room {
   fn from_str(s: &str) -> Result<Room, ()> {
     let room_re: Regex = Regex::new(r"^([a-z-]+)-([0-9]+)\[([a-z]{5})\]$").unwrap();
     let blank = String::from("");
-    let mut rv = Room{name: blank.clone(), sector: 0, checksum: blank.clone()};
+    let mut rv = Room {
+      name: blank.clone(),
+      sector: 0,
+      checksum: blank.clone(),
+    };
     for cap in room_re.captures_iter(s) {
       rv.name = String::from(cap.at(1).unwrap_or(""));
       rv.sector = cap.at(2).unwrap_or("-1").parse().unwrap();
@@ -1155,9 +1188,9 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut sum : i32 = 0;
+    let mut sum: i32 = 0;
     for line in INPUT.lines() {
-      let room : Room = line.parse().unwrap();
+      let room: Room = line.parse().unwrap();
       if room.is_valid() {
         sum += room.sector;
       }
@@ -1168,7 +1201,7 @@ impl Day for Q {
   fn b(&self) {
     print!("{}B: ", self.number());
     for line in INPUT.lines() {
-      let room : Room = line.parse().unwrap();
+      let room: Room = line.parse().unwrap();
       let name = room.decrypt();
       if name.find("northpole object storage") != None {
         println!("Result = \"{}\" {}", room.decrypt(), room.sector);

@@ -7,7 +7,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = "set i 31
+static INPUT: &'static str = "set i 31
 set a 1
 mul p 17
 jgz p p
@@ -66,7 +66,7 @@ enum Instruction {
   JumpRegReg(char, char),
   JumpRegLit(char, i64),
   JumpLitReg(i64, char),
-  JumpLitLit(i64, i64)
+  JumpLitLit(i64, i64),
 }
 
 impl Instruction {
@@ -77,43 +77,52 @@ impl Instruction {
       Instruction::SendReg(reg) => {
         rv.pc += 1;
         rv.outgoing.push(state.registers[&reg]);
-      }
+      },
       Instruction::SendLit(lit) => {
         rv.pc += 1;
         rv.outgoing.push(lit);
-      }
+      },
       Instruction::SetReg(dst, src) => {
         rv.pc += 1;
         rv.registers.insert(dst, state.registers[&src]);
-      }
+      },
       Instruction::SetLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, lit);
-      }
+      },
       Instruction::AddReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(dst, state.registers[&dst] + state.registers[&src]);
-      }
+        rv.registers.insert(
+          dst,
+          state.registers[&dst] + state.registers[&src],
+        );
+      },
       Instruction::AddLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] + lit);
-      }
+      },
       Instruction::MulReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(dst, state.registers[&dst] * state.registers[&src]);
-      }
+        rv.registers.insert(
+          dst,
+          state.registers[&dst] * state.registers[&src],
+        );
+      },
       Instruction::MulLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] * lit);
-      }
+      },
       Instruction::ModReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(dst, state.registers[&dst] % state.registers[&src]);
-      }
+        rv.registers.insert(
+          dst,
+          state.registers[&dst] % state.registers[&src],
+        );
+      },
       Instruction::ModLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] % lit);
-      }
+      },
       Instruction::Receive(reg) => {
         if state.kind == 'A' {
           rv.pc += 1;
@@ -127,38 +136,38 @@ impl Instruction {
             Some(x) => {
               rv.pc += 1;
               rv.registers.insert(reg, x);
-            }
+            },
           }
         }
-      }
+      },
       Instruction::JumpRegReg(reg_test, reg_offset) => {
         if rv.registers[&reg_test] > 0 {
           rv.pc += rv.registers[&reg_offset];
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpRegLit(reg, offset) => {
         if rv.registers[&reg] > 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpLitReg(test, reg) => {
         if test > 0 {
           rv.pc += rv.registers[&reg];
         } else {
           rv.pc += 1;
         }
-      }
+      },
       Instruction::JumpLitLit(test, offset) => {
         if test > 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      }
+      },
     }
     (rv, value)
   }
@@ -166,20 +175,20 @@ impl Instruction {
   fn registers(&self) -> Vec<char> {
     match (*self).clone() {
       Instruction::SendReg(reg) |
-        Instruction::SetLit(reg, _) |
-        Instruction::AddLit(reg, _) |
-        Instruction::MulLit(reg, _) |
-        Instruction::ModLit(reg, _) |
-        Instruction::Receive(reg) |
-        Instruction::JumpRegLit(reg, _) |
-        Instruction::JumpLitReg(_, reg) => { vec![reg] }
+      Instruction::SetLit(reg, _) |
+      Instruction::AddLit(reg, _) |
+      Instruction::MulLit(reg, _) |
+      Instruction::ModLit(reg, _) |
+      Instruction::Receive(reg) |
+      Instruction::JumpRegLit(reg, _) |
+      Instruction::JumpLitReg(_, reg) => vec![reg],
       Instruction::SendLit(_) |
-        Instruction::JumpLitLit(_, _) => { vec![] }
+      Instruction::JumpLitLit(_, _) => vec![],
       Instruction::SetReg(a, b) |
-        Instruction::AddReg(a, b) |
-        Instruction::MulReg(a, b) |
-        Instruction::ModReg(a, b) |
-        Instruction::JumpRegReg(a, b) => { vec![a, b] }
+      Instruction::AddReg(a, b) |
+      Instruction::MulReg(a, b) |
+      Instruction::ModReg(a, b) |
+      Instruction::JumpRegReg(a, b) => vec![a, b],
     }
   }
 }
@@ -207,104 +216,98 @@ impl FromStr for Instruction {
     }
 
     if let Some(cap) = SEND_REG_RE.captures(s) {
-      return Ok(Instruction::SendReg(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
+      return Ok(Instruction::SendReg(cap.at(1).unwrap().parse().unwrap()));
     }
 
     if let Some(cap) = SEND_LIT_RE.captures(s) {
-      return Ok(Instruction::SendLit(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
+      return Ok(Instruction::SendLit(cap.at(1).unwrap().parse().unwrap()));
     }
 
     if let Some(cap) = SET_REG_RE.captures(s) {
       return Ok(Instruction::SetReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SET_LIT_RE.captures(s) {
       return Ok(Instruction::SetLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = ADD_REG_RE.captures(s) {
       return Ok(Instruction::AddReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = ADD_LIT_RE.captures(s) {
       return Ok(Instruction::AddLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MUL_REG_RE.captures(s) {
       return Ok(Instruction::MulReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MUL_LIT_RE.captures(s) {
       return Ok(Instruction::MulLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MOD_REG_RE.captures(s) {
       return Ok(Instruction::ModReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MOD_LIT_RE.captures(s) {
       return Ok(Instruction::ModLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = RECEIVE_RE.captures(s) {
-      return Ok(Instruction::Receive(
-        cap.at(1).unwrap().parse().unwrap()
-      ));
+      return Ok(Instruction::Receive(cap.at(1).unwrap().parse().unwrap()));
     }
 
     if let Some(cap) = JUMP_REGREG_RE.captures(s) {
       return Ok(Instruction::JumpRegReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
       return Ok(Instruction::JumpRegLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITREG_RE.captures(s) {
       return Ok(Instruction::JumpLitReg(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
       return Ok(Instruction::JumpLitLit(
         cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap()
+        cap.at(2).unwrap().parse().unwrap(),
       ));
     }
 
@@ -322,7 +325,7 @@ struct State {
   incoming: Vec<i64>,
   outgoing: Vec<i64>,
   instructions: Vec<Instruction>,
-  waiting: bool
+  waiting: bool,
 }
 
 impl State {
@@ -333,8 +336,8 @@ impl State {
       pc: 0,
       incoming: Vec::new(),
       outgoing: Vec::new(),
-      instructions:instructions,
-      waiting: false
+      instructions: instructions,
+      waiting: false,
     }
   }
 
@@ -361,7 +364,8 @@ fn process_data_a(data: &str) -> i64 {
   let mut value = None;
   while value == None && (state.pc as usize) < state.instructions.len() {
     let temp = state.execute();
-    state = temp.0; value = temp.1;
+    state = temp.0;
+    value = temp.1;
     while let Some(data) = state.outgoing.pop() {
       state.incoming.insert(0, data);
     }
@@ -435,7 +439,9 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("set a 1
+  assert_eq!(
+    process_data_a(
+      "set a 1
 add a 2
 mul a a
 mod a 5
@@ -444,16 +450,24 @@ set a 0
 rcv a
 jgz a -1
 set a 1
-jgz a -2"), 4);
+jgz a -2",
+    ),
+    4
+  );
 }
 
 #[test]
 fn b() {
-  assert_eq!(process_data_b("snd 1
+  assert_eq!(
+    process_data_b(
+      "snd 1
 snd 2
 snd p
 rcv a
 rcv b
 rcv c
-rcv d"), 3);
+rcv d",
+    ),
+    3
+  );
 }

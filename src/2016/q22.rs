@@ -3,9 +3,9 @@
 
 use aoc::Day;
 use regex::Regex;
-use std::str::FromStr;
 use std::cmp::Ordering;
 use std::fmt;
+use std::str::FromStr;
 
 // Filesystem              Size  Used  Avail  Use%
 // static INPUT : &'static str = "/dev/grid/node-x0-y0   10T    8T     2T   80%
@@ -17,7 +17,7 @@ use std::fmt;
 // /dev/grid/node-x2-y0   10T    6T     4T   60%
 // /dev/grid/node-x2-y1    9T    8T     1T   88%
 // /dev/grid/node-x2-y2    9T    6T     3T   66%";
-static INPUT : &'static str = "/dev/grid/node-x0-y0     85T   67T    18T   78%
+static INPUT: &'static str = "/dev/grid/node-x0-y0     85T   67T    18T   78%
 /dev/grid/node-x0-y1     91T   67T    24T   73%
 /dev/grid/node-x0-y2     94T   72T    22T   76%
 /dev/grid/node-x0-y3     85T   69T    16T   81%
@@ -985,7 +985,7 @@ struct Node {
   size: usize,
   used: usize,
   avail: usize,
-  goal: bool
+  goal: bool,
 }
 
 impl FromStr for Node {
@@ -1005,10 +1005,10 @@ impl FromStr for Node {
           size: cap.at(3).unwrap().parse().unwrap(),
           used: cap.at(4).unwrap().parse().unwrap(),
           avail: cap.at(5).unwrap().parse().unwrap(),
-          goal: false
+          goal: false,
         })
       },
-      _ => {Err(())}
+      _ => Err(()),
     }
   }
 }
@@ -1016,7 +1016,7 @@ impl FromStr for Node {
 #[derive(Clone)]
 struct State {
   moves: usize,
-  nodes: Vec<Node>
+  nodes: Vec<Node>,
 }
 
 impl Ord for State {
@@ -1078,7 +1078,7 @@ impl Day for Q {
     print!("{}A: ", self.number());
     let mut nodes = Vec::new();
     for line in INPUT.lines() {
-      let node : Node = line.parse().unwrap();
+      let node: Node = line.parse().unwrap();
       nodes.push(node);
     }
     let mut result = 0;

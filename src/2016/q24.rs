@@ -5,22 +5,22 @@ use aoc::Day;
 
 use regex::Regex;
 use std;
-use std::usize::MAX;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use std::collections::HashSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::str::FromStr;
+use std::usize::MAX;
 
 // static INPUT : &'static str = "###########
 // #0.1.....2#
 // #.#######.#
 // #4.......3#
 // ###########";
-static INPUT : &'static str = "#########################################################################################################################################################################################
+static INPUT: &'static str = "#########################################################################################################################################################################################
 #.#.......#.#.#.....#.#.......#.................#.......#.#.....#.....#...#...#.......#...#...........#.#.....#.............#.........#.............#.........#.....#.#.............#...#
 #.#####.#.#.#.#.#.#.#.#.#.###.#.#.###.#.#.###.###.#.#.#.#.#.#####.#.#.###.#.#.###.#.#.###.###.#.###.###.###.#.#.###.#.#.#.#.#.#.###.#.###.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.###.#####.#.###.#
 #.....#.............#...#....6#.....#.....#.#...#.....#...#.........#.......#...#.#.....#.....#.#...#...#.....#.#.......#.........#...#...#.#.#.......#.........#.....#...#.#.#.#.....#.#
@@ -66,17 +66,20 @@ static INPUT : &'static str = "#################################################
 #[derive(Eq)]
 #[derive(PartialEq)]
 enum Direction {
-  Up, Left, Down, Right
+  Up,
+  Left,
+  Down,
+  Right,
 }
 
 impl fmt::Debug for Direction {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let out;
     match *self {
-      Direction::Up => { out = 'U' }
-      Direction::Left => { out = 'L' }
-      Direction::Down => { out = 'D' }
-      Direction::Right => { out = 'R' }
+      Direction::Up => out = 'U',
+      Direction::Left => out = 'L',
+      Direction::Down => out = 'D',
+      Direction::Right => out = 'R',
     }
     fmt::Debug::fmt(&out, f)
   }
@@ -90,7 +93,7 @@ impl fmt::Debug for Direction {
 struct Location {
   loc: i32,
   x: usize,
-  y: usize
+  y: usize,
 }
 
 impl Ord for Location {
@@ -113,7 +116,7 @@ impl PartialOrd for Location {
 enum Contents {
   Wall(),
   Empty(),
-  Something(Location)
+  Something(Location),
 }
 
 impl FromStr for Contents {
@@ -131,14 +134,18 @@ impl FromStr for Contents {
         let captures = RE.captures(s);
         match captures {
           Some(cap) => {
-           Ok(Contents::Something(Location{loc: cap.at(1).unwrap().parse().unwrap(), x:0, y:0}))
+            Ok(Contents::Something(Location {
+              loc: cap.at(1).unwrap().parse().unwrap(),
+              x: 0,
+              y: 0,
+            }))
           },
           None => {
             println!("Could not parse '{}'!", s);
             Err(())
-          }
+          },
         }
-      }
+      },
     }
   }
 }
@@ -149,13 +156,13 @@ impl FromStr for Contents {
 struct State {
   x: usize,
   y: usize,
-  moves: Vec<Direction>
+  moves: Vec<Direction>,
 }
 
 impl Ord for State {
   fn cmp(&self, other: &State) -> Ordering {
-    let self_moves = - (self.moves.len() as i32);
-    let other_moves = - (other.moves.len() as i32);
+    let self_moves = -(self.moves.len() as i32);
+    let other_moves = -(other.moves.len() as i32);
     self_moves.cmp(&other_moves)
   }
 }
@@ -192,7 +199,11 @@ fn get_board(input: &str, locations: &mut Vec<Location>) -> Vec<Vec<Contents>> {
     for character in line.chars() {
       let mut last: Contents = character.to_string().parse().unwrap();
       if let Contents::Something(curr) = last {
-        let new = Location{loc:curr.loc, x:row.len(), y:board.len()};
+        let new = Location {
+          loc: curr.loc,
+          x: row.len(),
+          y: board.len(),
+        };
         locations.push(new.clone());
         last = Contents::Something(new);
       }
@@ -207,14 +218,20 @@ fn get_board(input: &str, locations: &mut Vec<Location>) -> Vec<Vec<Contents>> {
 fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> Vec<State> {
   let mut rv = Vec::new();
 
-  for direction in &[Direction::Up, Direction::Left, Direction:: Down, Direction::Right] {
+  for direction in &[
+    Direction::Up,
+    Direction::Left,
+    Direction::Down,
+    Direction::Right,
+  ]
+  {
     let mut i = current.x;
     let mut j = current.y;
     match *direction {
-      Direction::Up => { j -= 1 }
-      Direction::Left => { i -= 1 }
-      Direction::Down => { j += 1 }
-      Direction::Right => { i += 1 }
+      Direction::Up => j -= 1,
+      Direction::Left => i -= 1,
+      Direction::Down => j += 1,
+      Direction::Right => i += 1,
     }
     let location = &board[j][i];
     if location == &Contents::Wall() {
@@ -227,7 +244,7 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
     rv.push(State {
       x: i,
       y: j,
-      moves: moves
+      moves: moves,
     });
   }
 
@@ -245,10 +262,10 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
 }
 
 fn find_shortest_path(start: &Location, target: &Location, board: &[Vec<Contents>]) -> usize {
-  let initial_state = State{
+  let initial_state = State {
     x: start.x,
     y: start.y,
-    moves: Vec::new()
+    moves: Vec::new(),
   };
 
   let mut next = BinaryHeap::new();
@@ -260,7 +277,11 @@ fn find_shortest_path(start: &Location, target: &Location, board: &[Vec<Contents
       return state.moves.len();
     }
     seen.insert(state.clone());
-    let upcoming: Vec<_> = seen.clone().into_iter().chain(next.clone().into_iter()).collect();
+    let upcoming: Vec<_> = seen
+      .clone()
+      .into_iter()
+      .chain(next.clone().into_iter())
+      .collect();
     let next_states = get_next_states(&state, board, &upcoming);
     for state in &next_states {
       next.push(state.clone());
@@ -275,13 +296,13 @@ fn find_shortest_path(start: &Location, target: &Location, board: &[Vec<Contents
 fn get_permutations(input: &[Location]) -> Vec<Vec<Location>> {
   if input.len() == 1 {
     let x: Vec<Vec<Location>> = vec![vec![input[0].clone()]];
-    return x
+    return x;
   }
 
   let mut result: Vec<Vec<Location>> = Vec::new();
 
   for i in 0..input.len() {
-    let mut temp : Vec<Location> = input.to_vec();
+    let mut temp: Vec<Location> = input.to_vec();
     temp.swap(0, i);
     let (first, rest) = temp.split_first().unwrap();
     for mut perm in get_permutations(rest) {
@@ -311,13 +332,13 @@ impl Day for Q {
 
   fn a(&self) {
     print!("{}A: ", self.number());
-    let mut result =  MAX;
+    let mut result = MAX;
     let mut locations = Vec::new();
     let board = get_board(INPUT, &mut locations);
     let mut distances = HashMap::new();
 
     for i in 0..locations.len() {
-      for j in i+1..locations.len() {
+      for j in i + 1..locations.len() {
         let length = find_shortest_path(&locations[i], &locations[j], &board);
         distances.insert((&locations[i], &locations[j]), length);
       }
@@ -346,13 +367,13 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    let mut result =  MAX;
+    let mut result = MAX;
     let mut locations = Vec::new();
     let board = get_board(INPUT, &mut locations);
     let mut distances = HashMap::new();
 
     for i in 0..locations.len() {
-      for j in i+1..locations.len() {
+      for j in i + 1..locations.len() {
         let length = find_shortest_path(&locations[i], &locations[j], &board);
         distances.insert((&locations[i], &locations[j]), length);
       }
