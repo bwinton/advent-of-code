@@ -1,5 +1,3 @@
-#![feature(splice)]
-
 mod q01;
 mod q02;
 mod q03;
@@ -25,6 +23,8 @@ mod q22;
 mod q23;
 mod q24;
 mod q25;
+mod test;
+
 
 #[macro_use]
 extern crate aoc;
@@ -37,6 +37,7 @@ extern crate maplit;
 #[macro_use]
 extern crate nom;
 
+extern crate combine;
 extern crate crypto;
 extern crate permutohedron;
 extern crate regex;
@@ -68,7 +69,8 @@ fn main() {
     q22,
     q23,
     q24,
-    q25
+    q25,
+    test
   );
 
   aoc::main(&days)

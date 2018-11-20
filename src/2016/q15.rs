@@ -39,9 +39,9 @@ impl FromStr for Disc {
     match captures {
       None => Err(()),
       Some(cap) => {
-        let number = cap.at(1).unwrap().parse().unwrap();
-        let positions = cap.at(2).unwrap().parse().unwrap();
-        let current = cap.at(3).unwrap().parse().unwrap();
+        let number = cap[1].parse().unwrap();
+        let positions = cap[2].parse().unwrap();
+        let current = cap[3].parse().unwrap();
         Ok(Disc {
           number: number,
           positions: positions,

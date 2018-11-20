@@ -7,6 +7,7 @@ use itertools::Itertools;
 use nom::alpha;
 use nom::digit;
 use nom::space;
+use nom::types::CompleteStr;
 
 static INPUT: &'static str = "Weapons:    Cost  Damage  Armor
 Dagger        8     4       0
@@ -98,20 +99,20 @@ impl Player {
   }
 }
 
-named!(modifier_parser<&str, String>, do_parse!(
+named!(modifier_parser<CompleteStr, String>, do_parse!(
   space >>
   tag!("+") >>
   digits: digit >>
-  (" +".to_owned() + digits)
+  (" +".to_owned() + &digits)
 ));
 
-named!(name_parser<&str, String>, do_parse!(
+named!(name_parser<CompleteStr, String>, do_parse!(
   base: alpha >>
   modifier: opt!(modifier_parser) >>
-  (base.to_owned() + &modifier.unwrap_or_default())
+  (base.to_string() + &modifier.unwrap_or_default())
 ));
 
-named!(header_parser<&str, String>, do_parse!(
+named!(header_parser<CompleteStr, String>, complete!(do_parse!(
   name: alpha >>
   tag!(":") >>
   space >>
@@ -121,10 +122,10 @@ named!(header_parser<&str, String>, do_parse!(
   space >>
   tag!("Armor") >>
   eat_separator!("\n") >>
-  (name.to_owned())
-));
+  (name.to_string())
+)));
 
-named!(item_parser<&str, Item>, do_parse!(
+named!(item_parser<CompleteStr, Item>, do_parse!(
   name: name_parser >>
   space >>
   cost: digit >>
@@ -133,10 +134,10 @@ named!(item_parser<&str, Item>, do_parse!(
   space >>
   armor: digit >>
   eat_separator!("\n") >>
-  (Item { name: name.to_owned(), cost: cost.parse().unwrap(), damage: damage.parse().unwrap(), armor: armor.parse().unwrap()})
+  (Item { name: name.to_string(), cost: cost.parse().unwrap(), damage: damage.parse().unwrap(), armor: armor.parse().unwrap()})
 ));
 
-named!(group_parser<&str, Group>, do_parse!(
+named!(group_parser<CompleteStr, Group>, do_parse!(
   name: header_parser >>
   items: many0!(item_parser) >>
   eat_separator!("\n") >>
@@ -148,18 +149,18 @@ named!(group_parser<&str, Group>, do_parse!(
     if name == "Rings" {
       all_items.insert(0, empty_item);
     }
-    Group { name: name.to_owned(), items: all_items }
+    Group { name: name.to_string(), items: all_items }
   })
 ));
 
-named!(store_parser<&str, Vec<Group>>, do_parse!(
+named!(store_parser<CompleteStr, Vec<Group>>, do_parse!(
   groups: many0!(group_parser) >>
   (groups)
 ));
 
 fn process_data_a(data: &str) -> i32 {
   let mut players = Vec::new();
-  let store = store_parser(data).unwrap().1;
+  let store = store_parser(CompleteStr(data)).unwrap().1;
   for items in iproduct!(
     store[0].items.iter(),
     store[1].items.iter(),
@@ -188,7 +189,7 @@ fn process_data_a(data: &str) -> i32 {
 
 fn process_data_b(data: &str) -> i32 {
   let mut players = Vec::new();
-  let store = store_parser(data).unwrap().1;
+  let store = store_parser(CompleteStr(data)).unwrap().1;
   for items in iproduct!(
     store[0].items.iter(),
     store[1].items.iter(),
@@ -247,11 +248,11 @@ impl Day for Q {
 #[test]
 fn a() {
   assert_eq!(
-    header_parser("Weapons:    Cost  Damage  Armor").unwrap().1,
+    header_parser(CompleteStr("Weapons:    Cost  Damage  Armor")).unwrap().1,
     "Weapons".to_owned()
   );
-  assert_eq!(header_parser("Armor:      Cost  Damage  Armor").unwrap().1, "Armor".to_owned());
-  assert_eq!(header_parser("Rings:      Cost  Damage  Armor").unwrap().1, "Rings".to_owned());
+  assert_eq!(header_parser(CompleteStr("Armor:      Cost  Damage  Armor")).unwrap().1, "Armor".to_owned());
+  assert_eq!(header_parser(CompleteStr("Rings:      Cost  Damage  Armor")).unwrap().1, "Rings".to_owned());
 
   let dagger = Item {
     name: "Dagger".to_owned(),
@@ -277,10 +278,10 @@ fn a() {
     damage: 0,
     armor: 2,
   };
-  assert_eq!(item_parser("Dagger        8     4       0").unwrap().1, dagger);
-  assert_eq!(item_parser("Bandedmail   75     0       4").unwrap().1, banded_mail);
-  assert_eq!(item_parser("Damage +3   100     3       0").unwrap().1, damage_3);
-  assert_eq!(item_parser("Defense +2   40     0       2").unwrap().1, defense_2);
+  assert_eq!(item_parser(CompleteStr("Dagger        8     4       0")).unwrap().1, dagger);
+  assert_eq!(item_parser(CompleteStr("Bandedmail   75     0       4")).unwrap().1, banded_mail);
+  assert_eq!(item_parser(CompleteStr("Damage +3   100     3       0")).unwrap().1, damage_3);
+  assert_eq!(item_parser(CompleteStr("Defense +2   40     0       2")).unwrap().1, defense_2);
 
   let mut player = Player {
     cost: 0,
@@ -289,7 +290,7 @@ fn a() {
     armor: 5,
     items: Vec::new(),
   };
-  assert_eq!(player.wins(), true);
+  assert_eq!(player.wins(), false);
 }
 
 #[test]

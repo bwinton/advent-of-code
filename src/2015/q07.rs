@@ -396,62 +396,62 @@ impl FromStr for Gate {
 
     if let Some(cap) = VALUE_WIRE_RE.captures(s) {
       return Ok(Gate::ValueWire {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        out: cap[2].parse().unwrap(),
       });
     }
 
     if let Some(cap) = VALUE_VAL_RE.captures(s) {
       return Ok(Gate::ValueVal {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        out: cap[2].parse().unwrap(),
       });
     }
 
     if let Some(cap) = AND_WIRE_RE.captures(s) {
       return Ok(Gate::AndWire {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        b: cap[2].parse().unwrap(),
+        out: cap[3].parse().unwrap(),
       });
     }
 
     if let Some(cap) = AND_VAL_RE.captures(s) {
       return Ok(Gate::AndVal {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        b: cap[2].parse().unwrap(),
+        out: cap[3].parse().unwrap(),
       });
     }
 
     if let Some(cap) = OR_RE.captures(s) {
       return Ok(Gate::Or {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        b: cap[2].parse().unwrap(),
+        out: cap[3].parse().unwrap(),
       });
     }
 
     if let Some(cap) = LSHIFT_RE.captures(s) {
       return Ok(Gate::LShift {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        b: cap[2].parse().unwrap(),
+        out: cap[3].parse().unwrap(),
       });
     }
 
     if let Some(cap) = RSHIFT_RE.captures(s) {
       return Ok(Gate::RShift {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        b: cap.at(2).unwrap().parse().unwrap(),
-        out: cap.at(3).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        b: cap[2].parse().unwrap(),
+        out: cap[3].parse().unwrap(),
       });
     }
 
     if let Some(cap) = NOT_RE.captures(s) {
       return Ok(Gate::Not {
-        a: cap.at(1).unwrap().parse().unwrap(),
-        out: cap.at(2).unwrap().parse().unwrap(),
+        a: cap[1].parse().unwrap(),
+        out: cap[2].parse().unwrap(),
       });
     }
 

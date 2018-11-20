@@ -1,8 +1,17 @@
+pub mod computer;
+
 #[macro_use]
 extern crate clap;
+#[macro_use]
+extern crate display_derive;
+
+extern crate combine;
+
+use std::fmt::Display;
+use std::ops::Deref;
 
 use clap::Arg;
-use std::ops::Deref;
+
 
 pub trait Day {
   fn number(&self) -> String;
@@ -48,6 +57,13 @@ macro_rules! define_iterator {
       }
     }
   }
+}
+
+pub fn print_vec(v: &[impl Display]) -> String {
+    format!("[{}]", v.iter().fold(String::new(), |acc, ref num| {
+        let len = &acc.len() > &0;
+        acc + if len {", "} else {""} + &num.to_string()
+    }))
 }
 
 fn select(day: &Day, arg: &str) {

@@ -18,7 +18,7 @@ fn process_data(data: &str, iterations: usize) -> String {
       .zip([1 as u32].iter().cycle())
       .map(|x| vec![*x.1, x.0])
       .coalesce(|x, y| if x[1] == y[1] { Ok(vec![x[0] + y[0], x[1]]) } else { Err((x, y)) });
-    let values: Vec<String> = iter.flatten().map(|x| x.to_string()).collect();
+    let values: Vec<String> = Itertools::flatten(iter).map(|x| x.to_string()).collect();
     curr = values.join("");
     // println!("  {}: {:?}", i, curr);
   }

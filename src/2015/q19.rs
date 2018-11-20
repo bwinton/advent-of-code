@@ -1,9 +1,9 @@
 //-----------------------------------------------------
 // Setup.
-
 use aoc::Day;
 
 use nom::alpha;
+use nom::types::CompleteStr;
 use regex::Regex;
 use std::collections::HashSet;
 
@@ -65,30 +65,30 @@ impl Rule {
     let mut rv = Vec::new();
     for found in self.source.find_iter(start) {
       let mut dest = start.to_owned();
-      dest.splice(found.0..found.1, &self.dest);
+      dest.replace_range(found.start()..found.end(), &self.dest);
       rv.push(dest);
     }
     rv
   }
 }
 
-named!(rule_parser<&str, Rule>, do_parse!(
+named!(rule_parser<CompleteStr, Rule>, do_parse!(
   source: alpha >>
   tag!(" => ") >>
   dest: alpha >>
   tag!("\n") >>
-  (Rule { source: Regex::new(source).unwrap(), dest: dest.to_owned() })
+  (Rule { source: Regex::new(&source).unwrap(), dest: dest.to_string() })
 ));
 
-named!(parser<&str, (Vec<Rule>, String)>, complete!(do_parse!(
+named!(parser<CompleteStr, (Vec<Rule>, String)>, complete!(do_parse!(
   rules: many1!(rule_parser) >>
   tag!("\n") >>
   start: alpha >>
-  (rules.to_vec(), start.to_owned())
+  (rules.to_vec(), start.to_string())
 )));
 
 fn process_data_a(data: &str) -> usize {
-  let (rules, start) = parser(data).unwrap().1;
+  let (rules, start) = parser(CompleteStr(data)).unwrap().1;
   let mut rv = HashSet::new();
   for rule in rules {
     let matches = rule.match_all(&start);
@@ -98,7 +98,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
-  let (_, goal) = parser(data).unwrap().1;
+  let (_, goal) = parser(CompleteStr(data)).unwrap().1;
   let tokens: Vec<String> = Regex::new("[A-Z][a-z]?")
     .unwrap()
     .captures_iter(&goal)

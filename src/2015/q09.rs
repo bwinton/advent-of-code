@@ -39,34 +39,34 @@ Straylight to AlphaCentauri = 107
 Straylight to Arbre = 14
 AlphaCentauri to Arbre = 46";
 
-fn parse(data: &str) -> (HashSet<&str>, HashMap<[&str; 2], usize>) {
+fn parse(data: &str) -> (HashSet<String>, HashMap<[String; 2], usize>) {
   lazy_static! {
     static ref RE: Regex = Regex::new("^([A-Za-z]+) to ([A-Za-z]+) = ([0-9]+)$").unwrap();
   }
-  let mut cities: HashSet<&str> = HashSet::new();
-  let mut distances: HashMap<[&str; 2], usize> = HashMap::new();
+  let mut cities: HashSet<String> = HashSet::new();
+  let mut distances: HashMap<[String; 2], usize> = HashMap::new();
   for line in data.lines() {
     let cap = RE.captures(line);
     match cap {
       None => println!("Unknown format: {}", line),
       Some(x) => {
-        let mut key = [x.at(1).unwrap(), x.at(2).unwrap()];
+        let mut key = [x[1].to_string(), x[2].to_string()];
         key.sort();
         for city in &key {
-          cities.insert(city);
+          cities.insert(city.to_string());
         }
-        distances.insert(key, x.at(3).unwrap().parse().unwrap());
+        distances.insert(key, x[3].parse().unwrap());
       },
     }
   }
   (cities, distances)
 }
 
-fn get_distance(perm: &[&str], distances: &HashMap<[&str; 2], usize>) -> usize {
+fn get_distance(perm: &[String], distances: &HashMap<[String; 2], usize>) -> usize {
   let mut rv = 0;
   let lookup = distances.clone();
   for pair in perm.iter().tuple_windows::<(_, _)>() {
-    let mut key = [*pair.0, *pair.1];
+    let mut key = [pair.0.clone(), pair.1.clone()];
     key.sort();
     // println!("  => {:?}", &key);
     // println!("  => {:?}, {:?}", key, lookup[&key]);
@@ -75,9 +75,9 @@ fn get_distance(perm: &[&str], distances: &HashMap<[&str; 2], usize>) -> usize {
   rv
 }
 
-fn process_data_a(data: &str) -> (Vec<&str>, usize) {
+fn process_data_a(data: &str) -> (Vec<String>, usize) {
   let (city_set, distances) = parse(data);
-  let mut cities: Vec<&str> = city_set.into_iter().collect();
+  let mut cities: Vec<String> = city_set.into_iter().collect();
   let heap = Heap::new(&mut cities);
   let mut min_distance = (Vec::new(), usize::MAX);
   for perm in heap {
@@ -89,9 +89,9 @@ fn process_data_a(data: &str) -> (Vec<&str>, usize) {
   min_distance
 }
 
-fn process_data_b(data: &str) -> (Vec<&str>, usize) {
+fn process_data_b(data: &str) -> (Vec<String>, usize) {
   let (city_set, distances) = parse(data);
-  let mut cities: Vec<&str> = city_set.into_iter().collect();
+  let mut cities: Vec<String> = city_set.into_iter().collect();
   let heap = Heap::new(&mut cities);
   let mut max_distance = (Vec::new(), 0);
   for perm in heap {
@@ -135,7 +135,7 @@ fn a() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["London", "Dublin", "Belfast"], 605)
+    (vec!["London".to_string(), "Dublin".to_string(), "Belfast".to_string()], 605)
   );
 }
 
@@ -147,6 +147,6 @@ fn b() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["Belfast", "London", "Dublin"], 982)
+    (vec!["Dublin".to_string(), "London".to_string(), "Belfast".to_string()], 982)
   );
 }

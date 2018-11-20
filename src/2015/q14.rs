@@ -41,10 +41,10 @@ impl FromStr for Reindeer {
     match captures {
       Some(cap) => {
         Ok(Reindeer {
-          name: cap.at(1).unwrap().to_string(),
-          speed: cap.at(2).unwrap().parse().unwrap(),
-          duration: cap.at(3).unwrap().parse().unwrap(),
-          rest: cap.at(4).unwrap().parse().unwrap(),
+          name: cap[1].to_string(),
+          speed: cap[2].parse().unwrap(),
+          duration: cap[3].parse().unwrap(),
+          rest: cap[4].parse().unwrap(),
           points: 0,
         })
       },

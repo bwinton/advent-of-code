@@ -27,20 +27,20 @@ impl FromStr for Instruction {
     }
 
     if let Some(cap) = SPIN_RE.captures(s) {
-      return Ok(Instruction::Spin(cap.at(1).unwrap().parse().unwrap()));
+      return Ok(Instruction::Spin(cap[1].parse().unwrap()));
     }
 
     if let Some(cap) = EXCHANGE_RE.captures(s) {
       return Ok(Instruction::Exchange(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = PARTNER_RE.captures(s) {
       return Ok(Instruction::Partner(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 

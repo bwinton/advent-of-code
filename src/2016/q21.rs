@@ -261,41 +261,41 @@ impl FromStr for Instruction {
 
     if let Some(cap) = SWAP_POSITION_RE.captures(s) {
       return Ok(Instruction::SwapPosition(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SWAP_LETTER_RE.captures(s) {
       return Ok(Instruction::SwapLetter(
-        cap.at(1).unwrap().to_string(),
-        cap.at(2).unwrap().to_string(),
+        cap[1].to_string(),
+        cap[2].to_string(),
       ));
     }
 
     if let Some(cap) = ROTATE_LEFT_RE.captures(s) {
-      return Ok(Instruction::RotateLeft(cap.at(1).unwrap().parse().unwrap()));
+      return Ok(Instruction::RotateLeft(cap[1].parse().unwrap()));
     }
 
     if let Some(cap) = ROTATE_RIGHT_RE.captures(s) {
-      return Ok(Instruction::RotateRight(cap.at(1).unwrap().parse().unwrap()));
+      return Ok(Instruction::RotateRight(cap[1].parse().unwrap()));
     }
 
     if let Some(cap) = ROTATE_LETTER_RE.captures(s) {
-      return Ok(Instruction::RotateLetter(cap.at(1).unwrap().to_string()));
+      return Ok(Instruction::RotateLetter(cap[1].to_string()));
     }
 
     if let Some(cap) = REVERSE_RE.captures(s) {
       return Ok(Instruction::Reverse(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MOVE_RE.captures(s) {
       return Ok(Instruction::Move(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 

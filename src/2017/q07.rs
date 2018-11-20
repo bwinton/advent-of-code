@@ -1272,8 +1272,8 @@ impl FromStr for Disc {
     match cap {
       None => Err(()),
       Some(x) => {
-        rv.name = x.at(1).unwrap().to_string();
-        rv.weight = x.at(2).unwrap().parse().unwrap();
+        rv.name = x[1].to_string();
+        rv.weight = x[2].parse().unwrap();
         if let Some(rest) = x.at(3) {
           rv.holdings = rest[4..].split(", ").map(|x| x.to_string()).collect();
         }

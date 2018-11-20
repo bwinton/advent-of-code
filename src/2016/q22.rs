@@ -1000,11 +1000,11 @@ impl FromStr for Node {
     match captures {
       Some(cap) => {
         Ok(Node {
-          x: cap.at(1).unwrap().parse().unwrap(),
-          y: cap.at(2).unwrap().parse().unwrap(),
-          size: cap.at(3).unwrap().parse().unwrap(),
-          used: cap.at(4).unwrap().parse().unwrap(),
-          avail: cap.at(5).unwrap().parse().unwrap(),
+          x: cap[1].parse().unwrap(),
+          y: cap[2].parse().unwrap(),
+          size: cap[3].parse().unwrap(),
+          used: cap[4].parse().unwrap(),
+          avail: cap[5].parse().unwrap(),
           goal: false,
         })
       },

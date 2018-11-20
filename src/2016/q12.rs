@@ -93,7 +93,7 @@ impl FromStr for Instruction {
     let copy_literal_re: Regex = Regex::new(r"^cpy (-?[0-9]+) ([a-z])$").unwrap();
     if let Some(cap) = copy_literal_re.captures(s) {
       return Ok(Instruction::CopyLiteral(
-        cap.at(1).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
         reg_index(cap.at(2)).unwrap(),
       ));
     }
@@ -119,8 +119,8 @@ impl FromStr for Instruction {
     let jump_literal_re: Regex = Regex::new(r"^jnz (-?[0-9]+) (-?[0-9]+)$").unwrap();
     if let Some(cap) = jump_literal_re.captures(s) {
       return Ok(Instruction::JumpLiteral(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
@@ -128,7 +128,7 @@ impl FromStr for Instruction {
     if let Some(cap) = jump_register_re.captures(s) {
       return Ok(Instruction::JumpRegister(
         reg_index(cap.at(1)).unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 

@@ -2033,7 +2033,7 @@ fn is_tls(line: &str) -> bool {
     static ref HYPERNET: Regex = Regex::new(r"\[([a-z]+)]").unwrap();
   }
   for cap in HYPERNET.captures_iter(line) {
-    if is_abba(cap.at(1).unwrap()) {
+    if is_abba(cap[1]) {
       return false;
     }
   }
@@ -2061,7 +2061,7 @@ fn is_ssl(line: &str) -> bool {
     static ref HYPERNET: Regex = Regex::new(r"\[([a-z]+)]").unwrap();
   }
   for cap in HYPERNET.captures_iter(line) {
-    let babs = get_babs(cap.at(1).unwrap());
+    let babs = get_babs(cap[1]);
     let non_hypernet = HYPERNET.replace_all(line, "|");
     for bab in babs {
       if non_hypernet.contains(&bab[..]) {

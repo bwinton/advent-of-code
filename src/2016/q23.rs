@@ -168,7 +168,7 @@ impl FromStr for Instruction {
 
     if let Some(cap) = COPY_LITERAL_RE.captures(s) {
       return Ok(Instruction::CopyLiteral(
-        cap.at(1).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
         reg_index(cap.at(2)).unwrap(),
       ));
     }
@@ -190,14 +190,14 @@ impl FromStr for Instruction {
 
     if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
       return Ok(Instruction::JumpLitLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITREG_RE.captures(s) {
       return Ok(Instruction::JumpLitReg(
-        cap.at(1).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
         reg_index(cap.at(2)).unwrap(),
       ));
     }
@@ -205,7 +205,7 @@ impl FromStr for Instruction {
     if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
       return Ok(Instruction::JumpRegLit(
         reg_index(cap.at(1)).unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 

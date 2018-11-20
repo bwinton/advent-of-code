@@ -156,71 +156,71 @@ impl FromStr for Instruction {
 
     if let Some(cap) = SET_REG_RE.captures(s) {
       return Ok(Instruction::SetReg(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SET_LIT_RE.captures(s) {
       return Ok(Instruction::SetLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SUB_REG_RE.captures(s) {
       return Ok(Instruction::SubReg(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = SUB_LIT_RE.captures(s) {
       return Ok(Instruction::SubLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MUL_REG_RE.captures(s) {
       return Ok(Instruction::MulReg(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = MUL_LIT_RE.captures(s) {
       return Ok(Instruction::MulLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGREG_RE.captures(s) {
       return Ok(Instruction::JumpRegReg(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
       return Ok(Instruction::JumpRegLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITREG_RE.captures(s) {
       return Ok(Instruction::JumpLitReg(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
       return Ok(Instruction::JumpLitLit(
-        cap.at(1).unwrap().parse().unwrap(),
-        cap.at(2).unwrap().parse().unwrap(),
+        cap[1].parse().unwrap(),
+        cap[2].parse().unwrap(),
       ));
     }
 

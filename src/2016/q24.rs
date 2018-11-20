@@ -135,7 +135,7 @@ impl FromStr for Contents {
         match captures {
           Some(cap) => {
             Ok(Contents::Something(Location {
-              loc: cap.at(1).unwrap().parse().unwrap(),
+              loc: cap[1].parse().unwrap(),
               x: 0,
               y: 0,
             }))

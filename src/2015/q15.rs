@@ -34,12 +34,12 @@ impl FromStr for Ingredient {
     match captures {
       Some(cap) => {
         Ok(Ingredient {
-          name: cap.at(1).unwrap().to_string(),
-          capacity: cap.at(2).unwrap().parse().unwrap(),
-          durability: cap.at(3).unwrap().parse().unwrap(),
-          flavor: cap.at(4).unwrap().parse().unwrap(),
-          texture: cap.at(5).unwrap().parse().unwrap(),
-          calories: cap.at(6).unwrap().parse().unwrap(),
+          name: cap[1].to_string(),
+          capacity: cap[2].parse().unwrap(),
+          durability: cap[3].parse().unwrap(),
+          flavor: cap[4].parse().unwrap(),
+          texture: cap[5].parse().unwrap(),
+          calories: cap[6].parse().unwrap(),
         })
       },
       None => Err(()),

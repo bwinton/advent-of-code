@@ -353,11 +353,11 @@ impl FromStr for Instruction {
     match captures {
       Some(cap) => {
         Ok(Instruction {
-          op: cap.at(1).unwrap().parse().unwrap(),
-          start_x: cap.at(2).unwrap().parse().unwrap(),
-          start_y: cap.at(3).unwrap().parse().unwrap(),
-          end_x: cap.at(4).unwrap().parse().unwrap(),
-          end_y: cap.at(5).unwrap().parse().unwrap(),
+          op: cap[1].parse().unwrap(),
+          start_x: cap[2].parse().unwrap(),
+          start_y: cap[3].parse().unwrap(),
+          end_x: cap[4].parse().unwrap(),
+          end_y: cap[5].parse().unwrap(),
         })
       },
       None => Err(()),

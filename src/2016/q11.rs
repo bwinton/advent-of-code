@@ -171,7 +171,7 @@ impl FromStr for Floor {
       let items = cap.at(2).unwrap_or("");
       let item_re: Regex = Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
       for item_captures in item_re.captures_iter(items) {
-        let item_opt: Result<Item, ()> = item_captures.at(0).unwrap().parse();
+        let item_opt: Result<Item, ()> = item_captures[0].parse();
         match item_opt {
           Err(()) => {},
           Ok(item) => {

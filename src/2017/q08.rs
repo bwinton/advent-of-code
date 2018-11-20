@@ -1026,8 +1026,8 @@ impl FromStr for Operation {
     match cap {
       None => Err(()),
       Some(x) => {
-        let value = x.at(2).unwrap().parse().unwrap();
-        match x.at(1).unwrap() {
+        let value = x[2].parse().unwrap();
+        match x[1] {
           "inc" => Ok(Operation::Inc(value)),
           "dec" => Ok(Operation::Dec(value)),
           _ => {
@@ -1093,9 +1093,9 @@ impl FromStr for Condition {
       },
       Some(x) => {
         Ok(Condition {
-          source: x.at(1).unwrap().to_string(),
-          test: x.at(2).unwrap().parse().unwrap(),
-          value: x.at(3).unwrap().parse().unwrap(),
+          source: x[1].to_string(),
+          test: x[2].parse().unwrap(),
+          value: x[3].parse().unwrap(),
         })
       },
     }
@@ -1140,9 +1140,9 @@ impl FromStr for Instruction {
       },
       Some(x) => {
         Ok(Instruction {
-          dest: x.at(1).unwrap().to_string(),
-          op: x.at(2).unwrap().parse().unwrap(),
-          cond: x.at(3).unwrap().parse().unwrap(),
+          dest: x[1].to_string(),
+          op: x[2].parse().unwrap(),
+          cond: x[3].parse().unwrap(),
         })
       },
     }

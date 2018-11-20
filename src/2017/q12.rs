@@ -2020,7 +2020,7 @@ fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
       .split(", ")
       .map(|x| x.parse().unwrap())
       .collect();
-    dests.insert(cap.at(1).unwrap().parse().unwrap());
+    dests.insert(cap[1].parse().unwrap());
     for item in &mut rv {
       if !dests.is_disjoint(item) {
         dests.extend(item.iter());

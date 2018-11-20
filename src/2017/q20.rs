@@ -1030,19 +1030,19 @@ impl FromStr for Particle {
     if let Some(cap) = RE.captures(s) {
       return Ok(Particle {
         p: (
-          cap.at(1).unwrap().parse().unwrap(),
-          cap.at(2).unwrap().parse().unwrap(),
-          cap.at(3).unwrap().parse().unwrap(),
+          cap[1].parse().unwrap(),
+          cap[2].parse().unwrap(),
+          cap[3].parse().unwrap(),
         ),
         v: (
-          cap.at(4).unwrap().parse().unwrap(),
-          cap.at(5).unwrap().parse().unwrap(),
-          cap.at(6).unwrap().parse().unwrap(),
+          cap[4].parse().unwrap(),
+          cap[5].parse().unwrap(),
+          cap[6].parse().unwrap(),
         ),
         a: (
-          cap.at(7).unwrap().parse().unwrap(),
-          cap.at(8).unwrap().parse().unwrap(),
-          cap.at(9).unwrap().parse().unwrap(),
+          cap[7].parse().unwrap(),
+          cap[8].parse().unwrap(),
+          cap[9].parse().unwrap(),
         ),
       });
     }
