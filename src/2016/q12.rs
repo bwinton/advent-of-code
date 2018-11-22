@@ -94,26 +94,26 @@ impl FromStr for Instruction {
     if let Some(cap) = copy_literal_re.captures(s) {
       return Ok(Instruction::CopyLiteral(
         cap[1].parse().unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     let copy_register_re: Regex = Regex::new(r"^cpy ([a-z]) ([a-z])$").unwrap();
     if let Some(cap) = copy_register_re.captures(s) {
       return Ok(Instruction::CopyRegister(
-        reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[1]).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     let increment_re: Regex = Regex::new(r"^inc ([a-z])$").unwrap();
     if let Some(cap) = increment_re.captures(s) {
-      return Ok(Instruction::Increment(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Increment(reg_index(&cap[1]).unwrap()));
     }
 
     let decrement_re: Regex = Regex::new(r"^dec ([a-z])$").unwrap();
     if let Some(cap) = decrement_re.captures(s) {
-      return Ok(Instruction::Decrement(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Decrement(reg_index(&cap[1]).unwrap()));
     }
 
     let jump_literal_re: Regex = Regex::new(r"^jnz (-?[0-9]+) (-?[0-9]+)$").unwrap();
@@ -127,7 +127,7 @@ impl FromStr for Instruction {
     let jump_register_re: Regex = Regex::new(r"^jnz ([a-z]) (-?[0-9]+)$").unwrap();
     if let Some(cap) = jump_register_re.captures(s) {
       return Ok(Instruction::JumpRegister(
-        reg_index(cap.at(1)).unwrap(),
+        reg_index(&cap[1]).unwrap(),
         cap[2].parse().unwrap(),
       ));
     }
@@ -143,8 +143,8 @@ struct State {
   pc: i32,
 }
 
-fn reg_index(s: Option<&str>) -> Option<usize> {
-  match s.unwrap() {
+fn reg_index(s: &str) -> Option<usize> {
+  match s {
     "a" => Some(0),
     "b" => Some(1),
     "c" => Some(2),

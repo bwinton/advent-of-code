@@ -27,11 +27,11 @@ fn decompress(line: &str) -> String {
         break;
       },
       Some(marker) => {
-        let (first, last) = marker.pos(0).unwrap();
-        rv.push_str(&rest[..first]);
-        rest = String::from(&rest[last..]);
-        let count: usize = marker.at(1).unwrap_or("0").parse().unwrap();
-        let repeat: usize = marker.at(2).unwrap_or("0").parse().unwrap();
+        let first = marker.get(0).unwrap();
+        rv.push_str(&rest[..first.start()]);
+        rest = String::from(&rest[first.end()..]);
+        let repeat: usize = marker[2].parse().unwrap();
+        let count: usize = marker[1].parse().unwrap();
         let rep_str = String::from(&rest[..count]);
         for _ in 0..repeat {
           rv.push_str(&rep_str);
@@ -56,11 +56,11 @@ fn double_decompress(line: &str) -> String {
         break;
       },
       Some(marker) => {
-        let (first, last) = marker.pos(0).unwrap();
-        rv.push_str(&rest[..first]);
-        rest = String::from(&rest[last..]);
-        let count: usize = marker.at(1).unwrap_or("0").parse().unwrap();
-        let repeat: usize = marker.at(2).unwrap_or("0").parse().unwrap();
+        let first = marker.get(0).unwrap();
+        rv.push_str(&rest[..first.start()]);
+        rest = String::from(&rest[first.end()..]);
+        let count: usize = marker[1].parse().unwrap();
+        let repeat: usize = marker[2].parse().unwrap();
         let mut rep_str = String::from(&rest[..count]);
         rep_str = decompress(&rep_str);
         for _ in 0..repeat {

@@ -261,8 +261,8 @@ impl FromStr for Value {
       bot: -1,
     };
     if let Some(x) = re.captures(s) {
-      rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
-      rv.bot = x.at(2).unwrap_or("").parse().unwrap();
+      rv.number = x[1].parse().unwrap();
+      rv.bot = x[2].parse().unwrap();
       Ok(rv)
     } else {
       Err(())
@@ -287,9 +287,9 @@ impl FromStr for Destination {
     let cap = re.captures(s);
     let mut rv = Destination::Unknown;
     if s.starts_with("bot") {
-      rv = Destination::Bot(cap.unwrap().at(2).unwrap_or("-1").parse().unwrap());
+      rv = Destination::Bot(cap.unwrap()[2].parse().unwrap());
     } else if s.starts_with("output") {
-      rv = Destination::Output(cap.unwrap().at(2).unwrap_or("-1").parse().unwrap());
+      rv = Destination::Output(cap.unwrap()[2].parse().unwrap());
     }
     Ok(rv)
   }
@@ -402,9 +402,9 @@ impl FromStr for Bot {
     match cap {
       None => return Err(()),
       Some(x) => {
-        rv.number = x.at(1).unwrap_or("-1").parse().unwrap();
-        rv.low_dest = x.at(2).unwrap_or("-1").parse().unwrap();
-        rv.high_dest = x.at(4).unwrap_or("-1").parse().unwrap();
+        rv.number = x[1].parse().unwrap();
+        rv.low_dest = x[2].parse().unwrap();
+        rv.high_dest = x[4].parse().unwrap();
       },
     }
 

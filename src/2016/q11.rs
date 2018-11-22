@@ -61,12 +61,12 @@ impl FromStr for Item {
   fn from_str(s: &str) -> Result<Item, ()> {
     let gen_re: Regex = Regex::new(r"^an? ([a-z]+) generator$").unwrap();
     if let Some(cap) = gen_re.captures(s) {
-      return Ok(Item::Generator(String::from(cap.at(1).unwrap_or(""))));
+      return Ok(Item::Generator(String::from(&cap[1])));
     }
 
     let chip_re: Regex = Regex::new(r"^an? ([a-z]+)-compatible microchip$").unwrap();
     if let Some(cap) = chip_re.captures(s) {
-      return Ok(Item::Microchip(String::from(cap.at(1).unwrap_or(""))));
+      return Ok(Item::Microchip(String::from(&cap[1])));
     }
 
     Err(())
@@ -161,14 +161,14 @@ impl FromStr for Floor {
       },
     };
     if let Some(cap) = re.captures(s) {
-      match cap.at(1).unwrap_or("") {
+      match &cap[1] {
         "first" => rv.number = 1,
         "second" => rv.number = 2,
         "third" => rv.number = 3,
         "fourth" => rv.number = 4,
         _ => return Err(()),
       }
-      let items = cap.at(2).unwrap_or("");
+      let items = &cap[2];
       let item_re: Regex = Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
       for item_captures in item_re.captures_iter(items) {
         let item_opt: Result<Item, ()> = item_captures[0].parse();

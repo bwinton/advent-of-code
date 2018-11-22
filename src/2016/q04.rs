@@ -1166,9 +1166,9 @@ impl FromStr for Room {
       checksum: blank.clone(),
     };
     for cap in room_re.captures_iter(s) {
-      rv.name = String::from(cap.at(1).unwrap_or(""));
-      rv.sector = cap.at(2).unwrap_or("-1").parse().unwrap();
-      rv.checksum = String::from(cap.at(3).unwrap_or(""));
+      rv.name = cap[1].to_string();
+      rv.sector = cap[2].parse().unwrap();
+      rv.checksum = cap[3].to_string();
     }
     Ok(rv)
     // on fail, Err(())

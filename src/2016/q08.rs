@@ -303,18 +303,18 @@ impl FromStr for Turn {
       arg2: 0,
     };
     for cap in turn_re.captures_iter(s) {
-      rv.kind = String::from(cap.at(1).unwrap_or(""));
-      let rest = cap.at(2).unwrap_or("");
+      rv.kind = cap[1].to_string();
+      let rest = &cap[2].to_string();
       match rv.kind.as_ref() {
         "rect" => {
           let extra = rect_re.captures(rest).unwrap();
-          rv.arg1 = extra.at(1).unwrap_or("0").parse().unwrap();
-          rv.arg2 = extra.at(2).unwrap_or("0").parse().unwrap();
+          rv.arg1 = extra[1].parse().unwrap();
+          rv.arg2 = extra[2].parse().unwrap();
         },
         "rotate column" | "rotate row" => {
           let extra = rotate_re.captures(rest).unwrap();
-          rv.arg1 = extra.at(2).unwrap_or("0").parse().unwrap();
-          rv.arg2 = extra.at(3).unwrap_or("0").parse().unwrap();
+          rv.arg1 = extra[2].parse().unwrap();
+          rv.arg2 = extra[3].parse().unwrap();
         },
         _ => println!("Error!"),
       }

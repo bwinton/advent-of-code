@@ -188,23 +188,23 @@ impl FromStr for Instruction {
     if let Some(cap) = COPY_LITERAL_RE.captures(s) {
       return Ok(Instruction::CopyLiteral(
         cap[1].parse().unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     if let Some(cap) = COPY_REGISTER_RE.captures(s) {
       return Ok(Instruction::CopyRegister(
-        reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[1]).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     if let Some(cap) = INCREMENT_RE.captures(s) {
-      return Ok(Instruction::Increment(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Increment(reg_index(&cap[1]).unwrap()));
     }
 
     if let Some(cap) = DECREMENT_RE.captures(s) {
-      return Ok(Instruction::Decrement(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Decrement(reg_index(&cap[1]).unwrap()));
     }
 
     if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
@@ -217,30 +217,30 @@ impl FromStr for Instruction {
     if let Some(cap) = JUMP_LITREG_RE.captures(s) {
       return Ok(Instruction::JumpLitReg(
         cap[1].parse().unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
       return Ok(Instruction::JumpRegLit(
-        reg_index(cap.at(1)).unwrap(),
+        reg_index(&cap[1]).unwrap(),
         cap[2].parse().unwrap(),
       ));
     }
 
     if let Some(cap) = JUMP_REGREG_RE.captures(s) {
       return Ok(Instruction::JumpRegReg(
-        reg_index(cap.at(1)).unwrap(),
-        reg_index(cap.at(2)).unwrap(),
+        reg_index(&cap[1]).unwrap(),
+        reg_index(&cap[2]).unwrap(),
       ));
     }
 
     if let Some(cap) = OUT_RE.captures(s) {
-      return Ok(Instruction::Out(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Out(reg_index(&cap[1]).unwrap()));
     }
 
     if let Some(cap) = TOGGLE_RE.captures(s) {
-      return Ok(Instruction::Toggle(reg_index(cap.at(1)).unwrap()));
+      return Ok(Instruction::Toggle(reg_index(&cap[1]).unwrap()));
     }
 
     println!("Unknown instruction! '{}'", s);
@@ -313,8 +313,8 @@ impl State {
 }
 
 
-fn reg_index(s: Option<&str>) -> Option<i32> {
-  match s.unwrap() {
+fn reg_index(s: &str) -> Option<i32> {
+  match s {
     "a" => Some(0),
     "b" => Some(1),
     "c" => Some(2),
