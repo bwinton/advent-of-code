@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT : &'static str = "";
+static INPUT : &'static str = include_str!("data/q01.data");
 
 fn process_data_a(_data: &str) -> i32 {
   0

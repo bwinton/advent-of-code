@@ -10,69 +10,7 @@ use std::collections::HashSet;
 use std::str;
 use std::str::FromStr;
 
-static INPUT: &'static str = "Begin in state A.
-Perform a diagnostic checksum after 12656374 steps.
-
-In state A:
-  If the current value is 0:
-    - Write the value 1.
-    - Move one slot to the right.
-    - Continue with state B.
-  If the current value is 1:
-    - Write the value 0.
-    - Move one slot to the left.
-    - Continue with state C.
-
-In state B:
-  If the current value is 0:
-    - Write the value 1.
-    - Move one slot to the left.
-    - Continue with state A.
-  If the current value is 1:
-    - Write the value 1.
-    - Move one slot to the left.
-    - Continue with state D.
-
-In state C:
-  If the current value is 0:
-    - Write the value 1.
-    - Move one slot to the right.
-    - Continue with state D.
-  If the current value is 1:
-    - Write the value 0.
-    - Move one slot to the right.
-    - Continue with state C.
-
-In state D:
-  If the current value is 0:
-    - Write the value 0.
-    - Move one slot to the left.
-    - Continue with state B.
-  If the current value is 1:
-    - Write the value 0.
-    - Move one slot to the right.
-    - Continue with state E.
-
-In state E:
-  If the current value is 0:
-    - Write the value 1.
-    - Move one slot to the right.
-    - Continue with state C.
-  If the current value is 1:
-    - Write the value 1.
-    - Move one slot to the left.
-    - Continue with state F.
-
-In state F:
-  If the current value is 0:
-    - Write the value 1.
-    - Move one slot to the left.
-    - Continue with state E.
-  If the current value is 1:
-    - Write the value 1.
-    - Move one slot to the right.
-    - Continue with state A.
-";
+static INPUT: &'static str = include_str!("data/q25.data");
 
 #[derive(Clone)]
 #[derive(Debug)]
