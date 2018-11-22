@@ -21,7 +21,7 @@ struct House {
 
 impl House {
   pub fn new(x: i32, y: i32) -> House {
-    House { x: x, y: y }
+    House { x, y }
   }
 }
 

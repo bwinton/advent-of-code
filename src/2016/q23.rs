@@ -271,7 +271,7 @@ impl Day for Q {
     let mut state = State {
       registers: [7, 0, 0, 0],
       pc: 0,
-      instructions: instructions,
+      instructions,
     };
 
     while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
@@ -292,7 +292,7 @@ impl Day for Q {
     let mut state = State {
       registers: [12, 0, 0, 0],
       pc: 0,
-      instructions: instructions,
+      instructions,
     };
     while 0 <= state.pc && state.pc < state.instructions.len() as i32 {
       state = execute(&state);

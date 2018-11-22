@@ -359,7 +359,7 @@ impl Wire {
   pub fn new(name: &str, number: Option<u16>) -> Wire {
     Wire {
       name: name.to_string(),
-      number: number,
+      number,
     }
   }
 }

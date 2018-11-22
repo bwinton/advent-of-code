@@ -225,15 +225,15 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
     Direction::Right,
   ]
   {
-    let mut i = current.x;
-    let mut j = current.y;
+    let mut x = current.x;
+    let mut y = current.y;
     match *direction {
-      Direction::Up => j -= 1,
-      Direction::Left => i -= 1,
-      Direction::Down => j += 1,
-      Direction::Right => i += 1,
+      Direction::Up => y -= 1,
+      Direction::Left => x -= 1,
+      Direction::Down => y += 1,
+      Direction::Right => x += 1,
     }
-    let location = &board[j][i];
+    let location = &board[y][x];
     if location == &Contents::Wall() {
       continue;
     }
@@ -242,9 +242,9 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
     moves.push(direction.clone());
 
     rv.push(State {
-      x: i,
-      y: j,
-      moves: moves,
+      x,
+      y,
+      moves,
     });
   }
 

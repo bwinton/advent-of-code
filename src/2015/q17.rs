@@ -29,7 +29,7 @@ static INPUT: &'static str = "43
 fn process_data_a(data: &str, amount: u32) -> usize {
   let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
   let mut count = 0;
-  for len in 1..containers.len() + 1 {
+  for len in 1..=containers.len() {
     for permutation in containers.iter().combinations(len) {
       // print!("{:?} = ", &permutation);
       let sum: u32 = permutation.into_iter().sum();
@@ -45,7 +45,7 @@ fn process_data_a(data: &str, amount: u32) -> usize {
 fn process_data_b(data: &str, amount: u32) -> usize {
   let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
   let mut smallest: Vec<Vec<_>> = Vec::new();
-  for len in 1..containers.len() + 1 {
+  for len in 1..=containers.len() {
     for permutation in containers.iter().combinations(len) {
       let sum: u32 = permutation.iter().cloned().sum();
       if sum == amount {

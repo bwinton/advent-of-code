@@ -71,11 +71,11 @@ impl Player {
     let damage = items.iter().map(|i| i.damage).sum();
     let armor = items.iter().map(|i| i.armor).sum();
     Player {
-      cost: cost,
+      cost,
       hp: 100,
-      damage: damage,
-      armor: armor,
-      items: items,
+      damage,
+      armor,
+      items,
     }
   }
 

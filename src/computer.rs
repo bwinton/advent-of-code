@@ -98,7 +98,7 @@ impl Jump {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(Jump{offset: offset}))
+                Ok(Box::new(Jump{offset}))
             },
             _ => Err(InstructionError(()))
         }
@@ -131,7 +131,7 @@ impl JumpEven {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(JumpEven{register:reg, offset: offset}))
+                Ok(Box::new(JumpEven{register:reg, offset}))
             },
             _ => Err(InstructionError(()))
         }
@@ -163,7 +163,7 @@ impl JumpOne {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(JumpOne{register:reg, offset: offset}))
+                Ok(Box::new(JumpOne{register:reg, offset}))
             },
             _ => Err(InstructionError(()))
         }
@@ -185,7 +185,7 @@ pub struct CPU {
 
 impl CPU {
     pub fn new(registers: HashMap<char, i64>, instructions: Vec<Rc<Box<Instruction>>>) -> CPU {
-        CPU { registers: registers, pc: 0, instructions: instructions }
+        CPU { registers, pc: 0, instructions }
     }
 
     pub fn execute(&self) -> Option<Self> {
@@ -216,14 +216,14 @@ impl Display for CPU {
 
 
 
-pub fn parse_instructions(s: &str, builders: Vec<fn (s: &str) -> InstructionResult>) -> InstructionsResult {
+pub fn parse_instructions(s: &str, builders: &[fn (s: &str) -> InstructionResult]) -> InstructionsResult {
     let mut instructions: Vec<Rc<Box<Instruction>>> = vec![];
     for line in s.lines() {
         let mut found = false;
-        for builder in &builders {
+        for builder in builders {
             if let Ok(inst) = builder(line) {
                 found = true;
-                &instructions.push(Rc::new(inst));
+                instructions.push(Rc::new(inst));
                 break;
             }
         }

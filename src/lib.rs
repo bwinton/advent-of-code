@@ -61,7 +61,7 @@ macro_rules! define_iterator {
 
 pub fn print_vec(v: &[impl Display]) -> String {
     format!("[{}]", v.iter().fold(String::new(), |acc, ref num| {
-        let len = &acc.len() > &0;
+        let len = acc.is_empty();
         acc + if len {", "} else {""} + &num.to_string()
     }))
 }

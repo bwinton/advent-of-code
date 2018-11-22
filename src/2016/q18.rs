@@ -31,7 +31,7 @@ impl FromStr for Row {
     }
     Ok(Row {
       data: s.to_string(),
-      safe_count: safe_count,
+      safe_count,
     })
   }
 }
@@ -61,7 +61,7 @@ fn get_next_row(row: &Row) -> Row {
 
   Row {
     data: data.into_iter().collect(),
-    safe_count: safe_count,
+    safe_count,
   }
 }
 

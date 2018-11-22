@@ -43,9 +43,9 @@ impl FromStr for Disc {
         let positions = cap[2].parse().unwrap();
         let current = cap[3].parse().unwrap();
         Ok(Disc {
-          number: number,
-          positions: positions,
-          current: current,
+          number,
+          positions,
+          current,
         })
       },
     }

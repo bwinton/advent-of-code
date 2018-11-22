@@ -75,10 +75,10 @@ impl State {
     }
 
     State {
-      x: x,
-      y: y,
+      x,
+      y,
       path: path.to_string(),
-      open_doors: open_doors,
+      open_doors,
     }
   }
 

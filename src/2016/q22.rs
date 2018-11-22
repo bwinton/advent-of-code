@@ -1050,7 +1050,7 @@ impl fmt::Debug for State {
     write!(f, "State({}):", self.moves).unwrap();
     for node in &self.nodes {
       if node.y == 0 {
-        writeln!(f, "").unwrap();
+        writeln!(f).unwrap();
       }
       write!(f, "{}/{}", node.used, node.avail).unwrap();
       if node.goal {
@@ -1060,7 +1060,7 @@ impl fmt::Debug for State {
       }
       write!(f, "  ").unwrap();
     }
-    write!(f, "\n")
+    writeln!(f)
   }
 }
 

@@ -175,7 +175,7 @@ impl Instruction {
       },
       Instruction::Reverse(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
-        temp[x..y + 1].reverse();
+        temp[x..=y].reverse();
         rv = temp.into_iter().collect();
       },
       Instruction::Move(x, y) => {
@@ -231,7 +231,7 @@ impl Instruction {
       },
       Instruction::Reverse(x, y) => {
         let mut temp: Vec<char> = rv.chars().collect();
-        temp[x..y + 1].reverse();
+        temp[x..=y].reverse();
         rv = temp.into_iter().collect();
       },
       Instruction::Move(x, y) => {

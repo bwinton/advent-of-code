@@ -29,10 +29,10 @@ impl State {
     let delta_x = INPUT_TARGET_X - x;
     let delta_y = INPUT_TARGET_Y - y;
     State {
-      x: x,
-      y: y,
-      moves: moves,
-      wall: wall,
+      x,
+      y,
+      moves,
+      wall,
       dist: delta_x * delta_x + delta_y * delta_y,
     }
   }

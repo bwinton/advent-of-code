@@ -63,7 +63,7 @@ fn process_data_a(data: &str, reg: char) -> i64 {
         JumpOne::build,
     ];
 
-    let instructions = parse_instructions(data, builders).unwrap();
+    let instructions = parse_instructions(data, &builders).unwrap();
     let mut state = CPU::new(hashmap!{ 'a' => 0, 'b' => 0 }, instructions);
     while let Some(new) = state.execute() {
         state = new;
@@ -81,7 +81,7 @@ fn process_data_b(data: &str, reg: char) -> i64 {
         JumpOne::build,
     ];
 
-    let instructions = parse_instructions(data, builders).unwrap();
+    let instructions = parse_instructions(data, &builders).unwrap();
     let mut state = CPU::new(hashmap!{ 'a' => 1, 'b' => 0 }, instructions);
     while let Some(new) = state.execute() {
         state = new;

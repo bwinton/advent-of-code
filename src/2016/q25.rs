@@ -276,9 +276,9 @@ impl Hash for State {
 impl State {
   pub fn new(registers: [i32; 4], instructions: Vec<Instruction>) -> State {
     State {
-      registers: registers,
+      registers,
       pc: 0,
-      instructions: instructions,
+      instructions,
       expected: -1,
       valid: true,
     }

@@ -272,7 +272,7 @@ impl fmt::Debug for Display {
           write!(formatter, ".").unwrap();
         }
       }
-      write!(formatter, "\n").unwrap();
+      writeln!(formatter).unwrap();
     }
     Ok(())
   }

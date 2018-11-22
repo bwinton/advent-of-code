@@ -75,7 +75,7 @@ fn process_data_b(data: &str, count: u32) -> u32 {
   for line in data.lines() {
     reindeers.push(line.parse().unwrap());
   }
-  for i in 1..count + 1 {
+  for i in 1..=count {
     let lead = reindeers.iter().map(|x| x.distance(i)).max().unwrap();
     reindeers
       .iter_mut()
