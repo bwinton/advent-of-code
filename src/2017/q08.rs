@@ -1027,7 +1027,7 @@ impl FromStr for Operation {
       None => Err(()),
       Some(x) => {
         let value = x[2].parse().unwrap();
-        match x[1] {
+        match &x[1] {
           "inc" => Ok(Operation::Inc(value)),
           "dec" => Ok(Operation::Dec(value)),
           _ => {

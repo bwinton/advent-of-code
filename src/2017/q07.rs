@@ -1260,7 +1260,7 @@ impl FromStr for Disc {
 
   fn from_str(s: &str) -> Result<Disc, ()> {
     lazy_static! {
-      static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) \((\d+)\)( -> ([a-z]+(, )?)+)?$").unwrap();
+      static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) \((\d+)\)( -> (([a-z]+(, )?)+))?$").unwrap();
     }
     let mut rv = Disc {
       name: "".to_string(),
@@ -1274,8 +1274,8 @@ impl FromStr for Disc {
       Some(x) => {
         rv.name = x[1].to_string();
         rv.weight = x[2].parse().unwrap();
-        if let Some(rest) = x.at(3) {
-          rv.holdings = rest[4..].split(", ").map(|x| x.to_string()).collect();
+        if let Some(rest) = x.get(4) {
+          rv.holdings = rest.as_str().split(", ").map(|x| x.to_string()).collect();
         }
         Ok(rv)
       },

@@ -2014,9 +2014,7 @@ fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
   }
   for line in data.lines() {
     let cap = MAIN_RE.captures(line).unwrap();
-    let mut dests: HashSet<u32> = cap
-      .at(2)
-      .unwrap()
+    let mut dests: HashSet<u32> = cap[2]
       .split(", ")
       .map(|x| x.parse().unwrap())
       .collect();
