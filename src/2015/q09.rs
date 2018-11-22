@@ -82,7 +82,7 @@ fn process_data_a(data: &str) -> (Vec<String>, usize) {
   let mut min_distance = (Vec::new(), usize::MAX);
   for perm in heap {
     let dist = get_distance(&perm, &distances);
-    if dist < min_distance.1 {
+    if (dist < min_distance.1) || (dist == min_distance.1 && perm < min_distance.0){
       min_distance = (perm, dist);
     }
   }
@@ -95,9 +95,8 @@ fn process_data_b(data: &str) -> (Vec<String>, usize) {
   let heap = Heap::new(&mut cities);
   let mut max_distance = (Vec::new(), 0);
   for perm in heap {
-    // println!("{:?}", perm);
     let dist = get_distance(&perm, &distances);
-    if dist > max_distance.1 {
+    if (dist > max_distance.1) || (dist == max_distance.1 && perm < max_distance.0) {
       max_distance = (perm, dist);
     }
   }
@@ -135,7 +134,7 @@ fn a() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["London".to_string(), "Dublin".to_string(), "Belfast".to_string()], 605)
+    (vec!["Belfast".to_string(), "Dublin".to_string(), "London".to_string()], 605)
   );
 }
 
@@ -147,6 +146,6 @@ fn b() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["Dublin".to_string(), "London".to_string(), "Belfast".to_string()], 982)
+    (vec!["Belfast".to_string(), "London".to_string(), "Dublin".to_string()], 982)
   );
 }
