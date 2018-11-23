@@ -47,23 +47,23 @@ at the end
 */
 
 fn get_most_common(frequencies: Vec<HashMap<char, i32>>) -> String {
-  let mut result: Vec<char> = Vec::new();
-  for frequency in frequencies {
-    let mut count: Vec<_> = frequency.iter().collect();
-    count.sort_by(|a, b| b.1.cmp(a.1));
-    result.push(*count[0].0);
-  }
-  result.into_iter().collect()
+    let mut result: Vec<char> = Vec::new();
+    for frequency in frequencies {
+        let mut count: Vec<_> = frequency.iter().collect();
+        count.sort_by(|a, b| b.1.cmp(a.1));
+        result.push(*count[0].0);
+    }
+    result.into_iter().collect()
 }
 
 fn get_least_common(frequencies: Vec<HashMap<char, i32>>) -> String {
-  let mut result: Vec<char> = Vec::new();
-  for frequency in frequencies {
-    let mut count: Vec<_> = frequency.iter().collect();
-    count.sort_by(|a, b| a.1.cmp(b.1));
-    result.push(*count[0].0);
-  }
-  result.into_iter().collect()
+    let mut result: Vec<char> = Vec::new();
+    for frequency in frequencies {
+        let mut count: Vec<_> = frequency.iter().collect();
+        count.sort_by(|a, b| a.1.cmp(b.1));
+        result.push(*count[0].0);
+    }
+    result.into_iter().collect()
 }
 
 //-----------------------------------------------------
@@ -72,45 +72,45 @@ fn get_least_common(frequencies: Vec<HashMap<char, i32>>) -> String {
 pub struct Q;
 
 impl Day for Q {
-  fn number(&self) -> String {
-    String::from("6")
-  }
-
-  fn a(&self) {
-    print!("{}A: ", self.number());
-    let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
-    for line in INPUT.lines() {
-      if frequencies.is_empty() {
-        for _ in 0..line.len() {
-          frequencies.push(HashMap::<char, i32>::new().clone())
-        }
-      }
-      for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
-        let curr = line.chars().nth(i).unwrap();
-        let value = freq.entry(curr).or_insert(0);
-        *value += 1;
-      }
+    fn number(&self) -> String {
+        String::from("6")
     }
-    let result = get_most_common(frequencies);
-    println!("Result = {:?}", result);
-  }
 
-  fn b(&self) {
-    print!("{}B: ", self.number());
-    let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
-    for line in INPUT.lines() {
-      if frequencies.is_empty() {
-        for _ in 0..line.len() {
-          frequencies.push(HashMap::<char, i32>::new().clone())
+    fn a(&self) {
+        print!("{}A: ", self.number());
+        let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
+        for line in INPUT.lines() {
+            if frequencies.is_empty() {
+                for _ in 0..line.len() {
+                    frequencies.push(HashMap::<char, i32>::new().clone())
+                }
+            }
+            for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
+                let curr = line.chars().nth(i).unwrap();
+                let value = freq.entry(curr).or_insert(0);
+                *value += 1;
+            }
         }
-      }
-      for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
-        let curr = line.chars().nth(i).unwrap();
-        let value = freq.entry(curr).or_insert(0);
-        *value += 1;
-      }
+        let result = get_most_common(frequencies);
+        println!("Result = {:?}", result);
     }
-    let result = get_least_common(frequencies);
-    println!("Result = {:?}", result);
-  }
+
+    fn b(&self) {
+        print!("{}B: ", self.number());
+        let mut frequencies: Vec<HashMap<char, i32>> = Vec::new();
+        for line in INPUT.lines() {
+            if frequencies.is_empty() {
+                for _ in 0..line.len() {
+                    frequencies.push(HashMap::<char, i32>::new().clone())
+                }
+            }
+            for (i, freq) in frequencies.iter_mut().enumerate().take(line.len()) {
+                let curr = line.chars().nth(i).unwrap();
+                let value = freq.entry(curr).or_insert(0);
+                *value += 1;
+            }
+        }
+        let result = get_least_common(frequencies);
+        println!("Result = {:?}", result);
+    }
 }

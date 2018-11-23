@@ -1,6 +1,6 @@
 max_width = 100
 hard_tabs = false
-tab_spaces = 2
+tab_spaces = 4
 newline_style = "Auto"
 use_small_heuristics = "Default"
 indent_style = "Block"
@@ -9,7 +9,6 @@ format_doc_comments = false
 comment_width = 80
 normalize_comments = false
 normalize_doc_attributes = false
-# license_template_path = ""
 format_strings = false
 format_macro_matchers = false
 format_macro_bodies = true

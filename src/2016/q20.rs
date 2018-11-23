@@ -11,48 +11,48 @@ use std::u32;
 static INPUT: &'static str = include_str!("data/q20.data");
 
 fn get_ranges() -> Vec<Range<u32>> {
-  let mut ranges = Vec::new();
-  for line in INPUT.lines() {
-    let data: Vec<u32> = line.split('-').map(|i| i.parse::<u32>().unwrap()).collect();
-    ranges.push(Range {
-      start: data[0],
-      end: data[1],
-    });
-  }
-  ranges.sort_by_key(|k| k.start);
-  ranges
+    let mut ranges = Vec::new();
+    for line in INPUT.lines() {
+        let data: Vec<u32> = line.split('-').map(|i| i.parse::<u32>().unwrap()).collect();
+        ranges.push(Range {
+            start: data[0],
+            end: data[1],
+        });
+    }
+    ranges.sort_by_key(|k| k.start);
+    ranges
 }
 
 fn get_first_allowed() -> u32 {
-  let ranges = get_ranges();
-  let mut rv = 0;
-  for range in ranges.clone() {
-    if rv < range.start {
-      break;
+    let ranges = get_ranges();
+    let mut rv = 0;
+    for range in ranges.clone() {
+        if rv < range.start {
+            break;
+        }
+        if rv <= range.end {
+            rv = range.end + 1;
+        }
     }
-    if rv <= range.end {
-      rv = range.end + 1;
-    }
-  }
-  rv
+    rv
 }
 
 fn get_num_allowed() -> u32 {
-  let ranges = get_ranges();
-  let mut curr = 0;
-  let mut rv = 0;
-  for range in ranges.clone() {
-    if curr < range.start {
-      rv += range.start - curr;
+    let ranges = get_ranges();
+    let mut curr = 0;
+    let mut rv = 0;
+    for range in ranges.clone() {
+        if curr < range.start {
+            rv += range.start - curr;
+        }
+        if range.end == u32::MAX {
+            break;
+        }
+        if curr < range.end {
+            curr = range.end + 1;
+        }
     }
-    if range.end == u32::MAX {
-      break;
-    }
-    if curr < range.end {
-      curr = range.end + 1;
-    }
-  }
-  rv
+    rv
 }
 
 //-----------------------------------------------------
@@ -61,17 +61,17 @@ fn get_num_allowed() -> u32 {
 pub struct Q;
 
 impl Day for Q {
-  fn number(&self) -> String {
-    String::from("20")
-  }
+    fn number(&self) -> String {
+        String::from("20")
+    }
 
-  fn a(&self) {
-    print!("{}A: ", self.number());
-    println!("Result = {}", get_first_allowed());
-  }
+    fn a(&self) {
+        print!("{}A: ", self.number());
+        println!("Result = {}", get_first_allowed());
+    }
 
-  fn b(&self) {
-    print!("{}B: ", self.number());
-    println!("Result = {}", get_num_allowed());
-  }
+    fn b(&self) {
+        print!("{}B: ", self.number());
+        println!("Result = {}", get_num_allowed());
+    }
 }

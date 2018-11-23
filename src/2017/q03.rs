@@ -9,10 +9,10 @@ use std::collections::HashMap;
 static INPUT: i32 = 265_149;
 
 enum Direction {
-  Left,
-  Up,
-  Right,
-  Down,
+    Left,
+    Up,
+    Right,
+    Down,
 }
 
 // SpiralIter { len: 5, dir: Direction::Up, .. Default::default() }
@@ -64,26 +64,26 @@ define_iterator!(SpiralIter (
 });
 
 fn process_data_a(data: i32) -> i32 {
-  if data == 1 {
-    return 0;
-  }
-  let numbers = 0..;
-  let mut rv = 0;
-  for i in numbers {
-    let block = 2 * i + 1;
-    if block * block >= data {
-      let remainder = data - (block - 2) * (block - 2);
-      let low = i;
-      let high = 2 * i;
-      let mut seesaw = (low..high)
-        .chain(high - 1..low + 1)
-        .cycle()
-        .skip(remainder as usize);
-      rv = seesaw.next().unwrap();
-      break;
+    if data == 1 {
+        return 0;
     }
-  }
-  rv
+    let numbers = 0..;
+    let mut rv = 0;
+    for i in numbers {
+        let block = 2 * i + 1;
+        if block * block >= data {
+            let remainder = data - (block - 2) * (block - 2);
+            let low = i;
+            let high = 2 * i;
+            let mut seesaw = (low..high)
+                .chain(high - 1..low + 1)
+                .cycle()
+                .skip(remainder as usize);
+            rv = seesaw.next().unwrap();
+            break;
+        }
+    }
+    rv
 }
 
 define_iterator!(MultIter(
@@ -107,12 +107,12 @@ define_iterator!(MultIter(
 });
 
 fn process_data_b(data: i32) -> usize {
-  for number in MultIter::default() {
-    if number > data as usize {
-      return number;
+    for number in MultIter::default() {
+        if number > data as usize {
+            return number;
+        }
     }
-  }
-  unreachable!();
+    unreachable!();
 }
 
 //-----------------------------------------------------
@@ -121,66 +121,67 @@ fn process_data_b(data: i32) -> usize {
 pub struct Q;
 
 impl Day for Q {
-  fn number(&self) -> String {
-    String::from("3")
-  }
+    fn number(&self) -> String {
+        String::from("3")
+    }
 
-  fn a(&self) {
-    print!("{}A: ", self.number());
-    let result = process_data_a(INPUT);
-    println!("Result = {}", result);
-  }
+    fn a(&self) {
+        print!("{}A: ", self.number());
+        let result = process_data_a(INPUT);
+        println!("Result = {}", result);
+    }
 
-  fn b(&self) {
-    print!("{}B: ", self.number());
-    let result = process_data_b(INPUT);
-    println!("Result = {}", result);
-  }
+    fn b(&self) {
+        print!("{}B: ", self.number());
+        let result = process_data_b(INPUT);
+        println!("Result = {}", result);
+    }
 }
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a(1), 0);
-  assert_eq!(process_data_a(12), 3);
-  assert_eq!(process_data_a(23), 2);
-  assert_eq!(process_data_a(1024), 31);
+    assert_eq!(process_data_a(1), 0);
+    assert_eq!(process_data_a(12), 3);
+    assert_eq!(process_data_a(23), 2);
+    assert_eq!(process_data_a(1024), 31);
 }
 
 #[test]
 fn b() {
-  let spiral_values: Vec<[i32; 2]> = SpiralIter::default().take(25).collect();
-  let spiral_expected: Vec<[i32; 2]> = vec![
-    [0, 0],
-    [1, 0],
-    [1, -1],
-    [0, -1],
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-    [0, 1],
-    [1, 1],
-    [2, 1],
-    [2, 0],
-    [2, -1],
-    [2, -2],
-    [1, -2],
-    [0, -2],
-    [-1, -2],
-    [-2, -2],
-    [-2, -1],
-    [-2, 0],
-    [-2, 1],
-    [-2, 2],
-    [-1, 2],
-    [0, 2],
-    [1, 2],
-    [2, 2],
-  ];
-  assert_eq!(spiral_values, spiral_expected);
+    let spiral_values: Vec<[i32; 2]> = SpiralIter::default().take(25).collect();
+    let spiral_expected: Vec<[i32; 2]> = vec![
+        [0, 0],
+        [1, 0],
+        [1, -1],
+        [0, -1],
+        [-1, -1],
+        [-1, 0],
+        [-1, 1],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+        [2, 0],
+        [2, -1],
+        [2, -2],
+        [1, -2],
+        [0, -2],
+        [-1, -2],
+        [-2, -2],
+        [-2, -1],
+        [-2, 0],
+        [-2, 1],
+        [-2, 2],
+        [-1, 2],
+        [0, 2],
+        [1, 2],
+        [2, 2],
+    ];
+    assert_eq!(spiral_values, spiral_expected);
 
-  let mult_values: Vec<usize> = MultIter::default().take(23).collect();
-  let mult_expected: Vec<usize> = vec![
-    1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747, 806,
-  ];
-  assert_eq!(mult_values, mult_expected);
+    let mult_values: Vec<usize> = MultIter::default().take(23).collect();
+    let mult_expected: Vec<usize> = vec![
+        1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747,
+        806,
+    ];
+    assert_eq!(mult_values, mult_expected);
 }

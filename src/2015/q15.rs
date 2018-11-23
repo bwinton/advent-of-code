@@ -11,52 +11,52 @@ static INPUT: &'static str = include_str!("data/q15.data");
 
 #[derive(Debug)]
 struct Ingredient {
-  name: String,
-  capacity: i32,
-  durability: i32,
-  flavor: i32,
-  texture: i32,
-  calories: i32,
+    name: String,
+    capacity: i32,
+    durability: i32,
+    flavor: i32,
+    texture: i32,
+    calories: i32,
 }
 
 impl FromStr for Ingredient {
-  type Err = ();
+    type Err = ();
 
-  fn from_str(s: &str) -> Result<Ingredient, ()> {
-    lazy_static! {
-      static ref RE: Regex = Regex::new(r"^([A-Za-z]+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)$").unwrap();
+    fn from_str(s: &str) -> Result<Ingredient, ()> {
+        lazy_static! {
+          static ref RE: Regex = Regex::new(r"^([A-Za-z]+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)$").unwrap();
+        }
+        let captures = RE.captures(s);
+        match captures {
+            Some(cap) => Ok(Ingredient {
+                name: cap[1].to_string(),
+                capacity: cap[2].parse().unwrap(),
+                durability: cap[3].parse().unwrap(),
+                flavor: cap[4].parse().unwrap(),
+                texture: cap[5].parse().unwrap(),
+                calories: cap[6].parse().unwrap(),
+            }),
+            None => Err(()),
+        }
     }
-    let captures = RE.captures(s);
-    match captures {
-      Some(cap) => Ok(Ingredient {
-        name: cap[1].to_string(),
-        capacity: cap[2].parse().unwrap(),
-        durability: cap[3].parse().unwrap(),
-        flavor: cap[4].parse().unwrap(),
-        texture: cap[5].parse().unwrap(),
-        calories: cap[6].parse().unwrap(),
-      }),
-      None => Err(()),
-    }
-  }
 }
 
 impl Ingredient {
-  fn add(&mut self, other: &Ingredient, amount: i32) {
-    self.capacity += other.capacity * amount;
-    self.durability += other.durability * amount;
-    self.flavor += other.flavor * amount;
-    self.texture += other.texture * amount;
-    self.calories += other.calories * amount;
-  }
+    fn add(&mut self, other: &Ingredient, amount: i32) {
+        self.capacity += other.capacity * amount;
+        self.durability += other.durability * amount;
+        self.flavor += other.flavor * amount;
+        self.texture += other.texture * amount;
+        self.calories += other.calories * amount;
+    }
 
-  fn floor(&mut self) {
-    self.capacity = self.capacity.max(0);
-    self.durability = self.durability.max(0);
-    self.flavor = self.flavor.max(0);
-    self.texture = self.texture.max(0);
-    self.calories = self.calories.max(0);
-  }
+    fn floor(&mut self) {
+        self.capacity = self.capacity.max(0);
+        self.durability = self.durability.max(0);
+        self.flavor = self.flavor.max(0);
+        self.texture = self.texture.max(0);
+        self.calories = self.calories.max(0);
+    }
 }
 
 define_iterator!(HundredIter (
@@ -106,64 +106,64 @@ define_iterator!(HundredIter (
 });
 
 fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
-  let mut sum = Ingredient {
-    name: "Sum".to_string(),
-    capacity: 0,
-    durability: 0,
-    flavor: 0,
-    texture: 0,
-    calories: 0,
-  };
-  for (i, amount) in amounts.iter().enumerate() {
-    sum.add(&ingredients[i], *amount);
-  }
-  sum.floor();
-  (
-    sum.capacity * sum.durability * sum.flavor * sum.texture,
-    sum.calories,
-  )
+    let mut sum = Ingredient {
+        name: "Sum".to_string(),
+        capacity: 0,
+        durability: 0,
+        flavor: 0,
+        texture: 0,
+        calories: 0,
+    };
+    for (i, amount) in amounts.iter().enumerate() {
+        sum.add(&ingredients[i], *amount);
+    }
+    sum.floor();
+    (
+        sum.capacity * sum.durability * sum.flavor * sum.texture,
+        sum.calories,
+    )
 }
 
 fn process_data_a(data: &str) -> i32 {
-  let mut ingredients: Vec<Ingredient> = Vec::new();
-  for line in data.lines() {
-    ingredients.push(line.parse().unwrap());
-  }
-
-  let mut max = 0;
-  let iter = HundredIter {
-    len: ingredients.len() as usize,
-    ..Default::default()
-  };
-  for x in iter {
-    let score = get_score(&x, &ingredients).0;
-    if score > max {
-      max = score
+    let mut ingredients: Vec<Ingredient> = Vec::new();
+    for line in data.lines() {
+        ingredients.push(line.parse().unwrap());
     }
-  }
 
-  max
+    let mut max = 0;
+    let iter = HundredIter {
+        len: ingredients.len() as usize,
+        ..Default::default()
+    };
+    for x in iter {
+        let score = get_score(&x, &ingredients).0;
+        if score > max {
+            max = score
+        }
+    }
+
+    max
 }
 
 fn process_data_b(data: &str) -> i32 {
-  let mut ingredients: Vec<Ingredient> = Vec::new();
-  for line in data.lines() {
-    ingredients.push(line.parse().unwrap());
-  }
-
-  let mut max = 0;
-  let iter = HundredIter {
-    len: ingredients.len() as usize,
-    ..Default::default()
-  };
-  for x in iter {
-    let (score, calories) = get_score(&x, &ingredients);
-    if score > max && calories == 500 {
-      max = score
+    let mut ingredients: Vec<Ingredient> = Vec::new();
+    for line in data.lines() {
+        ingredients.push(line.parse().unwrap());
     }
-  }
 
-  max
+    let mut max = 0;
+    let iter = HundredIter {
+        len: ingredients.len() as usize,
+        ..Default::default()
+    };
+    for x in iter {
+        let (score, calories) = get_score(&x, &ingredients);
+        if score > max && calories == 500 {
+            max = score
+        }
+    }
+
+    max
 }
 
 //-----------------------------------------------------
@@ -172,41 +172,41 @@ fn process_data_b(data: &str) -> i32 {
 pub struct Q;
 
 impl Day for Q {
-  fn number(&self) -> String {
-    String::from("15")
-  }
+    fn number(&self) -> String {
+        String::from("15")
+    }
 
-  fn a(&self) {
-    print!("{}A: ", self.number());
-    let result = process_data_a(INPUT);
-    println!("Result = {}", result);
-  }
+    fn a(&self) {
+        print!("{}A: ", self.number());
+        let result = process_data_a(INPUT);
+        println!("Result = {}", result);
+    }
 
-  fn b(&self) {
-    print!("{}B: ", self.number());
-    let result = process_data_b(INPUT);
-    println!("Result = {}", result);
-  }
+    fn b(&self) {
+        print!("{}B: ", self.number());
+        let result = process_data_b(INPUT);
+        println!("Result = {}", result);
+    }
 }
 
 #[test]
 fn a() {
-  assert_eq!(
-    process_data_a(
-      "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+    assert_eq!(
+        process_data_a(
+            "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
-    ),
-    62842880
-  );
+        ),
+        62842880
+    );
 }
 
 #[test]
 fn b() {
-  assert_eq!(
-    process_data_b(
-      "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
+    assert_eq!(
+        process_data_b(
+            "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
-    ),
-    57600000
-  );
+        ),
+        57600000
+    );
 }
