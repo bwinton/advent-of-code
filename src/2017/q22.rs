@@ -16,9 +16,7 @@ enum Direction {
   Down,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Cell {
   Clean,
   Weakened,
@@ -26,8 +24,7 @@ enum Cell {
   Flagged,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Board {
   cells: HashMap<(i32, i32), Cell>,
   simple: bool,
@@ -77,23 +74,33 @@ impl Board {
         match *cell_type {
           Cell::Clean => {
             panic!("Found clean cell at {:?}", position);
-          },
+          }
           Cell::Weakened => {
             new_cells.insert(position, Cell::Infected);
-          },
+          }
           Cell::Infected => {
             new_cells.insert(position, Cell::Flagged);
-          },
+          }
           Cell::Flagged => {
             new_cells.remove(&position);
-          },
+          }
         }
       }
     } else {
-      new_cells.insert(position, if self.simple { Cell::Infected } else { Cell::Weakened });
+      new_cells.insert(
+        position,
+        if self.simple {
+          Cell::Infected
+        } else {
+          Cell::Weakened
+        },
+      );
     }
     self.cells = new_cells;
-    (prev, self.cells.get(&position).unwrap_or(&Cell::Clean).clone())
+    (
+      prev,
+      self.cells.get(&position).unwrap_or(&Cell::Clean).clone(),
+    )
   }
 }
 
@@ -121,8 +128,8 @@ impl Carrier {
           Direction::Right => Direction::Up,
           Direction::Down => Direction::Right,
         }
-      },
-      Cell::Weakened => {},
+      }
+      Cell::Weakened => {}
       Cell::Infected => {
         self.direction = match self.direction {
           Direction::Left => Direction::Up,
@@ -130,7 +137,7 @@ impl Carrier {
           Direction::Right => Direction::Down,
           Direction::Down => Direction::Left,
         }
-      },
+      }
       Cell::Flagged => {
         self.direction = match self.direction {
           Direction::Left => Direction::Right,
@@ -138,7 +145,7 @@ impl Carrier {
           Direction::Right => Direction::Left,
           Direction::Down => Direction::Up,
         }
-      },
+      }
     }
     self.position = match self.direction {
       Direction::Left => (self.position.0 - 1, self.position.1),

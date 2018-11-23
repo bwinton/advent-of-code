@@ -25,7 +25,6 @@ fn get(keypad: KeypadRef, key: Key) -> char {
   keypad[key[0]][key[1]]
 }
 
-
 impl Direction {
   fn shift(&self, key: Key, keypad: KeypadRef) -> Key {
     match *self {
@@ -35,28 +34,28 @@ impl Direction {
         } else {
           [key[0] - 1, key[1]]
         }
-      },
+      }
       Direction::Left => {
         if get(keypad, [key[0], key[1] - 1]) == ' ' {
           key
         } else {
           [key[0], key[1] - 1]
         }
-      },
+      }
       Direction::Down => {
         if get(keypad, [key[0] + 1, key[1]]) == ' ' {
           key
         } else {
           [key[0] + 1, key[1]]
         }
-      },
+      }
       Direction::Right => {
         if get(keypad, [key[0], key[1] + 1]) == ' ' {
           key
         } else {
           [key[0], key[1] + 1]
         }
-      },
+      }
     }
   }
 }
@@ -109,7 +108,6 @@ impl Day for Q {
       vec![' ', ' ', ' ', ' ', ' '],
     ];
 
-
     let mut key: Key = [2, 2];
 
     print!("Result = ");
@@ -130,7 +128,6 @@ impl Day for Q {
       vec![' ', ' ', ' ', 'D', ' ', ' ', ' '],
       vec![' ', ' ', ' ', ' ', ' ', ' ', ' '],
     ];
-
 
     let mut key: Key = [3, 1];
 

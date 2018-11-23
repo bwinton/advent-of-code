@@ -25,7 +25,6 @@ define_iterator!(FactorsIter (
   Some(factors)
 });
 
-
 fn process_data_a(data: usize) -> usize {
   for (i, factors) in FactorsIter::default().enumerate() {
     let value: usize = factors.iter().sum();

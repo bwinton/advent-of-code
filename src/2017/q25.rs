@@ -12,10 +12,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q25.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Action {
   test: bool,
   write: bool,
@@ -23,19 +20,13 @@ struct Action {
   next: char,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct State {
   name: char,
   actions: HashMap<bool, Action>,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Machine {
   tape: HashSet<i32>,
   position: i32,
@@ -158,8 +149,6 @@ named!(machine_parser<CompleteStr, Machine>, do_parse!(
   })
 ));
 
-
-
 fn process_data_a(data: &str) -> usize {
   let mut machine = machine_parser(CompleteStr(data)).unwrap().1;
   while machine.steps < machine.checksum {
@@ -198,18 +187,80 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(machine_name_parser(CompleteStr("Begin in state A.\n")).unwrap().1, 'A');
-  assert_eq!(machine_checksum_parser(CompleteStr("Perform a diagnostic checksum after 6 steps.\n")).unwrap().1, 6);
-  assert_eq!(machine_checksum_parser(CompleteStr("Perform a diagnostic checksum after 12656374 steps.\n")).unwrap().1, 12656374);
-  assert_eq!(state_name_parser(CompleteStr("In state A:\n")).unwrap().1, 'A');
-  assert_eq!(action_test_parser(CompleteStr("  If the current value is 0:\n")).unwrap().1, false);
-  assert_eq!(action_test_parser(CompleteStr("  If the current value is 1:\n")).unwrap().1, true);
-  assert_eq!(action_write_parser(CompleteStr("    - Write the value 0.\n")).unwrap().1, false);
-  assert_eq!(action_write_parser(CompleteStr("    - Write the value 1.\n")).unwrap().1, true);
-  assert_eq!(action_move_parser(CompleteStr("    - Move one slot to the left.\n")).unwrap().1, -1);
-  assert_eq!(action_move_parser(CompleteStr("    - Move one slot to the right.\n")).unwrap().1, 1);
-  assert_eq!(action_next_parser(CompleteStr("    - Continue with state A.\n")).unwrap().1, 'A');
-  assert_eq!(action_next_parser(CompleteStr("    - Continue with state B.\n")).unwrap().1, 'B');
+  assert_eq!(
+    machine_name_parser(CompleteStr("Begin in state A.\n"))
+      .unwrap()
+      .1,
+    'A'
+  );
+  assert_eq!(
+    machine_checksum_parser(CompleteStr(
+      "Perform a diagnostic checksum after 6 steps.\n"
+    ))
+    .unwrap()
+    .1,
+    6
+  );
+  assert_eq!(
+    machine_checksum_parser(CompleteStr(
+      "Perform a diagnostic checksum after 12656374 steps.\n"
+    ))
+    .unwrap()
+    .1,
+    12656374
+  );
+  assert_eq!(
+    state_name_parser(CompleteStr("In state A:\n")).unwrap().1,
+    'A'
+  );
+  assert_eq!(
+    action_test_parser(CompleteStr("  If the current value is 0:\n"))
+      .unwrap()
+      .1,
+    false
+  );
+  assert_eq!(
+    action_test_parser(CompleteStr("  If the current value is 1:\n"))
+      .unwrap()
+      .1,
+    true
+  );
+  assert_eq!(
+    action_write_parser(CompleteStr("    - Write the value 0.\n"))
+      .unwrap()
+      .1,
+    false
+  );
+  assert_eq!(
+    action_write_parser(CompleteStr("    - Write the value 1.\n"))
+      .unwrap()
+      .1,
+    true
+  );
+  assert_eq!(
+    action_move_parser(CompleteStr("    - Move one slot to the left.\n"))
+      .unwrap()
+      .1,
+    -1
+  );
+  assert_eq!(
+    action_move_parser(CompleteStr("    - Move one slot to the right.\n"))
+      .unwrap()
+      .1,
+    1
+  );
+  assert_eq!(
+    action_next_parser(CompleteStr("    - Continue with state A.\n"))
+      .unwrap()
+      .1,
+    'A'
+  );
+  assert_eq!(
+    action_next_parser(CompleteStr("    - Continue with state B.\n"))
+      .unwrap()
+      .1,
+    'B'
+  );
 
   let action_a0 = Action {
     test: false,
@@ -267,28 +318,58 @@ fn a() {
     },
   };
 
-  assert_eq!(action_parser(CompleteStr("  If the current value is 0:
+  assert_eq!(
+    action_parser(CompleteStr(
+      "  If the current value is 0:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state B.
-")).unwrap().1, action_a0);
-  assert_eq!(action_parser(CompleteStr("  If the current value is 1:
+"
+    ))
+    .unwrap()
+    .1,
+    action_a0
+  );
+  assert_eq!(
+    action_parser(CompleteStr(
+      "  If the current value is 1:
     - Write the value 0.
     - Move one slot to the left.
     - Continue with state B.
-")).unwrap().1, action_a1);
-  assert_eq!(action_parser(CompleteStr("  If the current value is 0:
+"
+    ))
+    .unwrap()
+    .1,
+    action_a1
+  );
+  assert_eq!(
+    action_parser(CompleteStr(
+      "  If the current value is 0:
     - Write the value 1.
     - Move one slot to the left.
     - Continue with state A.
-")).unwrap().1, action_b0);
-  assert_eq!(action_parser(CompleteStr("  If the current value is 1:
+"
+    ))
+    .unwrap()
+    .1,
+    action_b0
+  );
+  assert_eq!(
+    action_parser(CompleteStr(
+      "  If the current value is 1:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state A.
-")).unwrap().1, action_b1);
+"
+    ))
+    .unwrap()
+    .1,
+    action_b1
+  );
 
-  assert_eq!(state_parser(CompleteStr("
+  assert_eq!(
+    state_parser(CompleteStr(
+      "
 In state A:
   If the current value is 0:
     - Write the value 1.
@@ -298,9 +379,16 @@ In state A:
     - Write the value 0.
     - Move one slot to the left.
     - Continue with state B.
-")).unwrap().1, state_a);
+"
+    ))
+    .unwrap()
+    .1,
+    state_a
+  );
 
-  assert_eq!(state_parser(CompleteStr("
+  assert_eq!(
+    state_parser(CompleteStr(
+      "
 In state B:
   If the current value is 0:
     - Write the value 1.
@@ -310,9 +398,16 @@ In state B:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state A.
-")).unwrap().1, state_b);
+"
+    ))
+    .unwrap()
+    .1,
+    state_b
+  );
 
-  assert_eq!(machine_parser(CompleteStr("Begin in state A.
+  assert_eq!(
+    machine_parser(CompleteStr(
+      "Begin in state A.
 Perform a diagnostic checksum after 6 steps.
 
 In state A:
@@ -334,9 +429,16 @@ In state B:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state A.
-")).unwrap().1, machine);
+"
+    ))
+    .unwrap()
+    .1,
+    machine
+  );
 
-  assert_eq!(process_data_a("Begin in state A.
+  assert_eq!(
+    process_data_a(
+      "Begin in state A.
 Perform a diagnostic checksum after 6 steps.
 
 In state A:
@@ -358,7 +460,10 @@ In state B:
     - Write the value 1.
     - Move one slot to the right.
     - Continue with state A.
-"), 3);
+"
+    ),
+    3
+  );
 }
 
 #[test]

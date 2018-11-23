@@ -9,12 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q24.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Ord)]
-#[derive(PartialEq)]
-#[derive(PartialOrd)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct Pipe {
   input: usize,
   output: usize,
@@ -45,11 +40,7 @@ impl Pipe {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
-#[derive(PartialOrd)]
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd)]
 struct Bridge {
   pipes: Vec<Pipe>,
   remaining: Vec<Pipe>,
@@ -136,8 +127,8 @@ fn process_data_b(data: &str) -> usize {
   // let mut count = 0;
   while !next.is_empty() {
     let current = next.pop().unwrap();
-    if current.pipes.len() > rv.pipes.len() ||
-      (current.pipes.len() == rv.pipes.len() && current.strength > rv.strength)
+    if current.pipes.len() > rv.pipes.len()
+      || (current.pipes.len() == rv.pipes.len() && current.strength > rv.strength)
     {
       rv = current.clone();
     }

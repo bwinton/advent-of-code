@@ -8,8 +8,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q18.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Board {
   cells: Vec<Vec<bool>>,
 }
@@ -50,8 +49,11 @@ impl Board {
       for j in 0..3 {
         let new_x = (x as i32) + i - 1;
         let new_y = (y as i32) + j - 1;
-        if new_x >= 0 && new_x < self.cells.len() as i32 && new_y >= 0 &&
-          new_y < self.cells[new_x as usize].len() as i32 && self.cells[new_x as usize][new_y as usize]
+        if new_x >= 0
+          && new_x < self.cells.len() as i32
+          && new_y >= 0
+          && new_y < self.cells[new_x as usize].len() as i32
+          && self.cells[new_x as usize][new_y as usize]
         {
           neighbours += 1;
         }
@@ -75,12 +77,11 @@ impl Board {
   }
 
   fn count_on_cells(&self) -> u32 {
-    self.cells.iter().flat_map(|line| line.iter()).fold(
-      0,
-      |acc, &x| {
-        acc + (x as u32)
-      },
-    )
+    self
+      .cells
+      .iter()
+      .flat_map(|line| line.iter())
+      .fold(0, |acc, &x| acc + (x as u32))
   }
 
   fn light_corners(&mut self) {

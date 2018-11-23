@@ -20,7 +20,6 @@ struct Room {
   checksum: String,
 }
 
-
 impl Room {
   fn is_valid(&self) -> bool {
     let mut chars = Vec::<(i32, char)>::new();
@@ -43,32 +42,8 @@ impl Room {
   fn decrypt(&self) -> String {
     let shift = (self.sector % 26) as u8;
     let alphabet = [
-      'a',
-      'b',
-      'c',
-      'd',
-      'e',
-      'f',
-      'g',
-      'h',
-      'i',
-      'j',
-      'k',
-      'l',
-      'm',
-      'n',
-      'o',
-      'p',
-      'q',
-      'r',
-      's',
-      't',
-      'u',
-      'v',
-      'w',
-      'x',
-      'y',
-      'z',
+      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+      's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     ];
 
     // rot-n, where n is sector % 26…
@@ -109,7 +84,6 @@ impl FromStr for Room {
     // on fail, Err(())
   }
 }
-
 
 //-----------------------------------------------------
 // Questions.

@@ -22,9 +22,7 @@ use std::usize::MAX;
 // ###########";
 static INPUT: &'static str = include_str!("data/q24.data");
 
-#[derive(Clone)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 enum Direction {
   Up,
   Left,
@@ -45,11 +43,7 @@ impl fmt::Debug for Direction {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Hash)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 struct Location {
   loc: i32,
   x: usize,
@@ -68,11 +62,7 @@ impl PartialOrd for Location {
   }
 }
 
-
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 enum Contents {
   Wall(),
   Empty(),
@@ -93,26 +83,22 @@ impl FromStr for Contents {
       _ => {
         let captures = RE.captures(s);
         match captures {
-          Some(cap) => {
-            Ok(Contents::Something(Location {
-              loc: cap[1].parse().unwrap(),
-              x: 0,
-              y: 0,
-            }))
-          },
+          Some(cap) => Ok(Contents::Something(Location {
+            loc: cap[1].parse().unwrap(),
+            x: 0,
+            y: 0,
+          })),
           None => {
             println!("Could not parse '{}'!", s);
             Err(())
-          },
+          }
         }
-      },
+      }
     }
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
+#[derive(Clone, Debug, Eq)]
 struct State {
   x: usize,
   y: usize,
@@ -183,8 +169,7 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
     Direction::Left,
     Direction::Down,
     Direction::Right,
-  ]
-  {
+  ] {
     let mut x = current.x;
     let mut y = current.y;
     match *direction {
@@ -201,11 +186,7 @@ fn get_next_states(current: &State, board: &[Vec<Contents>], seen: &[State]) -> 
     let mut moves = current.moves.clone();
     moves.push(direction.clone());
 
-    rv.push(State {
-      x,
-      y,
-      moves,
-    });
+    rv.push(State { x, y, moves });
   }
 
   let mut temp = seen.to_vec();
@@ -274,8 +255,16 @@ fn get_permutations(input: &[Location]) -> Vec<Vec<Location>> {
   result
 }
 
-fn get_distance(start: &Location, target: &Location, distances: &HashMap<(&Location, &Location), usize>) -> usize {
-  let key = if start > target { (target, start) } else { (start, target) };
+fn get_distance(
+  start: &Location,
+  target: &Location,
+  distances: &HashMap<(&Location, &Location), usize>,
+) -> usize {
+  let key = if start > target {
+    (target, start)
+  } else {
+    (start, target)
+  };
   // println!("Checking for {:?} in {:?}", &key, &distances);
   *distances.get(&key).unwrap()
 }

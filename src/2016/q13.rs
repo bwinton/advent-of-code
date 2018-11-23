@@ -12,9 +12,7 @@ static INPUT_NUMBER: i32 = 1362;
 static INPUT_TARGET_X: i32 = 31;
 static INPUT_TARGET_Y: i32 = 39;
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
+#[derive(Clone, Debug, Eq)]
 struct State {
   x: i32,
   y: i32,
@@ -41,7 +39,11 @@ impl State {
 impl Ord for State {
   fn cmp(&self, other: &State) -> Ordering {
     let move_cmp = (-self.moves).cmp(&-other.moves);
-    if move_cmp == Ordering::Equal { self.dist.cmp(&other.dist) } else { move_cmp }
+    if move_cmp == Ordering::Equal {
+      self.dist.cmp(&other.dist)
+    } else {
+      move_cmp
+    }
   }
 }
 

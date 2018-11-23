@@ -9,8 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q18.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Instruction {
   SendReg(char),
   SendLit(i64),
@@ -37,52 +36,46 @@ impl Instruction {
       Instruction::SendReg(reg) => {
         rv.pc += 1;
         rv.outgoing.push(state.registers[&reg]);
-      },
+      }
       Instruction::SendLit(lit) => {
         rv.pc += 1;
         rv.outgoing.push(lit);
-      },
+      }
       Instruction::SetReg(dst, src) => {
         rv.pc += 1;
         rv.registers.insert(dst, state.registers[&src]);
-      },
+      }
       Instruction::SetLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, lit);
-      },
+      }
       Instruction::AddReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(
-          dst,
-          state.registers[&dst] + state.registers[&src],
-        );
-      },
+        rv.registers
+          .insert(dst, state.registers[&dst] + state.registers[&src]);
+      }
       Instruction::AddLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] + lit);
-      },
+      }
       Instruction::MulReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(
-          dst,
-          state.registers[&dst] * state.registers[&src],
-        );
-      },
+        rv.registers
+          .insert(dst, state.registers[&dst] * state.registers[&src]);
+      }
       Instruction::MulLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] * lit);
-      },
+      }
       Instruction::ModReg(dst, src) => {
         rv.pc += 1;
-        rv.registers.insert(
-          dst,
-          state.registers[&dst] % state.registers[&src],
-        );
-      },
+        rv.registers
+          .insert(dst, state.registers[&dst] % state.registers[&src]);
+      }
       Instruction::ModLit(reg, lit) => {
         rv.pc += 1;
         rv.registers.insert(reg, state.registers[&reg] % lit);
-      },
+      }
       Instruction::Receive(reg) => {
         if state.kind == 'A' {
           rv.pc += 1;
@@ -96,59 +89,58 @@ impl Instruction {
             Some(x) => {
               rv.pc += 1;
               rv.registers.insert(reg, x);
-            },
+            }
           }
         }
-      },
+      }
       Instruction::JumpRegReg(reg_test, reg_offset) => {
         if rv.registers[&reg_test] > 0 {
           rv.pc += rv.registers[&reg_offset];
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpRegLit(reg, offset) => {
         if rv.registers[&reg] > 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpLitReg(test, reg) => {
         if test > 0 {
           rv.pc += rv.registers[&reg];
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpLitLit(test, offset) => {
         if test > 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
     }
     (rv, value)
   }
 
   fn registers(&self) -> Vec<char> {
     match (*self).clone() {
-      Instruction::SendReg(reg) |
-      Instruction::SetLit(reg, _) |
-      Instruction::AddLit(reg, _) |
-      Instruction::MulLit(reg, _) |
-      Instruction::ModLit(reg, _) |
-      Instruction::Receive(reg) |
-      Instruction::JumpRegLit(reg, _) |
-      Instruction::JumpLitReg(_, reg) => vec![reg],
-      Instruction::SendLit(_) |
-      Instruction::JumpLitLit(_, _) => vec![],
-      Instruction::SetReg(a, b) |
-      Instruction::AddReg(a, b) |
-      Instruction::MulReg(a, b) |
-      Instruction::ModReg(a, b) |
-      Instruction::JumpRegReg(a, b) => vec![a, b],
+      Instruction::SendReg(reg)
+      | Instruction::SetLit(reg, _)
+      | Instruction::AddLit(reg, _)
+      | Instruction::MulLit(reg, _)
+      | Instruction::ModLit(reg, _)
+      | Instruction::Receive(reg)
+      | Instruction::JumpRegLit(reg, _)
+      | Instruction::JumpLitReg(_, reg) => vec![reg],
+      Instruction::SendLit(_) | Instruction::JumpLitLit(_, _) => vec![],
+      Instruction::SetReg(a, b)
+      | Instruction::AddReg(a, b)
+      | Instruction::MulReg(a, b)
+      | Instruction::ModReg(a, b)
+      | Instruction::JumpRegReg(a, b) => vec![a, b],
     }
   }
 }
@@ -276,8 +268,7 @@ impl FromStr for Instruction {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct State {
   kind: char,
   registers: HashMap<char, i64>,
@@ -306,8 +297,6 @@ impl State {
     instruction.execute(self)
   }
 }
-
-
 
 fn process_data_a(data: &str) -> i64 {
   let mut instructions: Vec<Instruction> = Vec::new();

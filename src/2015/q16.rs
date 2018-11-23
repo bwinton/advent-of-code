@@ -26,20 +26,19 @@ impl AuntSue {
     rv
   }
 
-
   fn matches_b(&self, other: &AuntSue) -> bool {
     let mut rv = true;
     for feature in other.features.keys() {
       match feature.as_str() {
         "cats" | "trees" => {
           rv &= other.features[feature] > self.features[feature];
-        },
+        }
         "pomeranians" | "goldfish" => {
           rv &= other.features[feature] < self.features[feature];
-        },
+        }
         _ => {
           rv &= other.features[feature] == self.features[feature];
-        },
+        }
       }
     }
     rv

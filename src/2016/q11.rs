@@ -14,11 +14,7 @@ use std::str::FromStr;
 static A_INPUT: &'static str = include_str!("data/q11a.data");
 static B_INPUT: &'static str = include_str!("data/q11b.data");
 
-
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 enum Item {
   Generator(String),
   Microchip(String),
@@ -27,17 +23,13 @@ enum Item {
 impl Ord for Item {
   fn cmp(&self, other: &Item) -> Ordering {
     match *self {
-      Item::Generator(ref me) => {
-        match *other {
-          Item::Generator(ref them) => me.cmp(them),
-          Item::Microchip(ref _them) => Ordering::Less,
-        }
+      Item::Generator(ref me) => match *other {
+        Item::Generator(ref them) => me.cmp(them),
+        Item::Microchip(ref _them) => Ordering::Less,
       },
-      Item::Microchip(ref me) => {
-        match *other {
-          Item::Generator(ref _them) => Ordering::Greater,
-          Item::Microchip(ref them) => me.cmp(them),
-        }
+      Item::Microchip(ref me) => match *other {
+        Item::Generator(ref _them) => Ordering::Greater,
+        Item::Microchip(ref them) => me.cmp(them),
       },
     }
   }
@@ -76,22 +68,14 @@ impl fmt::Display for Item {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Ord)]
-#[derive(PartialEq)]
-#[derive(PartialOrd)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct FloorDesc {
   pairs: usize,
   generators: usize,
   microchips: usize,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Ord)]
-#[derive(PartialOrd)]
+#[derive(Clone, Debug, Ord, PartialOrd)]
 struct Floor {
   number: i32,
   items: Vec<Item>,
@@ -132,7 +116,7 @@ impl Floor {
     }
     for chip in generators.clone() {
       match microchips.binary_search(&chip) {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(_) => rv.generators += 1,
       }
     }
@@ -167,10 +151,10 @@ impl FromStr for Floor {
       for item_captures in item_re.captures_iter(items) {
         let item_opt: Result<Item, ()> = item_captures[0].parse();
         match item_opt {
-          Err(()) => {},
+          Err(()) => {}
           Ok(item) => {
             rv.add_item(item);
-          },
+          }
         }
       }
       Ok(rv)
@@ -198,11 +182,7 @@ impl PartialEq for Floor {
 
 impl Eq for Floor {}
 
-
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Ord)]
-#[derive(PartialOrd)]
+#[derive(Clone, Debug, Ord, PartialOrd)]
 struct State {
   moves: i32,
   previous: Option<usize>,
@@ -244,7 +224,11 @@ impl Eq for State {}
 
 impl fmt::Display for State {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut result = writeln!(f, "i:{:?}, p:{:?}, moves:{}", self.index, self.previous, self.moves);
+    let mut result = writeln!(
+      f,
+      "i:{:?}, p:{:?}, moves:{}",
+      self.index, self.previous, self.moves
+    );
     if result.is_err() {
       return result;
     }
@@ -277,7 +261,11 @@ impl fmt::Display for State {
 
 fn move_items(state: &State, going_up: bool, states: &mut Vec<State>) {
   let items = &state.floors[state.elevator].items;
-  let next_stop = if going_up { state.elevator + 1 } else { state.elevator - 1 };
+  let next_stop = if going_up {
+    state.elevator + 1
+  } else {
+    state.elevator - 1
+  };
 
   let mut template = state.clone();
   template.moves += 1;
@@ -314,11 +302,13 @@ fn get_next_state(state: &State, seen: &[State]) -> Vec<State> {
     move_items(state, false, rv.as_mut());
   }
   let mut temp = seen.to_vec();
-  rv.retain(|item| if item.is_valid(&temp) {
-    temp.push(item.clone());
-    true
-  } else {
-    false
+  rv.retain(|item| {
+    if item.is_valid(&temp) {
+      temp.push(item.clone());
+      true
+    } else {
+      false
+    }
   });
   rv
 }

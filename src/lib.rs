@@ -12,7 +12,6 @@ use std::ops::Deref;
 
 use clap::Arg;
 
-
 pub trait Day {
   fn number(&self) -> String;
   fn a(&self);
@@ -60,10 +59,13 @@ macro_rules! define_iterator {
 }
 
 pub fn print_vec(v: &[impl Display]) -> String {
-    format!("[{}]", v.iter().fold(String::new(), |acc, ref num| {
-        let len = acc.is_empty();
-        acc + if len {", "} else {""} + &num.to_string()
-    }))
+  format!(
+    "[{}]",
+    v.iter().fold(String::new(), |acc, ref num| {
+      let len = acc.is_empty();
+      acc + if len { ", " } else { "" } + &num.to_string()
+    })
+  )
 }
 
 fn select(day: &Day, arg: &str) {
@@ -74,11 +76,11 @@ fn select(day: &Day, arg: &str) {
     ref q if *q == day.number() => {
       day.a();
       day.b()
-    },
+    }
     ref q if *q == "*" => {
       day.a();
       day.b()
-    },
+    }
     _ => (),
   }
 }

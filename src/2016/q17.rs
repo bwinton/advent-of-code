@@ -13,8 +13,7 @@ use std::collections::BinaryHeap;
 // static INPUT : &'static str = "ulqzkmiv";
 static INPUT: &'static str = "yjjvjgan";
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Direction {
   Up,
   Left,
@@ -22,8 +21,7 @@ enum Direction {
   Right,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct State {
   x: usize,
   y: usize,
@@ -98,22 +96,22 @@ fn get_next_states(state: &State) -> Vec<State> {
         let mut path = state.path.clone();
         path.push('U');
         rv.push(State::new(&path, state.x, state.y - 1));
-      },
+      }
       Direction::Down => {
         let mut path = state.path.clone();
         path.push('D');
         rv.push(State::new(&path, state.x, state.y + 1));
-      },
+      }
       Direction::Left => {
         let mut path = state.path.clone();
         path.push('L');
         rv.push(State::new(&path, state.x - 1, state.y));
-      },
+      }
       Direction::Right => {
         let mut path = state.path.clone();
         path.push('R');
         rv.push(State::new(&path, state.x + 1, state.y));
-      },
+      }
     }
   }
   rv

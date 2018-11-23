@@ -3,17 +3,12 @@
 
 use aoc::Day;
 
-use std::collections::HashMap;
 use std::collections::hash_map::Entry;
+use std::collections::HashMap;
 
 static INPUT: &'static str = include_str!("data/q03.data");
 
-#[derive(Clone)]
-#[derive(Copy)]
-#[derive(Debug)]
-#[derive(PartialEq)]
-#[derive(Eq)]
-#[derive(Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct House {
   x: i32,
   y: i32,

@@ -12,8 +12,7 @@ static INPUT: &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^.
 static LENGTH_A: usize = 40;
 static LENGTH_B: usize = 400_000;
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Row {
   data: String,
   safe_count: usize,

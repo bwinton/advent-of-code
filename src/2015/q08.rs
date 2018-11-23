@@ -22,11 +22,11 @@ fn process_data_a(data: &str) -> i32 {
           rv += 3;
           rest.next();
           rest.next();
-        },
+        }
         _ => {
           println!("Got \\{:?}", next);
           panic!("Unknown escape sequence!!!")
-        },
+        }
       }
     }
   }
@@ -42,7 +42,7 @@ fn process_data_b(data: &str) -> i32 {
       match curr {
         '\\' => rv += 1,
         '"' => rv += 1,
-        _ => {},
+        _ => {}
       }
     }
   }

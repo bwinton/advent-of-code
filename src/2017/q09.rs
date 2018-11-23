@@ -19,7 +19,7 @@ fn process_data_a(data: &str) -> i32 {
       match curr {
         '!' => skip_next = true,
         '>' => in_garbage = false,
-        _ => {},
+        _ => {}
       }
     } else {
       match curr {
@@ -27,10 +27,10 @@ fn process_data_a(data: &str) -> i32 {
         '{' => {
           group_count += 1;
           rv += group_count;
-        },
+        }
         '}' => group_count -= 1,
         '<' => in_garbage = true,
-        _ => {},
+        _ => {}
       }
     }
   }
@@ -56,7 +56,7 @@ fn process_data_b(data: &str) -> i32 {
       match curr {
         '!' => skip_next = true,
         '<' => in_garbage = true,
-        _ => {},
+        _ => {}
       }
     }
   }

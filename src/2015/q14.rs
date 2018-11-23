@@ -6,14 +6,9 @@ use aoc::Day;
 use regex::Regex;
 use std::str::FromStr;
 
-
 static INPUT: &'static str = include_str!("data/q14.data");
 
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Ord)]
-#[derive(PartialEq)]
-#[derive(PartialOrd)]
+#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct Reindeer {
   name: String,
   speed: u32,
@@ -31,15 +26,13 @@ impl FromStr for Reindeer {
     }
     let captures = RE.captures(s);
     match captures {
-      Some(cap) => {
-        Ok(Reindeer {
-          name: cap[1].to_string(),
-          speed: cap[2].parse().unwrap(),
-          duration: cap[3].parse().unwrap(),
-          rest: cap[4].parse().unwrap(),
-          points: 0,
-        })
-      },
+      Some(cap) => Ok(Reindeer {
+        name: cap[1].to_string(),
+        speed: cap[2].parse().unwrap(),
+        duration: cap[3].parse().unwrap(),
+        rest: cap[4].parse().unwrap(),
+        points: 0,
+      }),
       None => Err(()),
     }
   }
@@ -105,9 +98,10 @@ fn a() {
   let comet: Reindeer = "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds."
     .parse()
     .unwrap();
-  let dancer: Reindeer = "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
-    .parse()
-    .unwrap();
+  let dancer: Reindeer =
+    "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
+      .parse()
+      .unwrap();
   assert_eq!(comet.distance(1), 14);
   assert_eq!(comet.distance(10), 140);
   assert_eq!(comet.distance(11), 140);

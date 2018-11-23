@@ -7,7 +7,6 @@ use regex::Regex;
 use std;
 use std::str::FromStr;
 
-
 static INPUT: &'static str = include_str!("data/q15.data");
 
 #[derive(Debug)]
@@ -29,16 +28,14 @@ impl FromStr for Ingredient {
     }
     let captures = RE.captures(s);
     match captures {
-      Some(cap) => {
-        Ok(Ingredient {
-          name: cap[1].to_string(),
-          capacity: cap[2].parse().unwrap(),
-          durability: cap[3].parse().unwrap(),
-          flavor: cap[4].parse().unwrap(),
-          texture: cap[5].parse().unwrap(),
-          calories: cap[6].parse().unwrap(),
-        })
-      },
+      Some(cap) => Ok(Ingredient {
+        name: cap[1].to_string(),
+        capacity: cap[2].parse().unwrap(),
+        durability: cap[3].parse().unwrap(),
+        flavor: cap[4].parse().unwrap(),
+        texture: cap[5].parse().unwrap(),
+        calories: cap[6].parse().unwrap(),
+      }),
       None => Err(()),
     }
   }
@@ -121,7 +118,10 @@ fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
     sum.add(&ingredients[i], *amount);
   }
   sum.floor();
-  (sum.capacity * sum.durability * sum.flavor * sum.texture, sum.calories)
+  (
+    sum.capacity * sum.durability * sum.flavor * sum.texture,
+    sum.calories,
+  )
 }
 
 fn process_data_a(data: &str) -> i32 {

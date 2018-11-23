@@ -46,7 +46,7 @@ impl Display {
             }
           }
         }
-      },
+      }
       "rotate column" => {
         let mut new = [false; ROWS];
         for (i, cell) in new.iter_mut().enumerate().take(ROWS) {
@@ -56,7 +56,7 @@ impl Display {
         for (i, &row) in new.iter().enumerate().take(ROWS) {
           self.cells[i][turn.arg1] = row;
         }
-      },
+      }
       "rotate row" => {
         let mut new = [false; COLS];
         for (i, cell) in new.iter_mut().enumerate().take(COLS) {
@@ -64,7 +64,7 @@ impl Display {
           *cell = self.cells[turn.arg1][(COLS + i - turn.arg2) % COLS];
         }
         self.cells[turn.arg1][..COLS].clone_from_slice(&new[..COLS]);
-      },
+      }
       _ => println!("Error!"),
     }
   }
@@ -85,7 +85,6 @@ impl fmt::Debug for Display {
     Ok(())
   }
 }
-
 
 #[derive(Debug)]
 struct Turn {
@@ -118,19 +117,18 @@ impl FromStr for Turn {
           let extra = rect_re.captures(rest).unwrap();
           rv.arg1 = extra[1].parse().unwrap();
           rv.arg2 = extra[2].parse().unwrap();
-        },
+        }
         "rotate column" | "rotate row" => {
           let extra = rotate_re.captures(rest).unwrap();
           rv.arg1 = extra[2].parse().unwrap();
           rv.arg2 = extra[3].parse().unwrap();
-        },
+        }
         _ => println!("Error!"),
       }
     }
     Ok(rv)
   }
 }
-
 
 //-----------------------------------------------------
 // Questions.

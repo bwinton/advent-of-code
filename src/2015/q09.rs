@@ -29,7 +29,7 @@ fn parse(data: &str) -> (HashSet<String>, HashMap<[String; 2], usize>) {
           cities.insert(city.to_string());
         }
         distances.insert(key, x[3].parse().unwrap());
-      },
+      }
     }
   }
   (cities, distances)
@@ -55,7 +55,7 @@ fn process_data_a(data: &str) -> (Vec<String>, usize) {
   let mut min_distance = (Vec::new(), usize::MAX);
   for perm in heap {
     let dist = get_distance(&perm, &distances);
-    if (dist < min_distance.1) || (dist == min_distance.1 && perm < min_distance.0){
+    if (dist < min_distance.1) || (dist == min_distance.1 && perm < min_distance.0) {
       min_distance = (perm, dist);
     }
   }
@@ -107,7 +107,14 @@ fn a() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["Belfast".to_string(), "Dublin".to_string(), "London".to_string()], 605)
+    (
+      vec![
+        "Belfast".to_string(),
+        "Dublin".to_string(),
+        "London".to_string()
+      ],
+      605
+    )
   );
 }
 
@@ -119,6 +126,13 @@ fn b() {
 London to Belfast = 518
 Dublin to Belfast = 141",
     ),
-    (vec!["Belfast".to_string(), "London".to_string(), "Dublin".to_string()], 982)
+    (
+      vec![
+        "Belfast".to_string(),
+        "London".to_string(),
+        "Dublin".to_string()
+      ],
+      982
+    )
   );
 }

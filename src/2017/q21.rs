@@ -8,11 +8,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q21.data");
 
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Clone)]
-#[derive(Hash)]
-#[derive(PartialEq)]
+#[derive(Debug, Eq, Clone, Hash, PartialEq)]
 struct Rule {
   size: usize,
   input: Vec<Vec<bool>>,

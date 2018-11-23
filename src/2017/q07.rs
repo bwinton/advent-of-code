@@ -9,8 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q07.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Disc {
   name: String,
   weight: usize,
@@ -23,7 +22,8 @@ impl FromStr for Disc {
 
   fn from_str(s: &str) -> Result<Disc, ()> {
     lazy_static! {
-      static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) \((\d+)\)( -> (([a-z]+(, )?)+))?$").unwrap();
+      static ref MAIN_RE: Regex =
+        Regex::new(r"^([a-z]+) \((\d+)\)( -> (([a-z]+(, )?)+))?$").unwrap();
     }
     let mut rv = Disc {
       name: "".to_string(),
@@ -41,7 +41,7 @@ impl FromStr for Disc {
           rv.holdings = rest.as_str().split(", ").map(|x| x.to_string()).collect();
         }
         Ok(rv)
-      },
+      }
     }
   }
 }
@@ -114,10 +114,10 @@ fn process_data_b(data: &str) -> usize {
     rv = get_sums(&mut discs);
     discs = rv.0;
     match rv.1 {
-      None => {},
+      None => {}
       Some(value) => {
         return value;
-      },
+      }
     }
   }
   unreachable!();

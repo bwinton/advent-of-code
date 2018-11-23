@@ -6,7 +6,6 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-
 static INPUT: &'static str = include_str!("data/q10.data");
 // static INPUT : &'static str = "value 5 goes to bot 2
 // bot 2 gives low to bot 1 and high to bot 0
@@ -40,9 +39,7 @@ impl FromStr for Value {
   }
 }
 
-
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Destination {
   Unknown,
   Bot(i32),
@@ -65,7 +62,6 @@ impl FromStr for Destination {
   }
 }
 
-
 #[derive(Debug)]
 struct Bot {
   number: i32,
@@ -82,7 +78,7 @@ impl Bot {
       None => {
         self.first = Some(value);
         false
-      },
+      }
       Some(value_one) => {
         if value > value_one {
           self.second = Some(value);
@@ -91,7 +87,7 @@ impl Bot {
           self.first = Some(value);
         }
         true
-      },
+      }
     }
   }
 
@@ -100,36 +96,42 @@ impl Bot {
     let mut rv: HashMap<i32, i32> = HashMap::new();
     match self.low_dest {
       Destination::Unknown => {
-        println!("ERROR!!!  Bot {} has no low_dest!!!  {:?}", self.number, self);
-      },
+        println!(
+          "ERROR!!!  Bot {} has no low_dest!!!  {:?}",
+          self.number, self
+        );
+      }
       Destination::Bot(number) => {
         let mut bot = bots.get_mut(&number).unwrap().clone();
         if bot.push_value(self.first.unwrap()) {
           rv.extend(bot.propagate(bots).iter());
         };
         bots.insert(bot.number, bot);
-      },
+      }
       Destination::Output(number) => {
         // println!("Bot {} output {} to {}", self.number, self.first.unwrap(), number);
         rv.insert(number, self.first.unwrap());
-      },
+      }
     };
 
     match self.high_dest {
       Destination::Unknown => {
-        println!("ERROR!!!  Bot {} has no low_dest!!!  {:?}", self.number, self);
-      },
+        println!(
+          "ERROR!!!  Bot {} has no low_dest!!!  {:?}",
+          self.number, self
+        );
+      }
       Destination::Bot(number) => {
         let mut bot = bots.get_mut(&number).unwrap().clone();
         if bot.push_value(self.second.unwrap()) {
           rv.extend(bot.propagate(bots).iter());
         };
         bots.insert(bot.number, bot);
-      },
+      }
       Destination::Output(number) => {
         // println!("Bot {} output {} to {}", self.number, self.second.unwrap(), number);
         rv.insert(number, self.second.unwrap());
-      },
+      }
     }
     rv
   }
@@ -155,12 +157,13 @@ impl Clone for Bot {
   }
 }
 
-
 impl FromStr for Bot {
   type Err = ();
 
   fn from_str(s: &str) -> Result<Bot, ()> {
-    let re: Regex = Regex::new(r"^bot (\d+) gives low to ((bot|output) \d+) and high to ((bot|output) \d+)$").unwrap();
+    let re: Regex =
+      Regex::new(r"^bot (\d+) gives low to ((bot|output) \d+) and high to ((bot|output) \d+)$")
+        .unwrap();
     let mut rv = Bot {
       number: -1,
       first: Option::None,
@@ -175,13 +178,16 @@ impl FromStr for Bot {
         rv.number = x[1].parse().unwrap();
         rv.low_dest = x[2].parse().unwrap();
         rv.high_dest = x[4].parse().unwrap();
-      },
+      }
     }
 
-    if rv.number == -1 { Err(()) } else { Ok(rv) }
+    if rv.number == -1 {
+      Err(())
+    } else {
+      Ok(rv)
+    }
   }
 }
-
 
 //-----------------------------------------------------
 // Questions.
@@ -200,17 +206,17 @@ impl Day for Q {
     for line in INPUT.lines() {
       let value_opt: Result<Value, ()> = line.parse();
       match value_opt {
-        Err(()) => {},
+        Err(()) => {}
         Ok(value) => {
           values.push(value);
-        },
+        }
       }
       let bot_opt: Result<Bot, ()> = line.parse();
       match bot_opt {
-        Err(()) => {},
+        Err(()) => {}
         Ok(bot) => {
           bots.insert(bot.number, bot);
-        },
+        }
       }
     }
     values.sort_by(|a, b| a.number.cmp(&b.number));
@@ -237,17 +243,17 @@ impl Day for Q {
     for line in INPUT.lines() {
       let value_opt: Result<Value, ()> = line.parse();
       match value_opt {
-        Err(()) => {},
+        Err(()) => {}
         Ok(value) => {
           values.push(value);
-        },
+        }
       }
       let bot_opt: Result<Bot, ()> = line.parse();
       match bot_opt {
-        Err(()) => {},
+        Err(()) => {}
         Ok(bot) => {
           bots.insert(bot.number, bot);
-        },
+        }
       }
     }
     values.sort_by(|a, b| a.number.cmp(&b.number));
@@ -263,6 +269,9 @@ impl Day for Q {
     }
     // println!("\n  O:{:?}", outputs);
     let result = outputs[&0] * outputs[&1] * outputs[&2];
-    println!("Result = {:?}*{:?}*{:?} = {:?}", outputs[&0], outputs[&1], outputs[&2], result);
+    println!(
+      "Result = {:?}*{:?}*{:?} = {:?}",
+      outputs[&0], outputs[&1], outputs[&2], result
+    );
   }
 }

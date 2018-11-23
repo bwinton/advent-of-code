@@ -1,9 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
+use aoc::computer::{
+  parse_instructions, Half, Increment, InstructionResult, Jump, JumpEven, JumpOne, Triple, CPU,
+};
 use aoc::Day;
-use aoc::computer::{parse_instructions, CPU, InstructionResult,
-    Half, Triple, Increment, Jump, JumpEven, JumpOne };
 
 static INPUT: &'static str = "jio a, +16
 inc a
@@ -52,41 +53,40 @@ jmp +2
 hlf a
 jmp -7";
 
-
 fn process_data_a(data: &str, reg: char) -> i64 {
-    let builders: Vec<fn (s: &str) -> InstructionResult> = vec![
-        Half::build,
-        Triple::build,
-        Increment::build,
-        Jump::build,
-        JumpEven::build,
-        JumpOne::build,
-    ];
+  let builders: Vec<fn(s: &str) -> InstructionResult> = vec![
+    Half::build,
+    Triple::build,
+    Increment::build,
+    Jump::build,
+    JumpEven::build,
+    JumpOne::build,
+  ];
 
-    let instructions = parse_instructions(data, &builders).unwrap();
-    let mut state = CPU::new(hashmap!{ 'a' => 0, 'b' => 0 }, instructions);
-    while let Some(new) = state.execute() {
-        state = new;
-    }
-    state.get_register(reg)
+  let instructions = parse_instructions(data, &builders).unwrap();
+  let mut state = CPU::new(hashmap!{ 'a' => 0, 'b' => 0 }, instructions);
+  while let Some(new) = state.execute() {
+    state = new;
+  }
+  state.get_register(reg)
 }
 
 fn process_data_b(data: &str, reg: char) -> i64 {
-    let builders: Vec<fn (s: &str) -> InstructionResult> = vec![
-        Half::build,
-        Triple::build,
-        Increment::build,
-        Jump::build,
-        JumpEven::build,
-        JumpOne::build,
-    ];
+  let builders: Vec<fn(s: &str) -> InstructionResult> = vec![
+    Half::build,
+    Triple::build,
+    Increment::build,
+    Jump::build,
+    JumpEven::build,
+    JumpOne::build,
+  ];
 
-    let instructions = parse_instructions(data, &builders).unwrap();
-    let mut state = CPU::new(hashmap!{ 'a' => 1, 'b' => 0 }, instructions);
-    while let Some(new) = state.execute() {
-        state = new;
-    }
-    state.get_register(reg)
+  let instructions = parse_instructions(data, &builders).unwrap();
+  let mut state = CPU::new(hashmap!{ 'a' => 1, 'b' => 0 }, instructions);
+  while let Some(new) = state.execute() {
+    state = new;
+  }
+  state.get_register(reg)
 }
 
 //-----------------------------------------------------

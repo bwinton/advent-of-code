@@ -13,8 +13,7 @@ use std::str::FromStr;
 // dec a";
 static INPUT: &'static str = include_str!("data/q12.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Instruction {
   CopyLiteral(i32, usize),
   CopyRegister(usize, usize),
@@ -31,33 +30,33 @@ impl Instruction {
       Instruction::CopyLiteral(lit, reg) => {
         rv.pc += 1;
         rv.registers[reg] = lit;
-      },
+      }
       Instruction::CopyRegister(reg_a, reg_b) => {
         rv.pc += 1;
         rv.registers[reg_b] = rv.registers[reg_a];
-      },
+      }
       Instruction::Increment(reg) => {
         rv.pc += 1;
         rv.registers[reg] += 1;
-      },
+      }
       Instruction::Decrement(reg) => {
         rv.pc += 1;
         rv.registers[reg] -= 1;
-      },
+      }
       Instruction::JumpLiteral(test, offset) => {
         if test != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpRegister(reg, offset) => {
         if rv.registers[reg] != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
     }
     // println!("{:?} {:?}", self, rv);
     rv
@@ -114,8 +113,7 @@ impl FromStr for Instruction {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct State {
   registers: [i32; 4],
   pc: i32,

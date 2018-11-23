@@ -19,10 +19,34 @@ enum Heading {
 impl Heading {
   fn turn(&self, dir: &str) -> Heading {
     match *self {
-      Heading::North => if dir == "R" { Heading::East } else { Heading::West },
-      Heading::East => if dir == "R" { Heading::South } else { Heading::North },
-      Heading::South => if dir == "R" { Heading::West } else { Heading::East },
-      Heading::West => if dir == "R" { Heading::North } else { Heading::South },
+      Heading::North => {
+        if dir == "R" {
+          Heading::East
+        } else {
+          Heading::West
+        }
+      }
+      Heading::East => {
+        if dir == "R" {
+          Heading::South
+        } else {
+          Heading::North
+        }
+      }
+      Heading::South => {
+        if dir == "R" {
+          Heading::West
+        } else {
+          Heading::East
+        }
+      }
+      Heading::West => {
+        if dir == "R" {
+          Heading::North
+        } else {
+          Heading::South
+        }
+      }
     }
   }
 }
@@ -35,7 +59,6 @@ fn handle_turn(turn: &str, heading: &mut Heading) -> i32 {
   *heading = heading.turn(dir);
   length
 }
-
 
 //-----------------------------------------------------
 // Questions.

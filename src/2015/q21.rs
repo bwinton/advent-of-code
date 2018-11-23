@@ -11,10 +11,7 @@ use nom::types::CompleteStr;
 
 static INPUT: &'static str = include_str!("data/q21.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(PartialEq)]
-#[derive(Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct Item {
   name: String,
   cost: i32,
@@ -22,15 +19,13 @@ struct Item {
   armor: i32,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Group {
   name: String,
   items: Vec<Item>,
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Player {
   cost: i32,
   hp: i32,
@@ -150,8 +145,7 @@ fn process_data_a(data: &str) -> i32 {
       .combinations(2)
       .collect::<Vec<_>>()
       .iter()
-  )
-  {
+  ) {
     players.push(Player::new(&items));
   }
   players.sort_by_key(|x| x.cost);
@@ -179,8 +173,7 @@ fn process_data_b(data: &str) -> i32 {
       .combinations(2)
       .collect::<Vec<_>>()
       .iter()
-  )
-  {
+  ) {
     players.push(Player::new(&items));
   }
   players.sort_by_key(|x| -x.cost);
@@ -228,11 +221,23 @@ impl Day for Q {
 #[test]
 fn a() {
   assert_eq!(
-    header_parser(CompleteStr("Weapons:    Cost  Damage  Armor")).unwrap().1,
+    header_parser(CompleteStr("Weapons:    Cost  Damage  Armor"))
+      .unwrap()
+      .1,
     "Weapons".to_owned()
   );
-  assert_eq!(header_parser(CompleteStr("Armor:      Cost  Damage  Armor")).unwrap().1, "Armor".to_owned());
-  assert_eq!(header_parser(CompleteStr("Rings:      Cost  Damage  Armor")).unwrap().1, "Rings".to_owned());
+  assert_eq!(
+    header_parser(CompleteStr("Armor:      Cost  Damage  Armor"))
+      .unwrap()
+      .1,
+    "Armor".to_owned()
+  );
+  assert_eq!(
+    header_parser(CompleteStr("Rings:      Cost  Damage  Armor"))
+      .unwrap()
+      .1,
+    "Rings".to_owned()
+  );
 
   let dagger = Item {
     name: "Dagger".to_owned(),
@@ -258,10 +263,30 @@ fn a() {
     damage: 0,
     armor: 2,
   };
-  assert_eq!(item_parser(CompleteStr("Dagger        8     4       0")).unwrap().1, dagger);
-  assert_eq!(item_parser(CompleteStr("Bandedmail   75     0       4")).unwrap().1, banded_mail);
-  assert_eq!(item_parser(CompleteStr("Damage +3   100     3       0")).unwrap().1, damage_3);
-  assert_eq!(item_parser(CompleteStr("Defense +2   40     0       2")).unwrap().1, defense_2);
+  assert_eq!(
+    item_parser(CompleteStr("Dagger        8     4       0"))
+      .unwrap()
+      .1,
+    dagger
+  );
+  assert_eq!(
+    item_parser(CompleteStr("Bandedmail   75     0       4"))
+      .unwrap()
+      .1,
+    banded_mail
+  );
+  assert_eq!(
+    item_parser(CompleteStr("Damage +3   100     3       0"))
+      .unwrap()
+      .1,
+    damage_3
+  );
+  assert_eq!(
+    item_parser(CompleteStr("Defense +2   40     0       2"))
+      .unwrap()
+      .1,
+    defense_2
+  );
 
   let mut player = Player {
     cost: 0,

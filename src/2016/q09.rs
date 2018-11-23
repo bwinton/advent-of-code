@@ -14,7 +14,6 @@ static INPUT: &'static str = include_str!("data/q09.data");
 // (27x12)(20x12)(13x14)(7x10)(1x12)A
 // (25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN";
 
-
 fn decompress(line: &str) -> String {
   // print!("{}", line);
   let marker_re = Regex::new(r"\((\d+)x(\d+)\)").unwrap();
@@ -25,7 +24,7 @@ fn decompress(line: &str) -> String {
       None => {
         rv.push_str(&rest[..]);
         break;
-      },
+      }
       Some(marker) => {
         let first = marker.get(0).unwrap();
         rv.push_str(&rest[..first.start()]);
@@ -37,7 +36,7 @@ fn decompress(line: &str) -> String {
           rv.push_str(&rep_str);
         }
         rest = String::from(&rest[count..]);
-      },
+      }
     }
   }
   // println!(" => {}", rv);
@@ -54,7 +53,7 @@ fn double_decompress(line: &str) -> String {
       None => {
         rv.push_str(&rest[..]);
         break;
-      },
+      }
       Some(marker) => {
         let first = marker.get(0).unwrap();
         rv.push_str(&rest[..first.start()]);
@@ -67,7 +66,7 @@ fn double_decompress(line: &str) -> String {
           rv.push_str(&rep_str);
         }
         rest = String::from(&rest[count..]);
-      },
+      }
     }
   }
   // println!(" => {}", rv);

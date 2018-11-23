@@ -7,9 +7,7 @@ use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
+#[derive(Clone, Debug, Eq)]
 struct Spell {
   name: String,
   cost: i32,
@@ -26,10 +24,7 @@ impl PartialEq for Spell {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Player {
   hp: i32,
   mana: i32,
@@ -46,10 +41,7 @@ impl Player {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Boss {
   hp: i32,
   damage: i32,
@@ -61,10 +53,7 @@ impl Boss {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct State {
   cost: i32,
   player: Player,
@@ -101,7 +90,6 @@ lazy_static! {
     ]
   };
 }
-
 
 impl State {
   pub fn new() -> State {
@@ -156,7 +144,11 @@ impl State {
 
     rv.player.hp -= 1.max(rv.boss.damage - rv.player.armor);
 
-    if rv.player.hp <= 0 { None } else { Some(rv) }
+    if rv.player.hp <= 0 {
+      None
+    } else {
+      Some(rv)
+    }
   }
 
   fn apply_effects(&mut self) {

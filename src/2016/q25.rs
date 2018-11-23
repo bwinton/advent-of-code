@@ -10,7 +10,6 @@ use std::hash::Hasher;
 use std::i32::MAX;
 use std::str::FromStr;
 
-
 // static INPUT : &'static str = "cpy a b
 // out b
 // cpy 0 b
@@ -18,9 +17,7 @@ use std::str::FromStr;
 // jnz 1 -4";
 static INPUT: &'static str = include_str!("data/q25.data");
 
-
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Instruction {
   CopyLiteral(i32, i32),
   CopyRegister(i32, i32),
@@ -43,53 +40,56 @@ impl Instruction {
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] = lit;
         }
-      },
+      }
       Instruction::CopyRegister(reg_a, reg_b) => {
         rv.pc += 1;
         if reg_valid(reg_a, &rv) && reg_valid(reg_b, &rv) {
           rv.registers[reg_b as usize] = rv.registers[reg_a as usize];
         }
-      },
+      }
       Instruction::Increment(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] += 1;
         }
-      },
+      }
       Instruction::Decrement(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
           rv.registers[reg as usize] -= 1;
         }
-      },
+      }
       Instruction::JumpLitLit(test, offset) => {
         if test != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpLitReg(test, reg) => {
         if reg_valid(reg, &rv) && test != 0 {
           rv.pc += rv.registers[reg as usize];
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpRegLit(reg, offset) => {
         if reg_valid(reg, &rv) && rv.registers[reg as usize] != 0 {
           rv.pc += offset;
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::JumpRegReg(reg_test, reg_offset) => {
-        if reg_valid(reg_test, &rv) && reg_valid(reg_offset, &rv) && rv.registers[reg_test as usize] != 0 {
+        if reg_valid(reg_test, &rv)
+          && reg_valid(reg_offset, &rv)
+          && rv.registers[reg_test as usize] != 0
+        {
           rv.pc += rv.registers[reg_offset as usize];
         } else {
           rv.pc += 1;
         }
-      },
+      }
       Instruction::Out(reg) => {
         rv.pc += 1;
         if reg_valid(reg, &rv) {
@@ -97,7 +97,7 @@ impl Instruction {
           rv.out(data);
           print!("{} ", data);
         }
-      },
+      }
       Instruction::Toggle(reg) => {
         if reg_valid(reg, &rv) {
           let index = (rv.pc + rv.registers[reg as usize]) as usize;
@@ -106,34 +106,31 @@ impl Instruction {
             match new_instruction {
               Instruction::CopyLiteral(lit, reg) => {
                 rv.instructions[index] = Instruction::JumpLitReg(lit, reg);
-              },
+              }
               Instruction::CopyRegister(reg_a, reg_b) => {
                 rv.instructions[index] = Instruction::JumpRegReg(reg_a, reg_b);
-              },
+              }
               Instruction::Increment(reg) => {
                 rv.instructions[index] = Instruction::Decrement(reg);
-              },
-              Instruction::Decrement(reg) |
-              Instruction::Out(reg) |
-              Instruction::Toggle(reg) => {
+              }
+              Instruction::Decrement(reg) | Instruction::Out(reg) | Instruction::Toggle(reg) => {
                 rv.instructions[index] = Instruction::Increment(reg);
-              },
-              Instruction::JumpLitLit(_test, _offset) |
-              Instruction::JumpRegLit(_test, _offset) => {
+              }
+              Instruction::JumpLitLit(_test, _offset) | Instruction::JumpRegLit(_test, _offset) => {
                 println!("GAAAAHHHH!!!!");
                 // rv.instructions[index] = Instruction::CopyLiteral(test, offset);
-              },
+              }
               Instruction::JumpLitReg(test, offset) => {
                 rv.instructions[index] = Instruction::CopyLiteral(test, offset);
-              },
+              }
               Instruction::JumpRegReg(reg_test, reg_offset) => {
                 rv.instructions[index] = Instruction::CopyRegister(reg_test, reg_offset);
-              },
+              }
             }
           }
         }
         rv.pc += 1;
-      },
+      }
     }
     rv
   }
@@ -219,8 +216,7 @@ impl FromStr for Instruction {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct State {
   registers: [i32; 4],
   pc: i32,
@@ -257,12 +253,10 @@ impl State {
 
   fn out(&mut self, data: i32) {
     match self.expected {
-      -1 => {
-        match data {
-          0 => self.expected = 1,
-          1 => self.expected = 0,
-          _ => self.valid = false,
-        }
+      -1 => match data {
+        0 => self.expected = 1,
+        1 => self.expected = 0,
+        _ => self.valid = false,
       },
       0 => {
         if data == 0 {
@@ -270,19 +264,18 @@ impl State {
         } else {
           self.valid = false;
         }
-      },
+      }
       1 => {
         if data == 1 {
           self.expected = 0
         } else {
           self.valid = false;
         }
-      },
+      }
       _ => self.valid = false,
     }
   }
 }
-
 
 fn reg_index(s: &str) -> Option<i32> {
   match s {

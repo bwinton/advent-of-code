@@ -9,11 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q20.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(Hash)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 struct Particle {
   p: (i64, i64, i64),
   v: (i64, i64, i64),
@@ -25,7 +21,10 @@ impl FromStr for Particle {
 
   fn from_str(s: &str) -> Result<Particle, ()> {
     lazy_static! {
-      static ref RE: Regex = Regex::new(r"^p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+),(-?\d+)>, a=<(-?\d+),(-?\d+),(-?\d+)>$").unwrap();
+      static ref RE: Regex = Regex::new(
+        r"^p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+),(-?\d+)>, a=<(-?\d+),(-?\d+),(-?\d+)>$"
+      )
+      .unwrap();
     }
 
     if let Some(cap) = RE.captures(s) {

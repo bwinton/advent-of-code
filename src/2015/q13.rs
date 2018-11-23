@@ -14,7 +14,10 @@ static INPUT: &'static str = include_str!("data/q13.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
   lazy_static! {
-    static ref SEATING: Regex = Regex::new(r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$").unwrap();
+    static ref SEATING: Regex = Regex::new(
+      r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$"
+    )
+    .unwrap();
   }
   let mut happiness = HashMap::new();
   let mut people = HashSet::new();
@@ -37,7 +40,11 @@ fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
   (people, happiness)
 }
 
-fn get_happiness(perm: &[String], first: Option<&String>, distances: &HashMap<Vec<String>, i32>) -> i32 {
+fn get_happiness(
+  perm: &[String],
+  first: Option<&String>,
+  distances: &HashMap<Vec<String>, i32>,
+) -> i32 {
   let mut rv = 0;
   let lookup = distances.clone();
   let mut people: Vec<String> = perm.into_iter().map(|x| x.to_string()).collect();
@@ -126,7 +133,8 @@ Carol would gain 55 happiness units by sitting next to David.
 David would gain 46 happiness units by sitting next to Alice.
 David would lose 7 happiness units by sitting next to Bob.
 David would gain 41 happiness units by sitting next to Carol.",
-    ).1,
+    )
+    .1,
     330
   );
 }

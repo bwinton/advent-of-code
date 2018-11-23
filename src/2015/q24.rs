@@ -90,9 +90,9 @@ fn split(
       group.iter_mut().for_each(|x| x.sort());
       group.sort_unstable_by(|a, b| {
         a.len().cmp(&b.len()).then_with(|| {
-          a.iter().product::<usize>().cmp(
-            &b.iter().product::<usize>(),
-          )
+          a.iter()
+            .product::<usize>()
+            .cmp(&b.iter().product::<usize>())
         })
       });
       // println!("{}Found {:?} {}", "  ".repeat(4 - groups), group, groups);

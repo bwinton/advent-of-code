@@ -15,10 +15,7 @@ fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
   }
   for line in data.lines() {
     let cap = MAIN_RE.captures(line).unwrap();
-    let mut dests: HashSet<u32> = cap[2]
-      .split(", ")
-      .map(|x| x.parse().unwrap())
-      .collect();
+    let mut dests: HashSet<u32> = cap[2].split(", ").map(|x| x.parse().unwrap()).collect();
     dests.insert(cap[1].parse().unwrap());
     for item in &mut rv {
       if !dests.is_disjoint(item) {

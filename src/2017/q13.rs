@@ -7,7 +7,6 @@ use std;
 
 static INPUT: &'static str = include_str!("data/q13.data");
 
-
 fn get_range(max: usize) -> Vec<usize> {
   ((0..max).chain((1..max - 1).rev())).collect()
 }
@@ -43,9 +42,10 @@ fn process_data_a(data: &str) -> usize {
     ..Default::default()
   };
   for tick in scanners.enumerate().take(max) {
-    if let Some(scanner) = tick.1.iter().find(
-      |scanner| scanner.0 == tick.0 && scanner.2 == 0,
-    )
+    if let Some(scanner) = tick
+      .1
+      .iter()
+      .find(|scanner| scanner.0 == tick.0 && scanner.2 == 0)
     {
       rv += scanner.0 * scanner.1;
     }
@@ -64,9 +64,10 @@ fn process_data_b(data: &str) -> usize {
       curr: delay,
     };
     for tick in scanners.enumerate().take(max) {
-      if tick.1.iter().any(
-        |scanner| scanner.0 == tick.0 && scanner.2 == 0,
-      )
+      if tick
+        .1
+        .iter()
+        .any(|scanner| scanner.0 == tick.0 && scanner.2 == 0)
       {
         caught = true;
         break;

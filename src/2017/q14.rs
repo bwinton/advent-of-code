@@ -3,8 +3,8 @@
 
 use aoc::Day;
 
-use itertools::Itertools;
 use itertools::enumerate;
+use itertools::Itertools;
 
 static INPUT: &'static str = "uugsqrei";
 

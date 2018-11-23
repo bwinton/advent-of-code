@@ -9,8 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q08.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Operation {
   Inc(i32),
   Dec(i32),
@@ -34,15 +33,14 @@ impl FromStr for Operation {
           _ => {
             println!("Unknown Operation {}", s);
             Err(())
-          },
+          }
         }
-      },
+      }
     }
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 enum Test {
   Greater,
   GreaterEqual,
@@ -66,13 +64,12 @@ impl FromStr for Test {
       _ => {
         println!("Unknown Test {}", s);
         Err(())
-      },
+      }
     }
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Condition {
   source: String,
   test: Test,
@@ -91,14 +88,12 @@ impl FromStr for Condition {
       None => {
         println!("Unknown Condition {}", s);
         Err(())
-      },
-      Some(x) => {
-        Ok(Condition {
-          source: x[1].to_string(),
-          test: x[2].parse().unwrap(),
-          value: x[3].parse().unwrap(),
-        })
-      },
+      }
+      Some(x) => Ok(Condition {
+        source: x[1].to_string(),
+        test: x[2].parse().unwrap(),
+        value: x[3].parse().unwrap(),
+      }),
     }
   }
 }
@@ -117,9 +112,7 @@ impl Condition {
   }
 }
 
-
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Instruction {
   dest: String,
   op: Operation,
@@ -131,21 +124,20 @@ impl FromStr for Instruction {
 
   fn from_str(s: &str) -> Result<Instruction, ()> {
     lazy_static! {
-      static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) ([a-z]+ -?\d+) if (([a-z]+) ..? -?\d+)$").unwrap();
+      static ref MAIN_RE: Regex =
+        Regex::new(r"^([a-z]+) ([a-z]+ -?\d+) if (([a-z]+) ..? -?\d+)$").unwrap();
     }
     let cap = MAIN_RE.captures(s);
     match cap {
       None => {
         println!("Unknown Instruction {}", s);
         Err(())
-      },
-      Some(x) => {
-        Ok(Instruction {
-          dest: x[1].to_string(),
-          op: x[2].parse().unwrap(),
-          cond: x[3].parse().unwrap(),
-        })
-      },
+      }
+      Some(x) => Ok(Instruction {
+        dest: x[1].to_string(),
+        op: x[2].parse().unwrap(),
+        cond: x[3].parse().unwrap(),
+      }),
     }
   }
 }
@@ -217,8 +209,7 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  let expected =
-    hashmap!{
+  let expected = hashmap!{
     "a".to_string() => 1,
     "b".to_string() => 0,
     "c".to_string() => -10,

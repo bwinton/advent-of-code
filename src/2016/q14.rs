@@ -12,9 +12,7 @@ use std::mem;
 // static INPUT : &'static str = "abc";
 static INPUT: &'static str = "zpqevtbw";
 
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Debug, Eq, PartialEq)]
 enum Key {
   Potential(usize),
   Confirmed(usize, String),
@@ -23,12 +21,8 @@ enum Key {
 impl Ord for Key {
   fn cmp(&self, other: &Key) -> Ordering {
     match *self {
-      Key::Potential(ref me) |
-      Key::Confirmed(ref me, _) => {
-        match *other {
-          Key::Potential(ref them) |
-          Key::Confirmed(ref them, _) => me.cmp(them),
-        }
+      Key::Potential(ref me) | Key::Confirmed(ref me, _) => match *other {
+        Key::Potential(ref them) | Key::Confirmed(ref them, _) => me.cmp(them),
       },
     }
   }
@@ -43,8 +37,7 @@ impl PartialOrd for Key {
 type Keys = Vec<Key>;
 type KeysRef<'a> = &'a [Key];
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Quintuple {
   key: String,
   regex: Regex,
@@ -79,9 +72,9 @@ pub fn get_triple(input: &str) -> Option<String> {
 }
 
 fn add_quintuple(i: usize, key: &str, quintuples: &mut Quintuples) {
-  let quintuple = quintuples.entry(key.to_string()).or_insert_with(
-    || Quintuple::new(key),
-  );
+  let quintuple = quintuples
+    .entry(key.to_string())
+    .or_insert_with(|| Quintuple::new(key));
   quintuple.indices.push(i);
 }
 
@@ -132,7 +125,6 @@ fn is_winning(keys: KeysRef) -> bool {
   true
 }
 
-
 //-----------------------------------------------------
 // Questions.
 
@@ -161,11 +153,11 @@ impl Day for Q {
       // to_hex_string(&output);
       let out_string = to_hex_string(&output);
       match get_triple(&out_string) {
-        None => {},
+        None => {}
         Some(triple) => {
           keys.push(Key::Potential(i));
           add_quintuple(i, &triple, &mut quintuples);
-        },
+        }
       }
       remove_keys(i, &mut keys, &mut quintuples);
       get_quintuple(&out_string, &mut keys, &mut quintuples, i);
@@ -196,11 +188,11 @@ impl Day for Q {
         out_string = to_hex_string(&output);
       }
       match get_triple(&out_string) {
-        None => {},
+        None => {}
         Some(triple) => {
           keys.push(Key::Potential(i));
           add_quintuple(i, &triple, &mut quintuples);
-        },
+        }
       }
       remove_keys(i, &mut keys, &mut quintuples);
       get_quintuple(&out_string, &mut keys, &mut quintuples, i);

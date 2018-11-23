@@ -9,8 +9,7 @@ use std::str::FromStr;
 // Disc #2 has 2 positions; at time=0, it is at position 1.";
 static INPUT: &'static str = include_str!("data/q15.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Disc {
   number: usize,
   positions: usize,
@@ -29,7 +28,8 @@ impl FromStr for Disc {
   fn from_str(s: &str) -> Result<Disc, ()> {
     let re: Regex = Regex::new(
       r"^Disc #([0-9]+) has ([0-9]+) positions; at time=0, it is at position ([0-9]+)\.$",
-    ).unwrap();
+    )
+    .unwrap();
     let captures = re.captures(s);
     match captures {
       None => Err(()),
@@ -42,7 +42,7 @@ impl FromStr for Disc {
           positions,
           current,
         })
-      },
+      }
     }
   }
 }

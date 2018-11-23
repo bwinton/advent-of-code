@@ -9,8 +9,7 @@ use std::collections::HashSet;
 
 static INPUT: &'static str = include_str!("data/q19.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Rule {
   source: Regex,
   dest: String,
@@ -93,16 +92,26 @@ impl Day for Q {
 
 #[test]
 fn a() {
-  assert_eq!(process_data_a("H => HO
+  assert_eq!(
+    process_data_a(
+      "H => HO
 H => OH
 O => HH
 
-HOH"), 4);
-  assert_eq!(process_data_a("H => HO
+HOH"
+    ),
+    4
+  );
+  assert_eq!(
+    process_data_a(
+      "H => HO
 H => OH
 O => HH
 
-HOHOHO"), 7);
+HOHOHO"
+    ),
+    7
+  );
 }
 
 #[test]

@@ -7,9 +7,7 @@ use std::iter::FromIterator;
 
 static INPUT: &'static str = include_str!("data/q19.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Cell {
   Empty,
   Vertical,
@@ -18,8 +16,7 @@ enum Cell {
   Letter(char),
 }
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 enum Direction {
   Up,
   Down,
@@ -84,7 +81,7 @@ impl Packet {
             self.dir = Direction::Right;
           }
         }
-      },
+      }
       Direction::Left | Direction::Right => {
         next_pos = (self.pos.0 - 1, self.pos.1);
         next = get_cell(next_pos, board);
@@ -101,7 +98,7 @@ impl Packet {
             self.dir = Direction::Down;
           }
         }
-      },
+      }
     }
     true
   }

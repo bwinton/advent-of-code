@@ -9,10 +9,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q07.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Wire {
   name: String,
   number: Option<u16>,
@@ -27,10 +24,7 @@ impl Wire {
   }
 }
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(Eq)]
-#[derive(PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 enum Gate {
   ValueWire { a: String, out: String },
   ValueVal { a: u16, out: String },
@@ -134,15 +128,15 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x);
             true
-          },
+          }
         }
-      },
+      }
 
       Gate::ValueVal { ref a, ref out } => {
         ensure_wire(wires, out);
         wires.get_mut(out).unwrap().number = Some(*a);
         true
-      },
+      }
 
       Gate::AndWire {
         ref a,
@@ -154,17 +148,15 @@ impl Gate {
         ensure_wire(wires, b);
         match wires[a].number {
           None => false,
-          Some(x) => {
-            match wires[b].number {
-              None => false,
-              Some(y) => {
-                wires.get_mut(out).unwrap().number = Some(x & y);
-                true
-              },
+          Some(x) => match wires[b].number {
+            None => false,
+            Some(y) => {
+              wires.get_mut(out).unwrap().number = Some(x & y);
+              true
             }
           },
         }
-      },
+      }
 
       Gate::AndVal {
         ref a,
@@ -178,9 +170,9 @@ impl Gate {
           Some(y) => {
             wires.get_mut(out).unwrap().number = Some(a & y);
             true
-          },
+          }
         }
-      },
+      }
 
       Gate::Or {
         ref a,
@@ -192,17 +184,15 @@ impl Gate {
         ensure_wire(wires, b);
         match wires[a].number {
           None => false,
-          Some(x) => {
-            match wires[b].number {
-              None => false,
-              Some(y) => {
-                wires.get_mut(out).unwrap().number = Some(x | y);
-                true
-              },
+          Some(x) => match wires[b].number {
+            None => false,
+            Some(y) => {
+              wires.get_mut(out).unwrap().number = Some(x | y);
+              true
             }
           },
         }
-      },
+      }
 
       Gate::LShift {
         ref a,
@@ -216,9 +206,9 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x << b);
             true
-          },
+          }
         }
-      },
+      }
 
       Gate::RShift {
         ref a,
@@ -232,9 +222,9 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(x >> b);
             true
-          },
+          }
         }
-      },
+      }
 
       Gate::Not { ref a, ref out } => {
         ensure_wire(wires, out);
@@ -244,10 +234,9 @@ impl Gate {
           Some(x) => {
             wires.get_mut(out).unwrap().number = Some(!x);
             true
-          },
+          }
         }
-      },
-
+      }
     }
   }
 }
@@ -321,15 +310,15 @@ NOT x -> h
 NOT y -> i",
     ),
     hashmap!{
-    "d".to_string() => Wire::new("d", Some(72)),
-    "e".to_string() => Wire::new("e", Some(507)),
-    "f".to_string() => Wire::new("f", Some(492)),
-    "g".to_string() => Wire::new("g", Some(114)),
-    "h".to_string() => Wire::new("h", Some(65412)),
-    "i".to_string() => Wire::new("i", Some(65079)),
-    "x".to_string() => Wire::new("x", Some(123)),
-    "y".to_string() => Wire::new("y", Some(456)),
-  }
+      "d".to_string() => Wire::new("d", Some(72)),
+      "e".to_string() => Wire::new("e", Some(507)),
+      "f".to_string() => Wire::new("f", Some(492)),
+      "g".to_string() => Wire::new("g", Some(114)),
+      "h".to_string() => Wire::new("h", Some(65412)),
+      "i".to_string() => Wire::new("i", Some(65079)),
+      "x".to_string() => Wire::new("x", Some(123)),
+      "y".to_string() => Wire::new("y", Some(456)),
+    }
   );
 }
 

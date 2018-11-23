@@ -30,7 +30,7 @@ impl HexPosition {
 
 fn process_data_a(data: &str) -> u32 {
   lazy_static! {
-    static ref DIRECTIONS : HashMap<&'static str,HexPosition> = hashmap!{
+    static ref DIRECTIONS: HashMap<&'static str, HexPosition> = hashmap!{
       "nw" => HexPosition{ x: -1, y: 0, z: 1},
       "n" => HexPosition{ x: 0, y: -1, z: 1},
       "ne" => HexPosition{ x: 1, y: -1, z: 0},
@@ -49,7 +49,7 @@ fn process_data_a(data: &str) -> u32 {
 
 fn process_data_b(data: &str) -> u32 {
   lazy_static! {
-    static ref DIRECTIONS : HashMap<&'static str,HexPosition> = hashmap!{
+    static ref DIRECTIONS: HashMap<&'static str, HexPosition> = hashmap!{
       "nw" => HexPosition{ x: -1, y: 0, z: 1},
       "n" => HexPosition{ x: 0, y: -1, z: 1},
       "ne" => HexPosition{ x: 1, y: -1, z: 0},

@@ -19,10 +19,7 @@ use std::str::FromStr;
 // /dev/grid/node-x2-y2    9T    6T     3T   66%";
 static INPUT: &'static str = include_str!("data/q22.data");
 
-#[derive(Clone)]
-#[derive(Debug)]
-#[derive(PartialEq)]
-#[derive(Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct Node {
   x: usize,
   y: usize,
@@ -37,21 +34,20 @@ impl FromStr for Node {
 
   fn from_str(s: &str) -> Result<Node, ()> {
     lazy_static! {
-      static ref RE: Regex = Regex::new("/dev/grid/node-x([0-9]+)-y([0-9]+) +([0-9]+)T +([0-9]+)T +([0-9]+)T").unwrap();
+      static ref RE: Regex =
+        Regex::new("/dev/grid/node-x([0-9]+)-y([0-9]+) +([0-9]+)T +([0-9]+)T +([0-9]+)T").unwrap();
     }
 
     let captures = RE.captures(s);
     match captures {
-      Some(cap) => {
-        Ok(Node {
-          x: cap[1].parse().unwrap(),
-          y: cap[2].parse().unwrap(),
-          size: cap[3].parse().unwrap(),
-          used: cap[4].parse().unwrap(),
-          avail: cap[5].parse().unwrap(),
-          goal: false,
-        })
-      },
+      Some(cap) => Ok(Node {
+        x: cap[1].parse().unwrap(),
+        y: cap[2].parse().unwrap(),
+        size: cap[3].parse().unwrap(),
+        used: cap[4].parse().unwrap(),
+        avail: cap[5].parse().unwrap(),
+        goal: false,
+      }),
       _ => Err(()),
     }
   }

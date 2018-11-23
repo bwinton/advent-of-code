@@ -57,11 +57,11 @@ impl Instruction {
         let n = programs.len() - x;
         rv.extend_from_slice(&programs[n..]);
         rv.extend_from_slice(&programs[..n]);
-      },
+      }
       Instruction::Exchange(a, b) => {
         rv = programs.to_owned();
         rv.swap(a, b);
-      },
+      }
       Instruction::Partner(a, b) => {
         rv = programs
           .into_iter()
@@ -71,13 +71,12 @@ impl Instruction {
             _ => *x,
           })
           .collect();
-      },
+      }
     }
     // println!("{:?} => {:?} => {:?}", programs, self, rv);
     rv
   }
 }
-
 
 fn process_data_a(max: u8, data: &str) -> String {
   let mut rv: Vec<char> = Vec::new();

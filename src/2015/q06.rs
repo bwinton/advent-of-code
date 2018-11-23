@@ -33,7 +33,6 @@ impl FromStr for Operation {
   }
 }
 
-
 #[derive(Debug)]
 struct Instruction {
   op: Operation,
@@ -48,19 +47,18 @@ impl FromStr for Instruction {
 
   fn from_str(s: &str) -> Result<Instruction, ()> {
     lazy_static! {
-      static ref RE: Regex = Regex::new(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)").unwrap();
+      static ref RE: Regex =
+        Regex::new(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)").unwrap();
     }
     let captures = RE.captures(s);
     match captures {
-      Some(cap) => {
-        Ok(Instruction {
-          op: cap[1].parse().unwrap(),
-          start_x: cap[2].parse().unwrap(),
-          start_y: cap[3].parse().unwrap(),
-          end_x: cap[4].parse().unwrap(),
-          end_y: cap[5].parse().unwrap(),
-        })
-      },
+      Some(cap) => Ok(Instruction {
+        op: cap[1].parse().unwrap(),
+        start_x: cap[2].parse().unwrap(),
+        start_y: cap[3].parse().unwrap(),
+        end_x: cap[4].parse().unwrap(),
+        end_y: cap[5].parse().unwrap(),
+      }),
       None => Err(()),
     }
   }
@@ -88,7 +86,7 @@ impl Instruction {
             if *cell > 0 {
               *cell -= 1;
             }
-          },
+          }
           Operation::Toggle => *cell += 2,
         }
       }

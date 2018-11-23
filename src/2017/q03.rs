@@ -75,17 +75,16 @@ fn process_data_a(data: i32) -> i32 {
       let remainder = data - (block - 2) * (block - 2);
       let low = i;
       let high = 2 * i;
-      let mut seesaw = (low..high).chain(high - 1..low + 1).cycle().skip(
-        remainder as
-          usize,
-      );
+      let mut seesaw = (low..high)
+        .chain(high - 1..low + 1)
+        .cycle()
+        .skip(remainder as usize);
       rv = seesaw.next().unwrap();
       break;
     }
   }
   rv
 }
-
 
 define_iterator!(MultIter(
     &spiral: SpiralIter = SpiralIter::default(),
@@ -106,7 +105,6 @@ define_iterator!(MultIter(
   seen.insert(curr, rv);
   Some(rv)
 });
-
 
 fn process_data_b(data: i32) -> usize {
   for number in MultIter::default() {
@@ -182,29 +180,7 @@ fn b() {
 
   let mult_values: Vec<usize> = MultIter::default().take(23).collect();
   let mult_expected: Vec<usize> = vec![
-    1,
-    1,
-    2,
-    4,
-    5,
-    10,
-    11,
-    23,
-    25,
-    26,
-    54,
-    57,
-    59,
-    122,
-    133,
-    142,
-    147,
-    304,
-    330,
-    351,
-    362,
-    747,
-    806,
+    1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747, 806,
   ];
   assert_eq!(mult_values, mult_expected);
 }

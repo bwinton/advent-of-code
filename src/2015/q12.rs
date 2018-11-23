@@ -4,8 +4,8 @@
 use aoc::Day;
 
 use regex::Regex;
-use serde_json::Value;
 use serde_json::from_str;
+use serde_json::Value;
 
 static INPUT: &'static str = include_str!("data/q12.data");
 
@@ -26,15 +26,16 @@ fn get_sum(v: &Value) -> i64 {
     Value::Number(ref n) => n.as_i64().unwrap(),
     Value::Array(ref children) => children.iter().map(|x| get_sum(x)).sum(),
     Value::Object(ref children) => {
-      if children.values().find(
-        |x| *x == &Value::String("red".to_owned()),
-      ) == None
+      if children
+        .values()
+        .find(|x| *x == &Value::String("red".to_owned()))
+        == None
       {
         children.values().map(|x| get_sum(x)).sum()
       } else {
         0
       }
-    },
+    }
   }
 }
 

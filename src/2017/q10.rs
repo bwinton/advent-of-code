@@ -45,7 +45,6 @@ fn densify(sparse: &[usize]) -> String {
   temp.iter().map(|x| format!("{:02x}", x)).join("")
 }
 
-
 //-----------------------------------------------------
 // Questions.
 
@@ -68,7 +67,10 @@ impl Day for Q {
 
   fn b(&self) {
     print!("{}B: ", self.number());
-    println!("Result = {}", densify(&process_data(256, &get_input(INPUT), 64)));
+    println!(
+      "Result = {}",
+      densify(&process_data(256, &get_input(INPUT), 64))
+    );
   }
 }
 
@@ -79,14 +81,21 @@ fn a() {
 
 #[test]
 fn b() {
-  assert_eq!(65 ^ 27 ^ 9 ^ 1 ^ 4 ^ 3 ^ 40 ^ 50 ^ 91 ^ 7 ^ 6 ^ 0 ^ 2 ^ 5 ^ 68 ^ 22, 64);
   assert_eq!(
-    vec![64, 7, 255].iter().map(|x| format!("{:02x}", x)).join(
-      "",
-    ),
+    65 ^ 27 ^ 9 ^ 1 ^ 4 ^ 3 ^ 40 ^ 50 ^ 91 ^ 7 ^ 6 ^ 0 ^ 2 ^ 5 ^ 68 ^ 22,
+    64
+  );
+  assert_eq!(
+    vec![64, 7, 255]
+      .iter()
+      .map(|x| format!("{:02x}", x))
+      .join("",),
     "4007ff"
   );
-  assert_eq!(get_input("1,2,3"), vec![49, 44, 50, 44, 51, 17, 31, 73, 47, 23]);
+  assert_eq!(
+    get_input("1,2,3"),
+    vec![49, 44, 50, 44, 51, 17, 31, 73, 47, 23]
+  );
   assert_eq!(
     densify(&process_data(256, &get_input(""), 64)),
     "a2582a3a0e66e6e86e3812dcb672a272"
