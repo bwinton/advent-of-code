@@ -3,7 +3,7 @@ pub mod computer;
 #[macro_use]
 extern crate clap;
 #[macro_use]
-extern crate display_derive;
+extern crate derive_more;
 
 extern crate combine;
 

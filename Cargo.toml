@@ -6,7 +6,7 @@ authors = ["Blake Winton <bwinton@latte.ca>"]
 [dependencies]
 clap = "2.32.0"
 combine = "3.6.3"
-display_derive = "0.0.0"
+derive_more = "0.13.0"
 itertools = "0.7.9"
 lazy_static = "1.2.0"
 maplit = "1.0.1"
