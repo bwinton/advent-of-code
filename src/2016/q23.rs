@@ -12,33 +12,7 @@ use std::str::FromStr;
 // cpy 1 a
 // dec a
 // dec a";
-static INPUT: &'static str = "cpy a b
-dec b
-cpy a d
-cpy 0 a
-cpy b c
-inc a
-dec c
-jnz c -2
-dec d
-jnz d -5
-dec b
-cpy b c
-cpy c d
-dec d
-inc c
-jnz d -2
-tgl c
-cpy -16 c
-jnz 1 c
-cpy 89 c
-jnz 90 d
-inc a
-inc d
-jnz d -2
-inc c
-jnz c -5
-";
+static INPUT: &'static str = include_str!("data/q23.data");
 
 #[derive(Clone)]
 #[derive(Debug)]

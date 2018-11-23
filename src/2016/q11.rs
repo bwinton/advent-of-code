@@ -11,14 +11,8 @@ use std::str::FromStr;
 // The second floor contains a hydrogen generator.
 // The third floor contains a lithium generator.
 // The fourth floor contains nothing relevant.";
-static A_INPUT: &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, and a plutonium-compatible microchip.
-The second floor contains a thulium generator, a ruthenium generator, a ruthenium-compatible microchip, a curium generator, and a curium-compatible microchip.
-The third floor contains a thulium-compatible microchip.
-The fourth floor contains nothing relevant.";
-static B_INPUT: &'static str = "The first floor contains a strontium generator, a strontium-compatible microchip, a plutonium generator, an elerium generator, an elerium-compatible microchip, a dilithium generator, a dilithium-compatible microchip, and a plutonium-compatible microchip.
-The second floor contains a thulium generator, a ruthenium generator, a ruthenium-compatible microchip, a curium generator, and a curium-compatible microchip.
-The third floor contains a thulium-compatible microchip.
-The fourth floor contains nothing relevant.";
+static A_INPUT: &'static str = include_str!("data/q11a.data");
+static B_INPUT: &'static str = include_str!("data/q11b.data");
 
 
 #[derive(Clone)]

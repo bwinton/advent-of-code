@@ -16,36 +16,7 @@ use std::str::FromStr;
 // cpy 0 b
 // out b
 // jnz 1 -4";
-static INPUT: &'static str = "cpy a d
-cpy 14 c
-cpy 182 b
-inc d
-dec b
-jnz b -2
-dec c
-jnz c -5
-cpy d a
-jnz 0 0
-cpy a b
-cpy 0 a
-cpy 2 c
-jnz b 2
-jnz 1 6
-dec b
-dec c
-jnz c -4
-inc a
-jnz 1 -7
-cpy 2 b
-jnz c 2
-jnz 1 4
-dec b
-dec c
-jnz 1 -4
-jnz 0 0
-out b
-jnz a -19
-jnz 1 -21";
+static INPUT: &'static str = include_str!("data/q25.data");
 
 
 #[derive(Clone)]

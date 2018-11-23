@@ -7,12 +7,7 @@ use std::str::FromStr;
 
 // static INPUT : &'static str = "Disc #1 has 5 positions; at time=0, it is at position 4.
 // Disc #2 has 2 positions; at time=0, it is at position 1.";
-static INPUT: &'static str = "Disc #1 has 17 positions; at time=0, it is at position 1.
-Disc #2 has 7 positions; at time=0, it is at position 0.
-Disc #3 has 19 positions; at time=0, it is at position 2.
-Disc #4 has 5 positions; at time=0, it is at position 0.
-Disc #5 has 3 positions; at time=0, it is at position 0.
-Disc #6 has 13 positions; at time=0, it is at position 5.";
+static INPUT: &'static str = include_str!("data/q15.data");
 
 #[derive(Clone)]
 #[derive(Debug)]
