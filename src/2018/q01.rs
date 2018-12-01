@@ -16,8 +16,7 @@ fn process_data_b(data: &str) -> i64 {
     let mut values = data.lines().map(|x| x.parse::<i64>().unwrap()).cycle();
     let mut seen = HashSet::new();
     
-    while !seen.contains(&curr) {
-        seen.insert(curr);
+    while seen.insert(curr) {
         curr += values.next().unwrap();
     }
     curr
