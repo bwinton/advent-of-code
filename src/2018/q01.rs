@@ -8,7 +8,7 @@ use std::collections::HashSet;
 static INPUT: &'static str = include_str!("data/q01.data");
 
 fn process_data_a(data: &str) -> i64 {
-    data.lines().fold(0, |acc, x| acc + x.parse::<i64>().unwrap())
+    data.lines().map(|x| x.parse::<i64>().unwrap()).sum()
 }
 
 fn process_data_b(data: &str) -> i64 {
