@@ -15,7 +15,7 @@ fn process_data_b(data: &str) -> i64 {
     let mut curr = 0;
     let mut values = data.lines().map(|x| x.parse::<i64>().unwrap()).cycle();
     let mut seen = HashSet::new();
-    
+
     while seen.insert(curr) {
         curr += values.next().unwrap();
     }
@@ -47,42 +47,87 @@ impl Day for Q {
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("+1
+    assert_eq!(
+        process_data_a(
+            "+1
 -2
 +3
-+1"), 3);
-    assert_eq!(process_data_a("+1
++1"
+        ),
+        3
+    );
+    assert_eq!(
+        process_data_a(
+            "+1
 +1
-+1"), 3);
-    assert_eq!(process_data_a("+1
++1"
+        ),
+        3
+    );
+    assert_eq!(
+        process_data_a(
+            "+1
 +1
--2"), 0);
-    assert_eq!(process_data_a("-1
+-2"
+        ),
+        0
+    );
+    assert_eq!(
+        process_data_a(
+            "-1
 -2
--3"), -6);
+-3"
+        ),
+        -6
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("+1
+    assert_eq!(
+        process_data_b(
+            "+1
 -2
 +3
-+1"), 2);
-    assert_eq!(process_data_b("+1
--1"), 0);
-    assert_eq!(process_data_b("+3
++1"
+        ),
+        2
+    );
+    assert_eq!(
+        process_data_b(
+            "+1
+-1"
+        ),
+        0
+    );
+    assert_eq!(
+        process_data_b(
+            "+3
 +3
 +4
 -2
--4"), 10);
-    assert_eq!(process_data_b("-6
+-4"
+        ),
+        10
+    );
+    assert_eq!(
+        process_data_b(
+            "-6
 +3
 +8
 +5
--6"), 5);
-    assert_eq!(process_data_b("+7
+-6"
+        ),
+        5
+    );
+    assert_eq!(
+        process_data_b(
+            "+7
 +7
 -2
 -7
--4"), 14);
+-4"
+        ),
+        14
+    );
 }
