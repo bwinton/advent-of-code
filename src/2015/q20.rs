@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use std;
 use std::collections::HashSet;
 
@@ -49,28 +47,10 @@ fn process_data_b(data: usize) -> usize {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("20")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("20");
 
 #[test]
-fn a() {
+fn test_a() {
     let mut iter = FactorsIter::default();
     assert_eq!(iter.next().unwrap(), hashset![1]);
     assert_eq!(iter.next().unwrap(), hashset![1, 2]);
@@ -84,6 +64,6 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     // assert_eq!(process_data_b(""), 0);
 }

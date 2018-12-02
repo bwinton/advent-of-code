@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT : &'static str = include_str!("data/qXX.data");
+static INPUT : &'static str = include_str!("data/q03.data");
 
 fn process_data_a(_data: &str) -> i32 {
   0
@@ -14,7 +14,7 @@ fn process_data_b(_data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-q_impl!("XX");
+q_impl!("3");
 
 #[test]
 fn test_a() {

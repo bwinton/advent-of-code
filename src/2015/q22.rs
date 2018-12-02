@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
+static INPUT: &'static str = "";
 
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
@@ -173,7 +173,7 @@ impl State {
     }
 }
 
-fn process_data_a() -> i32 {
+fn process_data_a(_: &str) -> i32 {
     let mut next = BinaryHeap::new();
     next.push(State::new());
     while !next.is_empty() {
@@ -188,7 +188,7 @@ fn process_data_a() -> i32 {
     0
 }
 
-fn process_data_b() -> i32 {
+fn process_data_b(_: &str) -> i32 {
     let mut next = BinaryHeap::new();
     next.push(State::new());
     while !next.is_empty() {
@@ -206,28 +206,10 @@ fn process_data_b() -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("22")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a();
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b();
-        println!("Result = {}", result);
-    }
-}
+q_impl!("22");
 
 #[test]
-fn a() {
+fn test_a() {
     // First example.
     let mut state = State::new();
     state.player.hp = 10;
@@ -337,7 +319,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     // First example.
     let mut state = State::new();
     state.player.hp = 1;

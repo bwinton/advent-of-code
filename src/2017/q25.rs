@@ -186,7 +186,7 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         machine_name_parser(CompleteStr("Begin in state A.\n"))
             .unwrap()
@@ -467,6 +467,6 @@ In state B:
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b(""), 0);
 }

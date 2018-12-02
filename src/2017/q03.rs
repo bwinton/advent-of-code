@@ -139,7 +139,7 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a(1), 0);
     assert_eq!(process_data_a(12), 3);
     assert_eq!(process_data_a(23), 2);
@@ -147,7 +147,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     let spiral_values: Vec<[i32; 2]> = SpiralIter::default().take(25).collect();
     let spiral_expected: Vec<[i32; 2]> = vec![
         [0, 0],

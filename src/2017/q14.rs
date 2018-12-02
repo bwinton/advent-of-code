@@ -140,11 +140,11 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("flqrgnkx"), 8108);
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("flqrgnkx"), 1242);
 }

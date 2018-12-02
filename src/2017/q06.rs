@@ -80,11 +80,11 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("0 2 7 0"), 5);
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("2 4 1 2"), 4);
 }

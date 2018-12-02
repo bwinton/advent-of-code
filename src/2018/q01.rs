@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use std::collections::HashSet;
 
 static INPUT: &'static str = include_str!("data/q01.data");
@@ -25,28 +23,10 @@ fn process_data_b(data: &str) -> i64 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("1")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("1");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "+1
@@ -83,7 +63,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
         process_data_b(
             "+1

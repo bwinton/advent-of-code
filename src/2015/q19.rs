@@ -1,6 +1,5 @@
 //-----------------------------------------------------
 // Setup.
-use aoc::Day;
 
 use nom::alpha;
 use nom::types::CompleteStr;
@@ -70,28 +69,10 @@ fn process_data_b(data: &str) -> usize {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("19")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("19");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "H => HO
@@ -115,4 +96,4 @@ HOHOHO"
 }
 
 #[test]
-fn b() {}
+fn test_b() {}

@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use nom;
 use nom::alpha;
 use std::collections::HashMap;
@@ -134,33 +132,15 @@ fn process_data_b(data: &str) -> u32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("16")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("16");
 
 #[test]
-fn a() {
+fn test_a() {
     // println!("{:?}", aunt_parser("Sue 1: cars: 9, akitas: 3, goldfish: 0"));
     // assert_eq!(1, 0);
 }
 
 #[test]
-fn b() {
+fn test_b() {
     // assert_eq!(process_data_b(""), 0);
 }

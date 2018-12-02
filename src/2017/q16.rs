@@ -137,11 +137,11 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a(5, "s1,x3/4,pe/b"), "baedc");
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b(5, "s1,x3/4,pe/b", 2), "ceadb");
 }

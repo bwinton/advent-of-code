@@ -4,11 +4,10 @@
 use aoc::computer::{
     parse_instructions, Half, Increment, InstructionResult, Jump, JumpEven, JumpOne, Triple, CPU,
 };
-use aoc::Day;
 
 static INPUT: &'static str = include_str!("data/q23.data");
 
-fn process_data_a(data: &str, reg: char) -> i64 {
+fn process_data_a_impl(data: &str, reg: char) -> i64 {
     let builders: Vec<fn(s: &str) -> InstructionResult> = vec![
         Half::build,
         Triple::build,
@@ -26,7 +25,7 @@ fn process_data_a(data: &str, reg: char) -> i64 {
     state.get_register(reg)
 }
 
-fn process_data_b(data: &str, reg: char) -> i64 {
+fn process_data_b_impl(data: &str, reg: char) -> i64 {
     let builders: Vec<fn(s: &str) -> InstructionResult> = vec![
         Half::build,
         Triple::build,
@@ -44,33 +43,24 @@ fn process_data_b(data: &str, reg: char) -> i64 {
     state.get_register(reg)
 }
 
+fn process_data_a(data: &str) -> i64 {
+    process_data_a_impl(data, 'b')
+}
+
+fn process_data_b(data: &str) -> i64 {
+    process_data_b_impl(data, 'b')
+}
+
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("23")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT, 'b');
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT, 'b');
-        println!("Result = {}", result);
-    }
-}
+q_impl!("23");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
-        process_data_a(
+        process_data_a_impl(
             "inc a
 jio a, +2
 tpl a
@@ -82,6 +72,6 @@ inc a",
 }
 
 #[test]
-fn b() {
-    // assert_eq!(process_data_b(""), 0);
+fn test_b() {
+    // assert_eq!(process_data_b_impl (""), 0);
 }

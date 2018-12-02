@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 use permutohedron::Heap;
 use regex::Regex;
@@ -48,7 +46,7 @@ fn get_distance(perm: &[String], distances: &HashMap<[String; 2], usize>) -> usi
     rv
 }
 
-fn process_data_a(data: &str) -> (Vec<String>, usize) {
+fn process_data_a_impl(data: &str) -> (Vec<String>, usize) {
     let (city_set, distances) = parse(data);
     let mut cities: Vec<String> = city_set.into_iter().collect();
     let heap = Heap::new(&mut cities);
@@ -62,7 +60,7 @@ fn process_data_a(data: &str) -> (Vec<String>, usize) {
     min_distance
 }
 
-fn process_data_b(data: &str) -> (Vec<String>, usize) {
+fn process_data_b_impl(data: &str) -> (Vec<String>, usize) {
     let (city_set, distances) = parse(data);
     let mut cities: Vec<String> = city_set.into_iter().collect();
     let heap = Heap::new(&mut cities);
@@ -76,33 +74,23 @@ fn process_data_b(data: &str) -> (Vec<String>, usize) {
     max_distance
 }
 
+fn process_data_a(data: &str) -> usize {
+    process_data_a_impl(data).1
+}
+
+fn process_data_b(data: &str) -> usize {
+    process_data_b_impl(data).1
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("9")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result.1);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result.1);
-    }
-}
+q_impl!("9");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
-        process_data_a(
+        process_data_a_impl(
             "London to Dublin = 464
 London to Belfast = 518
 Dublin to Belfast = 141",
@@ -119,9 +107,9 @@ Dublin to Belfast = 141",
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
-        process_data_b(
+        process_data_b_impl(
             "London to Dublin = 464
 London to Belfast = 518
 Dublin to Belfast = 141",

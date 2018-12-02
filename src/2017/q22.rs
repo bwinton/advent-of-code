@@ -214,7 +214,7 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "..#
@@ -245,7 +245,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
         process_data_b(
             "..#

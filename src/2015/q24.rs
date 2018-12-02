@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 use std::collections::HashSet;
 use std::u32;
@@ -123,31 +121,22 @@ fn process_data(data: &str, groups: usize) -> usize {
     rv.1
 }
 
+fn process_data_a(data: &str) -> usize {
+    process_data(data, 3)
+}
+
+fn process_data_b(data: &str) -> usize {
+    process_data(data, 4)
+}
+
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("24")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data(INPUT, 3);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data(INPUT, 4);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("24");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data(
             "1
@@ -167,7 +156,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
         process_data(
             "1

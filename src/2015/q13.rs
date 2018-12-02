@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 use permutohedron::Heap;
 use regex::Regex;
@@ -63,7 +61,7 @@ fn get_happiness(
     rv
 }
 
-fn process_data_a(data: &str) -> (Vec<String>, i32) {
+fn process_data_a(data: &str) -> i32 {
     let (names, happiness) = parse(data);
     let mut name_iter = names.into_iter();
     let first = name_iter.next().unwrap();
@@ -77,10 +75,10 @@ fn process_data_a(data: &str) -> (Vec<String>, i32) {
             max_happiness = (perm, value);
         }
     }
-    max_happiness
+    max_happiness.1
 }
 
-fn process_data_b(data: &str) -> (Vec<String>, i32) {
+fn process_data_b(data: &str) -> i32 {
     let (names, happiness) = parse(data);
     let mut people: Vec<String> = names.into_iter().collect();
     let heap = Heap::new(&mut people);
@@ -91,34 +89,17 @@ fn process_data_b(data: &str) -> (Vec<String>, i32) {
             max_happiness = (perm, value);
         }
     }
-    max_happiness
+    max_happiness.1
 }
 
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
+q_impl!("13");
 
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("13")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result.1);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result.1);
-    }
-}
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "Alice would gain 54 happiness units by sitting next to Bob.
@@ -133,11 +114,10 @@ Carol would gain 55 happiness units by sitting next to David.
 David would gain 46 happiness units by sitting next to Alice.
 David would lose 7 happiness units by sitting next to Bob.
 David would gain 41 happiness units by sitting next to Carol.",
-        )
-        .1,
+        ),
         330
     );
 }
 
 #[test]
-fn b() {}
+fn test_b() {}

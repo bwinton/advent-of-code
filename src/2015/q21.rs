@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 use nom::alpha;
 use nom::digit;
@@ -198,28 +196,10 @@ fn process_data_b(data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("21")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("21");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         header_parser(CompleteStr("Weapons:    Cost  Damage  Armor"))
             .unwrap()
@@ -299,6 +279,6 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     // assert_eq!(process_data_b(""), 0);
 }

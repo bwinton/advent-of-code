@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use std::collections::HashSet;
 
@@ -97,28 +95,10 @@ fn process_data_b(data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("5")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("5");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("ugknbfddgicrmopn"), 1);
     assert_eq!(process_data_a("aaa"), 1);
     assert_eq!(process_data_a("jchzalrnumimnmhp"), 0);
@@ -127,7 +107,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("qjhvhtzxzqqjkmpb"), 1);
     assert_eq!(process_data_b("xxyxx"), 1);
     assert_eq!(process_data_b("uurcxstgmygtbstg"), 0);

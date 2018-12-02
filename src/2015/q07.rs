@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -275,33 +273,25 @@ fn process_data(data: &str) -> HashMap<String, Wire> {
     wires
 }
 
+fn process_data_a(data: &str) -> u16 {
+    let input = "44430 -> b\n".to_owned() + data;
+    let result = process_data(&input);
+    result["a"].number.unwrap()
+}
+
+fn process_data_b(data: &str) -> u16 {
+    let input = "3176 -> b\n".to_owned() + data;
+    let result = process_data(&input);
+    result["a"].number.unwrap()
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("7")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let input = "44430 -> b\n".to_owned() + INPUT;
-        let result = process_data(&input);
-        println!("Result = {}", result["a"].number.unwrap());
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let input = "3176 -> b\n".to_owned() + INPUT;
-        let result = process_data(&input);
-        println!("Result = {}", result["a"].number.unwrap());
-    }
-}
+q_impl!("7");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data(
             "123 -> x
@@ -327,4 +317,4 @@ NOT y -> i",
 }
 
 #[test]
-fn b() {}
+fn test_b() {}

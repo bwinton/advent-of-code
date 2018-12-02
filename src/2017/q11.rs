@@ -94,7 +94,7 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("ne,ne,ne"), 3);
     assert_eq!(process_data_a("ne,ne,sw,sw"), 0);
     assert_eq!(process_data_a("ne,ne,s,s"), 2);
@@ -102,4 +102,4 @@ fn a() {
 }
 
 #[test]
-fn b() {}
+fn test_b() {}

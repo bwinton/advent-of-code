@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 
 static INPUT: &'static str = "3113322113";
@@ -31,31 +29,21 @@ fn process_data(data: &str, iterations: usize) -> String {
     curr
 }
 
+fn process_data_a(data: &str) -> usize {
+    process_data(data, 40).len()
+}
+
+fn process_data_b(data: &str) -> usize {
+    process_data(data, 50).len()
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("10")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data(INPUT, 40);
-        println!("Result = {}", result.len());
-    }
-
-    fn b(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data(INPUT, 50);
-        println!("Result = {}", result.len());
-    }
-}
+q_impl!("10");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data("1", 1), "11");
     assert_eq!(process_data("1", 2), "21");
     assert_eq!(process_data("1", 3), "1211");
@@ -64,4 +52,4 @@ fn a() {
 }
 
 #[test]
-fn b() {}
+fn test_b() {}

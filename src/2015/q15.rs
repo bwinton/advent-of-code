@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use std;
 use std::str::FromStr;
@@ -169,28 +167,10 @@ fn process_data_b(data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("15")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("15");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
@@ -201,7 +181,7 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
         process_data_b(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8

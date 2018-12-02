@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use std::iter::repeat;
 use std::str::FromStr;
@@ -118,28 +116,10 @@ fn process_data_b(data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("6")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("6");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
         process_data_a(
             "turn on 0,0 through 999,999
@@ -151,7 +131,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("turn on 0,0 through 0,0"), 1);
     assert_eq!(process_data_b("toggle 0,0 through 999,999"), 2000000);
 }

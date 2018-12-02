@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 static INPUT: &'static str = include_str!("data/q08.data");
 
 fn process_data_a(data: &str) -> i32 {
@@ -52,28 +50,10 @@ fn process_data_b(data: &str) -> i32 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("8")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("8");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("\"\""), 2);
     assert_eq!(process_data_a("\"abc\""), 2);
     assert_eq!(process_data_a("\"aaa\\\"aaa\""), 3);
@@ -90,7 +70,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("\"\""), 4);
     assert_eq!(process_data_b("\"abc\""), 4);
     assert_eq!(process_data_b("\"aaa\\\"aaa\""), 6);

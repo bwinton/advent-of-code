@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use crypto::digest::Digest;
 use crypto::md5::Md5;
 use std::i32::MAX;
@@ -34,37 +32,27 @@ fn process_data(data: &str, zeroes: usize) -> i32 {
     -1
 }
 
+fn process_data_a(data: &str) -> i32 {
+    process_data(data, 5)
+}
+
+fn process_data_b(data: &str) -> i32 {
+    process_data(data, 6)
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
+q_impl!("4");
 
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("4")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data(INPUT, 5);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data(INPUT, 6);
-        println!("Result = {}", result);
-    }
+#[test]
+fn test_a() {
+    assert_eq!(process_data_a("abcdef"), 609043);
+    assert_eq!(process_data_a("pqrstuv"), 1048970);
 }
 
 #[test]
-fn a() {
-    assert_eq!(process_data("abcdef", 5), 609043);
-    assert_eq!(process_data("pqrstuv", 5), 1048970);
-}
-
-#[test]
-fn b() {
-    assert_eq!(process_data("abcdef", 6), 6742839);
-    assert_eq!(process_data("pqrstuv", 6), 5714438);
+fn test_b() {
+    assert_eq!(process_data_b("abcdef"), 6742839);
+    assert_eq!(process_data_b("pqrstuv"), 5714438);
 }

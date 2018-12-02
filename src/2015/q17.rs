@@ -1,13 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use itertools::Itertools;
 
 static INPUT: &'static str = include_str!("data/q17.data");
 
-fn process_data_a(data: &str, amount: u32) -> usize {
+fn process_data_a_impl(data: &str, amount: u32) -> usize {
     let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
     let mut count = 0;
     for len in 1..=containers.len() {
@@ -23,7 +21,7 @@ fn process_data_a(data: &str, amount: u32) -> usize {
     count
 }
 
-fn process_data_b(data: &str, amount: u32) -> usize {
+fn process_data_b_impl(data: &str, amount: u32) -> usize {
     let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();
     let mut smallest: Vec<Vec<_>> = Vec::new();
     for len in 1..=containers.len() {
@@ -42,33 +40,23 @@ fn process_data_b(data: &str, amount: u32) -> usize {
     smallest.len()
 }
 
+fn process_data_a(data: &str) -> usize {
+    process_data_a_impl(data, 150)
+}
+
+fn process_data_b(data: &str) -> usize {
+    process_data_b_impl(data, 150)
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("17")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT, 150);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT, 150);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("17");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
-        process_data_a(
+        process_data_a_impl(
             "20
 15
 10
@@ -81,9 +69,9 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
-        process_data_b(
+        process_data_b_impl(
             "20
 15
 10

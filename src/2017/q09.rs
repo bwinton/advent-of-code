@@ -87,7 +87,7 @@ impl Day for Q {
 }
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("{}"), 1);
     assert_eq!(process_data_a("{{{}}}"), 6);
     assert_eq!(process_data_a("{{},{}}"), 5);
@@ -99,7 +99,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("<>"), 0);
     assert_eq!(process_data_b("<random characters>"), 17);
     assert_eq!(process_data_b("<<<<>"), 3);

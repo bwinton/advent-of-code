@@ -1,11 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 static INPUT: &'static str = include_str!("data/q01.data");
 
-fn process_chars_a(data: &str) -> i32 {
+fn process_data_a(data: &str) -> i32 {
     let mut rv = 0;
     for character in data.chars() {
         match character {
@@ -17,7 +15,7 @@ fn process_chars_a(data: &str) -> i32 {
     rv
 }
 
-fn process_chars_b(data: &str) -> Option<usize> {
+fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     for (i, character) in data.chars().enumerate() {
         match character {
@@ -26,49 +24,31 @@ fn process_chars_b(data: &str) -> Option<usize> {
             _ => panic!("Invalid Character \"{}\"", character),
         }
         if rv < 0 {
-            return Some(i + 1);
+            return i + 1;
         }
     }
-    None
+    unreachable!()
 }
 
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
+q_impl!("1");
 
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("1")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_chars_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_chars_b(INPUT);
-        println!("Result = {}", result.unwrap());
-    }
+#[test]
+fn test_a() {
+    assert_eq!(process_data_a("(())"), 0);
+    assert_eq!(process_data_a("()()"), 0);
+    assert_eq!(process_data_a("((("), 3);
+    assert_eq!(process_data_a("(()(()("), 3);
+    assert_eq!(process_data_a("))((((("), 3);
+    assert_eq!(process_data_a("())"), -1);
+    assert_eq!(process_data_a("))("), -1);
+    assert_eq!(process_data_a(")())())"), -3);
 }
 
 #[test]
-fn a() {
-    assert_eq!(process_chars_a("(())"), 0);
-    assert_eq!(process_chars_a("()()"), 0);
-    assert_eq!(process_chars_a("((("), 3);
-    assert_eq!(process_chars_a("(()(()("), 3);
-    assert_eq!(process_chars_a("))((((("), 3);
-    assert_eq!(process_chars_a("())"), -1);
-    assert_eq!(process_chars_a("))("), -1);
-    assert_eq!(process_chars_a(")())())"), -3);
-}
-
-#[test]
-fn b() {
-    assert_eq!(process_chars_b(")"), Some(1));
-    assert_eq!(process_chars_b("()())"), Some(5));
+fn test_b() {
+    assert_eq!(process_data_b(")"), 1);
+    assert_eq!(process_data_b("()())"), 5);
 }

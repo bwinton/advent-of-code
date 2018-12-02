@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use serde_json::from_str;
 use serde_json::Value;
@@ -47,28 +45,10 @@ fn process_data_b(data: &str) -> i64 {
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("12")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("12");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(process_data_a("[1,2,3]"), 6);
     assert_eq!(process_data_a("{\"a\":2,\"b\":4}"), 6);
     assert_eq!(process_data_a("[[[3]]]"), 3);
@@ -80,7 +60,7 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(process_data_b("[1,2,3]"), 6);
     assert_eq!(process_data_b("[1,{\"c\":\"red\",\"b\":2},3]"), 4);
     assert_eq!(process_data_b("[1,{\"red\":\"c\",\"b\":2},3]"), 6);

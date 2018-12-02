@@ -1,6 +1,8 @@
+#![feature(test)]
+
 mod q01;
 mod q02;
-// mod q03;
+mod q03;
 // mod q04;
 // mod q05;
 // mod q06;
@@ -36,12 +38,13 @@ extern crate aoc;
 extern crate crypto;
 extern crate itertools;
 extern crate regex;
+extern crate test;
 
 fn main() {
     let days = q_vec!(
         q01,
-        q02 // ,
-            //q03,
+        q02,
+        q03 //,
             //q04,
             //q05,
             //q06,

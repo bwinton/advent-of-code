@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use std::fmt;
 use std::str::FromStr;
 
@@ -92,7 +90,7 @@ impl Board {
     }
 }
 
-fn process_data_a(data: &str, iterations: usize) -> u32 {
+fn process_data_a_impl(data: &str, iterations: usize) -> u32 {
     let mut board: Board = data.parse().unwrap();
 
     for _ in 0..iterations {
@@ -101,7 +99,7 @@ fn process_data_a(data: &str, iterations: usize) -> u32 {
     board.count_on_cells()
 }
 
-fn process_data_b(data: &str, iterations: usize) -> u32 {
+fn process_data_b_impl(data: &str, iterations: usize) -> u32 {
     let mut board: Board = data.parse().unwrap();
 
     for _ in 0..iterations {
@@ -114,33 +112,24 @@ fn process_data_b(data: &str, iterations: usize) -> u32 {
     board.count_on_cells()
 }
 
+fn process_data_a(data: &str) -> u32 {
+    process_data_a_impl(data, 100)
+}
+
+fn process_data_b(data: &str) -> u32 {
+    process_data_b_impl(data, 100)
+}
+
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("18")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT, 100);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT, 100);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("18");
 
 #[test]
-fn a() {
+fn test_a() {
     assert_eq!(
-        process_data_a(
+        process_data_a_impl(
             ".#.#.#
 ...##.
 #....#
@@ -154,9 +143,9 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
-        process_data_b(
+        process_data_b_impl(
             ".#.#.#
 ...##.
 #....#

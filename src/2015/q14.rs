@@ -1,8 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
-
 use regex::Regex;
 use std::str::FromStr;
 
@@ -55,7 +53,7 @@ fn process_data_a(data: &str) -> u32 {
     reindeers.iter().map(|x| x.distance(2503)).max().unwrap()
 }
 
-fn process_data_b(data: &str, count: u32) -> u32 {
+fn process_data_b_impl(data: &str, count: u32) -> u32 {
     let mut reindeers: Vec<Reindeer> = Vec::new();
     for line in data.lines() {
         reindeers.push(line.parse().unwrap());
@@ -70,31 +68,17 @@ fn process_data_b(data: &str, count: u32) -> u32 {
     reindeers.iter().map(|x| x.points).max().unwrap()
 }
 
+fn process_data_b(data: &str) -> u32 {
+    process_data_b_impl(data, 2503)
+}
+
 //-----------------------------------------------------
 // Questions.
 
-pub struct Q;
-
-impl Day for Q {
-    fn number(&self) -> String {
-        String::from("14")
-    }
-
-    fn a(&self) {
-        print!("{}A: ", self.number());
-        let result = process_data_a(INPUT);
-        println!("Result = {}", result);
-    }
-
-    fn b(&self) {
-        print!("{}B: ", self.number());
-        let result = process_data_b(INPUT, 2503);
-        println!("Result = {}", result);
-    }
-}
+q_impl!("14");
 
 #[test]
-fn a() {
+fn test_a() {
     let comet: Reindeer =
         "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds."
             .parse()
@@ -114,9 +98,9 @@ fn a() {
 }
 
 #[test]
-fn b() {
+fn test_b() {
     assert_eq!(
-        process_data_b(
+        process_data_b_impl(
             "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.
 Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds.",
             1000,
