@@ -33,19 +33,17 @@ fn process_data_a(data: &str) -> i32 {
 
 fn process_data_b(data: &str) -> String {
   for (skip, line) in data.lines().enumerate() {
+    let target = line.len() - 1;
     for test in data.lines().skip(skip + 1) {
-      let answer: Vec<i64> = line.chars().zip(test.chars()).map(|x| {
+      let answer: String = line.chars().zip(test.chars())
+        .filter_map(|x| {
         if x.0 == x.1 {
-          0
+          Some(x.0)
         } else {
-          1
+          None
         }}).collect();
-      let sum: i64 = answer.iter().sum();
-      if sum == 1 {
-        // println!("{}: {}, {}, {:?}", skip, line, test, answer);
-        return line.chars().zip(answer)
-          .filter(|&(_, x)| x != 1)
-          .map(|x| x.0).collect()
+      if answer.len() == target {
+        return answer;
       }
     }
   }
