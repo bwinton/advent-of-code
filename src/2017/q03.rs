@@ -76,7 +76,7 @@ fn process_data_a(data: i32) -> i32 {
             let low = i;
             let high = 2 * i;
             let mut seesaw = (low..high)
-                .chain(high - 1..low + 1)
+                .chain(high - 1..=low)
                 .cycle()
                 .skip(remainder as usize);
             rv = seesaw.next().unwrap();

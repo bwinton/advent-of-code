@@ -56,7 +56,7 @@ impl FromStr for Board {
         }
 
         Ok(Board {
-            cells: cells,
+            cells,
             simple: true,
         })
     }

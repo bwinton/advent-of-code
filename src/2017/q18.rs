@@ -282,12 +282,12 @@ struct State {
 impl State {
     pub fn new(kind: char, instructions: Vec<Instruction>, registers: HashMap<char, i64>) -> State {
         State {
-            kind: kind,
-            registers: registers,
+            kind,
+            registers,
             pc: 0,
             incoming: Vec::new(),
             outgoing: Vec::new(),
-            instructions: instructions,
+            instructions,
             waiting: false,
         }
     }

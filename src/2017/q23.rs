@@ -210,11 +210,11 @@ struct State {
 impl State {
     pub fn new(instructions: Vec<Instruction>, registers: HashMap<char, i64>) -> State {
         State {
-            registers: registers,
+            registers,
             pc: 0,
             incoming: Vec::new(),
             outgoing: Vec::new(),
-            instructions: instructions,
+            instructions,
             waiting: false,
         }
     }

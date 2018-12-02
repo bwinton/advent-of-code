@@ -50,7 +50,7 @@ impl Rule {
         }
         Rule {
             size: self.size,
-            input: input,
+            input,
             output: self.output.clone(),
         }
     }
@@ -62,7 +62,7 @@ impl Rule {
         }
         Rule {
             size: self.size,
-            input: input,
+            input,
             output: self.output.clone(),
         }
     }
@@ -101,7 +101,7 @@ fn step(state: &[Vec<bool>], rules: &[Rule]) -> Vec<Vec<bool>> {
 
     for rows in state.chunks(size) {
         let mut new_row = Vec::new();
-        for _ in 0..size + 1 {
+        for _ in 0..=size {
             new_row.push(Vec::new());
         }
         let mut cols: Vec<_> = rows.iter().map(|row| row.chunks(size)).collect();

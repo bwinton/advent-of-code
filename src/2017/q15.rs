@@ -15,8 +15,8 @@ impl Generator {
     pub fn new(start: u64, factor: u64, multiple: u64) -> Generator {
         Generator {
             value: start,
-            factor: factor,
-            multiple: multiple,
+            factor,
+            multiple,
         }
     }
 
