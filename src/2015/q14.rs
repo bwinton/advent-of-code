@@ -78,7 +78,7 @@ fn process_data_b(data: &str) -> u32 {
 q_impl!("14");
 
 #[test]
-fn test_a() {
+fn a() {
     let comet: Reindeer =
         "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds."
             .parse()
@@ -98,7 +98,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b_impl(
             "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.

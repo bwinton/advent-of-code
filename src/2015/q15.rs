@@ -170,7 +170,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("15");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
@@ -181,7 +181,7 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8

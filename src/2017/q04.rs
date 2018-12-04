@@ -63,14 +63,14 @@ impl Day for Q {
 }
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("aa bb cc dd ee"), 1);
     assert_eq!(process_data_a("aa bb cc dd aa"), 0);
     assert_eq!(process_data_a("aa bb cc dd aaa"), 1);
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("abcde fghij"), 1);
     assert_eq!(process_data_b("abcde xyz ecdab"), 0);
     assert_eq!(process_data_b("a ab abc abd abf abj"), 1);

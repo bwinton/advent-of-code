@@ -98,7 +98,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("5");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("ugknbfddgicrmopn"), 1);
     assert_eq!(process_data_a("aaa"), 1);
     assert_eq!(process_data_a("jchzalrnumimnmhp"), 0);
@@ -107,7 +107,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("qjhvhtzxzqqjkmpb"), 1);
     assert_eq!(process_data_b("xxyxx"), 1);
     assert_eq!(process_data_b("uurcxstgmygtbstg"), 0);

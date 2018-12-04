@@ -387,7 +387,7 @@ impl Day for Q {
 }
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "set a 1
@@ -406,7 +406,7 @@ jgz a -2",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "snd 1

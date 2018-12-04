@@ -53,7 +53,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("8");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("\"\""), 2);
     assert_eq!(process_data_a("\"abc\""), 2);
     assert_eq!(process_data_a("\"aaa\\\"aaa\""), 3);
@@ -70,7 +70,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("\"\""), 4);
     assert_eq!(process_data_b("\"abc\""), 4);
     assert_eq!(process_data_b("\"aaa\\\"aaa\""), 6);

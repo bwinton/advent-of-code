@@ -99,7 +99,7 @@ q_impl!("13");
 
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "Alice would gain 54 happiness units by sitting next to Bob.
@@ -120,4 +120,4 @@ David would gain 41 happiness units by sitting next to Carol.",
 }
 
 #[test]
-fn test_b() {}
+fn b() {}

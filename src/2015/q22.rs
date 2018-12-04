@@ -209,7 +209,7 @@ fn process_data_b(_: &str) -> i32 {
 q_impl!("22");
 
 #[test]
-fn test_a() {
+fn a() {
     // First example.
     let mut state = State::new();
     state.player.hp = 10;
@@ -319,7 +319,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     // First example.
     let mut state = State::new();
     state.player.hp = 1;

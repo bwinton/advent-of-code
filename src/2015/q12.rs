@@ -48,7 +48,7 @@ fn process_data_b(data: &str) -> i64 {
 q_impl!("12");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("[1,2,3]"), 6);
     assert_eq!(process_data_a("{\"a\":2,\"b\":4}"), 6);
     assert_eq!(process_data_a("[[[3]]]"), 3);
@@ -60,7 +60,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("[1,2,3]"), 6);
     assert_eq!(process_data_b("[1,{\"c\":\"red\",\"b\":2},3]"), 4);
     assert_eq!(process_data_b("[1,{\"red\":\"c\",\"b\":2},3]"), 6);

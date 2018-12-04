@@ -61,7 +61,7 @@ impl Day for Q {
 }
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("5 1 9 5"), 8);
     assert_eq!(process_data_a("7 5 3"), 4);
     assert_eq!(process_data_a("2 4 6 8"), 6);
@@ -76,7 +76,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("5 9 2 8"), 4);
     assert_eq!(process_data_b("9 4 7 3"), 3);
     assert_eq!(process_data_b("3 8 6 5"), 2);

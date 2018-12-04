@@ -72,14 +72,14 @@ fn process_data_b(data: &str) -> u32 {
 q_impl!("3");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a(">"), 2);
     assert_eq!(process_data_a("^>v<"), 4);
     assert_eq!(process_data_a("^v^v^v^v^v"), 2);
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("^v"), 3);
     assert_eq!(process_data_b("^>v<"), 3);
     assert_eq!(process_data_b("^v^v^v^v^v"), 11);

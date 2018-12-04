@@ -119,7 +119,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("6");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "turn on 0,0 through 999,999
@@ -131,7 +131,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("turn on 0,0 through 0,0"), 1);
     assert_eq!(process_data_b("toggle 0,0 through 999,999"), 2000000);
 }

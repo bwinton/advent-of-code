@@ -88,7 +88,7 @@ fn process_data_b(data: &str) -> usize {
 q_impl!("9");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a_impl(
             "London to Dublin = 464
@@ -107,7 +107,7 @@ Dublin to Belfast = 141",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b_impl(
             "London to Dublin = 464

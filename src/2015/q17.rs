@@ -54,7 +54,7 @@ fn process_data_b(data: &str) -> usize {
 q_impl!("17");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a_impl(
             "20
@@ -69,7 +69,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b_impl(
             "20

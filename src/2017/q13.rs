@@ -107,7 +107,7 @@ impl Day for Q {
 // MultIter { len: 5, dir: Direction::Up, .. Default::default() }
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "0: 3
@@ -120,7 +120,7 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "0: 3

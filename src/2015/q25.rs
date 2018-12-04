@@ -36,7 +36,7 @@ fn process_data_b(_data: &str) -> i32 {
 q_impl!("25");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(find_cell(1, 1), 0);
     assert_eq!(find_cell(1, 6), 20);
     assert_eq!(find_cell(6, 1), 15);
@@ -53,6 +53,6 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b(""), 0);
 }

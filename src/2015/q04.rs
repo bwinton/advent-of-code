@@ -46,13 +46,13 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("4");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(process_data_a("abcdef"), 609043);
     assert_eq!(process_data_a("pqrstuv"), 1048970);
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(process_data_b("abcdef"), 6742839);
     assert_eq!(process_data_b("pqrstuv"), 5714438);
 }

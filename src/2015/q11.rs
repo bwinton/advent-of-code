@@ -92,7 +92,7 @@ fn process_data_b(data: &str) -> String {
 q_impl!("11");
 
 #[test]
-fn test_a() {
+fn a() {
     assert!(!is_valid("hijklmmn"));
     assert!(!is_valid("abbceffg"));
     assert!(!is_valid("abbcegjk"));
@@ -106,4 +106,4 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {}
+fn b() {}

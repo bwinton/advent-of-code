@@ -58,7 +58,7 @@ fn process_data_b(data: &str) -> i64 {
 q_impl!("23");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a_impl(
             "inc a
@@ -72,6 +72,6 @@ inc a",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     // assert_eq!(process_data_b_impl (""), 0);
 }

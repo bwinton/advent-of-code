@@ -199,7 +199,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("21");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         header_parser(CompleteStr("Weapons:    Cost  Damage  Armor"))
             .unwrap()
@@ -279,6 +279,6 @@ fn test_a() {
 }
 
 #[test]
-fn test_b() {
+fn b() {
     // assert_eq!(process_data_b(""), 0);
 }

@@ -291,7 +291,7 @@ fn process_data_b(data: &str) -> u16 {
 q_impl!("7");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data(
             "123 -> x
@@ -317,4 +317,4 @@ NOT y -> i",
 }
 
 #[test]
-fn test_b() {}
+fn b() {}

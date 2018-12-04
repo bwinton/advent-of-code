@@ -147,7 +147,7 @@ impl Day for Q {
 }
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "pbga (66)
@@ -169,7 +169,7 @@ cntj (57)",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "pbga (66)

@@ -208,7 +208,7 @@ impl Day for Q {
 }
 
 #[test]
-fn test_a() {
+fn a() {
     let expected = hashmap!{
       "a".to_string() => 1,
       "b".to_string() => 0,
@@ -226,7 +226,7 @@ c inc -20 if c == 10",
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "b inc 5 if a > 1
