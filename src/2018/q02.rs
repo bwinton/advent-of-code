@@ -52,7 +52,7 @@ fn process_data_b(data: &str) -> String {
 q_impl!("2");
 
 #[test]
-fn test_a() {
+fn a() {
     assert_eq!(
         process_data_a(
             "abcdef
@@ -68,7 +68,7 @@ ababab"
 }
 
 #[test]
-fn test_b() {
+fn b() {
     assert_eq!(
         process_data_b(
             "abcde

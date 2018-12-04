@@ -85,12 +85,14 @@ macro_rules! q_impl {
 
     use test::Bencher;
 
+    #[ignore]
     #[bench]
     fn bench_a(b: &mut Bencher) {
       let day = Q{};
       b.iter(|| day.a());
     }
 
+    #[ignore]
     #[bench]
     fn bench_b(b: &mut Bencher) {
       let day = Q{};
