@@ -20,7 +20,7 @@ pub trait Day {
 
 #[macro_export]
 macro_rules! q_vec {
-  ( $( $x:ident ),* ) => {
+  ( $( $x:ident, )* ) => {
     {
       let temp_vec:Vec<Box<aoc::Day>> = vec!(
       $(
@@ -29,6 +29,9 @@ macro_rules! q_vec {
       );
       temp_vec
     }
+  };
+  ( $( $x:ident ),* ) => {
+    q_vec!{$( $x, )*}
   };
 }
 
