@@ -2,6 +2,7 @@
 // Setup.
 
 use regex::Regex;
+use std::collections::HashMap;
 use std::str::FromStr;
 
 static INPUT : &'static str = include_str!("data/q06.data");
@@ -11,6 +12,7 @@ struct Point {
     id: i32,
     x: i32,
     y: i32,
+    size: i32,
 }
 
 impl FromStr for Point {
@@ -26,6 +28,7 @@ impl FromStr for Point {
                 id: -1,
                 x: cap[1].parse().unwrap(),
                 y: cap[2].parse().unwrap(),
+                size: 0,
             })
         }
 
@@ -34,18 +37,21 @@ impl FromStr for Point {
 }
 
 fn process_data_a(data: &str) -> i32 {
-    let mut points = vec![];
+    let mut points = HashMap::new();
     for (id, line) in data.lines().enumerate() {
         let mut point: Point = line.parse().unwrap();
         point.id = id as i32;
-        points.push(point);
+        points.insert(point.id, point);
     }
     let mut min_x = i32::max_value();
     let mut min_y = i32::max_value();
     let mut max_x = 0;
     let mut max_y = 0;
 
-    for point in &points {
+    // let mut areas = HashMap::new();
+
+    for point in points.values() {
+        // areas.insert(point.id, vec![point.clone()]);
         if point.x < min_x {
             min_x = point.x;
         }
@@ -60,21 +66,53 @@ fn process_data_a(data: &str) -> i32 {
         } 
     }
 
-    let mut points_of_interest: Vec<_> = points.iter().filter(|point| point.x != min_x && point.x != max_x && point.y != min_y && point.y != max_y).collect();
-    println!("{:?}\n{},{} - {},{}", &points_of_interest, min_x, min_y, max_x, max_y);
+    let mut points_of_interest = points.clone();
+    for y in min_y..=max_y {
+        for x in min_x..=max_x {
+            let mut distances = vec![];
+            for point in points.values() {
+                let d2 = (x - point.x).abs() + (y - point.y).abs();
+                distances.push((d2, point.id));
+            }
+            distances.sort();
+            let min;
+            {
+                min = distances.iter().min().unwrap().clone();
+            }
+            distances.retain(|p| p.0 == min.0);
 
-    let mut changed = true;
-    while changed {
-        changed = false;
-        // loop through the points, claim the neighbours, add them to the size.
-        // if none of the points of interest have changed, bail out.
-        // can keep an index to tell the distance we've gone.
+            if distances.len() > 1 {
+                // print!(". ");
+                continue;
+            }
+            // print!("{} ", min.1);
+            // Filter out points that hit the edge, cause they'll go on forever.
+            if x == min_x || x == max_x || y == min_y || y == max_y {
+                // println!("Removing {:?}", points_of_interest.get(&min.1));
+                points_of_interest.remove(&min.1);
+            } else {
+                if let Some(point) = points_of_interest.get_mut(&min.1) {
+                    point.size += 1;
+                }
+            }
+        }
+        // println!();
     }
+    
+
+    println!("{:?}", &points_of_interest);
+    
+    points_of_interest.values().map(|p| p.size).max().unwrap()
+
+    // 6158 is too high.
+}
+
+fn find_safe_areas(data: &str, max_distance: i32) -> i32 {
     0
 }
 
-fn process_data_b(_data: &str) -> i32 {
-    0
+fn process_data_b(data: &str) -> i32 {
+    find_safe_areas(data, 10000)
 }
 
 //-----------------------------------------------------
@@ -94,5 +132,10 @@ fn a() {
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b(""), 0);
+    assert_eq!(find_safe_areas("1, 1
+1, 6
+8, 3
+3, 4
+5, 5
+8, 9", 32), 16);
 }
