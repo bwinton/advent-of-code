@@ -63,7 +63,6 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
     let mut workers = vec![(char::MAX,-1)].repeat(workers);
 
     while nodes.len() > 0 {
-        // println!("{}: {:?}", rv, workers);
         // step the time, and dec the workers.
         rv += 1;
         for worker in &mut workers {
@@ -79,33 +78,26 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
             }
             dep_graph.retain(|_,v| v.len() != 0);
             nodes.remove(&worker.0);
-            // println!("{:?}: {:?}\n  {:?}", worker, nodes, dep_graph);
         }
 
         for (_i, worker) in workers.iter_mut().enumerate() {
             if worker.1 <= 0 {
                 let mut current = char::MAX;
-                // print!("Worker {} searching… ", i);
                 for node in &nodes {
                     if !dep_graph.contains_key(&node.clone()) {
-                        // print!("{}… ", &node);
                         if current > node.clone() {
                             current = node.clone();
                         }
                     }
                 }
-                // println!();
                 if current != char::MAX {
-                    // println!("Worker {} claiming {}", i, current);
                     worker.0 = current;
                     worker.1 = delay + (current as i32) - ('A' as i32) + 1;
                     nodes.remove(&worker.0);
                 }
             }
         }
-        // println!();
     }
-    // println!("{}, {:?}", rv, workers);
     rv + workers.iter().map(|(_, time)| time).max().unwrap()
 }
 

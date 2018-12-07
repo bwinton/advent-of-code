@@ -48,10 +48,7 @@ fn process_data_a(data: &str) -> i32 {
     let mut max_x = 0;
     let mut max_y = 0;
 
-    // let mut areas = HashMap::new();
-
     for point in points.values() {
-        // areas.insert(point.id, vec![point.clone()]);
         if point.x < min_x {
             min_x = point.x;
         }
@@ -82,13 +79,10 @@ fn process_data_a(data: &str) -> i32 {
             distances.retain(|p| p.0 == min.0);
 
             if distances.len() > 1 {
-                // print!(". ");
                 continue;
             }
-            // print!("{} ", min.1);
             // Filter out points that hit the edge, cause they'll go on forever.
             if x == min_x || x == max_x || y == min_y || y == max_y {
-                // println!("Removing {:?}", points_of_interest.get(&min.1));
                 points_of_interest.remove(&min.1);
             } else {
                 if let Some(point) = points_of_interest.get_mut(&min.1) {
@@ -96,19 +90,53 @@ fn process_data_a(data: &str) -> i32 {
                 }
             }
         }
-        // println!();
     }
     
-
-    println!("{:?}", &points_of_interest);
-    
     points_of_interest.values().map(|p| p.size).max().unwrap()
-
-    // 6158 is too high.
 }
 
 fn find_safe_areas(data: &str, max_distance: i32) -> i32 {
-    0
+    let mut points = HashMap::new();
+    for (id, line) in data.lines().enumerate() {
+        let mut point: Point = line.parse().unwrap();
+        point.id = id as i32;
+        points.insert(point.id, point);
+    }
+    let mut min_x = i32::max_value();
+    let mut min_y = i32::max_value();
+    let mut max_x = 0;
+    let mut max_y = 0;
+
+    for point in points.values() {
+        if point.x < min_x {
+            min_x = point.x;
+        }
+        if point.y < min_y {
+            min_y = point.y;
+        }
+        if point.x > max_x {
+            max_x = point.x;
+        }
+        if point.y > max_y {
+            max_y = point.y;  
+        } 
+    }
+
+    let mut safe_count = 0;
+    for y in min_y..=max_y {
+        for x in min_x..=max_x {
+            let mut distances = 0;
+            for point in points.values() {
+                distances += (x - point.x).abs() + (y - point.y).abs();
+            }
+
+            if distances < max_distance {
+                safe_count += 1;
+            }
+        }
+    }
+
+    safe_count
 }
 
 fn process_data_b(data: &str) -> i32 {
