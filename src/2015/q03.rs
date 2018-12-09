@@ -52,7 +52,7 @@ fn process_data_b(data: &str) -> u32 {
     let mut curr = santa;
     for character in data.chars() {
         // println!("{:?}, {}", curr, character);
-        let mut next = next_state(&board.entry(curr), character);
+        let next = next_state(&board.entry(curr), character);
         *board.entry(next).or_insert(0) += 1;
         if curr == santa {
             santa = next;

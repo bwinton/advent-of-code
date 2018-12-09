@@ -13,7 +13,7 @@ fn process_data(len: usize, data: &[usize], rounds: usize) -> Vec<usize> {
     let mut skip = 0;
     for _round in 0..rounds {
         for twist in data {
-            let mut end = start + twist;
+            let end = start + twist;
             // println!("{:?}, {}, {}", numbers, start, end);
             if end <= len {
                 numbers[start..end].reverse();

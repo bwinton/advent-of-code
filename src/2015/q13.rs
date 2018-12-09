@@ -31,7 +31,7 @@ fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
             if let "lose" = &cap[2] {
                 value = -value;
             }
-            let mut entry = happiness.entry(key).or_insert(0);
+            let entry = happiness.entry(key).or_insert(0);
             *entry += value;
         }
     }

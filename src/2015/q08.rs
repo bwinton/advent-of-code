@@ -35,7 +35,7 @@ fn process_data_b(data: &str) -> i32 {
     let mut rv = 0;
     for line in data.lines() {
         rv += 2;
-        let mut rest = line.chars();
+        let rest = line.chars();
         for curr in rest {
             match curr {
                 '\\' => rv += 1,

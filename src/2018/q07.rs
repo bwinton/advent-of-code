@@ -20,7 +20,7 @@ fn process_data_a(data: &str) -> String {
         if let Some(cap) = RE.captures(line) {
             nodes.insert(cap[1].chars().next().unwrap());
             nodes.insert(cap[2].chars().next().unwrap());
-            let mut dependencies = dep_graph
+            let dependencies = dep_graph
                 .entry(cap[2].chars().next().unwrap())
                 .or_insert_with(|| vec![]);
             dependencies.push(cap[1].chars().next().unwrap());
@@ -53,7 +53,7 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
         if let Some(cap) = RE.captures(line) {
             nodes.insert(cap[1].chars().next().unwrap());
             nodes.insert(cap[2].chars().next().unwrap());
-            let mut dependencies = dep_graph
+            let dependencies = dep_graph
                 .entry(cap[2].chars().next().unwrap())
                 .or_insert_with(|| vec![]);
             dependencies.push(cap[1].chars().next().unwrap());

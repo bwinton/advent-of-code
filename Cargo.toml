@@ -2,6 +2,7 @@
 name = "adventofcode"
 version = "0.1.0"
 authors = ["Blake Winton <bwinton@latte.ca>"]
+edition="2018"
 
 [dependencies]
 clap = "2.32.0"

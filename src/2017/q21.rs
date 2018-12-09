@@ -84,7 +84,7 @@ fn get_state(input: &str) -> Vec<Vec<bool>> {
 
 fn get_next<I: Iterator>(input: &mut [I]) -> Option<Vec<I::Item>> {
     let mut rv = Vec::new();
-    for mut iter in input {
+    for iter in input {
         if let Some(value) = iter.next() {
             rv.push(value);
         } else {

@@ -64,8 +64,8 @@ impl FromStr for Instruction {
 
 impl Instruction {
     fn execute_a(&self, state: &mut State) {
-        for mut row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
-            for mut cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
+        for row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
+            for cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
                 match self.op {
                     Operation::TurnOn => *cell = 1,
                     Operation::TurnOff => *cell = 0,
@@ -76,8 +76,8 @@ impl Instruction {
     }
 
     fn execute_b(&self, state: &mut State) {
-        for mut row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
-            for mut cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
+        for row in state.iter_mut().take(self.end_x + 1).skip(self.start_x) {
+            for cell in row.iter_mut().take(self.end_y + 1).skip(self.start_y) {
                 match self.op {
                     Operation::TurnOn => *cell += 1,
                     Operation::TurnOff => {

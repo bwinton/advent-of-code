@@ -87,7 +87,7 @@ fn process_data_a(data: &str) -> u32 {
     };
     let mut aunts_sue = Vec::new();
     for line in data.lines() {
-        let mut aunt_sue = aunt_parser(line).unwrap().1;
+        let aunt_sue = aunt_parser(line).unwrap().1;
         aunts_sue.push(aunt_sue);
     }
     for aunt_sue in aunts_sue {
@@ -117,7 +117,7 @@ fn process_data_b(data: &str) -> u32 {
 
     let mut aunts_sue = Vec::new();
     for line in data.lines() {
-        let mut aunt_sue = aunt_parser(line).unwrap().1;
+        let aunt_sue = aunt_parser(line).unwrap().1;
         aunts_sue.push(aunt_sue);
     }
     for aunt_sue in aunts_sue {

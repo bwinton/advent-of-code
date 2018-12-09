@@ -32,7 +32,7 @@ fn process_data(input: &str) -> Vec<i64> {
     let mut skip = 0;
     for _round in 0..rounds {
         for twist in &data {
-            let mut end = start + twist;
+            let end = start + twist;
             if end <= len {
                 numbers[start..end].reverse();
             } else {
