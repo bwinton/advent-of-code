@@ -260,7 +260,7 @@ fn run_pending(pending: &mut Vec<Gate>, wires: &mut HashMap<String, Wire>) {
 }
 
 fn process_data(data: &str) -> HashMap<String, Wire> {
-    let mut wires: HashMap<String, Wire> = hashmap!{};
+    let mut wires: HashMap<String, Wire> = hashmap![];
     let mut pending: Vec<Gate> = Vec::new();
 
     for line in data.lines() {
@@ -303,7 +303,7 @@ y RSHIFT 2 -> g
 NOT x -> h
 NOT y -> i",
         ),
-        hashmap!{
+        hashmap![
           "d".to_string() => Wire::new("d", Some(72)),
           "e".to_string() => Wire::new("e", Some(507)),
           "f".to_string() => Wire::new("f", Some(492)),
@@ -312,7 +312,7 @@ NOT y -> i",
           "i".to_string() => Wire::new("i", Some(65079)),
           "x".to_string() => Wire::new("x", Some(123)),
           "y".to_string() => Wire::new("y", Some(456)),
-        }
+        ]
     );
 }
 

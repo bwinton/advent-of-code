@@ -63,47 +63,46 @@ macro_rules! define_iterator {
 
 #[macro_export]
 macro_rules! q_impl {
-  ($e:expr) => {
-    use aoc::Day;
+    ($e:expr) => {
+        use aoc::Day;
 
-    pub struct Q;
+        pub struct Q;
 
-    impl Day for Q {
-        fn number(&self) -> String {
-            String::from($e)
+        impl Day for Q {
+            fn number(&self) -> String {
+                String::from($e)
+            }
+
+            fn a(&self) {
+                print!("{}A: ", self.number());
+                let result = process_data_a(INPUT);
+                println!("Result = {}", result);
+            }
+
+            fn b(&self) {
+                print!("{}B: ", self.number());
+                let result = process_data_b(INPUT);
+                println!("Result = {}", result);
+            }
         }
 
-        fn a(&self) {
-            print!("{}A: ", self.number());
-            let result = process_data_a(INPUT);
-            println!("Result = {}", result);
+        use test::Bencher;
+
+        #[ignore]
+        #[bench]
+        fn bench_a(b: &mut Bencher) {
+            let day = Q {};
+            b.iter(|| day.a());
         }
 
-        fn b(&self) {
-            print!("{}B: ", self.number());
-            let result = process_data_b(INPUT);
-            println!("Result = {}", result);
+        #[ignore]
+        #[bench]
+        fn bench_b(b: &mut Bencher) {
+            let day = Q {};
+            b.iter(|| day.b());
         }
-    }
-
-    use test::Bencher;
-
-    #[ignore]
-    #[bench]
-    fn bench_a(b: &mut Bencher) {
-      let day = Q{};
-      b.iter(|| day.a());
-    }
-
-    #[ignore]
-    #[bench]
-    fn bench_b(b: &mut Bencher) {
-      let day = Q{};
-      b.iter(|| day.b());
-    }
-  };
+    };
 }
-
 
 pub fn print_vec(v: &[impl Display]) -> String {
     format!(

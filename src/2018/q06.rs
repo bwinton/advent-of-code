@@ -5,7 +5,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT : &'static str = include_str!("data/q06.data");
+static INPUT: &'static str = include_str!("data/q06.data");
 
 #[derive(Clone, Debug)]
 struct Point {
@@ -29,7 +29,7 @@ impl FromStr for Point {
                 x: cap[1].parse().unwrap(),
                 y: cap[2].parse().unwrap(),
                 size: 0,
-            })
+            });
         }
 
         Err(())
@@ -59,8 +59,8 @@ fn process_data_a(data: &str) -> i32 {
             max_x = point.x;
         }
         if point.y > max_y {
-            max_y = point.y;  
-        } 
+            max_y = point.y;
+        }
     }
 
     let mut points_of_interest = points.clone();
@@ -74,7 +74,7 @@ fn process_data_a(data: &str) -> i32 {
             distances.sort();
             let min;
             {
-                min = distances.iter().min().unwrap().clone();
+                min = *distances.iter().min().unwrap();
             }
             distances.retain(|p| p.0 == min.0);
 
@@ -84,14 +84,12 @@ fn process_data_a(data: &str) -> i32 {
             // Filter out points that hit the edge, cause they'll go on forever.
             if x == min_x || x == max_x || y == min_y || y == max_y {
                 points_of_interest.remove(&min.1);
-            } else {
-                if let Some(point) = points_of_interest.get_mut(&min.1) {
-                    point.size += 1;
-                }
+            } else if let Some(point) = points_of_interest.get_mut(&min.1) {
+                point.size += 1;
             }
         }
     }
-    
+
     points_of_interest.values().map(|p| p.size).max().unwrap()
 }
 
@@ -118,8 +116,8 @@ fn find_safe_areas(data: &str, max_distance: i32) -> i32 {
             max_x = point.x;
         }
         if point.y > max_y {
-            max_y = point.y;  
-        } 
+            max_y = point.y;
+        }
     }
 
     let mut safe_count = 0;
@@ -150,20 +148,31 @@ q_impl!("6");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("1, 1
+    assert_eq!(
+        process_data_a(
+            "1, 1
 1, 6
 8, 3
 3, 4
 5, 5
-8, 9"), 17);
+8, 9"
+        ),
+        17
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(find_safe_areas("1, 1
+    assert_eq!(
+        find_safe_areas(
+            "1, 1
 1, 6
 8, 3
 3, 4
 5, 5
-8, 9", 32), 16);
+8, 9",
+            32
+        ),
+        16
+    );
 }

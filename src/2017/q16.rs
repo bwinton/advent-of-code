@@ -64,7 +64,7 @@ impl Instruction {
             }
             Instruction::Partner(a, b) => {
                 rv = programs
-                    .into_iter()
+                    .iter()
                     .map(|x| match *x {
                         x if x == a => b,
                         x if x == b => a,

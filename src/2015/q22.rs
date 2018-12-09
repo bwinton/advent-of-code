@@ -82,12 +82,12 @@ static RECHARGE: &'static str = "Recharge";
 lazy_static! {
     static ref SPELLS: HashMap<&'static str, Spell> = {
         hashmap![
-      MAGIC_MISSLE => Spell { name: MAGIC_MISSLE.to_string(), cost: 53, damage: 4, healing: 0, armor: 0, mana: 0, duration: -1 },
-      DRAIN => Spell { name: DRAIN.to_string(), cost: 73, damage: 2, healing: 2, armor: 0, mana: 0, duration: -1 },
-      SHIELD => Spell { name: SHIELD.to_string(), cost: 113, damage: 0, healing: 0, armor: 7, mana: 0, duration: 6 },
-      POISON => Spell { name: POISON.to_string(), cost: 173, damage: 3, healing: 0, armor: 0, mana: 0, duration: 6 },
-      RECHARGE => Spell { name: RECHARGE.to_string(), cost: 229, damage: 0, healing: 0, armor: 0, mana: 101, duration: 5 },
-    ]
+            MAGIC_MISSLE => Spell { name: MAGIC_MISSLE.to_string(), cost: 53, damage: 4, healing: 0, armor: 0, mana: 0, duration: -1 },
+            DRAIN => Spell { name: DRAIN.to_string(), cost: 73, damage: 2, healing: 2, armor: 0, mana: 0, duration: -1 },
+            SHIELD => Spell { name: SHIELD.to_string(), cost: 113, damage: 0, healing: 0, armor: 7, mana: 0, duration: 6 },
+            POISON => Spell { name: POISON.to_string(), cost: 173, damage: 3, healing: 0, armor: 0, mana: 0, duration: 6 },
+            RECHARGE => Spell { name: RECHARGE.to_string(), cost: 229, damage: 0, healing: 0, armor: 0, mana: 101, duration: 5 },
+        ]
     };
 }
 

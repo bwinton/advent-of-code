@@ -73,11 +73,7 @@ fn split(
     if groups == 1 {
         return vec![vec![first.to_vec()]];
     }
-    let rest: Vec<usize> = all
-        .into_iter()
-        .filter(|x| !first.contains(x))
-        .cloned()
-        .collect();
+    let rest: Vec<usize> = all.iter().filter(|x| !first.contains(x)).cloned().collect();
     // println!("{}Splitting {:?}/{:?} / {}:{}", "  ".repeat(4 - groups), first, rest, target, groups);
     let mut rv = vec![];
     let powerset = PowersetIter::new(&rest);
@@ -128,7 +124,6 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     process_data(data, 4)
 }
-
 
 //-----------------------------------------------------
 // Questions.

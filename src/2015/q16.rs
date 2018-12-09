@@ -72,7 +72,7 @@ named!(aunt_parser<&str, AuntSue>, complete!(do_parse!(
 fn process_data_a(data: &str) -> u32 {
     let gifter = AuntSue {
         name: None,
-        features: hashmap!{
+        features: hashmap![
           "children".to_string() => 3,
           "cats".to_string() => 7,
           "samoyeds".to_string() => 2,
@@ -83,7 +83,7 @@ fn process_data_a(data: &str) -> u32 {
           "trees".to_string() => 3,
           "cars".to_string() => 2,
           "perfumes".to_string() => 1
-        },
+        ],
     };
     let mut aunts_sue = Vec::new();
     for line in data.lines() {
@@ -101,7 +101,7 @@ fn process_data_a(data: &str) -> u32 {
 fn process_data_b(data: &str) -> u32 {
     let gifter = AuntSue {
         name: None,
-        features: hashmap!{
+        features: hashmap![
           "children".to_string() => 3,
           "cats".to_string() => 7,
           "samoyeds".to_string() => 2,
@@ -112,7 +112,7 @@ fn process_data_b(data: &str) -> u32 {
           "trees".to_string() => 3,
           "cars".to_string() => 2,
           "perfumes".to_string() => 1
-        },
+        ],
     };
 
     let mut aunts_sue = Vec::new();

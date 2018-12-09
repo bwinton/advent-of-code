@@ -120,7 +120,6 @@ fn process_data_b(data: &str) -> u32 {
     process_data_b_impl(data, 100)
 }
 
-
 //-----------------------------------------------------
 // Questions.
 

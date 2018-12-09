@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT : &'static str = include_str!("data/q08.data");
+static INPUT: &'static str = include_str!("data/q08.data");
 
 // #[derive(Clone,Debug)]
 // struct Node {
@@ -56,19 +56,18 @@ fn get_metadata_b(numbers: &mut Vec<i32>) -> i32 {
                 metadata += child;
             }
         }
-
     }
     metadata
 }
 
 fn process_data_a(data: &str) -> i32 {
-    let mut numbers: Vec<i32> = data.split(" ").map(|x| x.parse().unwrap()).collect();
+    let mut numbers: Vec<i32> = data.split(' ').map(|x| x.parse().unwrap()).collect();
     numbers.reverse();
     get_metadata_a(&mut numbers)
 }
 
 fn process_data_b(data: &str) -> i32 {
-    let mut numbers: Vec<i32> = data.split(" ").map(|x| x.parse().unwrap()).collect();
+    let mut numbers: Vec<i32> = data.split(' ').map(|x| x.parse().unwrap()).collect();
     numbers.reverse();
     get_metadata_b(&mut numbers)
 }

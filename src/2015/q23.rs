@@ -18,7 +18,7 @@ fn process_data_a_impl(data: &str, reg: char) -> i64 {
     ];
 
     let instructions = parse_instructions(data, &builders).unwrap();
-    let mut state = CPU::new(hashmap!{ 'a' => 0, 'b' => 0 }, instructions);
+    let mut state = CPU::new(hashmap!['a' => 0, 'b' => 0], instructions);
     while let Some(new) = state.execute() {
         state = new;
     }
@@ -36,7 +36,7 @@ fn process_data_b_impl(data: &str, reg: char) -> i64 {
     ];
 
     let instructions = parse_instructions(data, &builders).unwrap();
-    let mut state = CPU::new(hashmap!{ 'a' => 1, 'b' => 0 }, instructions);
+    let mut state = CPU::new(hashmap!['a' => 1, 'b' => 0], instructions);
     while let Some(new) = state.execute() {
         state = new;
     }
@@ -50,7 +50,6 @@ fn process_data_a(data: &str) -> i64 {
 fn process_data_b(data: &str) -> i64 {
     process_data_b_impl(data, 'b')
 }
-
 
 //-----------------------------------------------------
 // Questions.

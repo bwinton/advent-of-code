@@ -209,11 +209,11 @@ impl Day for Q {
 
 #[test]
 fn a() {
-    let expected = hashmap!{
+    let expected = hashmap![
       "a".to_string() => 1,
       "b".to_string() => 0,
       "c".to_string() => -10,
-    };
+    ];
     assert_eq!(
         process_data_a(
             "b inc 5 if a > 1

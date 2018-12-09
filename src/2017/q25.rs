@@ -278,10 +278,10 @@ fn a() {
 
     let state_a = State {
         name: 'A',
-        actions: hashmap!{
+        actions: hashmap![
           false => action_a0.clone(),
           true => action_a1.clone()
-        },
+        ],
     };
 
     let action_b0 = Action {
@@ -300,10 +300,10 @@ fn a() {
 
     let state_b = State {
         name: 'B',
-        actions: hashmap!{
+        actions: hashmap![
           false => action_b0.clone(),
           true => action_b1.clone()
-        },
+        ],
     };
 
     let machine = Machine {
@@ -312,10 +312,10 @@ fn a() {
         state: 'A',
         checksum: 6,
         steps: 0,
-        states: hashmap!{
+        states: hashmap![
           'A' => state_a.clone(),
           'B' => state_b.clone()
-        },
+        ],
     };
 
     assert_eq!(
