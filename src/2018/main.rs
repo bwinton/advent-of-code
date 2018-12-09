@@ -9,7 +9,7 @@ mod q05;
 mod q06;
 mod q07;
 mod q08;
-// mod q09;
+mod q09;
 // mod q10;
 // mod q11;
 // mod q12;
@@ -52,7 +52,7 @@ fn main() {
         q06,
         q07,
         q08,
-        //q09,
+        q09,
         //q10,
         //q11,
         //q12,
