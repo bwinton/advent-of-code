@@ -7,32 +7,36 @@ static INPUT: &'static str = include_str!("data/q05.data");
 
 fn remove_pairs(data: &str) -> String {
     let mut data: Vec<_> = data.chars().collect();
+    let mut lower_data = data.iter().map(|c| c.to_ascii_lowercase()).collect::<Vec<_>>();
     let mut found = true;
     while found {
         // add a terminator
         data.push(' ');
-        // println!("\"{}\"", data.iter().collect::<String>());
+        lower_data.push(' ');
+        // println!("{:?}", data);
         found = false;
         let mut rv = vec![];
+        let mut lower_rv = vec![];
+
         let mut skip = false;
-        for (curr, next) in data.iter().zip(data.iter().skip(1)) {
+        for i in 0..data.len() - 1 {
+            // println!("{}, {}:{}, {}", i, data[i], data[i+1], lower_data[i]);
             if skip {
                 skip = false;
                 continue;
             }
-            // println!("Testing {} {} == {}", curr, next,
-            // curr != next && curr.to_lowercase().to_string() == next.to_lowercase().to_string());
-            if curr == next || curr.to_lowercase().to_string() != next.to_lowercase().to_string() {
-                rv.push(*curr);
+            if data[i] == data[i+1] || lower_data[i] != lower_data[i+1] {
+                rv.push(data[i]);
+                lower_rv.push(lower_data[i]);
             } else {
                 // Skip the next one.
                 skip = true;
                 found = true;
             }
         }
-        data = rv.clone();
+        data = rv;
+        lower_data = lower_rv;
     }
-    // println!("\"{}\"", data.iter().collect::<String>());
 
     data.iter().collect()
 }
@@ -42,27 +46,53 @@ fn process_data_a(data: &str) -> usize {
     remove_pairs(data.trim()).len()
 }
 
+// @todo: Needs optimization!!!
 fn process_data_b(data: &str) -> usize {
     let data = data.trim();
-    let mut min = (" ".to_owned(), data.len());
-    let chars = "abcdefghijklmnopqrstuvwxyz";
-    for remove in chars.chars() {
-        let remove = remove.to_string();
+    let mut min = data.len();
+    let chars = vec![
+        vec!['a', 'A'],
+        vec!['b', 'B'],
+        vec!['c', 'C'],
+        vec!['d', 'D'],
+        vec!['e', 'E'],
+        vec!['f', 'F'],
+        vec!['g', 'G'],
+        vec!['h', 'H'],
+        vec!['i', 'I'],
+        vec!['j', 'J'],
+        vec!['k', 'K'],
+        vec!['l', 'L'],
+        vec!['m', 'M'],
+        vec!['n', 'N'],
+        vec!['o', 'O'],
+        vec!['p', 'P'],
+        vec!['q', 'Q'],
+        vec!['r', 'R'],
+        vec!['s', 'S'],
+        vec!['t', 'T'],
+        vec!['u', 'U'],
+        vec!['v', 'V'],
+        vec!['w', 'W'],
+        vec!['x', 'X'],
+        vec!['y', 'Y'],
+        vec!['z', 'Z'],
+    ];
+    for remove in chars {
         let curr: String = data
             .chars()
-            .filter(|x| x.to_lowercase().to_string() != remove)
+            .filter(|x| !remove.contains(x))
             .collect();
         if curr.len() == data.len() {
             // Didn't find any characters, so no need to continue.
             continue;
         }
         let size = remove_pairs(&curr).len();
-        // println!("({}, {}): {:?}", &remove, size, min);
-        if size < min.1 {
-            min = (remove, size);
+        if size < min {
+            min = size;
         }
     }
-    min.1
+    min
     // 6943 is too high…
 }
 

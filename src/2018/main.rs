@@ -10,7 +10,7 @@ mod q06;
 mod q07;
 mod q08;
 mod q09;
-// mod q10;
+mod q10;
 // mod q11;
 // mod q12;
 // mod q13;
@@ -45,8 +45,7 @@ extern crate test;
 fn main() {
     let days = q_vec!(
         q01, q02, q03, q04, q05, q06, q07, q08,
-        q09,
-        //q10,
+        q09, q10,
         //q11,
         //q12,
         //q13,

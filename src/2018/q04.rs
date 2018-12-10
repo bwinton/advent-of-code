@@ -133,11 +133,6 @@ fn process_data_a(data: &str) -> usize {
             }
         }
         *guard += sleeps.iter().sum::<u32>();
-        // print!("{} {}: {} - ", date, &day.guard, guard);
-        // for i in sleeps.iter() {
-        //   print!("{}", i);
-        // }
-        // println!();
     }
 
     let mut max_sleep = ("", 0u32);
@@ -146,8 +141,6 @@ fn process_data_a(data: &str) -> usize {
             max_sleep = (guard, *sleeps);
         }
     }
-
-    println!("{:?}", max_sleep);
 
     let mut sleep_count = [0; 60];
     for (date, day) in &days {
@@ -158,11 +151,6 @@ fn process_data_a(data: &str) -> usize {
             }
         }
     }
-
-    for i in sleep_count.iter() {
-        print!("{}", i);
-    }
-    println!();
 
     max_sleep.0.parse::<usize>().unwrap()
         * sleep_count
@@ -217,11 +205,6 @@ fn process_data_b(data: &str) -> u32 {
             }
         }
         *guard += sleeps.iter().sum::<u32>();
-        // print!("{} {}: {} - ", date, &day.guard, guard);
-        // for i in sleeps.iter() {
-        //   print!("{}", i);
-        // }
-        // println!();
     }
 
     let mut guard_sleeps = HashMap::new();
@@ -235,23 +218,16 @@ fn process_data_b(data: &str) -> u32 {
 
     let mut max_sleep = ("", 0u32, 0u32);
     for (guard, sleep_count) in &guard_sleeps {
-        // print!("{} - ", guard);
-        // for _ in 0..60 {
-        //   print!("{} ", sleep_count[i]);
-        // }
         let sleeps = sleep_count
             .iter()
             .enumerate()
             .map(|(x, y)| (y, x))
             .max()
             .unwrap();
-        // println!(" => {:?}", sleeps);
         if *sleeps.0 > max_sleep.1 {
             max_sleep = (guard, *sleeps.0, sleeps.1 as u32);
         }
     }
-
-    // println!("{:?}, {}", max_sleep, max_sleep.0.parse::<u32>().unwrap() * max_sleep.2);
 
     max_sleep.0.parse::<u32>().unwrap() * max_sleep.2
 }

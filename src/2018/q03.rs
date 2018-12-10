@@ -8,7 +8,7 @@ use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q03.data");
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 struct Square {
     id: String,
     top: u32,
@@ -18,7 +18,7 @@ struct Square {
 }
 
 impl Square {
-    fn contains(self, x: u32, y: u32) -> bool {
+    fn contains(&self, x: u32, y: u32) -> bool {
         x >= self.left && x < self.right && y >= self.top && y < self.bottom
     }
 }
@@ -77,7 +77,7 @@ fn process_data_a(data: &str) -> u32 {
     for x in min_x..=max_x + 1 {
         for y in min_y..=max_y + 1 {
             let mut found = false;
-            for square in squares.clone() {
+            for square in &squares {
                 if square.contains(x, y) {
                     if found {
                         common_squares += 1;
@@ -100,7 +100,7 @@ fn process_data_b(data: &str) -> String {
 
     let mut unseen = HashSet::new();
     for square in &squares {
-        unseen.insert(square.id.clone());
+        unseen.insert(&square.id);
     }
 
     let mut min_x = squares[0].left;
@@ -118,10 +118,9 @@ fn process_data_b(data: &str) -> String {
     for x in min_x..=max_x + 1 {
         for y in min_y..=max_y + 1 {
             let mut seen = vec![];
-            for square in squares.clone() {
-                let id = square.id.clone();
+            for square in &squares {
                 if square.contains(x, y) {
-                    seen.push(id);
+                    seen.push(&square.id);
                 }
             }
             if seen.len() > 1 {
@@ -131,7 +130,7 @@ fn process_data_b(data: &str) -> String {
             }
         }
     }
-    unseen.iter().next().unwrap().clone()
+    unseen.iter().next().unwrap().to_string()
 }
 
 //-----------------------------------------------------
