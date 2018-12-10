@@ -39,13 +39,14 @@ extern crate lazy_static;
 extern crate chrono;
 extern crate crypto;
 extern crate itertools;
+extern crate rayon;
 extern crate regex;
 extern crate test;
 
 fn main() {
     let days = q_vec!(
-        q01, q02, q03, q04, q05, q06, q07, q08,
-        q09, q10,
+        q01, q02, q03, q04, q05, q06, q07, q08, q09,
+        q10,
         //q11,
         //q12,
         //q13,

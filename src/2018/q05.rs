@@ -1,13 +1,17 @@
 //-----------------------------------------------------
 // Setup.
 
+use rayon::prelude::*;
 use std::iter::Iterator;
 
 static INPUT: &'static str = include_str!("data/q05.data");
 
 fn remove_pairs(data: &str) -> String {
     let mut data: Vec<_> = data.chars().collect();
-    let mut lower_data = data.iter().map(|c| c.to_ascii_lowercase()).collect::<Vec<_>>();
+    let mut lower_data = data
+        .iter()
+        .map(|c| c.to_ascii_lowercase())
+        .collect::<Vec<_>>();
     let mut found = true;
     while found {
         // add a terminator
@@ -25,7 +29,7 @@ fn remove_pairs(data: &str) -> String {
                 skip = false;
                 continue;
             }
-            if data[i] == data[i+1] || lower_data[i] != lower_data[i+1] {
+            if data[i] == data[i + 1] || lower_data[i] != lower_data[i + 1] {
                 rv.push(data[i]);
                 lower_rv.push(lower_data[i]);
             } else {
@@ -49,7 +53,6 @@ fn process_data_a(data: &str) -> usize {
 // @todo: Needs optimization!!!
 fn process_data_b(data: &str) -> usize {
     let data = data.trim();
-    let mut min = data.len();
     let chars = vec![
         vec!['a', 'A'],
         vec!['b', 'B'],
@@ -78,21 +81,20 @@ fn process_data_b(data: &str) -> usize {
         vec!['y', 'Y'],
         vec!['z', 'Z'],
     ];
-    for remove in chars {
-        let curr: String = data
-            .chars()
-            .filter(|x| !remove.contains(x))
-            .collect();
-        if curr.len() == data.len() {
-            // Didn't find any characters, so no need to continue.
-            continue;
-        }
-        let size = remove_pairs(&curr).len();
-        if size < min {
-            min = size;
-        }
-    }
-    min
+    chars
+        .par_iter()
+        .map(|remove| {
+            let curr: String = data.chars().filter(|x| !remove.contains(x)).collect();
+            if curr.len() == data.len() {
+                // Didn't find any characters, so no need to continue.
+                usize::max_value()
+            } else {
+                remove_pairs(&curr).len()
+            }
+        })
+        .min()
+        .unwrap()
+    // min
     // 6943 is too high…
 }
 
