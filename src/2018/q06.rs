@@ -2,6 +2,7 @@
 // Setup.
 
 use regex::Regex;
+use std::cmp::{max, min};
 use std::collections::HashMap;
 use std::str::FromStr;
 
@@ -49,18 +50,10 @@ fn process_data_a(data: &str) -> i32 {
     let mut max_y = 0;
 
     for point in points.values() {
-        if point.x < min_x {
-            min_x = point.x;
-        }
-        if point.y < min_y {
-            min_y = point.y;
-        }
-        if point.x > max_x {
-            max_x = point.x;
-        }
-        if point.y > max_y {
-            max_y = point.y;
-        }
+        min_x = min(min_x, point.x);
+        min_y = min(min_y, point.y);
+        max_x = max(max_x, point.x);
+        max_y = max(max_y, point.y);
     }
 
     let mut points_of_interest = points.clone();
