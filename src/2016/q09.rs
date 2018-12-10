@@ -23,7 +23,7 @@ fn decompress(line: &str) -> String {
         match marker_re.captures(&rest.clone()) {
             None => {
                 rv.push_str(&rest[..]);
-                break;
+                break rv;
             }
             Some(marker) => {
                 let first = marker.get(0).unwrap();
@@ -39,8 +39,6 @@ fn decompress(line: &str) -> String {
             }
         }
     }
-    // println!(" => {}", rv);
-    rv
 }
 
 fn double_decompress(line: &str) -> String {
@@ -52,7 +50,7 @@ fn double_decompress(line: &str) -> String {
         match marker_re.captures(&rest.clone()) {
             None => {
                 rv.push_str(&rest[..]);
-                break;
+                break rv;
             }
             Some(marker) => {
                 let first = marker.get(0).unwrap();
@@ -69,8 +67,6 @@ fn double_decompress(line: &str) -> String {
             }
         }
     }
-    // println!(" => {}", rv);
-    rv
 }
 //-----------------------------------------------------
 // Questions.

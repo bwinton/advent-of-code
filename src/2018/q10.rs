@@ -55,7 +55,6 @@ fn process_data_a(data: &str) -> String {
         points.push(point);
     }
     let mut smallest = i64::max_value();
-    let mut rv = String::new();
     loop {
         for point in &mut points {
             point.step();
@@ -86,6 +85,7 @@ fn process_data_a(data: &str) -> String {
                 max_y = max(max_y, point.p_y);
             }
 
+            let mut rv = String::with_capacity(area as usize * 2 + max_y as usize + 1);
             rv.push('\n');
             for y in min_y-1..=max_y+1 {
                 'x: for x in min_x-1..=max_x+1 {
@@ -99,11 +99,10 @@ fn process_data_a(data: &str) -> String {
                 }
                 rv.push('\n');
             }
-            break;
+            break rv;
         }
         smallest = area;
     }
-    rv
 }
 
 fn process_data_b(data: &str) -> i32 {
