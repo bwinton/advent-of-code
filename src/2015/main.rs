@@ -37,11 +37,6 @@ extern crate maplit;
 #[macro_use]
 extern crate nom;
 
-extern crate combine;
-extern crate crypto;
-extern crate permutohedron;
-extern crate regex;
-extern crate serde_json;
 extern crate test;
 
 fn main() {

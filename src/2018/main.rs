@@ -36,11 +36,6 @@ extern crate lazy_static;
 // #[macro_use]
 // extern crate nom;
 
-extern crate chrono;
-extern crate crypto;
-extern crate itertools;
-extern crate rayon;
-extern crate regex;
 extern crate test;
 
 fn main() {
