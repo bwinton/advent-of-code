@@ -15,33 +15,39 @@ fn get_power(x: usize, y: usize, serial: i32) -> i32 {
     power - 5
 }
 
-fn get_total_power(cells: &[Vec<i32>], x: usize, y: usize, size: usize) -> i32 {
-    let mut rv = 0;
-    for row in cells.iter().skip(x).take(size) {
-        for cell in row.iter().skip(y).take(size) {
-            rv += cell;
+fn get_cells(serial: i32) -> Vec<Vec<i32>> {
+    let mut cells: Vec<Vec<i32>> = (1..301 as usize)
+    .into_par_iter()
+    .map(|x| {
+        (1..301 as usize)
+            .into_par_iter()
+            .map(|y| get_power(x, y, serial))
+            .collect()
+    })
+    .collect();
+
+    for x in 1..300 {
+        for y in 1..300 {
+            cells[x][y] += cells[x-1][y] + cells[x][y-1] - cells[x-1][y-1];
         }
     }
-    rv
+
+    cells
+}
+
+fn get_total_power(cells: &[Vec<i32>], x: usize, y: usize, size: usize) -> i32 {
+    cells[x][y] + cells[x+size][y+size] - cells[x+size][y] - cells[x][y+size]
 }
 
 fn process_data_a(data: i32) -> String {
-    let cells: Vec<Vec<i32>> = (1..301 as usize)
-        .into_par_iter()
-        .map(|x| {
-            (1..301 as usize)
-                .into_par_iter()
-                .map(|y| get_power(x, y, data))
-                .collect()
-        })
-        .collect();
+    let cells = get_cells(data);
 
-    let rv = (1..298 as usize)
+    let rv = (0..297 as usize)
         .into_par_iter()
         .map(|x| {
-            (1..298 as usize)
+            (0..297 as usize)
                 .into_par_iter()
-                .map(|y| (get_total_power(&cells, x, y, 3), (x + 1, y + 1)))
+                .map(|y| (get_total_power(&cells, x, y, 3), (x + 2, y + 2)))
                 .max()
                 .unwrap()
         })
@@ -52,26 +58,18 @@ fn process_data_a(data: i32) -> String {
 }
 
 fn process_data_b(data: i32) -> String {
-    let cells: Vec<Vec<i32>> = (1..301 as usize)
-        .into_par_iter()
-        .map(|x| {
-            (1..301 as usize)
-                .into_par_iter()
-                .map(|y| get_power(x, y, data))
-                .collect()
-        })
-        .collect();
+    let cells = get_cells(data);
 
-    let rv = (1..300 as usize)
+    let rv = (0..300 as usize)
         .into_par_iter()
         .map(|x| {
-            (1..300 as usize)
+            (0..300 as usize)
                 .into_par_iter()
                 .map(|y| {
-                    let max_size = 301 - max(x, y);
+                    let max_size = 300 - max(x, y);
                     (0..max_size)
                         .into_par_iter()
-                        .map(|size| (get_total_power(&cells, x, y, size), (x + 1, y + 1), size))
+                        .map(|size| (get_total_power(&cells, x, y, size), (x + 2, y + 2), size))
                         .max()
                         .unwrap()
                 })
