@@ -17,18 +17,18 @@ fn get_power(x: usize, y: usize, serial: i32) -> i32 {
 
 fn get_cells(serial: i32) -> Vec<Vec<i32>> {
     let mut cells: Vec<Vec<i32>> = (1..301 as usize)
-    .into_par_iter()
-    .map(|x| {
-        (1..301 as usize)
-            .into_par_iter()
-            .map(|y| get_power(x, y, serial))
-            .collect()
-    })
-    .collect();
+        .into_par_iter()
+        .map(|x| {
+            (1..301 as usize)
+                .into_par_iter()
+                .map(|y| get_power(x, y, serial))
+                .collect()
+        })
+        .collect();
 
     for x in 1..300 {
         for y in 1..300 {
-            cells[x][y] += cells[x-1][y] + cells[x][y-1] - cells[x-1][y-1];
+            cells[x][y] += cells[x - 1][y] + cells[x][y - 1] - cells[x - 1][y - 1];
         }
     }
 
@@ -36,7 +36,7 @@ fn get_cells(serial: i32) -> Vec<Vec<i32>> {
 }
 
 fn get_total_power(cells: &[Vec<i32>], x: usize, y: usize, size: usize) -> i32 {
-    cells[x][y] + cells[x+size][y+size] - cells[x+size][y] - cells[x][y+size]
+    cells[x][y] + cells[x + size][y + size] - cells[x + size][y] - cells[x][y + size]
 }
 
 fn process_data_a(data: i32) -> String {
