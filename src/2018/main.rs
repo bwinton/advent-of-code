@@ -13,7 +13,7 @@ mod q09;
 mod q10;
 mod q11;
 mod q12;
-// mod q13;
+mod q13;
 // mod q14;
 // mod q15;
 // mod q16;
@@ -42,7 +42,7 @@ fn main() {
     let days = q_vec!(
         q01, q02, q03, q04, q05, q06, q07, q08, q09, q10, q11,
         q12,
-        //q13,
+        q13,
         //q14,
         //q15,
         //q16,
