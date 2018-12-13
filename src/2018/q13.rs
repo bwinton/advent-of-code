@@ -12,7 +12,7 @@ static INPUT: &'static str = include_str!("data/q13.data");
 enum Direction {
     Left,
     Straight,
-    Right
+    Right,
 }
 
 #[derive(Clone, Debug)]
@@ -71,7 +71,7 @@ impl Cart {
                     ('+', Direction::Right) => self.direction = '>',
                     _ => {}
                 }
-            },
+            }
             'v' => {
                 self.y += 1;
                 match (cells[self.y][self.x], &self.turn) {
@@ -81,17 +81,17 @@ impl Cart {
                     ('+', Direction::Right) => self.direction = '<',
                     _ => {}
                 }
-            },
+            }
             '<' => {
                 self.x -= 1;
-                 match (cells[self.y][self.x], &self.turn) {
+                match (cells[self.y][self.x], &self.turn) {
                     ('/', _) => self.direction = 'v',
                     ('\\', _) => self.direction = '^',
                     ('+', Direction::Left) => self.direction = 'v',
                     ('+', Direction::Right) => self.direction = '^',
                     _ => {}
                 }
-           }
+            }
             '>' => {
                 self.x += 1;
                 match (cells[self.y][self.x], &self.turn) {
@@ -130,7 +130,12 @@ impl Board {
             for (x, cell) in line.chars().enumerate() {
                 let mut cell = cell;
                 if cell == '^' || cell == 'v' || cell == '<' || cell == '>' {
-                    carts.insert(Cart{ direction: cell, x, y, turn: Direction::Left });
+                    carts.insert(Cart {
+                        direction: cell,
+                        x,
+                        y,
+                        turn: Direction::Left,
+                    });
                     if cell == '^' || cell == 'v' {
                         cell = '|';
                     } else {
@@ -180,7 +185,7 @@ impl Board {
 fn process_data_a(data: &str) -> String {
     let mut board = Board::from_data(data);
     let mut crashes = board.step();
-    while crashes.len() == 0 {
+    while crashes.is_empty() {
         crashes = board.step();
     }
 
@@ -205,21 +210,31 @@ q_impl!("13");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("/->-\\        
-|   |  /----\\
-| /-+--+-\\  |
+    assert_eq!(
+        process_data_a(
+            r#"/->-\        
+|   |  /----\
+| /-+--+-\  |
 | | |  | v  |
-\\-+-/  \\-+--/
-  \\------/   "), "7,3".to_string());
+\-+-/  \-+--/
+  \------/   "#
+        ),
+        "7,3".to_string()
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("/>-<\\  
+    assert_eq!(
+        process_data_b(
+            r#"/>-<\  
 |   |  
-| /<+-\\
+| /<+-\
 | | | v
-\\>+</ |
+\>+</ |
   |   ^
-  \\<->/"), "6,4".to_string());
+  \<->/"#
+        ),
+        "6,4".to_string()
+    );
 }
