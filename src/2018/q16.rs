@@ -2,8 +2,9 @@
 // Setup.
 
 use regex::Regex;
-use std::collections::{HashMap, HashSet};
-use std::iter::FromIterator;
+use std::collections::HashMap;
+// use std::collections::{HashMap, HashSet};
+// use std::iter::FromIterator;
 use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q16.data");
