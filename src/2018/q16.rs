@@ -2,9 +2,8 @@
 // Setup.
 
 use regex::Regex;
-use std::collections::HashMap;
-// use std::collections::{HashMap, HashSet};
-// use std::iter::FromIterator;
+use std::collections::{HashMap, HashSet};
+use std::iter::FromIterator;
 use std::str::FromStr;
 
 static INPUT: &'static str = include_str!("data/q16.data");
@@ -251,36 +250,36 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> u32 {
-    let (_examples, instructions) = parse_data(data);
-    // for example in examples {
-    //     let potentials: &mut HashSet<_> = opcodes.entry(example.instruction.opcode).or_insert_with(|| HashSet::from_iter(OPCODES.iter()));
-    //     println!("Potential for {}: {:?}", example.instruction.opcode, potentials);
-    //     for opcode in OPCODES {
-    //         if !example.works_as(opcode) {
-    //             potentials.remove(opcode);
-    //         }
-    //     }
-    // }
-    // println!("Instructions! {:?}", opcodes);
+    let mut code_potentials = HashMap::new();
+    let (examples, instructions) = parse_data(data);
+    for example in examples {
+        let potentials: &mut HashSet<_> = code_potentials
+            .entry(example.instruction.opcode)
+            .or_insert_with(|| HashSet::from_iter(OPCODES.iter()));
+        for opcode in OPCODES {
+            if !example.works_as(opcode) {
+                potentials.remove(opcode);
+            }
+        }
+    }
 
-    // @todo: Calculate this instead of figuring it out by hand.
     let mut opcodes = HashMap::new();
-    opcodes.insert(0, Opcode::Muli);
-    opcodes.insert(1, Opcode::Borr);
-    opcodes.insert(2, Opcode::Gtri);
-    opcodes.insert(3, Opcode::Eqri);
-    opcodes.insert(4, Opcode::Gtrr);
-    opcodes.insert(5, Opcode::Eqir);
-    opcodes.insert(6, Opcode::Addi);
-    opcodes.insert(7, Opcode::Setr);
-    opcodes.insert(8, Opcode::Mulr);
-    opcodes.insert(9, Opcode::Addr);
-    opcodes.insert(10, Opcode::Bori);
-    opcodes.insert(11, Opcode::Bani);
-    opcodes.insert(12, Opcode::Seti);
-    opcodes.insert(13, Opcode::Eqrr);
-    opcodes.insert(14, Opcode::Banr);
-    opcodes.insert(15, Opcode::Gtir);
+    while !code_potentials.is_empty() {
+        let mut singles = code_potentials.clone();
+        singles.retain(|_, v| v.len() == 1);
+        let mut multiples = code_potentials.clone();
+        multiples.retain(|_, v| v.len() != 1);
+
+        for (value, opcode) in singles {
+            for code in opcode {
+                opcodes.insert(value, code);
+                for (_, opcodes) in multiples.iter_mut() {
+                    opcodes.retain(|v| *v != code);
+                }
+            }
+        }
+        code_potentials = multiples;
+    }
 
     let mut registers = [0; 4];
     for instruction in instructions {
