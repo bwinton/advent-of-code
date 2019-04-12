@@ -1,9 +1,10 @@
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
+use crossterm::{Attribute, Color, Colored};
 use custom_error::custom_error;
 use reqwest;
 use serde_json::{from_reader, Map, Value};
 use std::env::{var, VarError};
-use std::fs::File;
+use std::fs::{remove_file, File};
 use std::path::Path;
 use std::time::{SystemTime, SystemTimeError};
 
@@ -119,9 +120,20 @@ fn print_year(year: &str) -> Result<(), StatsError> {
         response.copy_to(&mut file)?;
     }
     let cache_file = File::open(&cache_name)?;
-    let data: Map<String, Value> = from_reader(cache_file)?;
+    let parsed_data = from_reader(cache_file);
+    if parsed_data.is_err() {
+        remove_file(cache)?;
+        return Err(StatsError::from(parsed_data.err().unwrap()));
+    }
+    let data: Map<String, Value> = parsed_data?;
     let mut stats = AocStats::from_data(&data);
-    println!("Done {}!", stats.event);
+    println!(
+        "Stats for {bold}{white}{event}{reset}:",
+        bold = Attribute::Bold,
+        white = Colored::Fg(Color::White),
+        event = stats.event,
+        reset = Attribute::Reset,
+    );
     let mut undone = [(0, 0); 25];
     for member in &stats.members {
         for (i, undone) in undone.iter_mut().enumerate().take(member.completions.len()) {
@@ -140,12 +152,23 @@ fn print_year(year: &str) -> Result<(), StatsError> {
     }
     stats.members.sort_by_key(|m| -m.max_score);
     for (i, member) in stats.members.iter().enumerate() {
+        let place = member.place.unwrap() - i as i64;
+        let place_color = if place < 0 {
+            Colored::Fg(Color::Red)
+        } else if place > 0 {
+            Colored::Fg(Color::Green)
+        } else {
+            Colored::Fg(Color::White)
+        };
         println!(
-            "  {}: {} -> {} ({:+})",
-            member.name,
-            member.local_score,
-            member.max_score,
-            member.place.unwrap() - i as i64
+            "  {blue}{name}:{reset} {score} -> {max} ({place_color}{place:+}{reset})",
+            blue = Colored::Fg(Color::Blue),
+            reset = Attribute::Reset,
+            name = member.name,
+            score = member.local_score,
+            max = member.max_score,
+            place_color = place_color,
+            place = place,
         );
     }
     println!();
@@ -184,7 +207,12 @@ fn main() {
 
     for year in args {
         if let Err(error) = print_year(year) {
-            println!("{}", error);
+            println!(
+                "{red}{error}{reset}",
+                red = Colored::Fg(Color::Red),
+                error = error,
+                reset = Attribute::Reset,
+            );
         };
     }
 }

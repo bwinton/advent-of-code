@@ -22,7 +22,7 @@ fn process_data(data: &str, iterations: usize) -> String {
                     Err((x, y))
                 }
             });
-        let values: Vec<String> = Itertools::flatten(iter).map(|x| x.to_string()).collect();
+        let values: Vec<String> = iter.flatten().map(|x| x.to_string()).collect();
         curr = values.join("");
         // println!("  {}: {:?}", i, curr);
     }
