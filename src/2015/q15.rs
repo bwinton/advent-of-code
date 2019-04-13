@@ -57,52 +57,6 @@ impl Ingredient {
     }
 }
 
-define_iterator!(HundredIter (
-    &curr: Vec<i32> = vec![],
-    &max: i32 = 100,
-    &len: usize = 0
-  ) -> Option<Vec<i32>> {
-
-  let curr_len = *len - 1;
-  if curr.is_empty() {
-    for _ in 0..curr_len {
-      curr.push(0)
-    }
-  } else {
-    curr[curr_len - 1] += 1;
-  }
-
-  if curr[0] == *max {
-    return None;
-  }
-
-  let mut rest: i32 = *max - curr.iter().sum::<i32>();
-
-  let mut found = false;
-  while rest < 0 {
-    for i in 1..curr_len {
-      if curr[curr_len - i] != 0 {
-        found = true;
-        curr[curr_len - i] = 0;
-        curr[curr_len - i - 1] += 1;
-        break;
-      }
-    }
-    if !found {
-      break;
-    }
-    rest = *max - curr.iter().sum::<i32>();
-  }
-  if !found && rest < 0 {
-    None
-  } else {
-    let mut rv = curr.clone();
-    rv.push(rest);
-
-    Some(rv)
-  }
-});
-
 fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
     let mut sum = Ingredient {
         name: "Sum".to_string(),
@@ -122,6 +76,52 @@ fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
     )
 }
 
+fn hundred_iter(len: usize) -> impl Iterator<Item = Vec<i32>> {
+    let mut curr: Vec<i32> = vec![];
+    const MAX: i32 = 100;
+    let curr_len: usize = len - 1;
+
+    std::iter::from_fn(move || {
+        if curr.is_empty() {
+            for _ in 0..curr_len {
+                curr.push(0)
+            }
+        } else {
+            curr[curr_len - 1] += 1;
+        }
+
+        if curr[0] == MAX {
+            return None;
+        }
+
+        let mut rest: i32 = MAX - curr.iter().sum::<i32>();
+
+        let mut found = false;
+        while rest < 0 {
+            for i in 1..curr_len {
+                if curr[curr_len - i] != 0 {
+                    found = true;
+                    curr[curr_len - i] = 0;
+                    curr[curr_len - i - 1] += 1;
+                    break;
+                }
+            }
+            if !found {
+                break;
+            }
+            rest = MAX - curr.iter().sum::<i32>();
+        }
+        if !found && rest < 0 {
+            None
+        } else {
+            let mut rv = curr.clone();
+            rv.push(rest);
+
+            Some(rv)
+        }
+    })
+}
+
 fn process_data_a(data: &str) -> i32 {
     let mut ingredients: Vec<Ingredient> = Vec::new();
     for line in data.lines() {
@@ -129,10 +129,7 @@ fn process_data_a(data: &str) -> i32 {
     }
 
     let mut max = 0;
-    let iter = HundredIter {
-        len: ingredients.len() as usize,
-        ..Default::default()
-    };
+    let iter = hundred_iter(ingredients.len());
     for x in iter {
         let score = get_score(&x, &ingredients).0;
         if score > max {
@@ -150,10 +147,7 @@ fn process_data_b(data: &str) -> i32 {
     }
 
     let mut max = 0;
-    let iter = HundredIter {
-        len: ingredients.len() as usize,
-        ..Default::default()
-    };
+    let iter = hundred_iter(ingredients.len());
     for x in iter {
         let (score, calories) = get_score(&x, &ingredients);
         if score > max && calories == 500 {
@@ -171,6 +165,18 @@ q_impl!("15");
 
 #[test]
 fn a() {
+    let test: Vec<Vec<i32>> = hundred_iter(2).take(5).collect();
+    assert_eq!(
+        test,
+        vec![
+            vec![0, 100],
+            vec![1, 99],
+            vec![2, 98],
+            vec![3, 97],
+            vec![4, 96]
+        ]
+    );
+
     assert_eq!(
         process_data_a(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8

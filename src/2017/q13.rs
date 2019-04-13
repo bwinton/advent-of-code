@@ -11,17 +11,19 @@ fn get_range(max: usize) -> Vec<usize> {
     ((0..max).chain((1..max - 1).rev())).collect()
 }
 
-define_iterator!(MultiIter(
-    &ranges: Vec<(usize, usize, Vec<usize>)> = Vec::default(),
-    &curr: usize = 0
-  ) -> Option<Vec<(usize, usize, usize)>> {
-  let mut rv = Vec::new();
-  for value in ranges {
-    rv.push((value.0, value.1, value.2[*curr % value.2.len()]));
-  }
-  *curr += 1;
-  Some(rv)
-});
+fn multi_iter(
+    ranges: Vec<(usize, usize, Vec<usize>)>,
+    mut curr: usize,
+) -> impl Iterator<Item = Vec<(usize, usize, usize)>> {
+    std::iter::from_fn(move || {
+        let mut rv = Vec::new();
+        for value in &ranges {
+            rv.push((value.0, value.1, value.2[curr % value.2.len()]));
+        }
+        curr += 1;
+        Some(rv)
+    })
+}
 
 fn get_ranges(data: &str) -> Vec<(usize, usize, Vec<usize>)> {
     let mut ranges = Vec::new();
@@ -37,10 +39,7 @@ fn process_data_a(data: &str) -> usize {
     let ranges = get_ranges(data);
     let max = &ranges.iter().map(|x| x.0).max().unwrap() + 1;
     let mut rv = 0;
-    let scanners = MultiIter {
-        ranges: ranges.clone(),
-        ..Default::default()
-    };
+    let scanners = multi_iter(ranges.clone(), 0);
     for tick in scanners.enumerate().take(max) {
         if let Some(scanner) = tick
             .1
@@ -59,10 +58,7 @@ fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     for delay in 0.. {
         let mut caught = false;
-        let scanners = MultiIter {
-            ranges: ranges.clone(),
-            curr: delay,
-        };
+        let scanners = multi_iter(ranges.clone(), delay);
         for tick in scanners.enumerate().take(max) {
             if tick
                 .1

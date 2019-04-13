@@ -7,6 +7,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::i32;
+use std::string::ToString;
 
 static INPUT: &'static str = include_str!("data/q13.data");
 
@@ -45,7 +46,7 @@ fn get_happiness(
 ) -> i32 {
     let mut rv = 0;
     let lookup = distances.clone();
-    let mut people: Vec<String> = perm.iter().map(|x| x.to_string()).collect();
+    let mut people: Vec<String> = perm.iter().map(ToString::to_string).collect();
     if let Some(person) = first {
         people.insert(0, person.clone());
         people.push(person.clone());

@@ -10,7 +10,7 @@ fn remove_pairs(data: &str) -> String {
     let mut data: Vec<_> = data.chars().collect();
     let mut lower_data = data
         .iter()
-        .map(|c| c.to_ascii_lowercase())
+        .map(char::to_ascii_lowercase)
         .collect::<Vec<_>>();
     let mut found = true;
     while found {

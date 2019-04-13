@@ -2,6 +2,7 @@
 // Setup.
 
 use regex::Regex;
+use std::borrow::ToOwned;
 use std::collections::BTreeMap;
 use std::str::Lines;
 
@@ -118,9 +119,9 @@ fn get_groups(lines: &mut Lines, groups: &mut BTreeMap<i32, Group>) -> Vec<i32> 
                 let modifiers = modifiers.split("; ").collect::<Vec<&str>>();
                 for modifier in modifiers {
                     if let Some(cap) = IMMUNE_RE.captures(modifier) {
-                        group.immunities = cap[1].split(", ").map(|s| s.to_owned()).collect();
+                        group.immunities = cap[1].split(", ").map(ToOwned::to_owned).collect();
                     } else if let Some(cap) = WEAK_RE.captures(modifier) {
-                        group.weaknesses = cap[1].split(", ").map(|s| s.to_owned()).collect();
+                        group.weaknesses = cap[1].split(", ").map(ToOwned::to_owned).collect();
                     }
                 }
             }

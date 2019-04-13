@@ -6,6 +6,7 @@ use aoc::Day;
 use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
+use std::string::ToString;
 
 static INPUT: &'static str = include_str!("data/q07.data");
 
@@ -38,7 +39,7 @@ impl FromStr for Disc {
                 rv.name = x[1].to_string();
                 rv.weight = x[2].parse().unwrap();
                 if let Some(rest) = x.get(4) {
-                    rv.holdings = rest.as_str().split(", ").map(|x| x.to_string()).collect();
+                    rv.holdings = rest.as_str().split(", ").map(ToString::to_string).collect();
                 }
                 Ok(rv)
             }

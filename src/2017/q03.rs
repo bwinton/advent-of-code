@@ -15,53 +15,53 @@ enum Direction {
     Down,
 }
 
-// SpiralIter { len: 5, dir: Direction::Up, .. Default::default() }
+fn spiral_iter() -> impl Iterator<Item = [i32; 2]> {
+    let mut curr = [0, 0];
+    let mut dir = Direction::Left;
+    let mut len = 1;
+    let mut remaining = 1;
 
-define_iterator!(SpiralIter (
-    &curr: [i32; 2] = [0, 0],
-    &dir: Direction = Direction::Left,
-    &len: usize = 1,
-    &remaining: usize = 1
-  ) -> Option<[i32;2]> {
-  let rv = *curr;
+    std::iter::from_fn(move || {
+        let rv = curr;
 
-  *remaining -= 1;
+        remaining -= 1;
 
-  match *dir {
-    Direction::Left => {
-      curr[0] += 1;
-      if *remaining == 0 {
-        *dir = Direction::Up;
-        *remaining = *len;
-      }
-    },
-    Direction::Up => {
-      curr[1] -= 1;
-      if *remaining == 0 {
-        *dir = Direction::Right;
-        *len += 1;
-        *remaining = *len;
-      }
-    },
-    Direction::Right => {
-      curr[0] -= 1;
-      if *remaining == 0 {
-        *dir = Direction::Down;
-        *remaining = *len;
-      }
-    },
-    Direction::Down => {
-      curr[1] += 1;
-      if *remaining == 0 {
-        *dir = Direction::Left;
-        *len += 1;
-        *remaining = *len;
-      }
-    }
-  }
+        match dir {
+            Direction::Left => {
+                curr[0] += 1;
+                if remaining == 0 {
+                    dir = Direction::Up;
+                    remaining = len;
+                }
+            }
+            Direction::Up => {
+                curr[1] -= 1;
+                if remaining == 0 {
+                    dir = Direction::Right;
+                    len += 1;
+                    remaining = len;
+                }
+            }
+            Direction::Right => {
+                curr[0] -= 1;
+                if remaining == 0 {
+                    dir = Direction::Down;
+                    remaining = len;
+                }
+            }
+            Direction::Down => {
+                curr[1] += 1;
+                if remaining == 0 {
+                    dir = Direction::Left;
+                    len += 1;
+                    remaining = len;
+                }
+            }
+        }
 
-  Some(rv)
-});
+        Some(rv)
+    })
+}
 
 fn process_data_a(data: i32) -> i32 {
     if data == 1 {
@@ -86,28 +86,29 @@ fn process_data_a(data: i32) -> i32 {
     rv
 }
 
-define_iterator!(MultIter(
-    &spiral: SpiralIter = SpiralIter::default(),
-    &seen: HashMap<[i32;2], usize> = HashMap::new()
-  ) -> Option<usize> {
-  let mut rv = 0;
-  let curr = spiral.next().unwrap();
-  if curr == [0,0] {
-    rv = 1;
-  }
-  for x in -1..2 {
-    for y in -1..2 {
-      if let Some(cell) = seen.get(&[curr[0] + x, curr[1] + y]) {
-        rv += cell;
-      }
-    }
-  }
-  seen.insert(curr, rv);
-  Some(rv)
-});
+fn mult_iter() -> impl Iterator<Item = usize> {
+    let mut spiral = spiral_iter();
+    let mut seen = HashMap::new();
+    std::iter::from_fn(move || {
+        let mut rv = 0;
+        let curr = spiral.next().unwrap();
+        if curr == [0, 0] {
+            rv = 1;
+        }
+        for x in -1..2 {
+            for y in -1..2 {
+                if let Some(cell) = seen.get(&[curr[0] + x, curr[1] + y]) {
+                    rv += cell;
+                }
+            }
+        }
+        seen.insert(curr, rv);
+        Some(rv)
+    })
+}
 
 fn process_data_b(data: i32) -> usize {
-    for number in MultIter::default() {
+    for number in mult_iter() {
         if number > data as usize {
             return number;
         }
@@ -148,7 +149,7 @@ fn a() {
 
 #[test]
 fn b() {
-    let spiral_values: Vec<[i32; 2]> = SpiralIter::default().take(25).collect();
+    let spiral_values: Vec<[i32; 2]> = spiral_iter().take(25).collect();
     let spiral_expected: Vec<[i32; 2]> = vec![
         [0, 0],
         [1, 0],
@@ -178,7 +179,7 @@ fn b() {
     ];
     assert_eq!(spiral_values, spiral_expected);
 
-    let mult_values: Vec<usize> = MultIter::default().take(23).collect();
+    let mult_values: Vec<usize> = mult_iter().take(23).collect();
     let mult_expected: Vec<usize> = vec![
         1, 1, 2, 4, 5, 10, 11, 23, 25, 26, 54, 57, 59, 122, 133, 142, 147, 304, 330, 351, 362, 747,
         806,
