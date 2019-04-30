@@ -176,6 +176,7 @@ fn print_year(year: &str) -> Result<(), StatsError> {
 }
 
 fn main() {
+    color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(
             Arg::with_name("year")

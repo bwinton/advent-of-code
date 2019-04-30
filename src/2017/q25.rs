@@ -207,7 +207,7 @@ fn a() {
         ))
         .unwrap()
         .1,
-        12656374
+        12_656_374
     );
     assert_eq!(
         state_name_parser(CompleteStr("In state A:\n")).unwrap().1,

@@ -109,6 +109,7 @@ fn select(day: &Day, arg: &str) {
 }
 
 pub fn main(days: &[Box<Day>]) {
+    color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(
             Arg::with_name("day")

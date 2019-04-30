@@ -103,7 +103,7 @@ fn a() {
     );
     assert_eq!(
         process_data_a("13 players; last marble is worth 7999 points"),
-        146373
+        146_373
     );
     assert_eq!(
         process_data_a("17 players; last marble is worth 1104 points"),

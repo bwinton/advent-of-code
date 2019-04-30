@@ -76,7 +76,7 @@ impl Day for Q {
 
 #[test]
 fn a() {
-    assert_eq!(process_data(5, &vec![3, 4, 1, 5], 1), vec![3, 4, 2, 1, 0]);
+    assert_eq!(process_data(5, &[3, 4, 1, 5], 1), vec![3, 4, 2, 1, 0]);
 }
 
 #[test]
