@@ -1,13 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use combine::char::digit;
-use combine::parser::char::string;
-use combine::{many1, Parser};
+use glue::prelude::{all, any, digit, is, literal, merge, one_or_more, Parser};
 
 use std::fmt::{Debug, Display, Formatter, Result};
 use std::rc::Rc;
-use std::result;
+use std::str::Lines;
 
 static INPUT: &'static str = include_str!("data/q19.data");
 
@@ -15,33 +13,44 @@ trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);
 }
 
-#[derive(Debug)]
-pub struct InstructionError(());
+fn three_numbers<'a>(
+    instruction: &'static str,
+) -> impl Parser<
+    &'a str,
+    (
+        &'a str,
+        &'a str,
+        std::vec::Vec<&'a str>,
+        &'a str,
+        std::vec::Vec<&'a str>,
+        &'a str,
+    ),
+> {
+    all((
+        literal(instruction),
+        merge(one_or_more(is(digit))),
+        one_or_more(literal(" ")),
+        merge(one_or_more(is(digit))),
+        one_or_more(literal(" ")),
+        merge(one_or_more(is(digit))),
+    ))
+}
 
-type InstructionResult = result::Result<Box<Instruction>, InstructionError>;
-type InstructionsResult = result::Result<Vec<Rc<Box<Instruction>>>, InstructionError>;
-
-fn parse_instructions(
-    s: &str,
-    builders: &[fn(s: &str) -> InstructionResult],
-) -> InstructionsResult {
-    let mut instructions: Vec<Rc<Box<Instruction>>> = vec![];
-    for line in s.lines() {
-        let mut found = false;
-        for builder in builders {
-            if let Ok(inst) = builder(line) {
-                found = true;
-                instructions.push(Rc::new(inst));
-                break;
+fn parse_instructions<'a>(
+    lines: Lines<'a>,
+    builder: &Parser<&'a str, Box<Instruction>>,
+) -> Rc<Vec<Box<Instruction>>> {
+    let mut instructions: Vec<Box<Instruction>> = vec![];
+    for line in lines {
+        match builder.parse(line) {
+            Ok(i) => {
+                // println!("{} => {:?}", line, i);
+                instructions.push(i.0);
             }
-        }
-        if !found {
-            //Error!!!
-            println!("Unknown instruction {}", line);
-            return Err(InstructionError(()));
+            Err(e) => panic!("Unknown instruction {:?}", e),
         }
     }
-    Ok(instructions)
+    Rc::new(instructions)
 }
 
 #[derive(Debug, Display)]
@@ -51,30 +60,22 @@ struct AddI {
     b: i32,
     dest: usize,
 }
-impl AddI {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("addi ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(AddI { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for AddI {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = cpu.registers[self.a] + self.b;
+    }
+}
+impl AddI {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("addi ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(AddI { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -85,30 +86,22 @@ struct AddR {
     b: usize,
     dest: usize,
 }
-impl AddR {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("addr ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(AddR { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for AddR {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = cpu.registers[self.a] + cpu.registers[self.b];
+    }
+}
+impl AddR {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("addr ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(AddR { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -119,27 +112,6 @@ struct EqRR {
     b: usize,
     dest: usize,
 }
-impl EqRR {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("eqrr ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(EqRR { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for EqRR {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = if cpu.registers[self.a] == cpu.registers[self.b] {
@@ -147,6 +119,19 @@ impl Instruction for EqRR {
         } else {
             0
         };
+    }
+}
+impl EqRR {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("eqrr ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(EqRR { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -157,27 +142,6 @@ struct GtRR {
     b: usize,
     dest: usize,
 }
-impl GtRR {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("gtrr ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(GtRR { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for GtRR {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = if cpu.registers[self.a] > cpu.registers[self.b] {
@@ -185,6 +149,19 @@ impl Instruction for GtRR {
         } else {
             0
         };
+    }
+}
+impl GtRR {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("gtrr ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(GtRR { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -195,30 +172,22 @@ struct MulI {
     b: i32,
     dest: usize,
 }
-impl MulI {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("muli ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(MulI { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for MulI {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = cpu.registers[self.a] * self.b;
+    }
+}
+impl MulI {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("muli ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(MulI { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -229,30 +198,22 @@ struct MulR {
     b: usize,
     dest: usize,
 }
-impl MulR {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("mulr ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((a, b), dest)) => {
-                let a = a.parse().unwrap();
-                let b = b.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(MulR { a, b, dest }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for MulR {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = cpu.registers[self.a] * cpu.registers[self.b];
+    }
+}
+impl MulR {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("mulr ");
+            let (token, input) = parser.parse(input)?;
+            let a = token.1.parse().unwrap();
+            let b = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(MulR { a, b, dest });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -263,34 +224,26 @@ struct SetI {
     ignored: i8,
     dest: usize,
 }
-impl SetI {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("seti ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((value, ignored), dest)) => {
-                let value = value.parse().unwrap();
-                let ignored = ignored.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(SetI {
-                    value,
-                    ignored,
-                    dest,
-                }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for SetI {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = self.value;
+    }
+}
+impl SetI {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("seti ");
+            let (token, input) = parser.parse(input)?;
+            let value = token.1.parse().unwrap();
+            let ignored = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(SetI {
+                value,
+                ignored,
+                dest,
+            });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -301,34 +254,26 @@ struct SetR {
     ignored: i8,
     dest: usize,
 }
-impl SetR {
-    fn build(s: &str) -> InstructionResult {
-        let result = string("setr ")
-            .with(
-                many1::<String, _>(digit())
-                    .and(string(" ").with(many1::<String, _>(digit())))
-                    .and(string(" ").with(many1::<String, _>(digit()))),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok(((source, ignored), dest)) => {
-                let source = source.parse().unwrap();
-                let ignored = ignored.parse().unwrap();
-                let dest = dest.parse().unwrap();
-                Ok(Box::new(SetR {
-                    source,
-                    ignored,
-                    dest,
-                }))
-            }
-            _ => Err(InstructionError(())),
-        }
-    }
-}
 impl Instruction for SetR {
     fn execute(&self, cpu: &mut CPU) {
         cpu.registers[self.dest] = cpu.registers[self.source];
+    }
+}
+impl SetR {
+    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+        move |input: &'a str| {
+            let parser = three_numbers("setr ");
+            let (token, input) = parser.parse(input)?;
+            let source = token.1.parse().unwrap();
+            let ignored = token.3.parse().unwrap();
+            let dest = token.5.parse().unwrap();
+            let rv = Box::new(SetR {
+                source,
+                ignored,
+                dest,
+            });
+            Ok((rv as Box<Instruction>, input))
+        }
     }
 }
 
@@ -337,11 +282,11 @@ struct CPU {
     registers: [i32; 6],
     pc: i32,
     pc_reg: usize,
-    instructions: Vec<Rc<Box<Instruction>>>,
+    instructions: Rc<Vec<Box<Instruction>>>,
 }
 
 impl CPU {
-    fn new(pc_reg: usize, instructions: Vec<Rc<Box<Instruction>>>) -> CPU {
+    fn new(pc_reg: usize, instructions: Rc<Vec<Box<Instruction>>>) -> CPU {
         CPU {
             registers: [0; 6],
             pc: 0,
@@ -379,23 +324,23 @@ impl Display for CPU {
     }
 }
 
-fn process_data_a(data: &str) -> i32 {
-    let builders: Vec<fn(s: &str) -> InstructionResult> = vec![
-        AddI::build,
-        AddR::build,
-        EqRR::build,
-        GtRR::build,
-        MulI::build,
-        MulR::build,
-        SetI::build,
-        SetR::build,
-    ];
-
+fn process_data_a(data: &'static str) -> i32 {
     let mut lines = data.lines();
     let mut ip = lines.next().unwrap().to_string();
     let ip = ip.pop().unwrap().to_digit(10).unwrap() as usize;
-    let instructions =
-        parse_instructions(&lines.collect::<Vec<_>>().join("\n"), &builders).unwrap();
+
+    let builder = any((
+        AddI::parser(),
+        AddR::parser(),
+        EqRR::parser(),
+        GtRR::parser(),
+        MulI::parser(),
+        MulR::parser(),
+        SetI::parser(),
+        SetR::parser(),
+    ));
+
+    let instructions = parse_instructions(lines, &builder);
     let mut state = CPU::new(ip, instructions);
     while let Some(new) = state.execute() {
         state = new;
