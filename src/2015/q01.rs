@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT: &'static str = include_str!("data/q01.data");
+static INPUT: &str = include_str!("data/q01.data");
 
 fn process_data_a(data: &str) -> i32 {
     let mut rv = 0;

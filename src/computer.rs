@@ -14,8 +14,8 @@ pub trait Instruction: Display + Debug {
 #[derive(Debug)]
 pub struct InstructionError(());
 
-pub type InstructionResult = result::Result<Box<Instruction>, InstructionError>;
-pub type InstructionsResult = result::Result<Vec<Rc<Box<Instruction>>>, InstructionError>;
+pub type InstructionResult = result::Result<Box<dyn Instruction>, InstructionError>;
+pub type InstructionsResult = result::Result<Vec<Rc<Box<dyn Instruction>>>, InstructionError>;
 
 #[derive(Debug, Display)]
 #[display(fmt = "hlf {}", register)]
@@ -190,11 +190,11 @@ impl Instruction for JumpOne {
 pub struct CPU {
     registers: HashMap<char, i64>,
     pc: i64,
-    instructions: Vec<Rc<Box<Instruction>>>,
+    instructions: Vec<Rc<Box<dyn Instruction>>>,
 }
 
 impl CPU {
-    pub fn new(registers: HashMap<char, i64>, instructions: Vec<Rc<Box<Instruction>>>) -> CPU {
+    pub fn new(registers: HashMap<char, i64>, instructions: Vec<Rc<Box<dyn Instruction>>>) -> CPU {
         CPU {
             registers,
             pc: 0,
@@ -237,7 +237,7 @@ pub fn parse_instructions(
     s: &str,
     builders: &[fn(s: &str) -> InstructionResult],
 ) -> InstructionsResult {
-    let mut instructions: Vec<Rc<Box<Instruction>>> = vec![];
+    let mut instructions: Vec<Rc<Box<dyn Instruction>>> = vec![];
     for line in s.lines() {
         let mut found = false;
         for builder in builders {

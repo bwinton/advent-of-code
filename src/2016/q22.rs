@@ -17,7 +17,7 @@ use std::str::FromStr;
 // /dev/grid/node-x2-y0   10T    6T     4T   60%
 // /dev/grid/node-x2-y1    9T    8T     1T   88%
 // /dev/grid/node-x2-y2    9T    6T     3T   66%";
-static INPUT: &'static str = include_str!("data/q22.data");
+static INPUT: &str = include_str!("data/q22.data");
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Node {

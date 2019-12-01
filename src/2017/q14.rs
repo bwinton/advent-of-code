@@ -6,7 +6,7 @@ use aoc::Day;
 use itertools::enumerate;
 use itertools::Itertools;
 
-static INPUT: &'static str = "uugsqrei";
+static INPUT: &str = "uugsqrei";
 
 fn get_input(input: &str) -> Vec<usize> {
     let mut rv: Vec<usize> = input.chars().map(|x| x as usize).collect();

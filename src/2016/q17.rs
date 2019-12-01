@@ -11,7 +11,7 @@ use std::collections::BinaryHeap;
 // static INPUT : &'static str = "ihgpwlah";
 // static INPUT : &'static str = "kglvqrro";
 // static INPUT : &'static str = "ulqzkmiv";
-static INPUT: &'static str = "yjjvjgan";
+static INPUT: &str = "yjjvjgan";
 
 #[derive(Clone, Debug)]
 enum Direction {

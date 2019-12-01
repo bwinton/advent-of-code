@@ -4,7 +4,7 @@
 use aoc::Day;
 use regex::Regex;
 
-static INPUT: &'static str = include_str!("data/q09.data");
+static INPUT: &str = include_str!("data/q09.data");
 // static INPUT : &'static str = "ADVENT
 // A(1x5)BC
 // (3x3)XYZ

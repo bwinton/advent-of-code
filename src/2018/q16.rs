@@ -6,7 +6,7 @@ use std::collections::{HashMap, HashSet};
 use std::iter::FromIterator;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q16.data");
+static INPUT: &str = include_str!("data/q16.data");
 
 #[derive(Debug, Eq, Hash, PartialEq)]
 enum Opcode {
@@ -28,7 +28,7 @@ enum Opcode {
     Eqrr,
 }
 
-static OPCODES: &'static [Opcode; 16] = &[
+static OPCODES: &[Opcode; 16] = &[
     Opcode::Addr,
     Opcode::Addi,
     Opcode::Mulr,

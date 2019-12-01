@@ -6,7 +6,7 @@ use std::iter::FromIterator;
 
 // static INPUT : &'static str = "10000";
 // static LENGTH_A : usize = 20;
-static INPUT: &'static str = "10111100110001111";
+static INPUT: &str = "10111100110001111";
 static LENGTH_A: usize = 272;
 static LENGTH_B: usize = 35_651_584;
 

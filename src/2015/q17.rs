@@ -3,7 +3,7 @@
 
 use itertools::Itertools;
 
-static INPUT: &'static str = include_str!("data/q17.data");
+static INPUT: &str = include_str!("data/q17.data");
 
 fn process_data_a_impl(data: &str, amount: u32) -> usize {
     let containers: Vec<u32> = data.lines().map(|x| x.parse().unwrap()).collect();

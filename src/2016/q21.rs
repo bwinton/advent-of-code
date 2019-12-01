@@ -14,9 +14,9 @@ use std::str::FromStr;
 // move position 3 to position 0
 // rotate based on position of letter b
 // rotate based on position of letter d";
-static INPUT: &'static str = include_str!("data/q21.data");
-static PASSCODE: &'static str = "abcdefgh";
-static SCRAMBLED: &'static str = "fbgdceah";
+static INPUT: &str = include_str!("data/q21.data");
+static PASSCODE: &str = "abcdefgh";
+static SCRAMBLED: &str = "fbgdceah";
 
 #[derive(Clone, Debug)]
 enum Instruction {

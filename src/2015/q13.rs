@@ -9,7 +9,7 @@ use std::collections::HashSet;
 use std::i32;
 use std::string::ToString;
 
-static INPUT: &'static str = include_str!("data/q13.data");
+static INPUT: &str = include_str!("data/q13.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
     lazy_static! {

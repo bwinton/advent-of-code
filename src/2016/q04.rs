@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT: &'static str = include_str!("data/q04.data");
+static INPUT: &str = include_str!("data/q04.data");
 // static INPUT : &'static str = "aaaaa-bbb-z-y-x-123[abxyz]
 // a-b-c-d-e-f-g-h-987[abcde]
 // not-a-real-room-404[oarel]

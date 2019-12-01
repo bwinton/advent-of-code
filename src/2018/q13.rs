@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::hash::{Hash, Hasher};
 
-static INPUT: &'static str = include_str!("data/q13.data");
+static INPUT: &str = include_str!("data/q13.data");
 
 #[derive(Clone, Debug)]
 enum Direction {

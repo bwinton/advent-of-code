@@ -8,7 +8,7 @@ use std::u32;
 // static INPUT : &'static str = "5-8
 // 0-2
 // 4-7";
-static INPUT: &'static str = include_str!("data/q20.data");
+static INPUT: &str = include_str!("data/q20.data");
 
 fn get_ranges() -> Vec<Range<u32>> {
     let mut ranges = Vec::new();

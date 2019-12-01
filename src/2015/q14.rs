@@ -4,7 +4,7 @@
 use regex::Regex;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q14.data");
+static INPUT: &str = include_str!("data/q14.data");
 
 #[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct Reindeer {

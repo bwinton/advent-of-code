@@ -10,7 +10,7 @@ use std::collections::HashSet;
 use std::str;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q25.data");
+static INPUT: &str = include_str!("data/q25.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct Action {

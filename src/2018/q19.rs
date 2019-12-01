@@ -7,7 +7,7 @@ use std::fmt::{Debug, Display, Formatter, Result};
 use std::rc::Rc;
 use std::str::Lines;
 
-static INPUT: &'static str = include_str!("data/q19.data");
+static INPUT: &str = include_str!("data/q19.data");
 
 trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);
@@ -38,9 +38,9 @@ fn three_numbers<'a>(
 
 fn parse_instructions<'a>(
     lines: Lines<'a>,
-    builder: &Parser<&'a str, Box<Instruction>>,
-) -> Rc<Vec<Box<Instruction>>> {
-    let mut instructions: Vec<Box<Instruction>> = vec![];
+    builder: &dyn Parser<&'a str, Box<dyn Instruction>>,
+) -> Rc<Vec<Box<dyn Instruction>>> {
+    let mut instructions: Vec<Box<dyn Instruction>> = vec![];
     for line in lines {
         match builder.parse(line) {
             Ok(i) => {
@@ -66,7 +66,7 @@ impl Instruction for AddI {
     }
 }
 impl AddI {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("addi ");
             let (token, input) = parser.parse(input)?;
@@ -74,7 +74,7 @@ impl AddI {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(AddI { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -92,7 +92,7 @@ impl Instruction for AddR {
     }
 }
 impl AddR {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("addr ");
             let (token, input) = parser.parse(input)?;
@@ -100,7 +100,7 @@ impl AddR {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(AddR { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -122,7 +122,7 @@ impl Instruction for EqRR {
     }
 }
 impl EqRR {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("eqrr ");
             let (token, input) = parser.parse(input)?;
@@ -130,7 +130,7 @@ impl EqRR {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(EqRR { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -152,7 +152,7 @@ impl Instruction for GtRR {
     }
 }
 impl GtRR {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("gtrr ");
             let (token, input) = parser.parse(input)?;
@@ -160,7 +160,7 @@ impl GtRR {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(GtRR { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -178,7 +178,7 @@ impl Instruction for MulI {
     }
 }
 impl MulI {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("muli ");
             let (token, input) = parser.parse(input)?;
@@ -186,7 +186,7 @@ impl MulI {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(MulI { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -204,7 +204,7 @@ impl Instruction for MulR {
     }
 }
 impl MulR {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("mulr ");
             let (token, input) = parser.parse(input)?;
@@ -212,7 +212,7 @@ impl MulR {
             let b = token.3.parse().unwrap();
             let dest = token.5.parse().unwrap();
             let rv = Box::new(MulR { a, b, dest });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -230,7 +230,7 @@ impl Instruction for SetI {
     }
 }
 impl SetI {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("seti ");
             let (token, input) = parser.parse(input)?;
@@ -242,7 +242,7 @@ impl SetI {
                 ignored,
                 dest,
             });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -260,7 +260,7 @@ impl Instruction for SetR {
     }
 }
 impl SetR {
-    fn parser<'a>() -> impl Parser<&'a str, Box<Instruction + 'a>> {
+    fn parser<'a>() -> impl Parser<&'a str, Box<dyn Instruction + 'a>> {
         move |input: &'a str| {
             let parser = three_numbers("setr ");
             let (token, input) = parser.parse(input)?;
@@ -272,7 +272,7 @@ impl SetR {
                 ignored,
                 dest,
             });
-            Ok((rv as Box<Instruction>, input))
+            Ok((rv as Box<dyn Instruction>, input))
         }
     }
 }
@@ -282,11 +282,11 @@ struct CPU {
     registers: [i32; 6],
     pc: i32,
     pc_reg: usize,
-    instructions: Rc<Vec<Box<Instruction>>>,
+    instructions: Rc<Vec<Box<dyn Instruction>>>,
 }
 
 impl CPU {
-    fn new(pc_reg: usize, instructions: Rc<Vec<Box<Instruction>>>) -> CPU {
+    fn new(pc_reg: usize, instructions: Rc<Vec<Box<dyn Instruction>>>) -> CPU {
         CPU {
             registers: [0; 6],
             pc: 0,

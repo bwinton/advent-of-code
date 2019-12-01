@@ -5,7 +5,7 @@ use aoc::Day;
 
 use itertools::Itertools;
 
-static INPUT: &'static str = "197,97,204,108,1,29,5,71,0,50,2,255,248,78,254,63";
+static INPUT: &str = "197,97,204,108,1,29,5,71,0,50,2,255,248,78,254,63";
 
 fn process_data(len: usize, data: &[usize], rounds: usize) -> Vec<usize> {
     let mut numbers: Vec<usize> = (0..len).collect();

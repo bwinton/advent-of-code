@@ -12,7 +12,7 @@ use std::str::FromStr;
 // cpy 1 a
 // dec a
 // dec a";
-static INPUT: &'static str = include_str!("data/q23.data");
+static INPUT: &str = include_str!("data/q23.data");
 
 #[derive(Clone, Debug)]
 enum Instruction {

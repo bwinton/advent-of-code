@@ -6,7 +6,7 @@ use std::borrow::ToOwned;
 use std::collections::BTreeMap;
 use std::str::Lines;
 
-static INPUT: &'static str = include_str!("data/q24.data");
+static INPUT: &str = include_str!("data/q24.data");
 
 #[derive(Clone, Copy, Debug)]
 enum Groups {

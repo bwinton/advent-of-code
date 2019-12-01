@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q01.data");
+static INPUT: &str = include_str!("data/q01.data");
 
 fn process_data_a(data: &str) -> i64 {
     data.lines().map(|x| x.parse::<i64>().unwrap()).sum()

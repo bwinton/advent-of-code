@@ -3,7 +3,7 @@
 
 use itertools::Itertools;
 
-static INPUT: &'static str = "3113322113";
+static INPUT: &str = "3113322113";
 
 fn process_data(data: &str, iterations: usize) -> String {
     let mut curr = data.to_string();

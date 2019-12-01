@@ -4,7 +4,7 @@
 use std::fmt;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q18.data");
+static INPUT: &str = include_str!("data/q18.data");
 
 #[derive(Clone, Debug)]
 struct Board {

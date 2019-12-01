@@ -6,7 +6,7 @@ use aoc::computer::{
 };
 use aoc::Day;
 
-static INPUT: &'static str = "jio a, +16
+static INPUT: &str = "jio a, +16
 inc a
 inc a
 tpl a

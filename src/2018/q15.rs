@@ -7,7 +7,7 @@ use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::hash::{Hash, Hasher};
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q15.data");
+static INPUT: &str = include_str!("data/q15.data");
 
 #[derive(Clone, Debug)]
 enum Direction {
@@ -28,7 +28,7 @@ impl Direction {
     }
 }
 
-static DIRECTIONS: &'static [Direction; 4] = &[
+static DIRECTIONS: &[Direction; 4] = &[
     Direction::North,
     Direction::West,
     Direction::East,

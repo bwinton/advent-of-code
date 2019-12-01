@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q18.data");
+static INPUT: &str = include_str!("data/q18.data");
 
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 struct Board {

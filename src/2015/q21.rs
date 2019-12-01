@@ -7,7 +7,7 @@ use nom::digit;
 use nom::space;
 use nom::types::CompleteStr;
 
-static INPUT: &'static str = include_str!("data/q21.data");
+static INPUT: &str = include_str!("data/q21.data");
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Item {

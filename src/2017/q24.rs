@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q24.data");
+static INPUT: &str = include_str!("data/q24.data");
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 struct Pipe {

@@ -8,7 +8,7 @@ use std::str::FromStr;
 // static LENGTH_A : usize = 3;
 // static INPUT : &'static str = ".^^.^.^^^^";
 // static LENGTH_A : usize = 10;
-static INPUT: &'static str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
+static INPUT: &str = ".^.^..^......^^^^^...^^^...^...^....^^.^...^.^^^^....^...^^.^^^...^^^^.^^.^.^^..^.^^^..^^^^^^.^^^..^";
 static LENGTH_A: usize = 40;
 static LENGTH_B: usize = 400_000;
 

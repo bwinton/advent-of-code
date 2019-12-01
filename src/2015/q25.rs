@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT: &'static str = "";
+static INPUT: &str = "";
 
 fn find_cell(row: usize, column: usize) -> usize {
     (1..)

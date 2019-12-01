@@ -22,7 +22,7 @@ pub trait Day {
 macro_rules! q_vec {
   ( $( $x:ident, )* ) => {
     {
-      let temp_vec:Vec<Box<aoc::Day>> = vec!(
+      let temp_vec:Vec<Box<dyn aoc::Day>> = vec!(
       $(
         Box::new($x::Q),
       )*
@@ -91,7 +91,7 @@ pub fn print_vec(v: &[impl Display]) -> String {
     )
 }
 
-fn select(day: &Day, arg: &str) {
+fn select(day: &dyn Day, arg: &str) {
     let day_num = day.number();
     match arg.to_lowercase() {
         ref q if *q == format!("{}{}", day_num, "a") => day.a(),
@@ -108,7 +108,7 @@ fn select(day: &Day, arg: &str) {
     }
 }
 
-pub fn main(days: &[Box<Day>]) {
+pub fn main(days: &[Box<dyn Day>]) {
     color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(

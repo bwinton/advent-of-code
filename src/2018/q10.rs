@@ -5,7 +5,7 @@ use regex::Regex;
 use std::cmp::{max, min};
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q10.data");
+static INPUT: &str = include_str!("data/q10.data");
 
 #[derive(Debug)]
 struct Point {

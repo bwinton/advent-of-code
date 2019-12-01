@@ -6,7 +6,7 @@ use nom::types::CompleteStr;
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q19.data");
+static INPUT: &str = include_str!("data/q19.data");
 
 #[derive(Clone, Debug)]
 struct Rule {

@@ -5,7 +5,7 @@ use aoc::Day;
 use regex::Regex;
 use std::fmt;
 
-static INPUT: &'static str = include_str!("data/q08.data");
+static INPUT: &str = include_str!("data/q08.data");
 // static INPUT : &'static str = "rect 3x2
 // rotate column x=1 by 1
 // rotate row y=0 by 4

@@ -5,7 +5,7 @@ use itertools::Itertools;
 use std::collections::HashSet;
 use std::u32;
 
-static INPUT: &'static str = include_str!("data/q24.data");
+static INPUT: &str = include_str!("data/q24.data");
 // static INPUT : &'static str = "1
 // 2
 // 3

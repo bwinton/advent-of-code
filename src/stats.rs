@@ -1,12 +1,15 @@
+use std::env::{var, VarError};
+use std::fs::{remove_file, File};
+use std::io::{stdout, Stdout, Write};
+use std::path::Path;
+use std::time::{SystemTime, SystemTimeError};
+
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
-use crossterm::{Attribute, Color, Colored};
+use crossterm::{queue, ExecutableCommand, QueueableCommand, Output};
+use crossterm::style::{Color, SetForegroundColor, Attribute, SetAttribute, ResetColor};
 use custom_error::custom_error;
 use reqwest;
 use serde_json::{from_reader, Map, Value};
-use std::env::{var, VarError};
-use std::fs::{remove_file, File};
-use std::path::Path;
-use std::time::{SystemTime, SystemTimeError};
 
 static ONE_DAY_IN_SECS: u64 = 24 * 60 * 60;
 
@@ -17,6 +20,7 @@ custom_error! { StatsError
     JSON{source: serde_json::error::Error} = "json error",
     YearNotFound{year:String} = "Year {year} not found on server.",
     Session{source: VarError} = "Could not find AOC_SESSION env variable.",
+    CrossTerm{source: crossterm::ErrorKind} = "crossterm error",
 }
 
 #[derive(Debug)]
@@ -94,46 +98,16 @@ impl Member {
     }
 }
 
-fn print_year(year: &str) -> Result<(), StatsError> {
-    let cache_name = format!("stats.{}.json", year);
-    let stats_url = format!(
-        "https://adventofcode.com/{}/leaderboard/private/view/70644.json",
-        year
-    );
-    let cache = Path::new(&cache_name);
-    let now = SystemTime::now();
-    let session_cookie = format!("session={}", &var("AOC_SESSION")?);
-    if !cache.is_file()
-        || now.duration_since(cache.metadata()?.modified()?)?.as_secs() > ONE_DAY_IN_SECS
-    {
-        println!("Cache doesn't exist or is too old. Downloading…");
-        let mut request = reqwest::Client::new().get(&stats_url);
-        request = request.header(reqwest::header::COOKIE, session_cookie);
-
-        let mut response = request.send()?;
-        if !response.status().is_success() {
-            return Err(StatsError::YearNotFound {
-                year: year.to_owned(),
-            });
-        }
-        let mut file = File::create(&cache_name)?;
-        response.copy_to(&mut file)?;
-    }
-    let cache_file = File::open(&cache_name)?;
-    let parsed_data = from_reader(cache_file);
-    if parsed_data.is_err() {
-        remove_file(cache)?;
-        return Err(StatsError::from(parsed_data.err().unwrap()));
-    }
-    let data: Map<String, Value> = parsed_data?;
-    let mut stats = AocStats::from_data(&data);
-    println!(
-        "Stats for {bold}{white}{event}{reset}:",
-        bold = Attribute::Bold,
-        white = Colored::Fg(Color::White),
-        event = stats.event,
-        reset = Attribute::Reset,
-    );
+fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsError> {
+    queue!(stdout,
+        Output("Stats for "),
+        SetForegroundColor(Color::White),
+        SetAttribute(Attribute::Bold),
+        Output(stats.event.clone()),
+        SetAttribute(Attribute::Reset),
+        // ResetColor,
+        Output(":\n")
+    )?;
     let mut undone = [(0, 0); 25];
     for member in &stats.members {
         for (i, undone) in undone.iter_mut().enumerate().take(member.completions.len()) {
@@ -154,28 +128,66 @@ fn print_year(year: &str) -> Result<(), StatsError> {
     for (i, member) in stats.members.iter().enumerate() {
         let place = member.place.unwrap() - i as i64;
         let place_color = if place < 0 {
-            Colored::Fg(Color::Red)
+            Color::Red
         } else if place > 0 {
-            Colored::Fg(Color::Green)
+            Color::Green
         } else {
-            Colored::Fg(Color::White)
+            Color::White
         };
-        println!(
-            "  {blue}{name}:{reset} {score} -> {max} ({place_color}{place:+}{reset})",
-            blue = Colored::Fg(Color::Blue),
-            reset = Attribute::Reset,
-            name = member.name,
-            score = member.local_score,
-            max = member.max_score,
-            place_color = place_color,
-            place = place,
-        );
+
+        queue!(stdout,
+            SetForegroundColor(Color::Blue),
+            Output(format!("  {}: ", member.name)),
+            ResetColor,
+            Output(format!("{} -> {} (", member.local_score, member.max_score)),
+            SetForegroundColor(place_color),
+            Output(format!("{}", place)),
+            ResetColor,
+            Output(")\n")
+        )?;
     }
-    println!();
+    stdout.queue(Output("\n"))?;
     Ok(())
 }
 
-fn main() {
+fn print_year(year: &str, mut stdout: &mut Stdout) -> Result<(), StatsError> {
+    let cache_name = format!("stats.{}.json", year);
+    let stats_url = format!(
+        "https://adventofcode.com/{}/leaderboard/private/view/70644.json",
+        year
+    );
+    let cache = Path::new(&cache_name);
+    let now = SystemTime::now();
+    let session_cookie = format!("session={}", &var("AOC_SESSION")?);
+    if !cache.is_file()
+        || now.duration_since(cache.metadata()?.modified()?)?.as_secs() > ONE_DAY_IN_SECS
+    {
+        stdout.queue(Output("Cache doesn't exist or is too old. Downloading\n"))?;
+        let mut request = reqwest::Client::new().get(&stats_url);
+        request = request.header(reqwest::header::COOKIE, session_cookie);
+
+        let mut response = request.send()?;
+        if !response.status().is_success() {
+            return Err(StatsError::YearNotFound {
+                year: year.to_owned(),
+            });
+        }
+        let mut file = File::create(&cache_name)?;
+        response.copy_to(&mut file)?;
+    }
+    let cache_file = File::open(&cache_name)?;
+    let parsed_data = from_reader(cache_file);
+    if parsed_data.is_err() {
+        remove_file(cache)?;
+        return Err(StatsError::from(parsed_data.err().unwrap()));
+    }
+    let data: Map<String, Value> = parsed_data?;
+    let mut stats = AocStats::from_data(&data);
+    print_stats(&mut stdout, &mut stats)
+}
+
+fn main() -> Result<(), StatsError> {
+    let mut stdout = stdout();
     color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(
@@ -204,16 +216,17 @@ fn main() {
         })
         .flatten()
         .collect();
-    // println!("args: {:?}", args);
+    stdout.execute(Output(format!("args: {:?}\n", args)))?;
 
     for year in args {
-        if let Err(error) = print_year(year) {
-            println!(
-                "{red}{error}{reset}",
-                red = Colored::Fg(Color::Red),
-                error = error,
-                reset = Attribute::Reset,
-            );
+        if let Err(error) = print_year(year, &mut stdout) {
+            queue!(stdout,
+                SetForegroundColor(Color::Red),
+                Output(format!("{}", error)),
+                ResetColor
+            )?;
         };
+        stdout.flush()?;
     }
+    Ok(())
 }

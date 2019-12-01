@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q21.data");
+static INPUT: &str = include_str!("data/q21.data");
 
 fn step(input: i64) -> i64 {
     let init = 707_129;

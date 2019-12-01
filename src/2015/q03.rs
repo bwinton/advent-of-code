@@ -4,7 +4,7 @@
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 
-static INPUT: &'static str = include_str!("data/q03.data");
+static INPUT: &str = include_str!("data/q03.data");
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 struct House {

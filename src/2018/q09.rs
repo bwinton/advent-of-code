@@ -4,7 +4,7 @@
 use regex::Regex;
 use std::collections::LinkedList;
 
-static INPUT: &'static str = "458 players; last marble is worth 72019 points";
+static INPUT: &str = "458 players; last marble is worth 72019 points";
 
 fn get_data(data: &str) -> (usize, usize) {
     lazy_static! {

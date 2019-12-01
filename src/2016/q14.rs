@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use std::mem;
 
 // static INPUT : &'static str = "abc";
-static INPUT: &'static str = "zpqevtbw";
+static INPUT: &str = "zpqevtbw";
 
 #[derive(Debug, Eq, PartialEq)]
 enum Key {

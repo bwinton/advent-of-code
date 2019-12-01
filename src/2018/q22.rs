@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::usize;
 
-static INPUT: &'static str = "4002,5,746";
+static INPUT: &str = "4002,5,746";
 
 #[derive(Clone, Debug)]
 struct Path {

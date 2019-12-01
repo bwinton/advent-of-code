@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std;
 
-static INPUT: &'static str = include_str!("data/q13.data");
+static INPUT: &str = include_str!("data/q13.data");
 
 fn get_range(max: usize) -> Vec<usize> {
     ((0..max).chain((1..max - 1).rev())).collect()

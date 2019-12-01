@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 use std::usize;
 
-static INPUT: &'static str = include_str!("data/q09.data");
+static INPUT: &str = include_str!("data/q09.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<[String; 2], usize>) {
     lazy_static! {

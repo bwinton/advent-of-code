@@ -5,7 +5,7 @@ use aoc::computer::{
     parse_instructions, Half, Increment, InstructionResult, Jump, JumpEven, JumpOne, Triple, CPU,
 };
 
-static INPUT: &'static str = include_str!("data/q23.data");
+static INPUT: &str = include_str!("data/q23.data");
 
 fn process_data_a_impl(data: &str, reg: char) -> i64 {
     let builders: Vec<fn(s: &str) -> InstructionResult> = vec![

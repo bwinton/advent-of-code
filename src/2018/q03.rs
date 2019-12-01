@@ -6,7 +6,7 @@ use std::cmp::{max, min};
 use std::collections::HashSet;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q03.data");
+static INPUT: &str = include_str!("data/q03.data");
 
 #[derive(Debug)]
 struct Square {

@@ -4,7 +4,7 @@
 use aoc::Day;
 use std::collections::HashMap;
 
-static INPUT: &'static str = include_str!("data/q06.data");
+static INPUT: &str = include_str!("data/q06.data");
 // static INPUT : &'static str = "eedadn
 // drvtee
 // eandsr

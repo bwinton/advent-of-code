@@ -7,7 +7,7 @@ use regex::Regex;
 use std::iter::FromIterator;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q16.data");
+static INPUT: &str = include_str!("data/q16.data");
 
 #[derive(Debug)]
 enum Instruction {

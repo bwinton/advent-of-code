@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use std::string::ToString;
 
-static INPUT: &'static str = include_str!("data/q07.data");
+static INPUT: &str = include_str!("data/q07.data");
 
 #[derive(Clone, Debug)]
 struct Disc {

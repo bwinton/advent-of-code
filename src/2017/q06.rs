@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-static INPUT: &'static str = "5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
+static INPUT: &str = "5	1	10	0	1	7	13	14	3	12	8	10	7	12	0	6";
 
 fn redistribute(cells: &[usize]) -> Vec<usize> {
     let mut rv = cells.to_owned();

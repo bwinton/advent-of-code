@@ -5,7 +5,7 @@ use crypto::digest::Digest;
 use crypto::md5::Md5;
 use std::i32::MAX;
 
-static INPUT: &'static str = "bgvyzdsv";
+static INPUT: &str = "bgvyzdsv";
 
 fn process_data(data: &str, zeroes: usize) -> i32 {
     let mut hasher = Md5::new();

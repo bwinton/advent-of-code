@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashSet;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q21.data");
+static INPUT: &str = include_str!("data/q21.data");
 
 #[derive(Debug, Eq, Clone, Hash, PartialEq)]
 struct Rule {

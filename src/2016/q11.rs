@@ -11,8 +11,8 @@ use std::str::FromStr;
 // The second floor contains a hydrogen generator.
 // The third floor contains a lithium generator.
 // The fourth floor contains nothing relevant.";
-static A_INPUT: &'static str = include_str!("data/q11a.data");
-static B_INPUT: &'static str = include_str!("data/q11b.data");
+static A_INPUT: &str = include_str!("data/q11a.data");
+static B_INPUT: &str = include_str!("data/q11b.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 enum Item {

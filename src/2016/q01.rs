@@ -4,7 +4,7 @@
 use aoc::Day;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q01.data");
+static INPUT: &str = include_str!("data/q01.data");
 // static INPUT : &'static str = "R2, L3";
 // static INPUT : &'static str = "R8, R4, R4, R8";
 

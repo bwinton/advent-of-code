@@ -8,7 +8,7 @@ use std::default::Default;
 use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::str::{FromStr, Lines};
 
-static INPUT: &'static str = include_str!("data/q12.data");
+static INPUT: &str = include_str!("data/q12.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct State {

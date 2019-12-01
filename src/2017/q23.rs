@@ -7,7 +7,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q23.data");
+static INPUT: &str = include_str!("data/q23.data");
 
 #[derive(Clone, Debug)]
 enum Instruction {

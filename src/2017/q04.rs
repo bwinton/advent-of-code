@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q04.data");
+static INPUT: &str = include_str!("data/q04.data");
 
 fn process_data_a(data: &str) -> i32 {
     let mut rv = 0;

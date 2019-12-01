@@ -4,7 +4,7 @@
 use rayon::prelude::*;
 use std::iter::Iterator;
 
-static INPUT: &'static str = include_str!("data/q05.data");
+static INPUT: &str = include_str!("data/q05.data");
 
 fn remove_pairs(data: &str) -> String {
     let mut data: Vec<_> = data.chars().collect();

@@ -5,7 +5,7 @@ use regex::Regex;
 use std;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q15.data");
+static INPUT: &str = include_str!("data/q15.data");
 
 #[derive(Debug)]
 struct Ingredient {

@@ -6,7 +6,7 @@ use aoc::Day;
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q12.data");
+static INPUT: &str = include_str!("data/q12.data");
 
 fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
     let mut rv: Vec<HashSet<u32>> = Vec::new();

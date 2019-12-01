@@ -6,7 +6,7 @@ use regex::Regex;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q10.data");
+static INPUT: &str = include_str!("data/q10.data");
 // static INPUT : &'static str = "value 5 goes to bot 2
 // bot 2 gives low to bot 1 and high to bot 0
 // value 3 goes to bot 1

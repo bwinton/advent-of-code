@@ -5,7 +5,7 @@ use regex::Regex;
 use serde_json::from_str;
 use serde_json::Value;
 
-static INPUT: &'static str = include_str!("data/q12.data");
+static INPUT: &str = include_str!("data/q12.data");
 
 fn process_data_a(data: &str) -> i64 {
     lazy_static! {

@@ -4,7 +4,7 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q25.data");
+static INPUT: &str = include_str!("data/q25.data");
 
 #[derive(Clone, Debug)]
 struct Point {

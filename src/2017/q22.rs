@@ -6,7 +6,7 @@ use aoc::Day;
 use std::collections::HashMap;
 use std::str::FromStr;
 
-static INPUT: &'static str = include_str!("data/q22.data");
+static INPUT: &str = include_str!("data/q22.data");
 
 #[derive(Debug)]
 enum Direction {

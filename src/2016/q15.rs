@@ -7,7 +7,7 @@ use std::str::FromStr;
 
 // static INPUT : &'static str = "Disc #1 has 5 positions; at time=0, it is at position 4.
 // Disc #2 has 2 positions; at time=0, it is at position 1.";
-static INPUT: &'static str = include_str!("data/q15.data");
+static INPUT: &str = include_str!("data/q15.data");
 
 #[derive(Clone, Debug)]
 struct Disc {

@@ -6,7 +6,7 @@ use std::char;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q07.data");
+static INPUT: &str = include_str!("data/q07.data");
 
 lazy_static! {
     static ref RE: Regex =

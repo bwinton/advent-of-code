@@ -5,7 +5,7 @@ use aoc::Day;
 
 use std::iter::FromIterator;
 
-static INPUT: &'static str = include_str!("data/q19.data");
+static INPUT: &str = include_str!("data/q19.data");
 
 #[derive(Clone, Debug, PartialEq)]
 enum Cell {

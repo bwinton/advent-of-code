@@ -7,7 +7,7 @@ use std::str::FromStr;
 
 // use itertools::Itertools;
 
-static INPUT: &'static str = include_str!("data/q06.data");
+static INPUT: &str = include_str!("data/q06.data");
 
 type State = Vec<[i32; 1000]>;
 

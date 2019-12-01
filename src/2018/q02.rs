@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-static INPUT: &'static str = include_str!("data/q02.data");
+static INPUT: &str = include_str!("data/q02.data");
 
 fn get_counts(line: &str) -> HashMap<char, u32> {
     let mut seen = HashMap::new();

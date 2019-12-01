@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT: &'static str = include_str!("data/q02.data");
+static INPUT: &str = include_str!("data/q02.data");
 
 fn get_pieces(line: &str) -> Vec<u32> {
     let mut rv: Vec<u32> = line.split('x').map(|i| i.parse().unwrap()).collect();

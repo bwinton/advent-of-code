@@ -20,7 +20,7 @@ use std::usize::MAX;
 // #.#######.#
 // #4.......3#
 // ###########";
-static INPUT: &'static str = include_str!("data/q24.data");
+static INPUT: &str = include_str!("data/q24.data");
 
 #[derive(Clone, Eq, PartialEq)]
 enum Direction {

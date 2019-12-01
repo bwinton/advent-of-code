@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-static INPUT: &'static str = include_str!("data/q20.data");
+static INPUT: &str = include_str!("data/q20.data");
 
 #[derive(Clone, Debug)]
 struct Room {

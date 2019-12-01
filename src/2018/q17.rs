@@ -4,7 +4,7 @@
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q17.data");
+static INPUT: &str = include_str!("data/q17.data");
 
 #[derive(Debug)]
 struct Board {

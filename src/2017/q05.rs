@@ -3,7 +3,7 @@
 
 use aoc::Day;
 
-static INPUT: &'static str = include_str!("data/q05.data");
+static INPUT: &str = include_str!("data/q05.data");
 
 fn parse(data: &str) -> Vec<i32> {
     data.lines().map(|i| i.parse::<i32>().unwrap()).collect()

@@ -4,7 +4,7 @@
 use regex::Regex;
 use std::collections::HashSet;
 
-static INPUT: &'static str = include_str!("data/q05.data");
+static INPUT: &str = include_str!("data/q05.data");
 
 fn has_three_vowels(line: &str) -> bool {
     lazy_static! {

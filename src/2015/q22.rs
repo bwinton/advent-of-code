@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT: &'static str = "";
+static INPUT: &str = "";
 
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
@@ -73,11 +73,11 @@ impl PartialOrd for State {
     }
 }
 
-static MAGIC_MISSLE: &'static str = "Magic Missle";
-static DRAIN: &'static str = "Drain";
-static SHIELD: &'static str = "Shield";
-static POISON: &'static str = "Poison";
-static RECHARGE: &'static str = "Recharge";
+static MAGIC_MISSLE: &str = "Magic Missle";
+static DRAIN: &str = "Drain";
+static SHIELD: &str = "Shield";
+static POISON: &str = "Poison";
+static RECHARGE: &str = "Recharge";
 
 lazy_static! {
     static ref SPELLS: HashMap<&'static str, Spell> = {
