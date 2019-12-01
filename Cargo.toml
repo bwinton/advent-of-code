@@ -15,7 +15,7 @@ combine = "3.8.1"
 crossterm = "0.13.3"
 custom_error = "1.7.1"
 derive_more = "0.99.2"
-glue = "0.4.0"
+glue = "0.8.3"
 itertools = "0.8.2"
 lazy_static = "1.4.0"
 maplit = "1.0.2"
@@ -27,10 +27,6 @@ rust-crypto = "0.2.36"
 serde = "1.0.103"
 serde_derive = "1.0.103"
 serde_json = "1.0.42"
-
-[dependencies.nom]
-version = "4.2.3"
-features = ["verbose-errors"]
 
 [lib]
 name = "aoc"

@@ -1,11 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use nom;
-use nom::alpha;
 use std::collections::HashMap;
 use std::str;
-use std::str::FromStr;
+
+use glue::prelude::{alphabetic, digit, find_all, find_separated, is, take, Parser};
+use glue::types::MapParserResult;
 
 static INPUT: &str = include_str!("data/q16.data");
 
@@ -43,31 +43,35 @@ impl AuntSue {
     }
 }
 
-named!(digits<&str, u32>, map_res!(
-  nom::digit,
-  u32::from_str
-));
+fn aunt_name_parser<'a>() -> impl Parser<'a, u32> {
+    move |ctx| {
+        find_all((is("Sue "), take(1.., is(digit)), is(": ")))
+            .parse(ctx)
+            .map_result(|(_, name, _)| name.parse().unwrap())
+    }
+}
 
-named!(aunt_name_parser<&str, u32>, do_parse!(
-  tag!("Sue ") >>
-  name: digits >>
-  tag!(": ") >>
-  (name)
-));
+fn feature_parser<'a>() -> impl Parser<'a, (String, u32)> {
+    move |ctx| {
+        find_all((take(1.., is(alphabetic)), is(": "), take(1.., is(digit))))
+            .parse(ctx)
+            .map_result(|(name, _, amount)| (name.to_string(), amount.parse().unwrap()))
+    }
+}
 
-named!(feature_parser<&str, (String, u32)>, do_parse!(
-  pair: separated_pair!(alpha, tag!(": "), digits) >>
-  (pair.0.to_owned(), pair.1)
-));
-
-named!(aunt_parser<&str, AuntSue>, complete!(do_parse!(
-  name: aunt_name_parser >>
-  features: separated_list_complete!(tag!(", "), feature_parser) >>
-  (AuntSue {
-    name: Some(name),
-    features: features.iter().cloned().collect()
-  }))
-));
+fn aunt_parser<'a>() -> impl Parser<'a, AuntSue> {
+    move |ctx| {
+        find_all((
+            aunt_name_parser(),
+            find_separated(0.., feature_parser(), is(", ")),
+        ))
+        .parse(ctx)
+        .map_result(|(name, features)| AuntSue {
+            name: Some(name),
+            features: features.iter().cloned().collect(),
+        })
+    }
+}
 
 fn process_data_a(data: &str) -> u32 {
     let gifter = AuntSue {
@@ -87,7 +91,7 @@ fn process_data_a(data: &str) -> u32 {
     };
     let mut aunts_sue = Vec::new();
     for line in data.lines() {
-        let aunt_sue = aunt_parser(line).unwrap().1;
+        let aunt_sue = aunt_parser().parse(line).unwrap().1;
         aunts_sue.push(aunt_sue);
     }
     for aunt_sue in aunts_sue {
@@ -117,7 +121,7 @@ fn process_data_b(data: &str) -> u32 {
 
     let mut aunts_sue = Vec::new();
     for line in data.lines() {
-        let aunt_sue = aunt_parser(line).unwrap().1;
+        let aunt_sue = aunt_parser().parse(line).unwrap().1;
         aunts_sue.push(aunt_sue);
     }
     for aunt_sue in aunts_sue {

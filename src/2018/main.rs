@@ -35,8 +35,6 @@ extern crate derive_more;
 extern crate lazy_static;
 // #[macro_use]
 // extern crate maplit;
-// #[macro_use]
-// extern crate nom;
 
 extern crate test;
 

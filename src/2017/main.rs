@@ -30,8 +30,6 @@ extern crate aoc;
 extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
-#[macro_use]
-extern crate nom;
 
 fn main() {
     let days = q_vec!(

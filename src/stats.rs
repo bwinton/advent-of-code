@@ -5,8 +5,8 @@ use std::path::Path;
 use std::time::{SystemTime, SystemTimeError};
 
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
-use crossterm::{queue, ExecutableCommand, QueueableCommand, Output};
-use crossterm::style::{Color, SetForegroundColor, Attribute, SetAttribute, ResetColor};
+use crossterm::style::{Attribute, Color, ResetColor, SetAttribute, SetForegroundColor};
+use crossterm::{queue, ExecutableCommand, Output, QueueableCommand};
 use custom_error::custom_error;
 use reqwest;
 use serde_json::{from_reader, Map, Value};
@@ -99,7 +99,8 @@ impl Member {
 }
 
 fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsError> {
-    queue!(stdout,
+    queue!(
+        stdout,
         Output("Stats for "),
         SetForegroundColor(Color::White),
         SetAttribute(Attribute::Bold),
@@ -135,7 +136,8 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
             Color::White
         };
 
-        queue!(stdout,
+        queue!(
+            stdout,
             SetForegroundColor(Color::Blue),
             Output(format!("  {}: ", member.name)),
             ResetColor,
@@ -220,7 +222,8 @@ fn main() -> Result<(), StatsError> {
 
     for year in args {
         if let Err(error) = print_year(year, &mut stdout) {
-            queue!(stdout,
+            queue!(
+                stdout,
                 SetForegroundColor(Color::Red),
                 Output(format!("{}", error)),
                 ResetColor

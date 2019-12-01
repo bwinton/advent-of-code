@@ -1,11 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
+use glue::prelude::{
+    alphabetic, digit, find, find_all, find_separated, is, take, take_all, whitespace, Parser,
+};
+use glue::types::MapParserResult;
 use itertools::Itertools;
-use nom::alpha;
-use nom::digit;
-use nom::space;
-use nom::types::CompleteStr;
 
 static INPUT: &str = include_str!("data/q21.data");
 
@@ -72,68 +72,88 @@ impl Player {
     }
 }
 
-named!(modifier_parser<CompleteStr, String>, do_parse!(
-  space >>
-  tag!("+") >>
-  digits: digit >>
-  (" +".to_owned() + &digits)
-));
+fn modifier_parser<'a>() -> impl Parser<'a, &'a str> {
+    move |ctx| take_all((is(" +"), take(1.., is(digit)))).parse(ctx)
+}
 
-named!(name_parser<CompleteStr, String>, do_parse!(
-  base: alpha >>
-  modifier: opt!(modifier_parser) >>
-  (base.to_string() + &modifier.unwrap_or_default())
-));
+fn name_parser<'a>() -> impl Parser<'a, &'a str> {
+    move |ctx| take_all((take(1.., is(alphabetic)), take(0..1, modifier_parser()))).parse(ctx)
+}
 
-named!(header_parser<CompleteStr, String>, complete!(do_parse!(
-  name: alpha >>
-  tag!(":") >>
-  space >>
-  tag!("Cost") >>
-  space >>
-  tag!("Damage") >>
-  space >>
-  tag!("Armor") >>
-  eat_separator!("\n") >>
-  (name.to_string())
-)));
-
-named!(item_parser<CompleteStr, Item>, do_parse!(
-  name: name_parser >>
-  space >>
-  cost: digit >>
-  space >>
-  damage: digit >>
-  space >>
-  armor: digit >>
-  eat_separator!("\n") >>
-  (Item { name: name.to_string(), cost: cost.parse().unwrap(), damage: damage.parse().unwrap(), armor: armor.parse().unwrap()})
-));
-
-named!(group_parser<CompleteStr, Group>, do_parse!(
-  name: header_parser >>
-  items: many0!(item_parser) >>
-  eat_separator!("\n") >>
-  ({let empty_item = Item { name: "None".to_owned(), cost: 0, damage: 0, armor: 0 };
-    let mut all_items = items.clone();
-    if name != "Weapons" {
-      all_items.insert(0, empty_item.clone());
+fn header_parser<'a>() -> impl Parser<'a, &'a str> {
+    move |ctx| {
+        find_all((
+            take(1.., is(alphabetic)),
+            find_all((
+                is(":"),
+                take(1.., is(whitespace)),
+                is("Cost"),
+                take(1.., is(whitespace)),
+                is("Damage"),
+                take(1.., is(whitespace)),
+                is("Armor\n"),
+            )),
+        ))
+        .parse(ctx)
+        .map_result(|(name, _)| name)
     }
-    if name == "Rings" {
-      all_items.insert(0, empty_item);
-    }
-    Group { name: name.to_string(), items: all_items }
-  })
-));
+}
 
-named!(store_parser<CompleteStr, Vec<Group>>, do_parse!(
-  groups: many0!(group_parser) >>
-  (groups)
-));
+fn item_parser<'a>() -> impl Parser<'a, Item> {
+    move |ctx| {
+        find_all((
+            name_parser(),
+            take(1.., is(whitespace)),
+            take(1.., is(digit)),
+            take(1.., is(whitespace)),
+            take(1.., is(digit)),
+            take(1.., is(whitespace)),
+            take(1.., is(digit)),
+            is("\n"),
+        ))
+        .parse(ctx)
+        .map_result(|(name, _, cost, _, damage, _, armor, _)| Item {
+            name: name.to_string(),
+            cost: cost.parse().unwrap(),
+            damage: damage.parse().unwrap(),
+            armor: armor.parse().unwrap(),
+        })
+    }
+}
+
+fn group_parser<'a>() -> impl Parser<'a, Group> {
+    move |ctx| {
+        find_all((header_parser(), find(0.., item_parser())))
+            .parse(ctx)
+            .map_result(|(name, items)| {
+                let empty_item = Item {
+                    name: "None".to_owned(),
+                    cost: 0,
+                    damage: 0,
+                    armor: 0,
+                };
+                let mut all_items = items.clone();
+                if name != "Weapons" {
+                    all_items.insert(0, empty_item.clone());
+                }
+                if name == "Rings" {
+                    all_items.insert(0, empty_item);
+                }
+                Group {
+                    name: name.to_string(),
+                    items: all_items,
+                }
+            })
+    }
+}
+
+fn store_parser<'a>() -> impl Parser<'a, Vec<Group>> {
+    move |ctx| find_separated(0.., group_parser(), is("\n")).parse(ctx)
+}
 
 fn process_data_a(data: &str) -> i32 {
     let mut players = Vec::new();
-    let store = store_parser(CompleteStr(data)).unwrap().1;
+    let store = store_parser().parse(data).unwrap().1;
     for items in iproduct!(
         store[0].items.iter(),
         store[1].items.iter(),
@@ -161,7 +181,7 @@ fn process_data_a(data: &str) -> i32 {
 
 fn process_data_b(data: &str) -> i32 {
     let mut players = Vec::new();
-    let store = store_parser(CompleteStr(data)).unwrap().1;
+    let store = store_parser().parse(data).unwrap().1;
     for items in iproduct!(
         store[0].items.iter(),
         store[1].items.iter(),
@@ -200,74 +220,6 @@ q_impl!("21");
 
 #[test]
 fn a() {
-    assert_eq!(
-        header_parser(CompleteStr("Weapons:    Cost  Damage  Armor"))
-            .unwrap()
-            .1,
-        "Weapons".to_owned()
-    );
-    assert_eq!(
-        header_parser(CompleteStr("Armor:      Cost  Damage  Armor"))
-            .unwrap()
-            .1,
-        "Armor".to_owned()
-    );
-    assert_eq!(
-        header_parser(CompleteStr("Rings:      Cost  Damage  Armor"))
-            .unwrap()
-            .1,
-        "Rings".to_owned()
-    );
-
-    let dagger = Item {
-        name: "Dagger".to_owned(),
-        cost: 8,
-        damage: 4,
-        armor: 0,
-    };
-    let banded_mail = Item {
-        name: "Bandedmail".to_owned(),
-        cost: 75,
-        damage: 0,
-        armor: 4,
-    };
-    let damage_3 = Item {
-        name: "Damage +3".to_owned(),
-        cost: 100,
-        damage: 3,
-        armor: 0,
-    };
-    let defense_2 = Item {
-        name: "Defense +2".to_owned(),
-        cost: 40,
-        damage: 0,
-        armor: 2,
-    };
-    assert_eq!(
-        item_parser(CompleteStr("Dagger        8     4       0"))
-            .unwrap()
-            .1,
-        dagger
-    );
-    assert_eq!(
-        item_parser(CompleteStr("Bandedmail   75     0       4"))
-            .unwrap()
-            .1,
-        banded_mail
-    );
-    assert_eq!(
-        item_parser(CompleteStr("Damage +3   100     3       0"))
-            .unwrap()
-            .1,
-        damage_3
-    );
-    assert_eq!(
-        item_parser(CompleteStr("Defense +2   40     0       2"))
-            .unwrap()
-            .1,
-        defense_2
-    );
-
     let mut player = Player {
         cost: 0,
         hp: 8,

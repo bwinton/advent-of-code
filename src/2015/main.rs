@@ -34,8 +34,6 @@ extern crate itertools;
 extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
-#[macro_use]
-extern crate nom;
 
 extern crate test;
 

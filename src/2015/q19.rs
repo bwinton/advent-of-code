@@ -1,10 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use nom::alpha;
-use nom::types::CompleteStr;
-use regex::Regex;
 use std::collections::HashSet;
+
+use glue::prelude::{alphabetic, find, find_all, is, take, Parser};
+use glue::types::MapParserResult;
+use regex::Regex;
 
 static INPUT: &str = include_str!("data/q19.data");
 
@@ -26,23 +27,36 @@ impl Rule {
     }
 }
 
-named!(rule_parser<CompleteStr, Rule>, do_parse!(
-  source: alpha >>
-  tag!(" => ") >>
-  dest: alpha >>
-  tag!("\n") >>
-  (Rule { source: Regex::new(&source).unwrap(), dest: dest.to_string() })
-));
+fn rule_parser<'a>() -> impl Parser<'a, Rule> {
+    move |ctx| {
+        find_all((
+            take(1.., is(alphabetic)),
+            is(" => "),
+            take(1.., is(alphabetic)),
+            is("\n"),
+        ))
+        .parse(ctx)
+        .map_result(|(source, _, dest, _)| Rule {
+            source: Regex::new(&source).unwrap(),
+            dest: dest.to_string(),
+        })
+    }
+}
 
-named!(parser<CompleteStr, (Vec<Rule>, String)>, complete!(do_parse!(
-  rules: many1!(rule_parser) >>
-  tag!("\n") >>
-  start: alpha >>
-  (rules.to_vec(), start.to_string())
-)));
+fn parser<'a>() -> impl Parser<'a, (Vec<Rule>, String)> {
+    move |ctx| {
+        find_all((
+            find(1.., rule_parser()),
+            is("\n"),
+            take(1.., is(alphabetic)),
+        ))
+        .parse(ctx)
+        .map_result(|(rules, _, start)| (rules, start.to_string()))
+    }
+}
 
 fn process_data_a(data: &str) -> usize {
-    let (rules, start) = parser(CompleteStr(data)).unwrap().1;
+    let (rules, start) = parser().parse(data).unwrap().1;
     let mut rv = HashSet::new();
     for rule in rules {
         let matches = rule.match_all(&start);
@@ -52,7 +66,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
-    let (_, goal) = parser(CompleteStr(data)).unwrap().1;
+    let (_, goal) = parser().parse(data).unwrap().1;
     let tokens: Vec<String> = Regex::new("[A-Z][a-z]?")
         .unwrap()
         .captures_iter(&goal)
