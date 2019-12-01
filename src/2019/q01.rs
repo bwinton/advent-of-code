@@ -19,7 +19,7 @@ fn process_data_b(data: &str) -> u32 {
         let mut fuel: i32 = weight as i32 / 3 - 2;
         while fuel > 0 {
             sum += fuel as u32;
-            fuel = fuel as i32 / 3 - 2;
+            fuel = fuel / 3 - 2;
         }
     }
     sum
