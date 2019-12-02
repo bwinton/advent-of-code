@@ -9,16 +9,14 @@ fn run_tape(ints: &mut Vec<usize>) -> usize {
         let opcode = &ints[position];
         match opcode {
             1 => {
-                let a = ints[position + 1];
-                let b = ints[position + 2];
-                let dest = ints[position + 3];
-                ints[dest] = ints[a] + ints[b];
+                if let [a, b, dest] = ints[position + 1..position + 4] {
+                    ints[dest] = ints[a] + ints[b];
+                }
             }
             2 => {
-                let a = ints[position + 1];
-                let b = ints[position + 2];
-                let dest = ints[position + 3];
-                ints[dest] = ints[a] * ints[b];
+                if let [a, b, dest] = ints[position + 1..position + 4] {
+                    ints[dest] = ints[a] * ints[b];
+                }
             }
             99 => {
                 break;
