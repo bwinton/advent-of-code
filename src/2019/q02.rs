@@ -1,58 +1,31 @@
 //-----------------------------------------------------
 // Setup.
 
+use crate::intcode::run_tape;
+
 static INPUT: &str = include_str!("data/q02.data");
 
-fn run_tape(ints: &mut Vec<usize>) -> usize {
-    let mut position = 0;
-    loop {
-        let opcode = &ints[position];
-        match opcode {
-            1 => {
-                if let [a, b, dest] = ints[position + 1..position + 4] {
-                    ints[dest] = ints[a] + ints[b];
-                }
-            }
-            2 => {
-                if let [a, b, dest] = ints[position + 1..position + 4] {
-                    ints[dest] = ints[a] * ints[b];
-                }
-            }
-            99 => {
-                break;
-            }
-            _ => {
-                println!("ERROR!!!");
-                break;
-            }
-        }
-        position += 4
-    }
-
-    ints[0]
-}
-
-fn process_data_a(data: &str) -> usize {
-    let mut ints: Vec<usize> = data
-        .split(',')
-        .map(|i| i.parse::<usize>().unwrap())
-        .collect();
+fn process_data_a(data: &str) -> i32 {
+    let mut ints: Vec<i32> = data.split(',').map(|i| i.parse::<i32>().unwrap()).collect();
     ints[1] = 12;
     ints[2] = 2;
-    run_tape(&mut ints)
+    match run_tape(&mut ints, vec![]) {
+        Ok(_) => ints[0],
+        Err(code) => {
+            println!("ERROR!!! in code {}", code);
+            0
+        }
+    }
 }
 
-fn process_data_b(data: &str) -> usize {
-    let base: Vec<usize> = data
-        .split(',')
-        .map(|i| i.parse::<usize>().unwrap())
-        .collect();
+fn process_data_b(data: &str) -> i32 {
+    let base: Vec<i32> = data.split(',').map(|i| i.parse::<i32>().unwrap()).collect();
     for verb in 0..100 {
         for noun in 0..100 {
             let mut ints = base.clone();
             ints[1] = noun;
             ints[2] = verb;
-            if run_tape(&mut ints) == 19_690_720 {
+            if run_tape(&mut ints, vec![]).is_ok() && ints[0] == 19_690_720 {
                 return 100 * noun + verb;
             }
         }
@@ -67,13 +40,7 @@ q_impl!("2");
 
 #[test]
 fn a() {
-    assert_eq!(
-        run_tape(&mut vec![1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]),
-        3500
-    );
-    assert_eq!(run_tape(&mut vec![1, 0, 0, 0, 99]), 2);
-    assert_eq!(run_tape(&mut vec![2, 3, 0, 3, 99]), 2);
-    assert_eq!(run_tape(&mut vec![1, 1, 1, 4, 99, 5, 6, 0, 99]), 30);
+    // assert_eq!(process_data_b(""), 0);
 }
 
 #[test]
