@@ -24,7 +24,7 @@ fn process_data_a(data: &str) -> i32 {
             }
         }
     }
-    
+
     total
 }
 
@@ -34,7 +34,7 @@ fn process_data_b(data: &str) -> usize {
         let mut values = line.split(')');
         let center = values.next().unwrap();
         let planet = values.next().unwrap();
-        orbits.insert(planet,center);
+        orbits.insert(planet, center);
     }
     let mut my_path = vec![];
     let mut curr = orbits["YOU"];
@@ -60,7 +60,9 @@ q_impl!("6");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("COM)B
+    assert_eq!(
+        process_data_a(
+            "COM)B
 B)C
 C)D
 D)E
@@ -70,12 +72,17 @@ G)H
 D)I
 E)J
 J)K
-K)L"), 42);
+K)L"
+        ),
+        42
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("COM)B
+    assert_eq!(
+        process_data_b(
+            "COM)B
 B)C
 C)D
 D)E
@@ -87,5 +94,8 @@ E)J
 J)K
 K)L
 K)YOU
-I)SAN"), 4);
+I)SAN"
+        ),
+        4
+    );
 }

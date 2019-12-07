@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 #[derive(Copy, Clone, Debug)]
 enum Mode {
     Immediate,
@@ -5,11 +7,11 @@ enum Mode {
 }
 
 impl Mode {
-    fn get_mode(flag: i32) -> Result<Mode, i32> {
+    fn get_mode(flag: i64) -> Result<Mode, Vec<i64>> {
         match flag % 10 {
             0 => Ok(Mode::Position),
             1 => Ok(Mode::Immediate),
-            _ => Err(flag),
+            _ => Err(vec![flag]),
         }
     }
 }
@@ -18,14 +20,14 @@ impl Mode {
 enum Opcode {
     Add {
         mode: (Mode, Mode),
-        a: i32,
-        b: i32,
+        a: i64,
+        b: i64,
         dest: usize,
     },
     Multiply {
         mode: (Mode, Mode),
-        a: i32,
-        b: i32,
+        a: i64,
+        b: i64,
         dest: usize,
     },
     Input {
@@ -33,28 +35,28 @@ enum Opcode {
     },
     Output {
         mode: Mode,
-        src: i32,
+        src: i64,
     },
     JumpIfTrue {
         mode: (Mode, Mode),
-        test: i32,
-        pos: i32,
+        test: i64,
+        pos: i64,
     },
     JumpIfFalse {
         mode: (Mode, Mode),
-        test: i32,
-        pos: i32,
+        test: i64,
+        pos: i64,
     },
     LessThan {
         mode: (Mode, Mode),
-        a: i32,
-        b: i32,
+        a: i64,
+        b: i64,
         dest: usize,
     },
     Equals {
         mode: (Mode, Mode),
-        a: i32,
-        b: i32,
+        a: i64,
+        b: i64,
         dest: usize,
     },
     Halt,
@@ -77,7 +79,7 @@ impl Opcode {
             }
         }
     }
-    fn get_opcode(ints: &[i32], position: usize) -> Result<Opcode, i32> {
+    fn get_opcode(ints: &[i64], position: usize) -> Result<Opcode, Vec<i64>> {
         let code = ints[position];
         match code % 100 {
             1 => {
@@ -130,23 +132,26 @@ impl Opcode {
                 Ok(Opcode::Equals { mode, a, b, dest })
             }
             99 => Ok(Opcode::Halt),
-            _ => Err(ints[position]),
+            _ => Err(vec![ints[position]]),
         }
     }
 }
 
-fn get_value(mode: Mode, value: i32, ints: &[i32]) -> i32 {
+fn get_value(mode: Mode, value: i64, ints: &[i64]) -> i64 {
     match mode {
         Mode::Immediate => value,
         Mode::Position => ints[value as usize],
     }
 }
 
-pub fn run_tape(ints: &mut Vec<i32>, mut inputs: Vec<i32>) -> Result<Vec<i32>, i32> {
-    let mut position: usize = 0;
+pub fn continue_tape(
+    position: &mut usize,
+    ints: &mut Vec<i64>,
+    mut inputs: VecDeque<i64>,
+) -> Result<Vec<i64>, Vec<i64>> {
     let mut outputs = vec![];
     loop {
-        let opcode = Opcode::get_opcode(&ints, position)?;
+        let opcode = Opcode::get_opcode(&ints, *position)?;
         match &opcode {
             Opcode::Add { mode, a, b, dest } => {
                 ints[*dest] = get_value(mode.0, *a, ints) + get_value(mode.1, *b, ints);
@@ -154,21 +159,21 @@ pub fn run_tape(ints: &mut Vec<i32>, mut inputs: Vec<i32>) -> Result<Vec<i32>, i
             Opcode::Multiply { mode, a, b, dest } => {
                 ints[*dest] = get_value(mode.0, *a, ints) * get_value(mode.1, *b, ints);
             }
-            Opcode::Input { dest } => match inputs.pop() {
+            Opcode::Input { dest } => match inputs.pop_front() {
                 Some(value) => ints[*dest] = value,
-                None => return Err(-1),
+                None => return Err(outputs),
             },
             Opcode::Output { mode, src } => {
                 outputs.push(get_value(*mode, *src, ints));
             }
             Opcode::JumpIfTrue { mode, test, pos } => {
                 if get_value(mode.0, *test, ints) != 0 {
-                    position = (get_value(mode.1, *pos, ints) as usize) - opcode.get_size();
+                    *position = (get_value(mode.1, *pos, ints) as usize) - opcode.get_size();
                 }
             }
             Opcode::JumpIfFalse { mode, test, pos } => {
                 if get_value(mode.0, *test, ints) == 0 {
-                    position = (get_value(mode.1, *pos, ints) as usize) - opcode.get_size();
+                    *position = (get_value(mode.1, *pos, ints) as usize) - opcode.get_size();
                 }
             }
             Opcode::LessThan { mode, a, b, dest } => {
@@ -187,6 +192,10 @@ pub fn run_tape(ints: &mut Vec<i32>, mut inputs: Vec<i32>) -> Result<Vec<i32>, i
             }
             Opcode::Halt => return Ok(outputs),
         }
-        position += opcode.get_size();
+        *position += opcode.get_size();
     }
+}
+
+pub fn run_tape(ints: &mut Vec<i64>, inputs: VecDeque<i64>) -> Result<Vec<i64>, Vec<i64>> {
+    continue_tape(&mut 0, ints, inputs)
 }

@@ -1,30 +1,32 @@
 //-----------------------------------------------------
 // Setup.
 
+use std::collections::VecDeque;
+
 use crate::intcode::run_tape;
 
 static INPUT: &str = include_str!("data/q05.data");
 
-fn process_data_a(data: &str) -> i32 {
-    let mut ints: Vec<i32> = data.split(',').map(|i| i.parse::<i32>().unwrap()).collect();
-    let inputs = vec![1];
+fn process_data_a(data: &str) -> i64 {
+    let mut ints: Vec<i64> = data.split(',').map(|i| i.parse::<i64>().unwrap()).collect();
+    let inputs = VecDeque::from(vec![1]);
     match run_tape(&mut ints, inputs) {
         Ok(outputs) => {
             let final_value = *outputs.last().unwrap();
-            if outputs.iter().sum::<i32>() == final_value {
+            if outputs.iter().sum::<i64>() == final_value {
                 return final_value;
             }
         }
         Err(code) => {
-            println!("ERROR!!! in code {}", code);
+            println!("ERROR!!! in code {}", code[0]);
         }
     }
     -1
 }
 
-fn process_data_b(data: &str) -> i32 {
-    let mut ints: Vec<i32> = data.split(',').map(|i| i.parse::<i32>().unwrap()).collect();
-    let inputs = vec![5];
+fn process_data_b(data: &str) -> i64 {
+    let mut ints: Vec<i64> = data.split(',').map(|i| i.parse::<i64>().unwrap()).collect();
+    let inputs = VecDeque::from(vec![5]);
     match run_tape(&mut ints, inputs) {
         Ok(outputs) => {
             if outputs.len() == 1 {
@@ -32,7 +34,7 @@ fn process_data_b(data: &str) -> i32 {
             }
         }
         Err(code) => {
-            println!("ERROR!!! in code {}", code);
+            println!("ERROR!!! in code {}", code[0]);
         }
     }
     -1
@@ -44,8 +46,7 @@ fn process_data_b(data: &str) -> i32 {
 q_impl!("5");
 
 #[test]
-fn a() {
-}
+fn a() {}
 
 #[test]
 fn b() {
