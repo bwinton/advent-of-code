@@ -1,133 +1,84 @@
 //-----------------------------------------------------
 // Setup.
 
-use crate::intcode::{continue_tape, run_tape};
-use std::collections::VecDeque;
+use crate::intcode::{Intcode, IntcodeError, State};
 
 use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q07.data");
 
-fn run_amp(mut ints: &mut Vec<i64>, phase: i64, input: i64) -> Result<Option<i64>, Vec<i64>> {
-    let inputs = VecDeque::from(vec![phase, input]);
-    let mut outputs = run_tape(&mut ints, inputs)?;
-    Ok(outputs.pop())
+fn run_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
+    let mut first = Intcode::new(ints.to_owned(), vec![permutation[0], 0]);
+    first.run_tape()?;
+    let mut second = Intcode::new(ints.to_owned(), vec![permutation[1], first.outputs.pop().unwrap()]);
+    second.run_tape()?;
+    let mut third = Intcode::new(ints.to_owned(), vec![permutation[2], second.outputs.pop().unwrap()]);
+    third.run_tape()?;
+    let mut fourth = Intcode::new(ints.to_owned(), vec![permutation[3], third.outputs.pop().unwrap()]);
+    fourth.run_tape()?;
+    let mut fifth = Intcode::new(ints.to_owned(), vec![permutation[4], fourth.outputs.pop().unwrap()]);
+    fifth.run_tape()?;
+    fifth.outputs.pop().ok_or(IntcodeError::MissingValue)
 }
 
-fn run_amps(ints: &[i64], permutation: Vec<i64>) -> i64 {
-    let first = run_amp(&mut ints.to_owned(), permutation[0], 0)
-        .unwrap()
-        .unwrap();
-    let second = run_amp(&mut ints.to_owned(), permutation[1], first)
-        .unwrap()
-        .unwrap();
-    let third = run_amp(&mut ints.to_owned(), permutation[2], second)
-        .unwrap()
-        .unwrap();
-    let fourth = run_amp(&mut ints.to_owned(), permutation[3], third)
-        .unwrap()
-        .unwrap();
-    run_amp(&mut ints.to_owned(), permutation[4], fourth)
-        .unwrap()
-        .unwrap()
-}
-
-fn run_multi_amps(ints: &[i64], permutation: Vec<i64>) -> i64 {
-    let first_program = &mut ints.to_owned();
-    let second_program = &mut ints.to_owned();
-    let third_program = &mut ints.to_owned();
-    let fourth_program = &mut ints.to_owned();
-    let fifth_program = &mut ints.to_owned();
-
-    let mut first_position = 0;
-    let mut second_position = 0;
-    let mut third_position = 0;
-    let mut fourth_position = 0;
-    let mut fifth_position = 0;
-
-    let _ = continue_tape(
-        &mut first_position,
-        first_program,
-        VecDeque::from(vec![permutation[0]]),
-    );
-    let _ = continue_tape(
-        &mut second_position,
-        second_program,
-        VecDeque::from(vec![permutation[1]]),
-    );
-    let _ = continue_tape(
-        &mut third_position,
-        third_program,
-        VecDeque::from(vec![permutation[2]]),
-    );
-    let _ = continue_tape(
-        &mut fourth_position,
-        fourth_program,
-        VecDeque::from(vec![permutation[3]]),
-    );
-    let _ = continue_tape(
-        &mut fifth_position,
-        fifth_program,
-        VecDeque::from(vec![permutation[4]]),
-    );
+fn run_multi_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
+    let mut first = Intcode::new(ints.to_owned(), vec![permutation[0]]);
+    let mut state = first.run_tape()?;
+    if state != State::WaitingForInput {
+        return Err(IntcodeError::MachineNotWaiting);
+    }
+    let mut second = Intcode::new(ints.to_owned(), vec![permutation[1]]);
+    state = second.run_tape()?;
+    if state != State::WaitingForInput {
+        return Err(IntcodeError::MachineNotWaiting);
+    }
+    let mut third = Intcode::new(ints.to_owned(), vec![permutation[2]]);
+    state = third.run_tape()?;
+    if state != State::WaitingForInput {
+        return Err(IntcodeError::MachineNotWaiting);
+    }
+    let mut fourth = Intcode::new(ints.to_owned(), vec![permutation[3]]);
+    state = fourth.run_tape()?;
+    if state != State::WaitingForInput {
+        return Err(IntcodeError::MachineNotWaiting);
+    }
+    let mut fifth = Intcode::new(ints.to_owned(), vec![permutation[4]]);
+    state = fifth.run_tape()?;
+    if state != State::WaitingForInput {
+        return Err(IntcodeError::MachineNotWaiting);
+    }
 
     let mut max = 0;
     let mut input = 0;
     loop {
-        let mut outputs = continue_tape(
-            &mut first_position,
-            first_program,
-            VecDeque::from(vec![input]),
-        );
-        let first = match outputs {
-            Ok(outputs) => outputs[0],
-            Err(outputs) => outputs[0],
-        };
-        outputs = continue_tape(
-            &mut second_position,
-            second_program,
-            VecDeque::from(vec![first]),
-        );
-        let second = match outputs {
-            Ok(outputs) => outputs[0],
-            Err(outputs) => outputs[0],
-        };
-        outputs = continue_tape(
-            &mut third_position,
-            third_program,
-            VecDeque::from(vec![second]),
-        );
-        let third = match outputs {
-            Ok(outputs) => outputs[0],
-            Err(outputs) => outputs[0],
-        };
-        outputs = continue_tape(
-            &mut fourth_position,
-            fourth_program,
-            VecDeque::from(vec![third]),
-        );
-        let fourth = match outputs {
-            Ok(outputs) => outputs[0],
-            Err(outputs) => outputs[0],
-        };
-        outputs = continue_tape(
-            &mut fifth_position,
-            fifth_program,
-            VecDeque::from(vec![fourth]),
-        );
-        let fifth = match &outputs {
-            Ok(outputs) => outputs[0],
-            Err(outputs) => outputs[0],
-        };
-        input = fifth;
-        if fifth > max {
-            max = fifth;
+        first.inputs.push_back(input);
+        first.run_tape()?;
+        input = first.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+
+        second.inputs.push_back(input);
+        second.run_tape()?;
+        input = second.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+
+        third.inputs.push_back(input);
+        third.run_tape()?;
+        input = third.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+
+        fourth.inputs.push_back(input);
+        fourth.run_tape()?;
+        input = fourth.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+
+        fifth.inputs.push_back(input);
+        state = fifth.run_tape()?;
+        input = fifth.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+
+        if input > max {
+            max = input;
         }
-        if outputs.is_ok() {
+        if state == State::Halted {
             break;
         }
     }
-    max
+    Ok(max)
 }
 
 fn process_data_a(data: &str) -> i64 {
@@ -137,9 +88,15 @@ fn process_data_a(data: &str) -> i64 {
 
     let mut max = 0;
     for permutation in phases.permutations(5) {
-        let result = run_amps(&ints, permutation);
-        if result > max {
-            max = result;
+        match run_amps(&ints, permutation) {
+            Ok(result) => {
+                if result > max {
+                    max = result;
+                }        
+            }
+            Err(err) => {
+                println!("Error: {}", err);
+            }
         }
     }
 
@@ -153,9 +110,15 @@ fn process_data_b(data: &str) -> i64 {
 
     let mut max = 0;
     for permutation in phases.permutations(5) {
-        let result = run_multi_amps(&ints, permutation);
-        if result > max {
-            max = result;
+        match run_multi_amps(&ints, permutation) {
+            Ok(result) => {
+                if result > max {
+                    max = result;
+                }
+            }
+            Err(err) => {
+                println!("Error: {}", err);
+            }
         }
     }
 
@@ -173,7 +136,7 @@ fn a() {
         .split(',')
         .map(|i| i.parse::<i64>().unwrap())
         .collect();
-    assert_eq!(run_amps(&program, vec![4, 3, 2, 1, 0]), 43_210);
+    assert_eq!(run_amps(&program, vec![4, 3, 2, 1, 0]), Ok(43_210));
     assert_eq!(
         process_data_a("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0"),
         43_210
@@ -192,13 +155,8 @@ fn b() {
             .split(',')
             .map(|i| i.parse::<i64>().unwrap())
             .collect();
-    assert_eq!(run_multi_amps(&program, vec![9, 8, 7, 6, 5]), 139_629_729);
+    assert_eq!(run_multi_amps(&program, vec![9, 8, 7, 6, 5]), Ok(139_629_729));
 
-    assert_eq!(
-        process_data_b(
-            "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"
-        ),
-        139_629_729
-    );
+    assert_eq!(process_data_b("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"), 139_629_729);
     assert_eq!(process_data_b("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10"), 18_216);
 }
