@@ -20,7 +20,6 @@ pub enum State {
     Halted,
 }
 
-
 #[derive(Copy, Clone, Debug)]
 enum Mode {
     Immediate,
@@ -32,7 +31,7 @@ impl Mode {
         match flag % 10 {
             0 => Ok(Mode::Position),
             1 => Ok(Mode::Immediate),
-            _ => Err(IntcodeError::ModeNotFound {flag}),
+            _ => Err(IntcodeError::ModeNotFound { flag }),
         }
     }
 }
@@ -153,7 +152,9 @@ impl Opcode {
                 Ok(Opcode::Equals { mode, a, b, dest })
             }
             99 => Ok(Opcode::Halt),
-            _ => Err(IntcodeError::OpcodeNotFound {opcode:memory[position]}),
+            _ => Err(IntcodeError::OpcodeNotFound {
+                opcode: memory[position],
+            }),
         }
     }
 }
@@ -171,7 +172,7 @@ pub struct Intcode {
     state: State,
     pub memory: Vec<i64>,
     pub inputs: VecDeque<i64>,
-    pub outputs: Vec<i64>
+    pub outputs: Vec<i64>,
 }
 
 impl Intcode {
@@ -181,7 +182,7 @@ impl Intcode {
             state: State::Ready,
             memory,
             inputs: VecDeque::from(inputs),
-            outputs: vec![]
+            outputs: vec![],
         }
     }
 
@@ -193,40 +194,48 @@ impl Intcode {
             let opcode = Opcode::get_opcode(&self.memory, self.position)?;
             match &opcode {
                 Opcode::Add { mode, a, b, dest } => {
-                    self.memory[*dest] = get_value(mode.0, *a, &self.memory) + get_value(mode.1, *b, &self.memory);
+                    self.memory[*dest] =
+                        get_value(mode.0, *a, &self.memory) + get_value(mode.1, *b, &self.memory);
                 }
                 Opcode::Multiply { mode, a, b, dest } => {
-                    self.memory[*dest] = get_value(mode.0, *a, &self.memory) * get_value(mode.1, *b, &self.memory);
+                    self.memory[*dest] =
+                        get_value(mode.0, *a, &self.memory) * get_value(mode.1, *b, &self.memory);
                 }
                 Opcode::Input { dest } => match self.inputs.pop_front() {
                     Some(value) => self.memory[*dest] = value,
                     None => {
                         self.state = State::WaitingForInput;
                         break;
-                    },
+                    }
                 },
                 Opcode::Output { mode, src } => {
                     self.outputs.push(get_value(*mode, *src, &self.memory));
                 }
                 Opcode::JumpIfTrue { mode, test, pos } => {
                     if get_value(mode.0, *test, &self.memory) != 0 {
-                        self.position = (get_value(mode.1, *pos, &self.memory) as usize) - opcode.get_size();
+                        self.position =
+                            (get_value(mode.1, *pos, &self.memory) as usize) - opcode.get_size();
                     }
                 }
                 Opcode::JumpIfFalse { mode, test, pos } => {
                     if get_value(mode.0, *test, &self.memory) == 0 {
-                        self.position = (get_value(mode.1, *pos, &self.memory) as usize) - opcode.get_size();
+                        self.position =
+                            (get_value(mode.1, *pos, &self.memory) as usize) - opcode.get_size();
                     }
                 }
                 Opcode::LessThan { mode, a, b, dest } => {
-                    self.memory[*dest] = if get_value(mode.0, *a, &self.memory) < get_value(mode.1, *b, &self.memory) {
+                    self.memory[*dest] = if get_value(mode.0, *a, &self.memory)
+                        < get_value(mode.1, *b, &self.memory)
+                    {
                         1
                     } else {
                         0
                     }
                 }
                 Opcode::Equals { mode, a, b, dest } => {
-                    self.memory[*dest] = if get_value(mode.0, *a, &self.memory) == get_value(mode.1, *b, &self.memory) {
+                    self.memory[*dest] = if get_value(mode.0, *a, &self.memory)
+                        == get_value(mode.1, *b, &self.memory)
+                    {
                         1
                     } else {
                         0
@@ -239,7 +248,10 @@ impl Intcode {
             }
             self.position += opcode.get_size();
             if self.position >= self.memory.len() {
-                return Err(IntcodeError::InvalidPosition{position: self.position, len: self.memory.len()});
+                return Err(IntcodeError::InvalidPosition {
+                    position: self.position,
+                    len: self.memory.len(),
+                });
             }
         }
         Ok(self.state)

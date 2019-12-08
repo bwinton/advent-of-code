@@ -10,13 +10,25 @@ static INPUT: &str = include_str!("data/q07.data");
 fn run_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
     let mut first = Intcode::new(ints.to_owned(), vec![permutation[0], 0]);
     first.run_tape()?;
-    let mut second = Intcode::new(ints.to_owned(), vec![permutation[1], first.outputs.pop().unwrap()]);
+    let mut second = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[1], first.outputs.pop().unwrap()],
+    );
     second.run_tape()?;
-    let mut third = Intcode::new(ints.to_owned(), vec![permutation[2], second.outputs.pop().unwrap()]);
+    let mut third = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[2], second.outputs.pop().unwrap()],
+    );
     third.run_tape()?;
-    let mut fourth = Intcode::new(ints.to_owned(), vec![permutation[3], third.outputs.pop().unwrap()]);
+    let mut fourth = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[3], third.outputs.pop().unwrap()],
+    );
     fourth.run_tape()?;
-    let mut fifth = Intcode::new(ints.to_owned(), vec![permutation[4], fourth.outputs.pop().unwrap()]);
+    let mut fifth = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[4], fourth.outputs.pop().unwrap()],
+    );
     fifth.run_tape()?;
     fifth.outputs.pop().ok_or(IntcodeError::MissingValue)
 }
@@ -92,7 +104,7 @@ fn process_data_a(data: &str) -> i64 {
             Ok(result) => {
                 if result > max {
                     max = result;
-                }        
+                }
             }
             Err(err) => {
                 println!("Error: {}", err);
@@ -155,8 +167,16 @@ fn b() {
             .split(',')
             .map(|i| i.parse::<i64>().unwrap())
             .collect();
-    assert_eq!(run_multi_amps(&program, vec![9, 8, 7, 6, 5]), Ok(139_629_729));
+    assert_eq!(
+        run_multi_amps(&program, vec![9, 8, 7, 6, 5]),
+        Ok(139_629_729)
+    );
 
-    assert_eq!(process_data_b("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"), 139_629_729);
+    assert_eq!(
+        process_data_b(
+            "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"
+        ),
+        139_629_729
+    );
     assert_eq!(process_data_b("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10"), 18_216);
 }
