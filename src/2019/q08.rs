@@ -69,5 +69,15 @@ fn a() {
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b(""), 0);
+    assert_eq!(
+        process_data_b(""),
+        "
+                         
+                         
+                         
+                         
+                         
+                         
+"
+    );
 }
