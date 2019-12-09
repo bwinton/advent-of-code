@@ -7,7 +7,7 @@ use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q07.data");
 
-fn run_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
+fn run_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, IntcodeError> {
     let mut first = Intcode::new(ints.to_owned(), vec![permutation[0], 0]);
     first.run_tape()?;
     let mut second = Intcode::new(
@@ -33,7 +33,7 @@ fn run_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
     fifth.outputs.pop().ok_or(IntcodeError::MissingValue)
 }
 
-fn run_multi_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeError> {
+fn run_multi_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, IntcodeError> {
     let mut first = Intcode::new(ints.to_owned(), vec![permutation[0]]);
     let mut state = first.run_tape()?;
     if state != State::WaitingForInput {
@@ -93,8 +93,11 @@ fn run_multi_amps(ints: &[i64], permutation: Vec<i64>) -> Result<i64, IntcodeErr
     Ok(max)
 }
 
-fn process_data_a(data: &str) -> i64 {
-    let ints: Vec<i64> = data.split(',').map(|i| i.parse::<i64>().unwrap()).collect();
+fn process_data_a(data: &str) -> i128 {
+    let ints: Vec<i128> = data
+        .split(',')
+        .map(|i| i.parse::<i128>().unwrap())
+        .collect();
 
     let phases = 0..5;
 
@@ -115,8 +118,11 @@ fn process_data_a(data: &str) -> i64 {
     max
 }
 
-fn process_data_b(data: &str) -> i64 {
-    let ints: Vec<i64> = data.split(',').map(|i| i.parse::<i64>().unwrap()).collect();
+fn process_data_b(data: &str) -> i128 {
+    let ints: Vec<i128> = data
+        .split(',')
+        .map(|i| i.parse::<i128>().unwrap())
+        .collect();
 
     let phases = 5..10;
 
@@ -144,9 +150,9 @@ q_impl!("7");
 
 #[test]
 fn a() {
-    let program: Vec<i64> = "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0"
+    let program: Vec<i128> = "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0"
         .split(',')
-        .map(|i| i.parse::<i64>().unwrap())
+        .map(|i| i.parse::<i128>().unwrap())
         .collect();
     assert_eq!(run_amps(&program, vec![4, 3, 2, 1, 0]), Ok(43_210));
     assert_eq!(
@@ -162,10 +168,10 @@ fn a() {
 
 #[test]
 fn b() {
-    let program: Vec<i64> =
+    let program: Vec<i128> =
         "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"
             .split(',')
-            .map(|i| i.parse::<i64>().unwrap())
+            .map(|i| i.parse::<i128>().unwrap())
             .collect();
     assert_eq!(
         run_multi_amps(&program, vec![9, 8, 7, 6, 5]),

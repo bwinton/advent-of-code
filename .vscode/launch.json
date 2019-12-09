@@ -196,6 +196,23 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable '2019'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=2019",
+                    "--package=adventofcode"
+                ],
+                "filter": {
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
-    ]
+   ]
 }
