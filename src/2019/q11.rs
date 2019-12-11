@@ -53,7 +53,7 @@ impl Heading {
 
 fn run_painter(data: &str, start: i128) -> HashMap<(i32, i32), i128> {
     let mut panels: HashMap<(i32, i32), i128> = HashMap::new();
-    let mut current = (0,0);
+    let mut current = (0, 0);
     panels.insert(current, start);
     let mut direction = Heading::North;
     let ints: Vec<i128> = data
@@ -82,7 +82,9 @@ fn run_painter(data: &str, start: i128) -> HashMap<(i32, i32), i128> {
                     Heading::South => current.0 -= 1,
                     Heading::West => current.1 -= 1,
                 }
-                machine.inputs.push_back(*panels.get(&current).unwrap_or(&0));
+                machine
+                    .inputs
+                    .push_back(*panels.get(&current).unwrap_or(&0));
             }
         }
     }
@@ -122,7 +124,15 @@ fn process_data_b(data: &str) -> String {
 
     for x in max_x..=-min_x {
         for y in min_y..=max_y {
-            if let Err(e) = write!(s, "{}", if panels.get(&(-x, y)) == Some(&1) { "█" } else {" "}) {
+            if let Err(e) = write!(
+                s,
+                "{}",
+                if panels.get(&(-x, y)) == Some(&1) {
+                    "█"
+                } else {
+                    " "
+                }
+            ) {
                 return format!("Error {}", e);
             }
         }

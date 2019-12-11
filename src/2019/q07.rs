@@ -69,7 +69,10 @@ fn run_multi_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, Intcode
 
         second.inputs.push_back(input);
         second.run_tape()?;
-        input = second.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
+        input = second
+            .outputs
+            .pop_back()
+            .ok_or(IntcodeError::MissingValue)?;
 
         third.inputs.push_back(input);
         third.run_tape()?;
@@ -77,7 +80,10 @@ fn run_multi_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, Intcode
 
         fourth.inputs.push_back(input);
         fourth.run_tape()?;
-        input = fourth.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
+        input = fourth
+            .outputs
+            .pop_back()
+            .ok_or(IntcodeError::MissingValue)?;
 
         fifth.inputs.push_back(input);
         state = fifth.run_tape()?;
