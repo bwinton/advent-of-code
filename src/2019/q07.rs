@@ -12,25 +12,25 @@ fn run_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, IntcodeError>
     first.run_tape()?;
     let mut second = Intcode::new(
         ints.to_owned(),
-        vec![permutation[1], first.outputs.pop().unwrap()],
+        vec![permutation[1], first.outputs.pop_back().unwrap()],
     );
     second.run_tape()?;
     let mut third = Intcode::new(
         ints.to_owned(),
-        vec![permutation[2], second.outputs.pop().unwrap()],
+        vec![permutation[2], second.outputs.pop_back().unwrap()],
     );
     third.run_tape()?;
     let mut fourth = Intcode::new(
         ints.to_owned(),
-        vec![permutation[3], third.outputs.pop().unwrap()],
+        vec![permutation[3], third.outputs.pop_back().unwrap()],
     );
     fourth.run_tape()?;
     let mut fifth = Intcode::new(
         ints.to_owned(),
-        vec![permutation[4], fourth.outputs.pop().unwrap()],
+        vec![permutation[4], fourth.outputs.pop_back().unwrap()],
     );
     fifth.run_tape()?;
-    fifth.outputs.pop().ok_or(IntcodeError::MissingValue)
+    fifth.outputs.pop_back().ok_or(IntcodeError::MissingValue)
 }
 
 fn run_multi_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, IntcodeError> {
@@ -65,23 +65,23 @@ fn run_multi_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, Intcode
     loop {
         first.inputs.push_back(input);
         first.run_tape()?;
-        input = first.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+        input = first.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
 
         second.inputs.push_back(input);
         second.run_tape()?;
-        input = second.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+        input = second.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
 
         third.inputs.push_back(input);
         third.run_tape()?;
-        input = third.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+        input = third.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
 
         fourth.inputs.push_back(input);
         fourth.run_tape()?;
-        input = fourth.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+        input = fourth.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
 
         fifth.inputs.push_back(input);
         state = fifth.run_tape()?;
-        input = fifth.outputs.pop().ok_or(IntcodeError::MissingValue)?;
+        input = fifth.outputs.pop_back().ok_or(IntcodeError::MissingValue)?;
 
         if input > max {
             max = input;

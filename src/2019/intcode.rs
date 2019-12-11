@@ -196,7 +196,7 @@ pub struct Intcode {
     base: i128,
     pub memory: HashMap<usize, i128>,
     pub inputs: VecDeque<i128>,
-    pub outputs: Vec<i128>,
+    pub outputs: VecDeque<i128>,
 }
 
 impl Intcode {
@@ -207,7 +207,7 @@ impl Intcode {
             base: 0,
             memory: memory.into_iter().enumerate().collect(),
             inputs: VecDeque::from(inputs),
-            outputs: vec![],
+            outputs: VecDeque::new(),
         }
     }
 
@@ -262,7 +262,7 @@ impl Intcode {
                 },
                 Opcode::Output { mode, src } => {
                     let value = self.get_value(*mode, *src);
-                    self.outputs.push(value);
+                    self.outputs.push_front(value);
                 }
                 Opcode::JumpIfTrue { mode, test, pos } => {
                     if self.get_value(mode.0, *test) != 0 {

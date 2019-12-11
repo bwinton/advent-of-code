@@ -13,8 +13,8 @@ fn process_data_a(data: &str) -> i128 {
     let mut machine = Intcode::new(ints, vec![1]);
     match machine.run_tape() {
         Ok(State::Halted) => {
-            let final_value = *machine.outputs.last().unwrap();
-            if machine.outputs.iter().sum::<i128>() == final_value {
+            let final_value = machine.outputs.pop_front().unwrap();
+            if machine.outputs.iter().sum::<i128>() == 0 {
                 return final_value;
             }
         }
@@ -37,7 +37,7 @@ fn process_data_b(data: &str) -> i128 {
     match machine.run_tape() {
         Ok(State::Halted) => {
             if machine.outputs.len() == 1 {
-                return machine.outputs[0];
+                return machine.outputs.pop_back().unwrap();
             }
         }
         Err(code) => {

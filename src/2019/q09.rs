@@ -13,7 +13,7 @@ fn process_data_a(data: &str) -> i128 {
     let mut machine = Intcode::new(ints, vec![1]);
     match machine.run_tape() {
         Ok(State::Halted) => {
-            return *machine.outputs.last().unwrap();
+            return machine.outputs.pop_front().unwrap();
         }
         Err(code) => {
             println!("ERROR!!! {}", code);
@@ -33,7 +33,7 @@ fn process_data_b(data: &str) -> i128 {
     let mut machine = Intcode::new(ints, vec![2]);
     match machine.run_tape() {
         Ok(State::Halted) => {
-            return *machine.outputs.last().unwrap();
+            return machine.outputs.pop_front().unwrap();
         }
         Err(code) => {
             println!("ERROR!!! {}", code);

@@ -46,7 +46,7 @@ fn process_data_b(data: &str) -> String {
     }
     for line in &image {
         for character in line {
-            if let Err(e) = write!(s, "{}", if *character == '1' { '*' } else { ' ' }) {
+            if let Err(e) = write!(s, "{}", if *character == '1' { '█' } else { ' ' }) {
                 return format!("Error {}", e);
             }
         }
