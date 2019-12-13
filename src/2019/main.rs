@@ -1,4 +1,5 @@
 #![feature(test)]
+#![feature(exact_size_is_empty)]
 
 mod q01;
 mod q02;
