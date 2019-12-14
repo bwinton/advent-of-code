@@ -66,21 +66,21 @@ fn process_data_b(data: &str) -> i128 {
                     // println!("{:?}", (x, y, block));
                     match block {
                         4 => {
-                            println!("Ball is at {}", x);
+                            // println!("Ball is at {}", x);
                             ball_x = x;
                         }
                         3 => {
-                            println!("Paddle is at {}", x);
+                            // println!("Paddle is at {}", x);
                             paddle_x = x;
                         }
                         _ => {}
                     }
                     if x == -1 && y == 0 {
-                        println!("Score is {}", block);
+                        // println!("Score is {}", block);
                         score = block;
                     }
                 }
-                println!("Moving {}", direction(paddle_x, ball_x));
+                // println!("Moving {}", direction(paddle_x, ball_x));
                 machine.inputs.push_back(direction(paddle_x, ball_x));
             }
             Ok(State::Halted) => {
