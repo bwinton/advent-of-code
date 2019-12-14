@@ -1,7 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
+use aoc::letters::recognize_letters;
 use aoc::Day;
+
 use regex::Regex;
 use std::fmt;
 
@@ -75,9 +77,9 @@ impl fmt::Debug for Display {
         for i in 0..ROWS {
             for j in 0..COLS {
                 if self.cells[i][j] {
-                    write!(formatter, "#").unwrap();
+                    write!(formatter, "█").unwrap();
                 } else {
-                    write!(formatter, ".").unwrap();
+                    write!(formatter, " ").unwrap();
                 }
             }
             writeln!(formatter).unwrap();
@@ -159,7 +161,15 @@ impl Day for Q {
             let turn: Turn = line.parse().unwrap();
             display.run(&turn);
         }
-        println!("Result =");
-        println!("{:?}", display);
+
+        let mut letters = vec![];
+        for line in &display.cells {
+            for value in line.iter() {
+                letters.push(*value);
+            }
+        }
+
+        // println!("\n{:?}", display);
+        println!("Result = {}", recognize_letters(&letters));
     }
 }

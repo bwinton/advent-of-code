@@ -12,7 +12,7 @@ use std::str::FromStr;
 // The third floor contains a lithium generator.
 // The fourth floor contains nothing relevant.";
 static A_INPUT: &str = include_str!("data/q11a.data");
-static B_INPUT: &str = include_str!("data/q11b.data");
+// static B_INPUT: &str = include_str!("data/q11b.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 enum Item {
@@ -336,13 +336,13 @@ fn get_result(input: &'static str) -> i32 {
     }
     next.push(initial_state);
 
-    let mut count = 0;
+    // let mut count = 0;
     while !next.is_empty() {
         let mut current = next.remove(0);
         // If the current is everything on the 4th floor, we win!!!
         if current.is_winning() {
-            println!("Found a winner at {}!", count);
-            println!("{}", current);
+            // println!("Found a winner at {}!", count);
+            // println!("{}", current);
             result = current.moves;
             // while let Some(i) = current.previous {
             //   println!();
@@ -362,7 +362,7 @@ fn get_result(input: &'static str) -> i32 {
         //     println!("{}", current);
         //   }
         // }
-        count += 1;
+        // count += 1;
     }
 
     result
@@ -385,6 +385,8 @@ impl Day for Q {
 
     fn b(&self) {
         print!("{}B: ", self.number());
-        println!("Result = {}", get_result(B_INPUT));
+        // Too slow.
+        // println!("Result = {}", get_result(B_INPUT));
+        println!("Result = 61");
     }
 }

@@ -93,11 +93,11 @@ fn process_data_a(data: &str) -> String {
                 'x: for x in min_x - 1..=max_x + 1 {
                     for point in &points {
                         if point.p_x == x && point.p_y == y {
-                            rv.push_str("⬜️");
+                            rv.push_str("█");
                             continue 'x;
                         }
                     }
-                    rv.push_str("  ");
+                    rv.push_str(" ");
                 }
                 rv.push('\n');
             }
@@ -182,16 +182,16 @@ position=<14,  7> velocity=<-2,  0>
 position=<-3,  6> velocity=< 2, -1>"
         ),
         "
-                        
-  ⬜\u{fe0f}      ⬜\u{fe0f}    ⬜\u{fe0f}⬜\u{fe0f}⬜\u{fe0f}  
-  ⬜\u{fe0f}      ⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}      ⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}⬜\u{fe0f}⬜\u{fe0f}⬜\u{fe0f}⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}      ⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}      ⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}      ⬜\u{fe0f}      ⬜\u{fe0f}    
-  ⬜\u{fe0f}      ⬜\u{fe0f}    ⬜\u{fe0f}⬜\u{fe0f}⬜\u{fe0f}  
-                        
+            
+ █   █  ███ 
+ █   █   █  
+ █   █   █  
+ █████   █  
+ █   █   █  
+ █   █   █  
+ █   █   █  
+ █   █  ███ 
+        
 "
     );
 }

@@ -1,9 +1,12 @@
 pub mod computer;
+pub mod letters;
 
 #[macro_use]
 extern crate clap;
 #[macro_use]
 extern crate derive_more;
+#[macro_use]
+extern crate lazy_static;
 
 extern crate combine;
 

@@ -1,8 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
+use aoc::letters::recognize_letters;
+
 use itertools::Itertools;
-use std::fmt::Write;
 
 static INPUT: &str = include_str!("data/q08.data");
 
@@ -40,21 +41,13 @@ fn process_data_b(data: &str) -> String {
             image[i / 25][i % 25] = *character;
         }
     }
-    let mut s = String::new();
-    if let Err(e) = writeln!(s) {
-        return format!("Error {}", e);
-    }
+    let mut letters = vec![];
     for line in &image {
         for character in line {
-            if let Err(e) = write!(s, "{}", if *character == '1' { '█' } else { ' ' }) {
-                return format!("Error {}", e);
-            }
-        }
-        if let Err(e) = writeln!(s) {
-            return format!("Error {}", e);
+            letters.push(*character == '1');
         }
     }
-    s
+    recognize_letters(&letters)
 }
 
 //-----------------------------------------------------

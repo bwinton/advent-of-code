@@ -55,7 +55,7 @@ fn process_data_a(data: &str) -> usize {
         }
         bots.push(bot);
     }
-    println!("biggest range: {:?}", bots[big_bot]);
+    // println!("biggest range: {:?}", bots[big_bot]);
     bots.iter()
         .filter(|bot| bots[big_bot].in_range(bot.x, bot.y, bot.z))
         .count()

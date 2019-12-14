@@ -2,9 +2,9 @@
 // Setup.
 
 use std::collections::HashMap;
-use std::fmt::Write;
 
 use crate::intcode::{Intcode, State};
+use aoc::letters::recognize_letters;
 
 static INPUT: &str = include_str!("data/q11.data");
 
@@ -117,30 +117,13 @@ fn process_data_b(data: &str) -> String {
             max_y = key.1;
         }
     }
-    let mut s = String::new();
-    if let Err(e) = writeln!(s) {
-        return format!("Error {}", e);
-    }
-
+    let mut letters = vec![];
     for x in max_x..=-min_x {
         for y in min_y..=max_y {
-            if let Err(e) = write!(
-                s,
-                "{}",
-                if panels.get(&(-x, y)) == Some(&1) {
-                    "█"
-                } else {
-                    " "
-                }
-            ) {
-                return format!("Error {}", e);
-            }
-        }
-        if let Err(e) = writeln!(s) {
-            return format!("Error {}", e);
+            letters.push(panels.get(&(-x, y)) == Some(&1));
         }
     }
-    s
+    recognize_letters(&letters)
 }
 
 //-----------------------------------------------------
