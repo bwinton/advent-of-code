@@ -189,7 +189,7 @@ impl Opcode {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Intcode {
     position: usize,
     state: State,
@@ -236,6 +236,7 @@ impl Intcode {
         }
         loop {
             let opcode = Opcode::get_opcode(&self.memory, self.position)?;
+            let mut jumped = false;
             // println!("Executing {:?} b:{}", opcode, self.base);
             match &opcode {
                 Opcode::Add { mode, a, b, dest } => {
@@ -266,12 +267,14 @@ impl Intcode {
                 }
                 Opcode::JumpIfTrue { mode, test, pos } => {
                     if self.get_value(mode.0, *test) != 0 {
-                        self.position = (self.get_value(mode.1, *pos) as usize) - opcode.get_size();
+                        jumped = true;
+                        self.position = self.get_value(mode.1, *pos) as usize;
                     }
                 }
                 Opcode::JumpIfFalse { mode, test, pos } => {
                     if self.get_value(mode.0, *test) == 0 {
-                        self.position = (self.get_value(mode.1, *pos) as usize) - opcode.get_size();
+                        jumped = true;
+                        self.position = self.get_value(mode.1, *pos) as usize;
                     }
                 }
                 Opcode::LessThan { mode, a, b, dest } => {
@@ -294,7 +297,9 @@ impl Intcode {
                     break;
                 }
             }
-            self.position += opcode.get_size();
+            if !jumped {
+                self.position += opcode.get_size();
+            }
             if self.position >= self.memory.len() {
                 return Err(IntcodeError::InvalidPosition {
                     position: self.position,
