@@ -1,5 +1,6 @@
 #![feature(test)]
 #![feature(exact_size_is_empty)]
+#![feature(repeat_generic_slice)]
 
 mod q01;
 mod q02;
