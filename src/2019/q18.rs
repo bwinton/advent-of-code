@@ -159,7 +159,6 @@ fn move_state(
     direction: Direction,
     board: &HashMap<Position, Cell>,
     seen: &mut HashSet<(Positions, Vec<char>)>,
-    blocked: &mut HashMap<char, BinaryHeap<State>>,
     states: &mut Vec<BinaryHeap<State>>,
 ) {
     let mut next = curr.clone();
@@ -187,14 +186,10 @@ fn move_state(
                 states[machine].push(next);
             }
         }
-        Cell::Door(x) => {
-            if next.keys.contains(&x) {
-                if !seen.contains(&(next.position.clone(), keys.clone())) {
-                    seen.insert((next.position.clone(), keys));
-                    states[machine].push(next);
-                }
-            } else {
-                blocked.entry(x).or_default().push(next);
+        Cell::Door(x) if next.keys.contains(&x) => {
+            if !seen.contains(&(next.position.clone(), keys.clone())) {
+                seen.insert((next.position.clone(), keys));
+                states[machine].push(next);
             }
         }
         Cell::Key(x) => {
@@ -292,12 +287,6 @@ fn process_data_b(data: &str) -> usize {
     ])]);
     let mut states = vec![start.clone(), start.clone(), start.clone(), start.clone()];
     let mut seen = HashSet::new();
-    let mut blocked = vec![
-        HashMap::new(),
-        HashMap::new(),
-        HashMap::new(),
-        HashMap::new(),
-    ];
     loop {
         for machine in 0..4 {
             while !states[machine].is_empty() {
@@ -313,7 +302,6 @@ fn process_data_b(data: &str) -> usize {
                         *direction,
                         &board,
                         &mut seen,
-                        &mut blocked[machine],
                         &mut states,
                     );
                 }
