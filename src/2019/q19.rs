@@ -7,15 +7,15 @@ static INPUT: &str = include_str!("data/q19.data");
 
 fn process_data_a(data: &str) -> i128 {
     let ints: Vec<i128> = data
-    .split(',')
-    .map(|i| i.parse::<i128>().unwrap())
-    .collect();
+        .split(',')
+        .map(|i| i.parse::<i128>().unwrap())
+        .collect();
 
     let mut affected = 0;
 
     for y in 0..50 {
         for x in 0..50 {
-            let mut machine = Intcode::new(ints.clone(), vec![x,y]);
+            let mut machine = Intcode::new(ints.clone(), vec![x, y]);
             match machine.run_tape() {
                 Ok(State::Halted) => {}
                 Err(code) => {
@@ -34,8 +34,8 @@ fn process_data_a(data: &str) -> i128 {
     affected
 }
 
-fn check_pos(x:i128, y:i128, ints:Vec<i128>) -> bool {
-    let mut machine = Intcode::new(ints, vec![x,y]);
+fn check_pos(x: i128, y: i128, ints: Vec<i128>) -> bool {
+    let mut machine = Intcode::new(ints, vec![x, y]);
     match machine.run_tape() {
         Ok(State::Halted) => {}
         Err(code) => {
@@ -51,14 +51,14 @@ fn check_pos(x:i128, y:i128, ints:Vec<i128>) -> bool {
 
 fn process_data_b(data: &str) -> i128 {
     let ints: Vec<i128> = data
-    .split(',')
-    .map(|i| i.parse::<i128>().unwrap())
-    .collect();
+        .split(',')
+        .map(|i| i.parse::<i128>().unwrap())
+        .collect();
 
     // Use math to get small bounds!
     for y in 700..800 {
         for x in 900..1000 {
-            if !check_pos(x, y+99, ints.clone()) || !check_pos(x+99, y, ints.clone()) {
+            if !check_pos(x, y + 99, ints.clone()) || !check_pos(x + 99, y, ints.clone()) {
                 continue;
             }
             return x * 10_000 + y;

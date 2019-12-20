@@ -296,14 +296,7 @@ fn process_data_b(data: &str) -> usize {
                 }
                 // Otherwise, try to move.
                 for direction in &DIRECTIONS {
-                    move_state(
-                        &curr,
-                        machine,
-                        *direction,
-                        &board,
-                        &mut seen,
-                        &mut states,
-                    );
+                    move_state(&curr, machine, *direction, &board, &mut seen, &mut states);
                 }
             }
         }

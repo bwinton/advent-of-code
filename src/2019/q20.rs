@@ -18,7 +18,7 @@ impl Cell {
             '#' => Some(Cell::Wall),
             '.' => Some(Cell::Empty),
             ' ' => None,
-            x => Some(Cell::Unknown(x))
+            x => Some(Cell::Unknown(x)),
         }
     }
 }
@@ -44,12 +44,16 @@ type Position = (i32, i32);
 struct State {
     position: Position,
     level: i32,
-    steps: usize
+    steps: usize,
 }
 
 impl State {
     fn new(position: Position) -> Self {
-        State {position, level: 0, steps: 0}
+        State {
+            position,
+            level: 0,
+            steps: 0,
+        }
     }
 }
 
@@ -58,15 +62,15 @@ struct Board {
     max_x: i32,
     max_y: i32,
     start_position: Position,
-    end_position: Position
+    end_position: Position,
 }
 
 impl Board {
     fn new(data: &str) -> Self {
-        let mut cells: HashMap<(i32,i32), Cell> = HashMap::new();
+        let mut cells: HashMap<(i32, i32), Cell> = HashMap::new();
         let mut max_x = 0;
         let mut max_y = 0;
-    
+
         // Parse the cells.HashMap
         for (y, line) in data.lines().enumerate() {
             for (x, cell) in line.chars().enumerate() {
@@ -79,43 +83,50 @@ impl Board {
             }
             max_y = y as i32 - 3;
         }
-    
-        // println!("max: ({},{})", max_x, max_y);
-    
+
         // Convert the labels into Portals.
-        let mut portals: HashMap<String, Vec<(i32,i32)>> = HashMap::new();
-        for y in -2..max_y+2 {
-            for x in -2..max_x+2 {
-                if let Some(Cell::Unknown(first)) = cells.get(&(x,y)) {
+        let mut portals: HashMap<String, Vec<(i32, i32)>> = HashMap::new();
+        for y in -2..max_y + 2 {
+            for x in -2..max_x + 2 {
+                if let Some(Cell::Unknown(first)) = cells.get(&(x, y)) {
                     // Found a label, look for the portal.
-                    if let Some(Cell::Unknown(second)) = cells.get(&(x,y + 1)) {
+                    if let Some(Cell::Unknown(second)) = cells.get(&(x, y + 1)) {
                         // vertical
-                        if let Some(Cell::Empty) = cells.get(&(x,y - 1)) {
-                            portals.entry(format!("{}{}", first, second)).or_default().push((x,y - 1));
+                        if let Some(Cell::Empty) = cells.get(&(x, y - 1)) {
+                            portals
+                                .entry(format!("{}{}", first, second))
+                                .or_default()
+                                .push((x, y - 1));
                         } else {
-                            portals.entry(format!("{}{}", first, second)).or_default().push((x,y + 2));
+                            portals
+                                .entry(format!("{}{}", first, second))
+                                .or_default()
+                                .push((x, y + 2));
                         }
-    
                     }
-    
-                    if let Some(Cell::Unknown(second)) = cells.get(&(x + 1,y)) {
+
+                    if let Some(Cell::Unknown(second)) = cells.get(&(x + 1, y)) {
                         // horizontal
-                        if let Some(Cell::Empty) = cells.get(&(x - 1,y)) {
-                            portals.entry(format!("{}{}", first, second)).or_default().push((x - 1,y));
+                        if let Some(Cell::Empty) = cells.get(&(x - 1, y)) {
+                            portals
+                                .entry(format!("{}{}", first, second))
+                                .or_default()
+                                .push((x - 1, y));
                         } else {
-                            portals.entry(format!("{}{}", first, second)).or_default().push((x + 2,y));
+                            portals
+                                .entry(format!("{}{}", first, second))
+                                .or_default()
+                                .push((x + 2, y));
                         }
-    
                     }
                 }
             }
         }
-    
-        let mut start_position = (-1,-1);
-        let mut end_position = (-1,-1);
-    
+
+        let mut start_position = (-1, -1);
+        let mut end_position = (-1, -1);
+
         for portal in portals {
-            // println!("Portal {}: {:?}", portal.0, portal.1);
             if portal.1.len() == 2 {
                 for cell in &portal.1 {
                     cells.insert(*cell, Cell::Portal(portal.1.clone()));
@@ -127,7 +138,13 @@ impl Board {
             }
         }
 
-        Board { cells, max_x, max_y, start_position, end_position }
+        Board {
+            cells,
+            max_x,
+            max_y,
+            start_position,
+            end_position,
+        }
     }
 }
 
@@ -163,18 +180,18 @@ fn move_state(
             }
         }
         Cell::Portal(x) => {
-            // print!("{:?} => {:?}", next.position, x);
             next.position = if next.position == x[0] { x[1] } else { x[0] };
-            // print!(" => {:?}", next.position);
             if move_level {
-                // print!(" of {:?}, {} -> ", (board.max_x-1, board.max_y-1), next.level);
-                if next.position.0 == 0 || next.position.0 == board.max_x - 1 || next.position.1 == 0 || next.position.1 == board.max_y - 1 {
+                if next.position.0 == 0
+                    || next.position.0 == board.max_x - 1
+                    || next.position.1 == 0
+                    || next.position.1 == board.max_y - 1
+                {
                     next.level += 1;
                 } else {
                     next.level -= 1;
                 }
             }
-            // println!();
             next.steps += 1;
             if next.level >= 0 && !seen.contains(&(next.position, next.level)) {
                 seen.insert((next.position, next.level));
@@ -188,25 +205,6 @@ fn move_state(
 fn process_data_a(data: &str) -> usize {
     let board = Board::new(data);
 
-    // for y in 0..board.max_y {
-    //     for x in 0..board.max_x {
-    //         if (x,y) == board.start_position {
-    //             print!("S");
-    //         } else if (x,y) == board.end_position {
-    //             print!("E");
-    //         } else {
-    //             print!("{}", match board.cells.get(&(x,y)) {
-    //                 Some(Cell::Wall) => '#',
-    //                 Some(Cell::Empty) => '.',
-    //                 None => ' ',
-    //                 Some(Cell::Unknown(x)) => *x,
-    //                 Some(Cell::Portal(_)) => '@'
-    //             });
-    //         }   
-    //     }
-    //     println!();
-    // }
-
     let mut states = VecDeque::new();
     states.push_front(State::new(board.start_position));
     let mut seen: HashSet<(Position, i32)> = HashSet::new();
@@ -214,7 +212,7 @@ fn process_data_a(data: &str) -> usize {
     while let Some(curr) = states.pop_back() {
         // println!("{:?}", curr);
         if curr.position == board.end_position {
-            return curr.steps
+            return curr.steps;
         }
         for direction in &DIRECTIONS {
             move_state(&curr, *direction, &board, &mut seen, &mut states, false);
@@ -226,33 +224,13 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     let board = Board::new(data);
 
-    // for y in 0..board.max_y {
-    //     for x in 0..board.max_x {
-    //         if (x,y) == board.start_position {
-    //             print!("S");
-    //         } else if (x,y) == board.end_position {
-    //             print!("E");
-    //         } else {
-    //             print!("{}", match board.cells.get(&(x,y)) {
-    //                 Some(Cell::Wall) => '#',
-    //                 Some(Cell::Empty) => '.',
-    //                 None => ' ',
-    //                 Some(Cell::Unknown(x)) => *x,
-    //                 Some(Cell::Portal(_)) => '@'
-    //             });
-    //         }
-    //     }
-    //     println!();
-    // }
-
     let mut states = VecDeque::new();
     states.push_front(State::new(board.start_position));
     let mut seen: HashSet<(Position, i32)> = HashSet::new();
 
     while let Some(curr) = states.pop_back() {
-        // println!("{:?}", curr);
         if curr.position == board.end_position && curr.level == 0 {
-            return curr.steps
+            return curr.steps;
         }
         for direction in &DIRECTIONS {
             move_state(&curr, *direction, &board, &mut seen, &mut states, true);
@@ -270,7 +248,9 @@ q_impl!("20");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("         A           
+    assert_eq!(
+        process_data_a(
+            "         A           
          A           
   #######.#########  
   #######.........#  
@@ -289,12 +269,17 @@ FG..#########.....#
   ###########.#####  
              Z       
              Z       
-"), 23);
+"
+        ),
+        23
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("         A           
+    assert_eq!(
+        process_data_b(
+            "         A           
          A           
   #######.#########  
   #######.........#  
@@ -313,5 +298,8 @@ FG..#########.....#
   ###########.#####  
              Z       
              Z       
-"), 26);
+"
+        ),
+        26
+    );
 }
