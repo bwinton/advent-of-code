@@ -230,81 +230,91 @@ impl Intcode {
         }
     }
 
+    pub fn run_step(&mut self) -> Result<State, IntcodeError> {
+        let opcode = Opcode::get_opcode(&self.memory, self.position)?;
+        let mut jumped = false;
+        // println!("Executing {:?} b:{}", opcode, self.base);
+        match &opcode {
+            Opcode::Add { mode, a, b, dest } => {
+                let a = self.get_value(mode.0, *a);
+                let b = self.get_value(mode.1, *b);
+                let dest = self.get_location(mode.2, *dest);
+                self.memory.insert(dest, a + b);
+            }
+            Opcode::Multiply { mode, a, b, dest } => {
+                let a = self.get_value(mode.0, *a);
+                let b = self.get_value(mode.1, *b);
+                let dest = self.get_location(mode.2, *dest);
+                self.memory.insert(dest, a * b);
+            }
+            Opcode::Input { mode, dest } => match self.inputs.pop_front() {
+                Some(value) => {
+                    let dest = self.get_location(*mode, *dest);
+                    self.memory.insert(dest, value);
+                }
+                None => {
+                    jumped = true;
+                    self.state = State::WaitingForInput;
+                }
+            },
+            Opcode::Output { mode, src } => {
+                let value = self.get_value(*mode, *src);
+                self.outputs.push_front(value);
+            }
+            Opcode::JumpIfTrue { mode, test, pos } => {
+                if self.get_value(mode.0, *test) != 0 {
+                    jumped = true;
+                    self.position = self.get_value(mode.1, *pos) as usize;
+                }
+            }
+            Opcode::JumpIfFalse { mode, test, pos } => {
+                if self.get_value(mode.0, *test) == 0 {
+                    jumped = true;
+                    self.position = self.get_value(mode.1, *pos) as usize;
+                }
+            }
+            Opcode::LessThan { mode, a, b, dest } => {
+                let a = self.get_value(mode.0, *a);
+                let b = self.get_value(mode.1, *b);
+                let dest = self.get_location(mode.2, *dest);
+                self.memory.insert(dest, if a < b { 1 } else { 0 });
+            }
+            Opcode::Equals { mode, a, b, dest } => {
+                let a = self.get_value(mode.0, *a);
+                let b = self.get_value(mode.1, *b);
+                let dest = self.get_location(mode.2, *dest);
+                self.memory.insert(dest, if a == b { 1 } else { 0 });
+            }
+            Opcode::SetBase { mode, base } => {
+                self.base += self.get_value(*mode, *base);
+            }
+            Opcode::Halt => {
+                self.state = State::Halted;
+            }
+        }
+        if !jumped {
+            self.position += opcode.get_size();
+        }
+        if self.position >= self.memory.len() {
+            Err(IntcodeError::InvalidPosition {
+                position: self.position,
+                len: self.memory.len(),
+            })
+        } else {
+            Ok(self.state)
+        }
+    }
+
     pub fn run_tape(&mut self) -> Result<State, IntcodeError> {
         if self.state == State::Halted {
             return Err(IntcodeError::MachineHalted);
         }
         loop {
-            let opcode = Opcode::get_opcode(&self.memory, self.position)?;
-            let mut jumped = false;
-            // println!("Executing {:?} b:{}", opcode, self.base);
-            match &opcode {
-                Opcode::Add { mode, a, b, dest } => {
-                    let a = self.get_value(mode.0, *a);
-                    let b = self.get_value(mode.1, *b);
-                    let dest = self.get_location(mode.2, *dest);
-                    self.memory.insert(dest, a + b);
-                }
-                Opcode::Multiply { mode, a, b, dest } => {
-                    let a = self.get_value(mode.0, *a);
-                    let b = self.get_value(mode.1, *b);
-                    let dest = self.get_location(mode.2, *dest);
-                    self.memory.insert(dest, a * b);
-                }
-                Opcode::Input { mode, dest } => match self.inputs.pop_front() {
-                    Some(value) => {
-                        let dest = self.get_location(*mode, *dest);
-                        self.memory.insert(dest, value);
-                    }
-                    None => {
-                        self.state = State::WaitingForInput;
-                        break;
-                    }
-                },
-                Opcode::Output { mode, src } => {
-                    let value = self.get_value(*mode, *src);
-                    self.outputs.push_front(value);
-                }
-                Opcode::JumpIfTrue { mode, test, pos } => {
-                    if self.get_value(mode.0, *test) != 0 {
-                        jumped = true;
-                        self.position = self.get_value(mode.1, *pos) as usize;
-                    }
-                }
-                Opcode::JumpIfFalse { mode, test, pos } => {
-                    if self.get_value(mode.0, *test) == 0 {
-                        jumped = true;
-                        self.position = self.get_value(mode.1, *pos) as usize;
-                    }
-                }
-                Opcode::LessThan { mode, a, b, dest } => {
-                    let a = self.get_value(mode.0, *a);
-                    let b = self.get_value(mode.1, *b);
-                    let dest = self.get_location(mode.2, *dest);
-                    self.memory.insert(dest, if a < b { 1 } else { 0 });
-                }
-                Opcode::Equals { mode, a, b, dest } => {
-                    let a = self.get_value(mode.0, *a);
-                    let b = self.get_value(mode.1, *b);
-                    let dest = self.get_location(mode.2, *dest);
-                    self.memory.insert(dest, if a == b { 1 } else { 0 });
-                }
-                Opcode::SetBase { mode, base } => {
-                    self.base += self.get_value(*mode, *base);
-                }
-                Opcode::Halt => {
-                    self.state = State::Halted;
+            match self.run_step()? {
+                State::WaitingForInput | State::Halted => {
                     break;
                 }
-            }
-            if !jumped {
-                self.position += opcode.get_size();
-            }
-            if self.position >= self.memory.len() {
-                return Err(IntcodeError::InvalidPosition {
-                    position: self.position,
-                    len: self.memory.len(),
-                });
+                _ => {}
             }
         }
         Ok(self.state)

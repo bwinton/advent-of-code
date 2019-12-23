@@ -113,8 +113,10 @@ fn process_data_a(data: &str) -> usize {
 }
 
 // Convert to a linear equation ax + b
-fn to_linear_equation<I>(input: I, length: i128) -> (i128, i128) 
-    where I: IntoIterator<Item=Instruction> {
+fn to_linear_equation<I>(input: I, length: i128) -> (i128, i128)
+where
+    I: IntoIterator<Item = Instruction>,
+{
     let mut a = 1;
     let mut b = 0;
     for cmd in input {
@@ -130,7 +132,7 @@ fn to_linear_equation<I>(input: I, length: i128) -> (i128, i128)
             Instruction::NewStack => {
                 a = -a;
                 b = length - 1 - b;
-            },
+            }
         }
         a %= length;
         b %= length;
