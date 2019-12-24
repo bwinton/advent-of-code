@@ -213,6 +213,25 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable '2019'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=2019",
+                    "--package=adventofcode",
+                    "24::b"
+                ],
+                "filter": {
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
    ]
 }
