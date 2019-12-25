@@ -101,10 +101,7 @@ impl Opcode {
             Opcode::LessThan { .. } => 4,
             Opcode::Equals { .. } => 4,
             Opcode::SetBase { .. } => 2,
-            _ => {
-                println!("ERROR!!!");
-                999_999
-            }
+            Opcode::Halt => 0,
         }
     }
     fn get_opcode(memory: &HashMap<usize, i128>, position: usize) -> Result<Opcode, IntcodeError> {
@@ -251,6 +248,7 @@ impl Intcode {
                 Some(value) => {
                     let dest = self.get_location(*mode, *dest);
                     self.memory.insert(dest, value);
+                    self.state = State::Ready;
                 }
                 None => {
                     jumped = true;
