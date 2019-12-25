@@ -56,8 +56,44 @@ fn process_data_b(data: &str) -> i128 {
         .collect();
 
     // Use math to get small bounds!
-    for y in 700..800 {
-        for x in 900..1000 {
+    // Find left and right at y=1000 to get slopes.
+    let mut min_x = 0;
+    let mut max_x = 0;
+    let mut x = 0;
+    const Y: i128 = 1000;
+    while min_x == 0 {
+        x += 1;
+        if check_pos(x, Y, ints.clone()) {
+            min_x = x;
+        }
+    }
+    while max_x == 0 {
+        x += 1;
+        if !check_pos(x, Y, ints.clone()) {
+            max_x = x;
+        }
+    }
+    // Get the slopes.
+    let low_slope = min_x as f64 / Y as f64;
+    let high_slope = max_x as f64 / Y as f64;
+
+    // Solve low_slope*(y+100) == high_slope*y - 100
+    //  => 0 = high_slope*y - 100 - (low_slope*y + 100*low_slope)
+    //  => high_slope*y - 100 - (low_slope*y + 100*low_slope) = 0
+    //  => high_slope*y - 100 - low_slope*y - 100*low_slope) = 0
+    //  => high_slope*y - low_slope*y - 100*low_slope - 100 = 0
+    //  => (high_slope - low_slope)*y - (100*low_slope + 100) = 0
+    //  => (high_slope - low_slope)*y - 101*low_slope = 0
+    //  => (high_slope - low_slope)*y = 101*low_slope
+    //  => y = 101*low_slope / (high_slope - low_slope)
+    let y = (100.0 * (low_slope + 1.0)) / (high_slope - low_slope);
+
+    // Solve x == high_slope * y - 100
+    let x = high_slope * y - 100.0;
+    let (x, y) = (x as i128, y as i128);
+
+    for y in y - 10..y + 10 {
+        for x in x - 10..x + 10 {
             if !check_pos(x, y + 99, ints.clone()) || !check_pos(x + 99, y, ints.clone()) {
                 continue;
             }
