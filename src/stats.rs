@@ -5,8 +5,8 @@ use std::path::Path;
 use std::time::{SystemTime, SystemTimeError};
 
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
-use crossterm::style::{Attribute, Color, ResetColor, SetAttribute, SetForegroundColor};
-use crossterm::{queue, ExecutableCommand, Output, QueueableCommand};
+use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
+use crossterm::{queue, ExecutableCommand, QueueableCommand};
 use custom_error::custom_error;
 use reqwest;
 use serde_json::{from_reader, Map, Value};
@@ -101,13 +101,13 @@ impl Member {
 fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsError> {
     queue!(
         stdout,
-        Output("Stats for "),
+        Print("Stats for "),
         SetForegroundColor(Color::White),
         SetAttribute(Attribute::Bold),
-        Output(stats.event.clone()),
+        Print(stats.event.clone()),
         SetAttribute(Attribute::Reset),
         // ResetColor,
-        Output(":\n")
+        Print(":\n")
     )?;
     let mut undone = [(0, 0); 25];
     for member in &stats.members {
@@ -139,16 +139,16 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
         queue!(
             stdout,
             SetForegroundColor(Color::Blue),
-            Output(format!("  {}: ", member.name)),
+            Print(format!("  {}: ", member.name)),
             ResetColor,
-            Output(format!("{} -> {} (", member.local_score, member.max_score)),
+            Print(format!("{} -> {} (", member.local_score, member.max_score)),
             SetForegroundColor(place_color),
-            Output(format!("{}", place)),
+            Print(format!("{}", place)),
             ResetColor,
-            Output(")\n")
+            Print(")\n")
         )?;
     }
-    stdout.queue(Output("\n"))?;
+    stdout.queue(Print("\n"))?;
     Ok(())
 }
 
@@ -164,7 +164,7 @@ fn print_year(year: &str, mut stdout: &mut Stdout) -> Result<(), StatsError> {
     if !cache.is_file()
         || now.duration_since(cache.metadata()?.modified()?)?.as_secs() > ONE_DAY_IN_SECS
     {
-        stdout.queue(Output("Cache doesn't exist or is too old. Downloading\n"))?;
+        stdout.queue(Print("Cache doesn't exist or is too old. Downloading\n"))?;
         let mut request = reqwest::Client::new().get(&stats_url);
         request = request.header(reqwest::header::COOKIE, session_cookie);
 
@@ -218,14 +218,14 @@ fn main() -> Result<(), StatsError> {
         })
         .flatten()
         .collect();
-    stdout.execute(Output(format!("args: {:?}\n", args)))?;
+    stdout.execute(Print(format!("args: {:?}\n", args)))?;
 
     for year in args {
         if let Err(error) = print_year(year, &mut stdout) {
             queue!(
                 stdout,
                 SetForegroundColor(Color::Red),
-                Output(format!("{}", error)),
+                Print(format!("{}", error)),
                 ResetColor
             )?;
         };
