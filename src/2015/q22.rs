@@ -208,6 +208,7 @@ fn process_data_b(_: &str) -> i32 {
 
 q_impl!("22");
 
+#[allow(clippy::cognitive_complexity)]
 #[test]
 fn a() {
     // First example.

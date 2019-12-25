@@ -47,12 +47,12 @@ q_impl!("4");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a("abcdef"), 609043);
-    assert_eq!(process_data_a("pqrstuv"), 1048970);
+    assert_eq!(process_data_a("abcdef"), 609_043);
+    assert_eq!(process_data_a("pqrstuv"), 1_048_970);
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("abcdef"), 6742839);
-    assert_eq!(process_data_b("pqrstuv"), 5714438);
+    assert_eq!(process_data_b("abcdef"), 6_742_839);
+    assert_eq!(process_data_b("pqrstuv"), 5_714_438);
 }

@@ -126,12 +126,12 @@ fn a() {
   toggle 0,0 through 999,0
   turn off 499,499 through 500,500",
         ),
-        998996
+        998_996
     );
 }
 
 #[test]
 fn b() {
     assert_eq!(process_data_b("turn on 0,0 through 0,0"), 1);
-    assert_eq!(process_data_b("toggle 0,0 through 999,999"), 2000000);
+    assert_eq!(process_data_b("toggle 0,0 through 999,999"), 2_000_000);
 }
