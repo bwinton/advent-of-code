@@ -1,3 +1,4 @@
+use core::fmt;
 use std::collections::{HashMap, VecDeque};
 
 use custom_error::custom_error;
@@ -11,6 +12,7 @@ custom_error! {
         MissingValue = "Missing value.",
         MachineNotWaiting = "Machine should be waiting for input, but isn't",
         InvalidPosition {position: usize, len: usize} = "Invalid position {position}, should be less than {len}",
+        MachineExceededLimit {limit: usize}= "Machine exceeded run length limit of {limit}",
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
@@ -186,7 +188,7 @@ impl Opcode {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct Intcode {
     position: usize,
     state: State,
@@ -194,6 +196,16 @@ pub struct Intcode {
     pub memory: HashMap<usize, i128>,
     pub inputs: VecDeque<i128>,
     pub outputs: VecDeque<i128>,
+}
+
+impl fmt::Debug for Intcode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Intcode {{ position: {}, state: {:?}, inputs: {:?}, outputs: {:?} }}",
+            self.position, self.state, self.inputs, self.outputs
+        )
+    }
 }
 
 impl Intcode {
@@ -313,6 +325,26 @@ impl Intcode {
                     break;
                 }
                 _ => {}
+            }
+        }
+        Ok(self.state)
+    }
+
+    pub fn run_tape_until(&mut self, limit: usize) -> Result<State, IntcodeError> {
+        if self.state == State::Halted {
+            return Err(IntcodeError::MachineHalted);
+        }
+        let mut i = 0;
+        loop {
+            i += 1;
+            match self.run_step()? {
+                State::WaitingForInput | State::Halted => {
+                    break;
+                }
+                _ => {}
+            }
+            if i > limit {
+                return Err(IntcodeError::MachineExceededLimit { limit });
             }
         }
         Ok(self.state)
