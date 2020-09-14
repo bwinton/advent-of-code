@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter, Result};
 use std::rc::Rc;
 use std::result;
 
-use combine::char::{digit, letter};
+use combine::parser::char::{digit, letter};
 use combine::parser::char::string;
 use combine::{many1, one_of, Parser};
 
@@ -85,7 +85,7 @@ pub struct Jump {
 impl Jump {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("jmp ")
-            .with(one_of("+-".chars()).and(many1::<String, _>(digit())))
+            .with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))
             .parse(s)
             .map(|x| x.0);
         match result {
@@ -117,7 +117,7 @@ impl JumpEven {
         let result = string("jie ")
             .with(
                 letter()
-                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _>(digit())))),
+                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))),
             )
             .parse(s)
             .map(|x| x.0);
@@ -157,7 +157,7 @@ impl JumpOne {
         let result = string("jio ")
             .with(
                 letter()
-                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _>(digit())))),
+                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))),
             )
             .parse(s)
             .map(|x| x.0);

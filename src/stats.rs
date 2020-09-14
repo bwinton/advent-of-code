@@ -165,7 +165,7 @@ fn print_year(year: &str, mut stdout: &mut Stdout) -> Result<(), StatsError> {
         || now.duration_since(cache.metadata()?.modified()?)?.as_secs() > ONE_DAY_IN_SECS
     {
         stdout.queue(Print("Cache doesn't exist or is too old. Downloading\n"))?;
-        let mut request = reqwest::Client::new().get(&stats_url);
+        let mut request = reqwest::blocking::Client::new().get(&stats_url);
         request = request.header(reqwest::header::COOKIE, session_cookie);
 
         let mut response = request.send()?;

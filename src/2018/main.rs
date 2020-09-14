@@ -1,4 +1,3 @@
-#![feature(repeat_generic_slice)]
 #![feature(test)]
 
 mod q01;

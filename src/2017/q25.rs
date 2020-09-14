@@ -211,61 +211,61 @@ impl Day for Q {
 
 #[test]
 fn a() {
-    let action_a0 = Action {
-        test: false,
-        write: true,
-        direction: 1,
-        next: 'B',
-    };
+    // let action_a0 = Action {
+    //     test: false,
+    //     write: true,
+    //     direction: 1,
+    //     next: 'B',
+    // };
 
-    let action_a1 = Action {
-        test: true,
-        write: false,
-        direction: -1,
-        next: 'B',
-    };
+    // let action_a1 = Action {
+    //     test: true,
+    //     write: false,
+    //     direction: -1,
+    //     next: 'B',
+    // };
 
-    let state_a = State {
-        name: 'A',
-        actions: hashmap![
-          false => action_a0.clone(),
-          true => action_a1.clone()
-        ],
-    };
+    // let state_a = State {
+    //     name: 'A',
+    //     actions: hashmap![
+    //       false => action_a0.clone(),
+    //       true => action_a1.clone()
+    //     ],
+    // };
 
-    let action_b0 = Action {
-        test: false,
-        write: true,
-        direction: -1,
-        next: 'A',
-    };
+    // let action_b0 = Action {
+    //     test: false,
+    //     write: true,
+    //     direction: -1,
+    //     next: 'A',
+    // };
 
-    let action_b1 = Action {
-        test: true,
-        write: true,
-        direction: 1,
-        next: 'A',
-    };
+    // let action_b1 = Action {
+    //     test: true,
+    //     write: true,
+    //     direction: 1,
+    //     next: 'A',
+    // };
 
-    let state_b = State {
-        name: 'B',
-        actions: hashmap![
-          false => action_b0.clone(),
-          true => action_b1.clone()
-        ],
-    };
+    // let state_b = State {
+    //     name: 'B',
+    //     actions: hashmap![
+    //       false => action_b0.clone(),
+    //       true => action_b1.clone()
+    //     ],
+    // };
 
-    let machine = Machine {
-        tape: HashSet::new(),
-        position: 0,
-        state: 'A',
-        checksum: 6,
-        steps: 0,
-        states: hashmap![
-          'A' => state_a.clone(),
-          'B' => state_b.clone()
-        ],
-    };
+    // let machine = Machine {
+    //     tape: HashSet::new(),
+    //     position: 0,
+    //     state: 'A',
+    //     checksum: 6,
+    //     steps: 0,
+    //     states: hashmap![
+    //       'A' => state_a.clone(),
+    //       'B' => state_b.clone()
+    //     ],
+    // };
 
     assert_eq!(
         process_data_a(

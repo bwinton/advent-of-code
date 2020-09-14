@@ -100,7 +100,7 @@ fn get_quintuple(input: &str, keys: &mut Keys, quintuples: &mut Quintuples, coun
                 }
                 let new_key = Key::Confirmed(index, input.to_string());
                 let key_index = keys.binary_search(&new_key).unwrap();
-                mem::replace(&mut keys[key_index], new_key);
+                let _ = mem::replace(&mut keys[key_index], new_key);
             }
             quintuple.indices.retain(|i| *i == count);
 

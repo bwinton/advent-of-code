@@ -13,10 +13,10 @@ static INPUT: &str = include_str!("data/q13.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
     lazy_static! {
-      static ref SEATING: Regex = Regex::new(
-        r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$"
-      )
-      .unwrap();
+        static ref SEATING: Regex = Regex::new(
+            r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$"
+        )
+        .unwrap();
     }
     let mut happiness = HashMap::new();
     let mut people = HashSet::new();
