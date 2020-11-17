@@ -18,7 +18,7 @@ custom_error! { StatsError
     Cache{source: std::io::Error} = "invalid cache file",
     Time{source: SystemTimeError} = "time error",
     JSON{source: serde_json::error::Error} = "json error",
-    YearNotFound{year:String} = "Year {year} not found on server.",
+    YearNotFound{year:i32} = "Year {year} not found on server.",
     Session{source: VarError} = "Could not find AOC_SESSION env variable.",
     CrossTerm{source: crossterm::ErrorKind} = "crossterm error",
 }
@@ -152,7 +152,7 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
     Ok(())
 }
 
-fn print_year(year: &str, mut stdout: &mut Stdout) -> Result<(), StatsError> {
+fn print_year(year: i32, mut stdout: &mut Stdout) -> Result<(), StatsError> {
     let cache_name = format!("stats.{}.json", year);
     let stats_url = format!(
         "https://adventofcode.com/{}/leaderboard/private/view/70644.json",
@@ -171,7 +171,7 @@ fn print_year(year: &str, mut stdout: &mut Stdout) -> Result<(), StatsError> {
         let mut response = request.send()?;
         if !response.status().is_success() {
             return Err(StatsError::YearNotFound {
-                year: year.to_owned(),
+                year: year,
             });
         }
         let mut file = File::create(&cache_name)?;
@@ -206,14 +206,14 @@ fn main() -> Result<(), StatsError> {
         )
         .get_matches();
 
-    let mut args: Vec<&str> = matches.values_of("year").unwrap().collect();
-    args = args
+    let args: Vec<&str> = matches.values_of("year").unwrap().collect();
+    let args:Vec<i32> = args
         .iter()
         .map(|&x| {
             if x == "*" {
-                vec!["2015", "2016", "2017", "2018"]
+                2015..=2020
             } else {
-                vec![x]
+                x.parse().unwrap()..=x.parse().unwrap()
             }
         })
         .flatten()
