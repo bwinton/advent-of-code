@@ -21,7 +21,7 @@ impl FromStr for Pipe {
 
     fn from_str(s: &str) -> Result<Pipe, ()> {
         let mut values: Vec<usize> = s.split('/').map(|i| i.parse().unwrap()).collect();
-        values.sort();
+        values.sort_unstable();
         Ok(Pipe {
             input: values[0],
             output: values[1],
@@ -40,12 +40,22 @@ impl Pipe {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 struct Bridge {
     pipes: Vec<Pipe>,
     remaining: Vec<Pipe>,
     strength: usize,
     expecting: usize,
+}
+
+impl PartialOrd for Bridge {
+    fn partial_cmp(&self, other: &Bridge) -> Option<Ordering> {
+        let move_cmp = (self.strength).cmp(&other.strength);
+        if move_cmp == Ordering::Equal {
+            return Some(self.pipes.len().cmp(&other.pipes.len()));
+        }
+        Some(move_cmp)
+    }
 }
 
 impl Ord for Bridge {

@@ -2,7 +2,6 @@
 // Setup.
 
 use regex::Regex;
-use std;
 use std::str::FromStr;
 
 static INPUT: &str = include_str!("data/q15.data");

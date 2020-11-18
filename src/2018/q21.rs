@@ -64,10 +64,10 @@ q_impl!("21");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a(""), 0);
+    assert_eq!(process_data_a(""), 2985446);
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b(""), 0);
+    assert_eq!(process_data_b(""), 12502875);
 }

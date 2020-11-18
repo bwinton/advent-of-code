@@ -33,7 +33,7 @@ impl Day for Q {
         let mut possible = 0;
 
         fn test_data(data: &mut Vec<u32>) -> bool {
-            data.sort();
+            data.sort_unstable();
             let goal = data.pop().unwrap();
             let total = data.iter().sum::<u32>();
             goal < total
@@ -53,7 +53,7 @@ impl Day for Q {
         let mut possible: u32 = 0;
 
         fn test_data(data: &mut Vec<u32>) -> bool {
-            data.sort();
+            data.sort_unstable();
             let goal = data.pop().unwrap();
             let total = data.iter().sum::<u32>();
             goal < total

@@ -16,10 +16,10 @@ fn get_power(x: usize, y: usize, serial: i32) -> i32 {
 }
 
 fn get_cells(serial: i32) -> Vec<Vec<i32>> {
-    let mut cells: Vec<Vec<i32>> = (1..301 as usize)
+    let mut cells: Vec<Vec<i32>> = (1..301_usize)
         .into_par_iter()
         .map(|x| {
-            (1..301 as usize)
+            (1..301_usize)
                 .into_par_iter()
                 .map(|y| get_power(x, y, serial))
                 .collect()
@@ -42,10 +42,10 @@ fn get_total_power(cells: &[Vec<i32>], x: usize, y: usize, size: usize) -> i32 {
 fn process_data_a(data: i32) -> String {
     let cells = get_cells(data);
 
-    let rv = (0..297 as usize)
+    let rv = (0..297_usize)
         .into_par_iter()
         .map(|x| {
-            (0..297 as usize)
+            (0..297_usize)
                 .into_par_iter()
                 .map(|y| (get_total_power(&cells, x, y, 3), (x + 2, y + 2)))
                 .max()
@@ -60,10 +60,10 @@ fn process_data_a(data: i32) -> String {
 fn process_data_b(data: i32) -> String {
     let cells = get_cells(data);
 
-    let rv = (0..300 as usize)
+    let rv = (0..300_usize)
         .into_par_iter()
         .map(|x| {
-            (0..300 as usize)
+            (0..300_usize)
                 .into_par_iter()
                 .map(|y| {
                     let max_size = 300 - max(x, y);

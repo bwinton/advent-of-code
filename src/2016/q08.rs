@@ -107,7 +107,7 @@ impl FromStr for Turn {
         let rotate_re = Regex::new(r"^(x|y)=(\d+) by (\d+)$").unwrap();
         let blank = String::from("");
         let mut rv = Turn {
-            kind: blank.clone(),
+            kind: blank,
             arg1: 0,
             arg2: 0,
         };

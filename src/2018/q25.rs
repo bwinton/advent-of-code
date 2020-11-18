@@ -43,7 +43,7 @@ impl Point {
 
     fn add_to_group(&mut self, groups: &mut HashMap<usize, Vec<Point>>, i: usize) {
         self.group = Some(i);
-        groups.entry(i).or_insert_with(|| vec![]).push(self.clone());
+        groups.entry(i).or_insert_with(|| -> Vec<Point> {vec![]}).push(self.clone());
     }
 }
 
@@ -55,7 +55,7 @@ fn process_data_a(data: &str) -> usize {
     }
 
     let mut groups: HashMap<usize, Vec<Point>> = HashMap::new();
-    let mut available = points.clone();
+    let mut available = points;
 
     let mut id = 0;
 
@@ -77,7 +77,7 @@ fn process_data_a(data: &str) -> usize {
             curr.add_to_group(&mut groups, close_groups[0]);
         } else {
             // merge groups.
-            close_groups.sort();
+            close_groups.sort_unstable();
             let base = close_groups.pop().unwrap();
             curr.add_to_group(&mut groups, base);
             for group in &close_groups {

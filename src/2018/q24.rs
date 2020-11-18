@@ -48,7 +48,7 @@ impl Group {
             .filter(|(d, _, _)| *d > 0)
             .collect();
 
-        damage.sort();
+        damage.sort_unstable();
         let rv = damage.pop().map(|(_, _, i)| -i);
         if let Some(initiative) = rv {
             opponents.retain(|&e| e != initiative);
@@ -97,7 +97,7 @@ fn get_groups(lines: &mut Lines, groups: &mut BTreeMap<i32, Group>) -> Vec<i32> 
     };
     let mut rv = vec![];
     for line in lines {
-        if line == "" {
+        if line.is_empty() {
             break;
         }
         if let Some(cap) = RE.captures(line) {
@@ -144,7 +144,7 @@ fn process_data_a(data: &str) -> i32 {
         // target selection
         let order = groups.clone();
         let mut order: Vec<_> = order.iter().map(|(i, group)| (group.power(), -i)).collect();
-        order.sort();
+        order.sort_unstable();
         order.reverse();
         let mut available_immunes = immunes.clone();
         let mut available_infections = infections.clone();
@@ -200,7 +200,7 @@ fn process_data_b(data: &str) -> i32 {
             // target selection
             let order = groups.clone();
             let mut order: Vec<_> = order.iter().map(|(i, group)| (group.power(), -i)).collect();
-            order.sort();
+            order.sort_unstable();
             order.reverse();
             let mut available_immunes = immunes.clone();
             let mut available_infections = infections.clone();

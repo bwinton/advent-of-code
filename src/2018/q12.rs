@@ -119,7 +119,7 @@ fn process_data_b(data: &str) -> i64 {
     lines.next();
     let rules = get_rules(lines);
     let mut temp = state.sum();
-    for _ in 0..90 as i64 {
+    for _ in 0..90_i64 {
         temp = state.sum();
         state = state.step(&rules);
     }

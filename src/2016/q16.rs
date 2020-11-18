@@ -2,7 +2,6 @@
 // Setup.
 
 use aoc::Day;
-use std::iter::FromIterator;
 
 // static INPUT : &'static str = "10000";
 // static LENGTH_A : usize = 20;
@@ -11,7 +10,7 @@ static LENGTH_A: usize = 272;
 static LENGTH_B: usize = 35_651_584;
 
 fn get_checksum(input: &str) -> String {
-    let mut rv = Vec::from_iter(input.chars());
+    let mut rv: Vec<char> = input.chars().collect();
     while rv.len() % 2 == 0 {
         let mut new = Vec::new();
         for pair in rv.chunks(2) {

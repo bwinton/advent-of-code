@@ -132,7 +132,7 @@ fn group_parser<'a>() -> impl Parser<'a, Group> {
                     damage: 0,
                     armor: 0,
                 };
-                let mut all_items = items.clone();
+                let mut all_items = items;
                 if name != "Weapons" {
                     all_items.insert(0, empty_item.clone());
                 }

@@ -14,8 +14,8 @@ pub trait Instruction: Display + Debug {
 #[derive(Debug)]
 pub struct InstructionError(());
 
-pub type InstructionResult = result::Result<Box<dyn Instruction>, InstructionError>;
-pub type InstructionsResult = result::Result<Vec<Rc<Box<dyn Instruction>>>, InstructionError>;
+pub type InstructionResult = result::Result<Rc<dyn Instruction>, InstructionError>;
+pub type InstructionsResult = result::Result<Vec<Rc<dyn Instruction>>, InstructionError>;
 
 #[derive(Debug, Display)]
 #[display(fmt = "hlf {}", register)]
@@ -26,7 +26,7 @@ impl Half {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("hlf ").with(letter()).parse(s).map(|x| x.0);
         match result {
-            Ok(reg) => Ok(Box::new(Half { register: reg })),
+            Ok(reg) => Ok(Rc::new(Half { register: reg })),
             _ => Err(InstructionError(())),
         }
     }
@@ -46,7 +46,7 @@ impl Triple {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("tpl ").with(letter()).parse(s).map(|x| x.0);
         match result {
-            Ok(reg) => Ok(Box::new(Triple { register: reg })),
+            Ok(reg) => Ok(Rc::new(Triple { register: reg })),
             _ => Err(InstructionError(())),
         }
     }
@@ -66,7 +66,7 @@ impl Increment {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("inc ").with(letter()).parse(s).map(|x| x.0);
         match result {
-            Ok(reg) => Ok(Box::new(Increment { register: reg })),
+            Ok(reg) => Ok(Rc::new(Increment { register: reg })),
             _ => Err(InstructionError(())),
         }
     }
@@ -94,7 +94,7 @@ impl Jump {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(Jump { offset }))
+                Ok(Rc::new(Jump { offset }))
             }
             _ => Err(InstructionError(())),
         }
@@ -127,7 +127,7 @@ impl JumpEven {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(JumpEven {
+                Ok(Rc::new(JumpEven {
                     register: reg,
                     offset,
                 }))
@@ -167,7 +167,7 @@ impl JumpOne {
                 if sign == '-' {
                     offset = -offset;
                 }
-                Ok(Box::new(JumpOne {
+                Ok(Rc::new(JumpOne {
                     register: reg,
                     offset,
                 }))
@@ -190,11 +190,11 @@ impl Instruction for JumpOne {
 pub struct CPU {
     registers: HashMap<char, i64>,
     pc: i64,
-    instructions: Vec<Rc<Box<dyn Instruction>>>,
+    instructions: Vec<Rc<dyn Instruction>>,
 }
 
 impl CPU {
-    pub fn new(registers: HashMap<char, i64>, instructions: Vec<Rc<Box<dyn Instruction>>>) -> CPU {
+    pub fn new(registers: HashMap<char, i64>, instructions: Vec<Rc<dyn Instruction>>) -> CPU {
         CPU {
             registers,
             pc: 0,
@@ -237,13 +237,13 @@ pub fn parse_instructions(
     s: &str,
     builders: &[fn(s: &str) -> InstructionResult],
 ) -> InstructionsResult {
-    let mut instructions: Vec<Rc<Box<dyn Instruction>>> = vec![];
+    let mut instructions: Vec<Rc<dyn Instruction>> = vec![];
     for line in s.lines() {
         let mut found = false;
         for builder in builders {
             if let Ok(inst) = builder(line) {
                 found = true;
-                instructions.push(Rc::new(inst));
+                instructions.push(inst);
                 break;
             }
         }

@@ -29,7 +29,7 @@ fn process_data_b(data: &str) -> i32 {
         let mut values = HashSet::new();
         for token in tokens {
             let mut sorted = token.as_bytes().to_owned();
-            sorted.sort();
+            sorted.sort_unstable();
             if !values.insert(sorted) {
                 break 'line;
             }

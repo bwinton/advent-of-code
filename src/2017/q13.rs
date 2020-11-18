@@ -3,8 +3,6 @@
 
 use aoc::Day;
 
-use std;
-
 static INPUT: &str = include_str!("data/q13.data");
 
 fn get_range(max: usize) -> Vec<usize> {
@@ -39,7 +37,7 @@ fn process_data_a(data: &str) -> usize {
     let ranges = get_ranges(data);
     let max = &ranges.iter().map(|x| x.0).max().unwrap() + 1;
     let mut rv = 0;
-    let scanners = multi_iter(ranges.clone(), 0);
+    let scanners = multi_iter(ranges, 0);
     for tick in scanners.enumerate().take(max) {
         if let Some(scanner) = tick
             .1

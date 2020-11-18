@@ -64,7 +64,7 @@ fn process_data_a(data: &str) -> i32 {
                 let d2 = (x - point.x).abs() + (y - point.y).abs();
                 distances.push((d2, point.id));
             }
-            distances.sort();
+            distances.sort_unstable();
             let min;
             {
                 min = *distances.iter().min().unwrap();

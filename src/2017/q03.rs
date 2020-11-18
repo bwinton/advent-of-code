@@ -3,7 +3,6 @@
 
 use aoc::Day;
 
-use std;
 use std::collections::HashMap;
 
 static INPUT: i32 = 265_149;

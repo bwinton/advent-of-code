@@ -23,8 +23,8 @@ impl Cell {
             '.' => Some(Cell::Open),
             '#' => Some(Cell::Wall),
             '@' => Some(Cell::Entrance),
-            x if x >= 'a' && x <= 'z' => Some(Cell::Key(x.to_ascii_uppercase())),
-            x if x >= 'A' && x <= 'Z' => Some(Cell::Door(x)),
+            x if ('a'..='z').contains(&x) => Some(Cell::Key(x.to_ascii_uppercase())),
+            x if ('A'..='Z').contains(&x) => Some(Cell::Door(x)),
             _ => None,
         }
     }
@@ -122,7 +122,7 @@ fn move_one_state(
         }
     }
     let mut keys: Vec<char> = next.keys.clone().into_iter().collect();
-    keys.sort();
+    keys.sort_unstable();
     let mut test_keys = keys.clone();
     match board[&next.position[0]] {
         Cell::Open | Cell::Entrance => {
@@ -142,7 +142,7 @@ fn move_one_state(
             next.keys.insert(x);
             test_keys.push(x);
             keys.push(x);
-            keys.sort();
+            keys.sort_unstable();
             // println!("  {:?}", next);
             if !seen.contains(&(next.position[0], test_keys)) {
                 seen.insert((next.position[0], keys));
@@ -178,7 +178,7 @@ fn move_state(
         }
     }
     let mut keys: Vec<char> = next.keys.clone().into_iter().collect();
-    keys.sort();
+    keys.sort_unstable();
     match board[&next.position[machine]] {
         Cell::Open | Cell::Entrance => {
             if !seen.contains(&(next.position.clone(), keys.clone())) {
@@ -195,7 +195,7 @@ fn move_state(
         Cell::Key(x) => {
             next.keys.insert(x);
             keys.push(x);
-            keys.sort();
+            keys.sort_unstable();
             if !seen.contains(&(next.position.clone(), keys.clone())) {
                 seen.insert((next.position.clone(), keys));
                 for state in states {
@@ -285,7 +285,7 @@ fn process_data_b(data: &str) -> usize {
         (start_position.0 + 1, start_position.1 - 1),
         (start_position.0 + 1, start_position.1 + 1),
     ])]);
-    let mut states = vec![start.clone(), start.clone(), start.clone(), start.clone()];
+    let mut states = vec![start.clone(), start.clone(), start.clone(), start];
     let mut seen = HashSet::new();
     loop {
         for machine in 0..4 {

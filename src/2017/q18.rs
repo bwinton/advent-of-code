@@ -336,7 +336,7 @@ fn process_data_b(data: &str) -> i64 {
     let mut regs_a = registers.clone();
     regs_a.insert('p', 0);
     let mut state_a = State::new('B', instructions.clone(), regs_a);
-    let mut regs_b = registers.clone();
+    let mut regs_b = registers;
     regs_b.insert('p', 1);
     let mut state_b = State::new('B', instructions, regs_b);
 

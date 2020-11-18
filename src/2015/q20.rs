@@ -1,7 +1,6 @@
 //-----------------------------------------------------
 // Setup.
 
-use std;
 use std::collections::HashSet;
 
 static INPUT: usize = 33_100_000;

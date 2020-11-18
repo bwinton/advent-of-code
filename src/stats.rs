@@ -1,4 +1,4 @@
-use std::env::{var, VarError};
+use std::{cmp::Ordering, env::{var, VarError}};
 use std::fs::{remove_file, File};
 use std::io::{stdout, Stdout, Write};
 use std::path::Path;
@@ -8,7 +8,7 @@ use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_v
 use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
 use crossterm::{queue, ExecutableCommand, QueueableCommand};
 use custom_error::custom_error;
-use reqwest;
+
 use serde_json::{from_reader, Map, Value};
 
 static ONE_DAY_IN_SECS: u64 = 24 * 60 * 60;
@@ -128,12 +128,10 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
     stats.members.sort_by_key(|m| -m.max_score);
     for (i, member) in stats.members.iter().enumerate() {
         let place = member.place.unwrap() - i as i64;
-        let place_color = if place < 0 {
-            Color::Red
-        } else if place > 0 {
-            Color::Green
-        } else {
-            Color::White
+        let place_color = match place.cmp(&0) {
+            Ordering::Greater => Color::Green,
+            Ordering::Less => Color::Red,
+            Ordering::Equal => Color::White
         };
 
         queue!(
@@ -171,7 +169,7 @@ fn print_year(year: i32, mut stdout: &mut Stdout) -> Result<(), StatsError> {
         let mut response = request.send()?;
         if !response.status().is_success() {
             return Err(StatsError::YearNotFound {
-                year: year,
+                year,
             });
         }
         let mut file = File::create(&cache_name)?;

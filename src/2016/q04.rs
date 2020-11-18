@@ -32,7 +32,7 @@ impl Room {
                 }
             }
         }
-        chars.sort();
+        chars.sort_unstable();
         chars.truncate(5);
         let data = String::from_iter(chars.iter().map(|x| x.1));
         // println!("{}.{} => {:?}    {}", self.name, self.checksum, data, self.checksum == data);
@@ -73,7 +73,7 @@ impl FromStr for Room {
         let mut rv = Room {
             name: blank.clone(),
             sector: 0,
-            checksum: blank.clone(),
+            checksum: blank,
         };
         for cap in room_re.captures_iter(s) {
             rv.name = cap[1].to_string();

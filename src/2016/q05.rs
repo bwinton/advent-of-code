@@ -52,7 +52,7 @@ impl Day for Q {
         let input = b"abbhdwsy";
 
         let mut hasher = Md5::new();
-        let mut password = [0xff as u8; 8];
+        let mut password = [0xff_u8; 8];
         let mut len = 0;
 
         for i in 0..MAX {

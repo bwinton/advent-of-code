@@ -21,7 +21,7 @@ fn redistribute(cells: &[usize]) -> Vec<usize> {
             *elem += 1;
         }
     }
-    rv.clone()
+    rv
 }
 
 fn process_data_a(data: &str) -> usize {

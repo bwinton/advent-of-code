@@ -93,7 +93,7 @@ impl Instruction {
 }
 
 fn process_data_a(data: &str) -> i32 {
-    let mut state: State = repeat([0 as i32; 1000]).take(1000).collect();
+    let mut state: State = repeat([0_i32; 1000]).take(1000).collect();
 
     for line in data.lines() {
         let inst: Instruction = line.parse().unwrap();
@@ -104,7 +104,7 @@ fn process_data_a(data: &str) -> i32 {
 }
 
 fn process_data_b(data: &str) -> i32 {
-    let mut state: State = repeat([0 as i32; 1000]).take(1000).collect();
+    let mut state: State = repeat([0_i32; 1000]).take(1000).collect();
 
     for line in data.lines() {
         let inst: Instruction = line.parse().unwrap();

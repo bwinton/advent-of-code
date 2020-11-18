@@ -93,11 +93,11 @@ fn process_data_a(data: &str) -> String {
                 'x: for x in min_x - 1..=max_x + 1 {
                     for point in &points {
                         if point.p_x == x && point.p_y == y {
-                            rv.push_str("█");
+                            rv.push('█');
                             continue 'x;
                         }
                     }
-                    rv.push_str(" ");
+                    rv.push(' ');
                 }
                 rv.push('\n');
             }
@@ -191,7 +191,7 @@ position=<-3,  6> velocity=< 2, -1>"
  █   █   █  
  █   █   █  
  █   █  ███ 
-        
+            
 "
     );
 }

@@ -81,7 +81,7 @@ fn split(
         // println!("{}Next: {:?}", "  ".repeat(4 - groups), next);
         for mut group in split(&next, &rest, target, groups - 1, seen) {
             group.insert(0, first.to_vec());
-            group.iter_mut().for_each(|x| x.sort());
+            group.iter_mut().for_each(|x| x.sort_unstable());
             group.sort_unstable_by(|a, b| {
                 a.len().cmp(&b.len()).then_with(|| {
                     a.iter()

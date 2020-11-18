@@ -13,7 +13,7 @@ fn process_data(data: &str, iterations: usize) -> String {
         let iter = input
             .chars()
             .map(|x| x.to_digit(10).unwrap())
-            .zip([1 as u32].iter().cycle())
+            .zip([1_u32].iter().cycle())
             .map(|x| vec![*x.1, x.0])
             .coalesce(|x, y| {
                 if x[1] == y[1] {

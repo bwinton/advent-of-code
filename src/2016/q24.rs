@@ -4,7 +4,6 @@
 use aoc::Day;
 
 use regex::Regex;
-use std;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::collections::HashMap;

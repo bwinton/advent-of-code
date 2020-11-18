@@ -197,7 +197,7 @@ impl Board {
                 }
             }
         }
-        rv.sort();
+        rv.sort_unstable();
         rv.first().map(|x| (x.0, x.2, x.1))
     }
 
