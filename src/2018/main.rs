@@ -1,5 +1,3 @@
-#![feature(test)]
-
 mod q01;
 mod q02;
 mod q03;
@@ -34,8 +32,6 @@ extern crate derive_more;
 extern crate lazy_static;
 // #[macro_use]
 // extern crate maplit;
-
-extern crate test;
 
 fn main() {
     let days = q_vec!(

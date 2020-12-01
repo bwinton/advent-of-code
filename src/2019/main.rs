@@ -1,4 +1,3 @@
-#![feature(test)]
 #![feature(exact_size_is_empty)]
 #![feature(vec_remove_item)]
 
@@ -38,8 +37,6 @@ extern crate aoc;
 // extern crate lazy_static;
 // #[macro_use]
 // extern crate maplit;
-
-extern crate test;
 
 fn main() {
     let days = q_vec!(
