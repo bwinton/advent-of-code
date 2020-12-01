@@ -43,7 +43,10 @@ impl Point {
 
     fn add_to_group(&mut self, groups: &mut HashMap<usize, Vec<Point>>, i: usize) {
         self.group = Some(i);
-        groups.entry(i).or_insert_with(|| -> Vec<Point> {vec![]}).push(self.clone());
+        groups
+            .entry(i)
+            .or_insert_with(|| -> Vec<Point> { vec![] })
+            .push(self.clone());
     }
 }
 

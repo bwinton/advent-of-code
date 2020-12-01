@@ -3,8 +3,8 @@ use std::fmt::{Debug, Display, Formatter, Result};
 use std::rc::Rc;
 use std::result;
 
-use combine::parser::char::{digit, letter};
 use combine::parser::char::string;
+use combine::parser::char::{digit, letter};
 use combine::{many1, one_of, Parser};
 
 pub trait Instruction: Display + Debug {
@@ -116,8 +116,9 @@ impl JumpEven {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("jie ")
             .with(
-                letter()
-                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))),
+                letter().and(
+                    string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit()))),
+                ),
             )
             .parse(s)
             .map(|x| x.0);
@@ -156,8 +157,9 @@ impl JumpOne {
     pub fn build(s: &str) -> InstructionResult {
         let result = string("jio ")
             .with(
-                letter()
-                    .and(string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))),
+                letter().and(
+                    string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit()))),
+                ),
             )
             .parse(s)
             .map(|x| x.0);

@@ -22,7 +22,7 @@ fn process_data_a(data: &str) -> String {
             nodes.insert(cap[2].chars().next().unwrap());
             let dependencies = dep_graph
                 .entry(cap[2].chars().next().unwrap())
-                .or_insert_with(|| -> Vec<char> {vec![]});
+                .or_insert_with(|| -> Vec<char> { vec![] });
             dependencies.push(cap[1].chars().next().unwrap());
             dependencies.sort_unstable();
         }
@@ -55,7 +55,7 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
             nodes.insert(cap[2].chars().next().unwrap());
             let dependencies = dep_graph
                 .entry(cap[2].chars().next().unwrap())
-                .or_insert_with(|| -> Vec<char> {vec![]});
+                .or_insert_with(|| -> Vec<char> { vec![] });
             dependencies.push(cap[1].chars().next().unwrap());
             dependencies.sort_unstable();
         }

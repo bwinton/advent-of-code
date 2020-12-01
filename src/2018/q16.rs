@@ -254,7 +254,7 @@ fn process_data_b(data: &str) -> u32 {
     for example in examples {
         let potentials: &mut HashSet<_> = code_potentials
             .entry(example.instruction.opcode)
-            .or_insert_with(|| -> HashSet<&Opcode> {OPCODES.iter().collect()});
+            .or_insert_with(|| -> HashSet<&Opcode> { OPCODES.iter().collect() });
         for opcode in OPCODES {
             if !example.works_as(opcode) {
                 potentials.remove(opcode);

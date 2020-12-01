@@ -1,8 +1,11 @@
-use std::{cmp::Ordering, env::{var, VarError}};
 use std::fs::{remove_file, File};
 use std::io::{stdout, Stdout, Write};
 use std::path::Path;
 use std::time::{SystemTime, SystemTimeError};
+use std::{
+    cmp::Ordering,
+    env::{var, VarError},
+};
 
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
 use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
@@ -131,7 +134,7 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
         let place_color = match place.cmp(&0) {
             Ordering::Greater => Color::Green,
             Ordering::Less => Color::Red,
-            Ordering::Equal => Color::White
+            Ordering::Equal => Color::White,
         };
 
         queue!(
@@ -168,9 +171,7 @@ fn print_year(year: i32, mut stdout: &mut Stdout) -> Result<(), StatsError> {
 
         let mut response = request.send()?;
         if !response.status().is_success() {
-            return Err(StatsError::YearNotFound {
-                year,
-            });
+            return Err(StatsError::YearNotFound { year });
         }
         let mut file = File::create(&cache_name)?;
         response.copy_to(&mut file)?;
@@ -205,7 +206,7 @@ fn main() -> Result<(), StatsError> {
         .get_matches();
 
     let args: Vec<&str> = matches.values_of("year").unwrap().collect();
-    let args:Vec<i32> = args
+    let args: Vec<i32> = args
         .iter()
         .map(|&x| {
             if x == "*" {
