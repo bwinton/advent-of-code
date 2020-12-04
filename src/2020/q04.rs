@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-static INPUT: &str = include_str!("data/qXX.data");
+static INPUT: &str = include_str!("data/q04.data");
 
 fn process_data_a(data: &str) -> usize {
     for line in data.lines() {
@@ -22,7 +22,7 @@ fn process_data_b(data: &str) -> usize {
 //-----------------------------------------------------
 // Questions.
 
-q_impl!("XX");
+q_impl!("4");
 
 #[test]
 fn a() {
