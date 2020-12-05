@@ -3,22 +3,51 @@
 
 static INPUT: &str = include_str!("data/q05.data");
 
+fn parse_binary(chars: &str) -> usize {
+    let mut rv = 0;
+    for char in chars.chars() {
+        rv *= 2;
+        if char == '1' {
+            rv += 1;
+        }
+    }
+    rv
+}
+
 fn process_data_a(data: &str) -> usize {
     let mut rv = 0;
     for line in data.lines() {
-        // Do something
-        rv += line.len()
+        let line = line
+            .replace('F', "0")
+            .replace('B', "1")
+            .replace('R', "1")
+            .replace('L', "0");
+        let id = parse_binary(&line);
+        if id > rv {
+            rv = id;
+        }
     }
     rv
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rv = 0;
+    let mut rv = vec![];
     for line in data.lines() {
-        // Do something
-        rv += line.len()
+        let line = line
+            .replace('F', "0")
+            .replace('B', "1")
+            .replace('R', "1")
+            .replace('L', "0");
+        rv.push(parse_binary(&line));
     }
-    rv
+    rv.sort_unstable();
+    for (index, &item) in rv.iter().enumerate().skip(1) {
+        if item - 1 != rv[index - 1] {
+            // println!("{}, {}", rv[index - 1], item);
+            return item - 1;
+        }
+    }
+    rv.len()
 }
 
 //-----------------------------------------------------
@@ -28,7 +57,13 @@ q_impl!("5");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a(""), 0);
+    // f=0 b=1 r=1 l=0
+    // FBFBBFFRLR: row 44, column 5, seat ID 357.
+    assert_eq!(parse_binary("101"), 5);
+    assert_eq!(process_data_a("FBFBBFFRLR"), 357);
+    assert_eq!(process_data_a("BFFFBBFRRR"), 567);
+    assert_eq!(process_data_a("FFFBBBFRRR"), 119);
+    assert_eq!(process_data_a("BBFFBBFRLL"), 820);
 }
 
 #[test]
