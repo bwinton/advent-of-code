@@ -77,7 +77,13 @@ impl Member {
         }
 
         Member {
-            name: data["name"].as_str().unwrap_or(&format!("Anonymous User ({})", data["id"].as_str().unwrap())).to_owned(),
+            name: data["name"]
+                .as_str()
+                .unwrap_or(&format!(
+                    "Anonymous User ({})",
+                    data["id"].as_str().unwrap()
+                ))
+                .to_owned(),
             completions,
             stars: data["stars"].as_i64().unwrap_or(0),
             id: data["id"].as_str().unwrap().to_owned(),
