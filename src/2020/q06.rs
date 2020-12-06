@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 //-----------------------------------------------------
 // Setup.
@@ -11,12 +11,10 @@ fn process_data_a(data: &str) -> usize {
     for line in data.lines() {
         if line.trim().is_empty() {
             rv += group.len();
-            group = HashSet::new();
+            group.clear();
             continue;
         }
-        for char in line.chars() {
-            group.insert(char);
-        }
+        group.extend(line.chars());
     }
     rv += group.len();
     rv
@@ -24,27 +22,26 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
-    let mut group = HashMap::new();
-    let mut people = 0;
+    let mut group = HashSet::new();
+    let mut first_person = true;
     for line in data.lines() {
         if line.trim().is_empty() {
-            let answers: Vec<_> = group.iter().filter(|&(_, &y)| y == people).collect();
-            rv += answers.len();
-            group = HashMap::new();
-            people = 0;
+            rv += group.len();
+            group.clear();
+            first_person = true;
             continue;
         }
-        people += 1;
-        for char in line.chars() {
-            if let Some(value) = group.get_mut(&char) {
-                *value += 1;
-            } else {
-                group.insert(char, 1);
-            }
+        if first_person {
+            first_person = false;
+            group = line.chars().collect();
+            continue;
         }
+        group = group
+            .intersection(&line.chars().collect())
+            .copied()
+            .collect();
     }
-    let answers: Vec<_> = group.iter().filter(|&(_, &y)| y == people).collect();
-    rv += answers.len();
+    rv += group.len();
     rv
 }
 
