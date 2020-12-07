@@ -72,8 +72,7 @@ fn parser<'a>() -> impl Parser<'a, HashMap<String, Vec<Bag>>> {
     move |ctx| {
         find_all((find_separated(1.., rule_parser(), is('\n')), eoi()))
             .parse(ctx)
-            .map_result(|(rules, end)| {
-                println!("End == {:?}", end);
+            .map_result(|(rules, _)| {
                 let mut rv = HashMap::new();
                 for (key, value) in rules {
                     if let Some(previous) = rv.insert(key.symbol, value) {
