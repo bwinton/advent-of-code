@@ -45,35 +45,24 @@ fn number_parser<'a>() -> impl Parser<'a, i64> {
     }
 }
 
-fn acc_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((is("acc "), number_parser()))
-            .parse(ctx)
-            .map_result(|(_, number)| Instruction::Acc(number))
-    }
-}
-
-fn jmp_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((is("jmp "), number_parser()))
-            .parse(ctx)
-            .map_result(|(_, number)| Instruction::Jmp(number))
-    }
-}
-
-fn nop_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((is("nop "), number_parser()))
-            .parse(ctx)
-            .map_result(|(_, number)| Instruction::Nop(number))
-    }
-}
-
 fn instruction_parser<'a>() -> impl Parser<'a, Instruction> {
     move |ctx| {
-        find_any((acc_parser(), jmp_parser(), nop_parser()))
-            .parse(ctx)
-            .map_result(|inst| inst)
+        find_all((
+            find_any((
+                is("acc"),
+                is("jmp"),
+                is("nop"),
+            )),
+            is(' '),
+            number_parser()
+        ))
+        .parse(ctx)
+        .map_result(|(inst, _, number)| match inst {
+            "acc" => Instruction::Acc(number),
+            "jmp" => Instruction::Jmp(number),
+            "nop" => Instruction::Nop(number),
+            x => panic!("Unknown instruction {:?}", x)
+        })
     }
 }
 
