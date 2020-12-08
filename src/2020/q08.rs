@@ -48,20 +48,16 @@ fn number_parser<'a>() -> impl Parser<'a, i64> {
 fn instruction_parser<'a>() -> impl Parser<'a, Instruction> {
     move |ctx| {
         find_all((
-            find_any((
-                is("acc"),
-                is("jmp"),
-                is("nop"),
-            )),
+            find_any((is("acc"), is("jmp"), is("nop"))),
             is(' '),
-            number_parser()
+            number_parser(),
         ))
         .parse(ctx)
         .map_result(|(inst, _, number)| match inst {
             "acc" => Instruction::Acc(number),
             "jmp" => Instruction::Jmp(number),
             "nop" => Instruction::Nop(number),
-            x => panic!("Unknown instruction {:?}", x)
+            x => panic!("Unknown instruction {:?}", x),
         })
     }
 }
