@@ -1,24 +1,64 @@
 //-----------------------------------------------------
 // Setup.
 
+use itertools::Itertools;
+use std::collections::VecDeque;
+
 static INPUT: &str = include_str!("data/q09.data");
 
-fn process_data_a(data: &str) -> usize {
-    let mut rv = 0;
+fn run_a(data: &str, limit: usize) -> usize {
+    let mut previous: VecDeque<usize> = VecDeque::new();
     for line in data.lines() {
-        // Do something
-        rv += line.len();
+        if previous.len() < limit {
+            previous.push_front(line.parse().unwrap());
+            continue;
+        }
+
+        let curr: usize = line.parse().unwrap();
+        let mut found = false;
+        for values in previous.iter().combinations(2) {
+            // println!("{} == {} ({}+{})", curr, values[0] + values[1], values[0], values[1]);
+            if values[0] + values[1] == curr {
+                found = true;
+                break;
+            }
+        }
+        if !found {
+            return curr;
+        }
+        previous.pop_back();
+        previous.push_front(curr);
     }
-    rv
+    0
+}
+
+fn run_b(data: &str, target: usize) -> usize {
+    let mut values = data.lines().map(|x| x.parse::<usize>().unwrap());
+    let mut current_sum = 0;
+    let mut current_values = VecDeque::new();
+    loop {
+        while current_sum < target {
+            let next = values.next().unwrap();
+            current_values.push_back(next);
+            current_sum += next;
+        }
+        while current_sum > target {
+            let next = current_values.pop_front().unwrap();
+            current_sum -= next;
+        }
+        if current_sum == target {
+            // println!("{:?}", current_values);
+            return current_values.iter().min().unwrap() + current_values.iter().max().unwrap();
+        }
+    }
+}
+
+fn process_data_a(data: &str) -> usize {
+    run_a(data, 25)
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rv = 0;
-    for line in data.lines() {
-        // Do something
-        rv += line.len();
-    }
-    rv
+    run_b(data, 375054920)
 }
 
 //-----------------------------------------------------
@@ -28,10 +68,60 @@ q_impl!("9");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a(""), 0);
+    assert_eq!(
+        run_a(
+            "35
+20
+15
+25
+47
+40
+62
+55
+65
+95
+102
+117
+150
+182
+127
+219
+299
+277
+309
+576",
+            5
+        ),
+        127
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b(""), 0);
+    assert_eq!(
+        run_b(
+            "35
+20
+15
+25
+47
+40
+62
+55
+65
+95
+102
+117
+150
+182
+127
+219
+299
+277
+309
+576",
+            127
+        ),
+        62
+    );
 }
