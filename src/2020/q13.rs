@@ -53,7 +53,6 @@ fn process_data_b(data: &str) -> i128 {
     let mut rv = 0;
     let big_mod: i128 = buses.iter().map(|(_, j)| j).product();
     for (remainder, modulo) in buses {
-        let modulo = modulo;
         let small_mod = big_mod / modulo;
         rv += remainder * mod_inv(small_mod, modulo) * small_mod;
     }
