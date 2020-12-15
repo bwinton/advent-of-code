@@ -22,6 +22,7 @@ fn process_data_a(data: &str) -> isize {
 }
 
 // Stolen from RosettaCode.
+#[allow(unused)]
 fn mod_inv(a: i128, module: i128) -> i128 {
     let mut mn = (module, a);
     let mut xy = (0, 1);
@@ -37,27 +38,63 @@ fn mod_inv(a: i128, module: i128) -> i128 {
     xy.0
 }
 
+#[allow(unused)]
+fn algebraic_solve(buses: &[(i128, i128)]) -> i128 {
+    let mut rv = 0;
+    let big_mod: i128 = buses.iter().map(|(_, j)| j).product();
+    for (remainder, modulo) in buses {
+        let small_mod = big_mod / modulo;
+        rv += remainder * mod_inv(small_mod, *modulo) * small_mod;
+    }
+
+    rv % big_mod
+}
+
+fn algorithmic_solve(buses: &[(i128, i128)]) -> i128 {
+    let mut rv = 0;
+    let mut step = 1;
+    for (remainder, modulo) in buses {
+        let mut iter = 0;
+        let remainder = (remainder + modulo * 2) % modulo;
+        while rv % modulo != remainder {
+            rv += step;
+            iter += 1;
+            if iter > *modulo {
+                panic!("Error! {} > {}", iter, modulo);
+            }
+        }
+        step *= modulo;
+    }
+
+    rv
+}
+
 fn process_data_b(data: &str) -> i128 {
     let mut lines = data.lines();
     let _ = lines.next();
-    let buses: Vec<(i128, i128)> = lines
+    let mut buses: Vec<(i128, i128)> = lines
         .next()
         .unwrap()
         .split(',')
         .enumerate()
         .map(|(i, x)| (i as i128, x.parse().ok()))
         .filter(|(_, x)| *x != None)
-        .map(|(i, j)| (j.unwrap() - i, j.unwrap()))
+        .map(|(i, j)| {
+            let j = j.unwrap();
+            let i = i % j;
+            ((j - i) % j, j)
+        })
         .collect();
 
-    let mut rv = 0;
-    let big_mod: i128 = buses.iter().map(|(_, j)| j).product();
-    for (remainder, modulo) in buses {
-        let small_mod = big_mod / modulo;
-        rv += remainder * mod_inv(small_mod, modulo) * small_mod;
-    }
+    buses.sort_by_key(|(_, j)| -*j);
 
-    rv % big_mod
+    // let rv = algebraic_solve(&buses);
+    // let temp = algorithmic_solve(&buses);
+    // if temp != rv {
+    // println!("Error. {} != {}.", temp, rv);
+    // }
+    // rv
+    algorithmic_solve(&buses)
 }
 
 //-----------------------------------------------------
