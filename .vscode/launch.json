@@ -4,7 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+    
         {
             "type": "lldb",
             "request": "launch",
@@ -201,31 +201,31 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable '2019'",
+            "name": "Debug executable '2020'",
             "cargo": {
                 "args": [
-                    "build",
-                    "--bin=2019",
+                    "run",
+                    "--bin=2020",
                     "--package=adventofcode"
                 ],
                 "filter": {
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": ["16b"],
             "cwd": "${workspaceFolder}"
         },
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable '2019'",
+            "name": "Debug unit tests in executable '2020'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=2019",
+                    "--bin=2020",
                     "--package=adventofcode",
-                    "24::b"
+                    "16::b"
                 ],
                 "filter": {
                     "kind": "bin"
