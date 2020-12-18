@@ -1,34 +1,12 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 //-----------------------------------------------------
 // Setup.
 
 static INPUT: &str = include_str!("data/q17.data");
 
-fn check(world: &HashSet<(isize, isize, isize)>, cell: &(isize, isize, isize)) -> bool {
-    let mut sum = 0;
-    let curr = world.contains(cell);
-    for x in cell.0 - 1..=cell.0 + 1 {
-        for y in cell.1 - 1..=cell.1 + 1 {
-            for z in cell.2 - 1..=cell.2 + 1 {
-                if (x, y, z) == *cell {
-                    continue;
-                }
-                if world.contains(&(x, y, z)) {
-                    sum += 1;
-                }
-            }
-        }
-    }
-    if curr {
-        sum == 2 || sum == 3
-    } else {
-        sum == 3
-    }
-}
-
 fn run(world: &HashSet<(isize, isize, isize)>) -> HashSet<(isize, isize, isize)> {
-    let mut rv = HashSet::new();
+    let mut counts = HashMap::new();
     for cell in world {
         // Check the neighbours.
         for x in cell.0 - 1..=cell.0 + 1 {
@@ -37,14 +15,22 @@ fn run(world: &HashSet<(isize, isize, isize)>) -> HashSet<(isize, isize, isize)>
                     if &(x, y, z) == cell {
                         continue;
                     }
-                    if check(&world, &(x, y, z)) {
-                        rv.insert((x, y, z));
-                    }
+                    let entry = counts.entry((x, y, z)).or_insert(0);
+                    *entry += 1;
                 }
             }
         }
     }
-    rv
+    counts
+        .into_iter()
+        .filter_map(|(key, value)| {
+            if value == 3 || (world.contains(&key) && value == 2) {
+                Some(key)
+            } else {
+                None
+            }
+        })
+        .collect()
 }
 
 fn process_data_a(data: &str) -> usize {
