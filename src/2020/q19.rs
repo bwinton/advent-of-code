@@ -5,6 +5,7 @@ use regex::Regex;
 use std::collections::HashMap;
 
 static INPUT: &str = include_str!("data/q19.data");
+static USE_RE: bool = true;
 
 #[derive(Debug, Clone)]
 enum Value {
@@ -47,18 +48,17 @@ fn multi_match(
     index: usize,
     rules: &HashMap<&str, Value>,
     values: Vec<String>,
-    debug: bool,
-) -> Option<usize> {
-    let mut rv = 0;
+) -> Vec<usize> {
+    let mut rv = vec![index];
     for rule in values {
-        match matches(prefix, message, index + rv, &rule, rules, debug) {
-            Some(len) => rv += len,
-            None => {
-                return None;
-            }
+        let curr = rv.clone();
+        rv = vec![];
+        for index in curr {
+            let results = matches(prefix, message, index, &rule, rules);
+            rv.extend(results);
         }
     }
-    Some(rv)
+    rv
 }
 
 fn matches(
@@ -67,136 +67,40 @@ fn matches(
     index: usize,
     rule: &str,
     rules: &HashMap<&str, Value>,
-    debug: bool,
-) -> Option<usize> {
+) -> Vec<usize> {
+    let mut rv = vec![];
     match rules[rule].clone() {
         Value::Char(c) => {
-            if message.chars().nth(index) != Some(c) {
-                if debug {
-                    println!(
-                        "{}{}: Rule {}, {:?} failed {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &rules[rule],
-                        &message[..index],
-                        &message[index..]
-                    );
-                }
-                None
-            } else {
-                if debug {
-                    println!(
-                        "{}{}: Rule {}, {:?} matched {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &rules[rule],
-                        &message[..index + 1],
-                        &message[index + 1..]
-                    );
-                }
-                Some(1)
+            if message.chars().nth(index) == Some(c) {
+                rv.push(index + 1);
             }
         }
 
         Value::Order(values) => {
-            if debug {
-                println!("{}{}: Rule {} {:?}", prefix, index, rule, &rules[rule]);
-            }
             let mut new_prefix = prefix.to_string();
             new_prefix.push_str("  ");
-            let rv = multi_match(&new_prefix, message, index, rules, values, debug);
-
-            if debug {
-                if let Some(len) = rv {
-                    println!(
-                        "{}{}: Rule {} matched {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &message[..index + len],
-                        &message[index + len..]
-                    );
-                } else {
-                    println!(
-                        "{}{}: Rule {} failed {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &message[..index],
-                        &message[index..]
-                    );
-                }
-            }
-            rv
+            rv.extend(multi_match(&new_prefix, message, index, rules, values));
         }
         Value::Choice(first, second) => {
-            if debug {
-                println!("{}{}: Rule {}-1 {:?}", prefix, index, rule, &rules[rule]);
-            }
             let mut new_prefix = prefix.to_string();
             new_prefix.push_str("  ");
-            let mut rv = multi_match(&new_prefix, message, index, rules, first, debug);
-            if debug {
-                if let Some(len) = rv {
-                    println!(
-                        "{}{}: Rule {}-1 matched {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &message[..index + len],
-                        &message[index + len..]
-                    );
-                } else {
-                    println!(
-                        "{}{}: Rule {}-1 failed {}/{}",
-                        prefix,
-                        index,
-                        rule,
-                        &message[..index],
-                        &message[index..]
-                    );
-                }
-            }
-            if rv.is_none() {
-                if debug {
-                    println!("{}{}: Rule {}-2 {:?}", prefix, index, rule, &rules[rule]);
-                }
-                rv = multi_match(&new_prefix, message, index, rules, second, debug);
-                if debug {
-                    if let Some(len) = rv {
-                        println!(
-                            "{}{}: Rule {}-2 matched {}/{}",
-                            prefix,
-                            index,
-                            rule,
-                            &message[..index + len],
-                            &message[index + len..]
-                        );
-                    } else {
-                        println!(
-                            "{}{}: Rule {}-2 failed {}/{}",
-                            prefix,
-                            index,
-                            rule,
-                            &message[..index],
-                            &message[index..]
-                        );
-                    }
-                }
-            }
-            rv
+            let first_rv = multi_match(&new_prefix, message, index, rules, first);
+            rv.extend(&first_rv);
+            let second_rv = multi_match(&new_prefix, message, index, rules, second);
+            rv.extend(&second_rv);
         }
     }
+    rv
 }
 
-fn is_valid(message: &str, rules: &HashMap<&str, Value>, debug: bool) -> bool {
-    let rv = matches("", message, 0, &"0", rules, debug);
-    if debug {
-        println!("{}: {:?}\n", message, rv);
+fn is_valid(message: &str, rules: &HashMap<&str, Value>) -> bool {
+    let rv = matches("", message, 0, &"0", rules);
+    for len in rv {
+        if len == message.len() {
+            return true;
+        }
     }
-    rv == Some(message.len())
+    false
 }
 
 fn process_data_a(data: &str) -> usize {
@@ -214,7 +118,6 @@ fn process_data_a(data: &str) -> usize {
             let rest = parts.next().unwrap();
 
             let parts: Vec<_> = rest.split(' ').map(|x| x.to_string()).collect();
-            // println!("Parts: {:?}, {}, {},  {}", &parts, parts.len(), parts[0], parts[0] == "\"a\"");
             let value = if parts.len() == 1 && (parts[0] == "\"a\"" || parts[0] == "\"b\"") {
                 Value::Char(parts[0].chars().nth(1).unwrap())
             } else if parts.contains(&"|".to_string()) {
@@ -224,7 +127,6 @@ fn process_data_a(data: &str) -> usize {
             } else {
                 Value::Order(parts.clone())
             };
-            // println!("{}, {:?}", key, value);
 
             rules.insert(key, value);
         } else {
@@ -232,10 +134,9 @@ fn process_data_a(data: &str) -> usize {
         }
     }
 
-    // println!("{:?}, {:?}", rules, messages);
     messages
         .into_iter()
-        .filter(|message| is_valid(message, &rules, false))
+        .filter(|message| is_valid(message, &rules))
         .count()
 }
 
@@ -254,7 +155,6 @@ fn process_data_b(data: &str) -> usize {
             let rest = parts.next().unwrap();
 
             let parts: Vec<_> = rest.split(' ').map(|x| x.to_string()).collect();
-            // println!("Parts: {:?}, {}, {},  {}", &parts, parts.len(), parts[0], parts[0] == "\"a\"");
             let value = if parts.len() == 1 && (parts[0] == "\"a\"" || parts[0] == "\"b\"") {
                 Value::Char(parts[0].chars().nth(1).unwrap())
             } else if parts.contains(&"|".to_string()) {
@@ -264,7 +164,6 @@ fn process_data_b(data: &str) -> usize {
             } else {
                 Value::Order(parts.clone())
             };
-            // println!("{}, {:?}", key, value);
 
             rules.insert(key, value);
         } else {
@@ -335,20 +234,23 @@ fn process_data_b(data: &str) -> usize {
         Value::Order(vec!["42".to_string(), "31".to_string()]),
     );
 
-    // println!("{:?}, {:?}", rules, messages);
     let mut regex = String::new();
     regex.push('^');
     regex += &rules[&"0"].to_regex(&rules);
     regex.push('$');
     let matcher: Regex = Regex::new(&regex).unwrap();
 
-    // Tried using is_valid here, but I couldn't backtrack from an item in an Order to a
-    // previous entry in that Order to try another choice if the following item failed… :(
-    // so let's use the regex solution instead.
-    messages
-        .into_iter()
-        .filter(|message| matcher.is_match(&message))
-        .count()
+    if USE_RE {
+        messages
+            .into_iter()
+            .filter(|message| matcher.is_match(&message))
+            .count()
+    } else {
+        messages
+            .into_iter()
+            .filter(|message| is_valid(message, &rules))
+            .count()
+    }
 }
 
 //-----------------------------------------------------
@@ -358,6 +260,19 @@ q_impl!("19");
 
 #[test]
 fn a() {
+    assert_eq!(
+        process_data_a(
+            "0: 1 2
+1: 4 5 | 4
+2: 5
+4: \"a\"
+5: \"b\"
+
+ab"
+        ),
+        1
+    );
+
     assert_eq!(
         process_data_a(
             "0: \"a\"
