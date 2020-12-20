@@ -80,7 +80,7 @@ pub fn print_vec(v: &[impl Display]) -> String {
 
 fn select(day: &dyn Day, arg: &str) {
     let day_num = day.number();
-    match arg.to_lowercase() {
+    match arg.to_lowercase().replace("::", "") {
         ref q if *q == format!("{}{}", day_num, "a") => day.a(),
         ref q if *q == format!("{}{}", day_num, "b") => day.b(),
         ref q if *q == day.number() => {
