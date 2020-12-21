@@ -1,14 +1,29 @@
-use std::{collections::{HashMap, HashSet, VecDeque}, fmt::Display};
+use std::{
+    collections::{HashMap, HashSet, VecDeque},
+    fmt::Display,
+};
 
 //-----------------------------------------------------
 // Setup.
 
 static INPUT: &str = include_str!("data/q20.data");
 
-static SEA_MONSTER: [(usize,usize); 15] = [
-    (0,18),
-    (1,0), (1,5), (1,6), (1,11), (1,12), (1,17), (1,18), (1,19),
-    (2,1), (2,4), (2,7), (2,10), (2,13), (2,16),
+static SEA_MONSTER: [(usize, usize); 15] = [
+    (0, 18),
+    (1, 0),
+    (1, 5),
+    (1, 6),
+    (1, 11),
+    (1, 12),
+    (1, 17),
+    (1, 18),
+    (1, 19),
+    (2, 1),
+    (2, 4),
+    (2, 7),
+    (2, 10),
+    (2, 13),
+    (2, 16),
 ];
 
 #[derive(Debug, Clone)]
@@ -142,7 +157,6 @@ impl Tile {
             data,
         }
     }
-
 }
 
 fn process_data_a(data: &str) -> usize {
@@ -154,7 +168,10 @@ fn process_data_a(data: &str) -> usize {
         if line.starts_with("Tile ") {
             tile_name = line[5..9].to_string();
         } else if line.is_empty() {
-            let tile = Tile{ name: tile_name.clone(), data: tile_data};
+            let tile = Tile {
+                name: tile_name.clone(),
+                data: tile_data,
+            };
             let tile_h = tile.flip_h();
             let tile_v = tile.flip_v();
 
@@ -176,10 +193,22 @@ fn process_data_a(data: &str) -> usize {
         let left = tile.left();
         let bottom = tile.bottom();
         let right = tile.right();
-        sides.entry(top).or_default().insert(tile.name[..4].to_string());
-        sides.entry(left).or_default().insert(tile.name[..4].to_string());
-        sides.entry(bottom).or_default().insert(tile.name[..4].to_string());
-        sides.entry(right).or_default().insert(tile.name[..4].to_string());
+        sides
+            .entry(top)
+            .or_default()
+            .insert(tile.name[..4].to_string());
+        sides
+            .entry(left)
+            .or_default()
+            .insert(tile.name[..4].to_string());
+        sides
+            .entry(bottom)
+            .or_default()
+            .insert(tile.name[..4].to_string());
+        sides
+            .entry(right)
+            .or_default()
+            .insert(tile.name[..4].to_string());
     }
 
     // println!("{:?}", sides);
@@ -192,13 +221,19 @@ fn process_data_a(data: &str) -> usize {
         }
     }
     tile_count.retain(|_, value| value == &4);
-    let rv: usize = tile_count.keys().map(|x| x.parse::<usize>().unwrap()).product();
+    let rv: usize = tile_count
+        .keys()
+        .map(|x| x.parse::<usize>().unwrap())
+        .product();
     rv
 }
 
 fn find_monsters(board: &[String]) -> Option<Vec<Vec<char>>> {
     let mut count = 0;
-    let mut board = board.iter().map(|line| line.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
+    let mut board = board
+        .iter()
+        .map(|line| line.chars().collect::<Vec<_>>())
+        .collect::<Vec<_>>();
     for y in 0..board.len() - 2 {
         for x in 0..board[y].len() - 19 {
             let mut found = true;
@@ -235,7 +270,10 @@ fn process_data_b(data: &str) -> usize {
             tile_name = line[5..9].to_string();
         } else if line.is_empty() {
             width += 1;
-            let tile = Tile{ name: tile_name.clone(), data: tile_data};
+            let tile = Tile {
+                name: tile_name.clone(),
+                data: tile_data,
+            };
             let tile_h = tile.flip_h();
             let tile_r90 = tile.rot_90();
             let tile_r90_h = tile_r90.flip_h();
@@ -252,7 +290,16 @@ fn process_data_b(data: &str) -> usize {
             tile_map.insert(tile_r180_h.clone().name, tile_r180_h.clone());
             tile_map.insert(tile_r270.clone().name, tile_r270.clone());
             tile_map.insert(tile_r270_h.clone().name, tile_r270_h.clone());
-            all_tiles.append(&mut vec![tile, tile_h, tile_r90, tile_r90_h, tile_r180, tile_r180_h, tile_r270, tile_r270_h]);
+            all_tiles.append(&mut vec![
+                tile,
+                tile_h,
+                tile_r90,
+                tile_r90_h,
+                tile_r180,
+                tile_r180_h,
+                tile_r270,
+                tile_r270_h,
+            ]);
 
             tile_name = String::new();
             tile_data = vec![]
@@ -262,14 +309,14 @@ fn process_data_b(data: &str) -> usize {
     }
     let width = (width as f64).sqrt() as usize;
 
-    let mut board:Vec<Vec<Option<String>>> = vec![];
+    let mut board: Vec<Vec<Option<String>>> = vec![];
     for _ in 0..width {
         let mut row = vec![];
         for _ in 0..width {
             row.push(None);
         }
         board.push(row);
-    };
+    }
 
     // println!("All_Tiles:");
     // for tile in &all_tiles {
@@ -279,31 +326,36 @@ fn process_data_b(data: &str) -> usize {
 
     // println!("Starting search…");
     let mut stack = VecDeque::new();
-    stack.push_front((board, all_tiles, (0,0)));
+    stack.push_front((board, all_tiles, (0, 0)));
     let mut found: Option<Vec<Vec<String>>> = None;
     while !stack.is_empty() {
-        let (board, all_tiles, (x,y)) = stack.pop_front().unwrap();
+        let (board, all_tiles, (x, y)) = stack.pop_front().unwrap();
         // println!("\n{}:{}", stack.len(), &all_tiles.len());
         // for row in &board {
         //     println!("{:?}", row);
         // }
         if all_tiles.is_empty() {
             // println!("Found it!!!");
-            found = Some(board.iter().map(|row| row.iter().map(|cell| cell.clone().unwrap()).collect()).collect());
+            found = Some(
+                board
+                    .iter()
+                    .map(|row| row.iter().map(|cell| cell.clone().unwrap()).collect())
+                    .collect(),
+            );
             break;
         }
         for tile in &all_tiles {
             // check if the border fits to the top / left tile
             let mut fits = true;
             if x > 0 {
-                let prev = &board[y][x-1].clone().unwrap().clone();
+                let prev = &board[y][x - 1].clone().unwrap().clone();
                 let prev = tile_map.get(prev).unwrap();
                 if tile.left() != prev.right() {
                     fits = false;
                 }
             }
             if y > 0 {
-                let prev = &board[y-1][x].clone().unwrap().clone();
+                let prev = &board[y - 1][x].clone().unwrap().clone();
                 let prev = tile_map.get(prev).unwrap();
                 if tile.top() != prev.bottom() {
                     fits = false;
@@ -328,7 +380,6 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
-
     let mut board = vec![];
     for line in found.unwrap() {
         let mut row = vec![];
@@ -348,7 +399,10 @@ fn process_data_b(data: &str) -> usize {
         }
         board.extend(row);
     }
-    let board = Tile {name: "Full Board".to_string(), data: board };
+    let board = Tile {
+        name: "Full Board".to_string(),
+        data: board,
+    };
     // println!("Testing orig");
     if let Some(board) = find_monsters(&board.data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
@@ -395,10 +449,9 @@ q_impl!("20");
 
 #[test]
 fn a() {
-
     let name = "Tile".to_string();
     let data = vec!["123".to_string(), "456".to_string(), "789".to_string()];
-    let tile = Tile{name, data};
+    let tile = Tile { name, data };
     // let tile_h = tile.flip_h();
     // let tile_v = tile.flip_v();
     // let tile_r90 = tile.rot_90();
@@ -428,7 +481,9 @@ fn a() {
     // println!("{}\n{}", tile.to_string(), tile_r270h.to_string());
     // println!("{}\n{}", tile.to_string(), tile_r270v.to_string());
 
-    assert_eq!(process_data_a("Tile 2311:
+    assert_eq!(
+        process_data_a(
+            "Tile 2311:
 ..##.#..#.
 ##..#.....
 #...##..#.
@@ -536,12 +591,17 @@ Tile 3079:
 ..#.......
 ..#.###...
 
-"), 20899048083289);
+"
+        ),
+        20899048083289
+    );
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("Tile 2311:
+    assert_eq!(
+        process_data_b(
+            "Tile 2311:
 ..##.#..#.
 ##..#.....
 #...##..#.
@@ -649,5 +709,8 @@ Tile 3079:
 ..#.......
 ..#.###...
 
-"), 273);
+"
+        ),
+        273
+    );
 }
