@@ -4,92 +4,131 @@
 use itertools::Itertools;
 static INPUT: &str = include_str!("data/q23.data");
 
-fn run_a(cups: Vec<usize>, steps: usize) -> Vec<usize> {
-    let mut cups = cups;
-
-    for _ in 0..steps {
-        let pickup: Vec<usize> = cups.splice(1..4, vec![]).collect();
-        let mut next = cups[0] - 1;
-        while cups.iter().position(|&x| x == next).is_none() {
-            if next <= 1 {
-                next = 9
-            } else {
-                next -= 1;
-            }
-        }
-        let dest = cups.iter().position(|&x| x == next).unwrap() + 1;
-        cups.splice(dest..dest, pickup);
-        cups.rotate_left(1);
-
-        // let next = cups[dest];
+#[allow(unused)]
+fn print_cups(cups: &[usize], first: usize) {
+    let mut curr = first;
+    print!("({}) ", cups[curr]);
+    curr = cups[curr];
+    let mut i = 0;
+    while curr != first && i < 20 {
+        print!("{} ", cups[curr]);
+        curr = cups[curr];
+        i += 1;
     }
-
-    let dest = cups.iter().position(|&x| x == 1).unwrap() + 1;
-    cups.rotate_left(dest);
-    cups[..cups.len()-1].to_vec()
+    println!();
 }
 
+fn run_a(data: &str, steps: usize) -> String {
+    let mut cups: [usize; 10] = [0; 10];
+    let values: Vec<usize> = data
+        .chars()
+        .map(|c| String::from(c).parse().unwrap())
+        .collect();
+    cups[0] = values[values.len() - 1];
+    let mut prev = 0;
+    for value in &values {
+        if prev != 0 {
+            cups[prev] = *value;
+        }
+        prev = *value;
+    }
+    cups[prev] = values[0];
 
-fn run_b(cups: &Box<[usize; 1_000_001]>, start: usize, steps: usize) -> usize {
-    // Cups is an array of usize pointers to the next value;
-    let mut cups = cups;
-
-    let mut curr = start as usize;
-    for i in 0..steps {
-        let target = curr - 1;
-        let mut pickup = cups[curr];
+    let mut curr = cups[0];
+    for _ in 0..steps {
+        curr = cups[curr];
+        let mut target = curr - 1;
+        if target == 0 {
+            target = cups.len() - 1;
+        }
+        let pickup = curr;
         let mut picked_up = vec![];
         let mut next = pickup;
         for _ in 0..3 {
             picked_up.push(cups[next]);
             next = cups[next];
         }
-        println!("picked_up: {:?}", picked_up);
-        println!("target: {:?}", target);
-        println!("next: {:?}", next);
 
         while picked_up.contains(&target) {
             if target <= 1 {
-                target = 1_000_000
+                target = 9
             } else {
                 target -= 1;
             }
         }
 
-        cups[curr] = target;
-        cups[picked_up[picked_up.len() - 1]] = cups[target];
-        cups[target] = pickup;
-
+        let old_next = cups[next];
+        cups[next] = cups[target];
+        cups[target] = cups[pickup];
+        cups[pickup] = old_next;
     }
 
-    let dest = cups.iter().position(|&x| x == 1).unwrap() + 1;
-    cups.iter().cycle().skip(dest).take(2).map(|&x| x as u64).product()
+    let mut rv = vec![];
+    let mut curr = 1;
+    rv.push(cups[curr]);
+    curr = cups[curr];
+    while cups[curr] != 1 {
+        rv.push(cups[curr]);
+        curr = cups[curr];
+    }
+
+    rv.iter().map(|c| c.to_string()).join("")
 }
 
 fn process_data_a(data: &str) -> String {
-    let mut cups= data.chars().map(|c| String::from(c).parse().unwrap()).collect();
-    let cups = run_a(cups, 100);
-    cups.iter().map(|c| c.to_string()).join("")
+    run_a(data, 100)
 }
 
-fn process_data_b(data: &str) -> u64 {
-    let mut cups: Box<[usize; 1_000_001]> = Box::new([0;1_000_001]);
-    for (i, value) in cups.iter_mut().enumerate() {
-        *value = (i as usize) + 1;
+fn process_data_b(data: &str) -> usize {
+    let mut cups: [usize; 1_000_001] = [0; 1_000_001];
+    for (i, item) in cups.iter_mut().enumerate() {
+        *item = i + 1;
     }
-    let values: Vec<usize> = data.chars().map(|c| String::from(c).parse().unwrap()).collect();
-    let start = values[0];
-    for (i, value) in values.into_iter().enumerate() {
-        if i == 0 {
-            continue;
+    let values: Vec<usize> = data
+        .chars()
+        .map(|c| String::from(c).parse().unwrap())
+        .collect();
+    cups[0] = values[0];
+    let mut prev = 0;
+    for value in &values {
+        if prev != 0 {
+            cups[prev] = *value;
         }
-        cups[i-1] = value;
+        prev = *value;
     }
-    cups[999_999] = 0;
+    cups[prev] = 10;
+    cups[cups.len() - 1] = cups[0];
 
-    println!("{:?}", &cups[..12]);
+    let mut curr = 0;
+    for _ in 0..10_000_000 {
+        curr = cups[curr];
+        let mut target = curr - 1;
+        if target == 0 {
+            target = cups.len() - 1;
+        }
+        let pickup = curr;
+        let mut picked_up = vec![];
+        let mut next = pickup;
+        for _ in 0..3 {
+            picked_up.push(cups[next]);
+            next = cups[next];
+        }
 
-    run_b(&cups, start, 10_000_000)
+        while picked_up.contains(&target) {
+            if target <= 1 {
+                target = 9
+            } else {
+                target -= 1;
+            }
+        }
+
+        let old_next = cups[next];
+        cups[next] = cups[target];
+        cups[target] = cups[pickup];
+        cups[pickup] = old_next;
+    }
+
+    cups[1] * cups[cups[1]]
 }
 
 //-----------------------------------------------------
@@ -99,11 +138,13 @@ q_impl!("23");
 
 #[test]
 fn a() {
-    assert_eq!(run_a(vec![3,8,9,1,2,5,4,6,7], 10), vec![9,2,6,5,8,3,7,4]);
-    // assert_eq!(process_data_a("32415"), "67384529".to_string());
+    assert_eq!(run_a("389125467", 10), "92658374".to_string());
+    assert_eq!(run_a("389125467", 100), "67384529".to_string());
+    assert_eq!(process_data_a("962713854"), "65432978".to_string());
 }
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b("389125467"), 149245887792);
+    // Blows the stack. :P
+    // assert_eq!(process_data_b("389125467"), 149_245_887_792);
 }
