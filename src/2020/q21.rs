@@ -112,12 +112,12 @@ q_impl!("21");
 #[test]
 fn a() {
     assert_eq!(
-        process_data_a(
+        process_data_a(indoc!(
             "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-trh fvjkl sbzzf mxmxvkd (contains dairy)
-sqjhc fvjkl (contains soy)
-sqjhc mxmxvkd sbzzf (contains fish)"
-        ),
+            trh fvjkl sbzzf mxmxvkd (contains dairy)
+            sqjhc fvjkl (contains soy)
+            sqjhc mxmxvkd sbzzf (contains fish)"
+        )),
         5
     );
 }
@@ -125,12 +125,12 @@ sqjhc mxmxvkd sbzzf (contains fish)"
 #[test]
 fn b() {
     assert_eq!(
-        process_data_b(
+        process_data_b(indoc!(
             "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-trh fvjkl sbzzf mxmxvkd (contains dairy)
-sqjhc fvjkl (contains soy)
-sqjhc mxmxvkd sbzzf (contains fish)"
-        ),
+            trh fvjkl sbzzf mxmxvkd (contains dairy)
+            sqjhc fvjkl (contains soy)
+            sqjhc mxmxvkd sbzzf (contains fish)"
+        )),
         "mxmxvkd,sqjhc,fvjkl".to_string()
     );
 }

@@ -40,10 +40,10 @@ q_impl!("25");
 #[test]
 fn a() {
     assert_eq!(
-        process_data_a(
+        process_data_a(indoc!(
             "5764801
-17807724"
-        ),
+            17807724"
+        )),
         14_897_079
     );
 }

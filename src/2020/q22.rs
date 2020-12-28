@@ -116,21 +116,21 @@ q_impl!("22");
 #[test]
 fn a() {
     assert_eq!(
-        process_data_a(
+        process_data_a(indoc!(
             "Player 1:
-9
-2
-6
-3
-1
+            9
+            2
+            6
+            3
+            1
 
-Player 2:
-5
-8
-4
-7
-10"
-        ),
+            Player 2:
+            5
+            8
+            4
+            7
+            10"
+        )),
         306
     );
 }
@@ -138,16 +138,16 @@ Player 2:
 #[test]
 fn b() {
     assert_eq!(
-        process_data_b(
+        process_data_b(indoc!(
             "Player 1:
-43
-19
+            43
+            19
 
-Player 2:
-2
-29
-14"
-        ),
+            Player 2:
+            2
+            29
+            14"
+        )),
         105
     );
 

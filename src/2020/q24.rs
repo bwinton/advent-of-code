@@ -143,28 +143,28 @@ q_impl!("24");
 #[test]
 fn a() {
     assert_eq!(
-        process_data_a(
+        process_data_a(indoc!(
             "sesenwnenenewseeswwswswwnenewsewsw
-neeenesenwnwwswnenewnwwsewnenwseswesw
-seswneswswsenwwnwse
-nwnwneseeswswnenewneswwnewseswneseene
-swweswneswnenwsewnwneneseenw
-eesenwseswswnenwswnwnwsewwnwsene
-sewnenenenesenwsewnenwwwse
-wenwwweseeeweswwwnwwe
-wsweesenenewnwwnwsenewsenwwsesesenwne
-neeswseenwwswnwswswnw
-nenwswwsewswnenenewsenwsenwnesesenew
-enewnwewneswsewnwswenweswnenwsenwsw
-sweneswneswneneenwnewenewwneswswnese
-swwesenesewenwneswnwwneseswwne
-enesenwswwswneneswsenwnewswseenwsese
-wnwnesenesenenwwnenwsewesewsesesew
-nenewswnwewswnenesenwnesewesw
-eneswnwswnwsenenwnwnwwseeswneewsenese
-neswnwewnwnwseenwseesewsenwsweewe
-wseweeenwnesenwwwswnew"
-        ),
+            neeenesenwnwwswnenewnwwsewnenwseswesw
+            seswneswswsenwwnwse
+            nwnwneseeswswnenewneswwnewseswneseene
+            swweswneswnenwsewnwneneseenw
+            eesenwseswswnenwswnwnwsewwnwsene
+            sewnenenenesenwsewnenwwwse
+            wenwwweseeeweswwwnwwe
+            wsweesenenewnwwnwsenewsenwwsesesenwne
+            neeswseenwwswnwswswnw
+            nenwswwsewswnenenewsenwsenwnesesenew
+            enewnwewneswsewnwswenweswnenwsenwsw
+            sweneswneswneneenwnewenewwneswswnese
+            swwesenesewenwneswnwwneseswwne
+            enesenwswwswneneswsenwnewswseenwsese
+            wnwnesenesenenwwnenwsewesewsesesew
+            nenewswnwewswnenesenwnesewesw
+            eneswnwswnwsenenwnwnwwseeswneewsenese
+            neswnwewnwnwseenwseesewsenwsweewe
+            wseweeenwnesenwwwswnew"
+        )),
         10
     );
 }
@@ -172,28 +172,28 @@ wseweeenwnesenwwwswnew"
 #[test]
 fn b() {
     assert_eq!(
-        process_data_b(
+        process_data_b(indoc!(
             "sesenwnenenewseeswwswswwnenewsewsw
-neeenesenwnwwswnenewnwwsewnenwseswesw
-seswneswswsenwwnwse
-nwnwneseeswswnenewneswwnewseswneseene
-swweswneswnenwsewnwneneseenw
-eesenwseswswnenwswnwnwsewwnwsene
-sewnenenenesenwsewnenwwwse
-wenwwweseeeweswwwnwwe
-wsweesenenewnwwnwsenewsenwwsesesenwne
-neeswseenwwswnwswswnw
-nenwswwsewswnenenewsenwsenwnesesenew
-enewnwewneswsewnwswenweswnenwsenwsw
-sweneswneswneneenwnewenewwneswswnese
-swwesenesewenwneswnwwneseswwne
-enesenwswwswneneswsenwnewswseenwsese
-wnwnesenesenenwwnenwsewesewsesesew
-nenewswnwewswnenesenwnesewesw
-eneswnwswnwsenenwnwnwwseeswneewsenese
-neswnwewnwnwseenwseesewsenwsweewe
-wseweeenwnesenwwwswnew"
-        ),
+            neeenesenwnwwswnenewnwwsewnenwseswesw
+            seswneswswsenwwnwse
+            nwnwneseeswswnenewneswwnewseswneseene
+            swweswneswnenwsewnwneneseenw
+            eesenwseswswnenwswnwnwsewwnwsene
+            sewnenenenesenwsewnenwwwse
+            wenwwweseeeweswwwnwwe
+            wsweesenenewnwwnwsenewsenwwsesesenwne
+            neeswseenwwswnwswswnw
+            nenwswwsewswnenenewsenwsenwnesesenew
+            enewnwewneswsewnwswenweswnenwsenwsw
+            sweneswneswneneenwnewenewwneswswnese
+            swwesenesewenwneswnwwneseswwne
+            enesenwswwswneneswsenwnewswseenwsese
+            wnwnesenesenenwwnenwsewesewsesesew
+            nenewswnwewswnenesenwnesewesw
+            eneswnwswnwsenenwnwnwwseeswneewsenese
+            neswnwewnwnwseenwseesewsenwsweewe
+            wseweeenwnesenwwwswnew"
+        )),
         2208
     );
 }

@@ -28,7 +28,7 @@ q_impl!("XX");
 
 #[test]
 fn a() {
-    assert_eq!(process_data_a(""), 0);
+    assert_eq!(process_data_a(indoc!("")), 0);
 }
 
 #[test]
