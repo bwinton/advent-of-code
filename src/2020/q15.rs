@@ -1,4 +1,4 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 
 //-----------------------------------------------------
 // Setup.
@@ -7,31 +7,29 @@ static INPUT: &str = include_str!("data/q15.data");
 
 fn run(data: &str, iterations: usize) -> usize {
     let numbers: Vec<usize> = data.split(',').map(|x| x.parse().unwrap()).collect();
-    let mut spoken = HashMap::new();
-    let mut prev = 0;
-    for i in 0..iterations {
+    let mut timestamps = HashMap::new();
+    let mut gap = 0;
+    for i in 0..iterations - 1 {
+        // print!("{}: ", i);
         if i < numbers.len() {
-            let mut value = VecDeque::new();
-            value.push_front(i + 1);
-            spoken.insert(numbers[i], value);
-            prev = numbers[i];
+            timestamps.insert(numbers[i], i);
+            // println!("{}", numbers[i]);
+            // println!("  {:?}", timestamps);
             continue;
         }
 
-        let occurances = spoken.entry(prev).or_insert_with(VecDeque::new);
-        let value = if occurances.len() == 2 {
-            occurances[0] - occurances[1]
+        // print!("{} => ", gap);
+        let next = if let Some(prev) = timestamps.get(&gap) {
+            i - prev
         } else {
             0
         };
-        let occurances = spoken.entry(value).or_insert_with(VecDeque::new);
-        occurances.push_front(i + 1);
-        if occurances.len() > 2 {
-            occurances.pop_back();
-        }
-        prev = value;
+        // println!("{}", next);
+        timestamps.insert(gap, i);
+        // println!("  {:?}", timestamps);
+        gap = next;
     }
-    prev
+    gap
 }
 
 fn process_data_a(data: &str) -> usize {
