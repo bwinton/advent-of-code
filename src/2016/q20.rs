@@ -26,7 +26,7 @@ fn get_ranges() -> Vec<Range<u32>> {
 fn get_first_allowed() -> u32 {
     let ranges = get_ranges();
     let mut rv = 0;
-    for range in ranges.clone() {
+    for range in ranges {
         if rv < range.start {
             break;
         }
@@ -41,7 +41,7 @@ fn get_num_allowed() -> u32 {
     let ranges = get_ranges();
     let mut curr = 0;
     let mut rv = 0;
-    for range in ranges.clone() {
+    for range in ranges {
         if curr < range.start {
             rv += range.start - curr;
         }

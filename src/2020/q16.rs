@@ -151,7 +151,7 @@ fn process_data_b(data: &str) -> usize {
             }
         }
     }
-    let valids: Vec<_> = nearby.iter().filter(|x| !invalids.contains(&x)).collect();
+    let valids: Vec<_> = nearby.iter().filter(|x| !invalids.contains(x)).collect();
     // println!("Valids: {:?}", &valids);
 
     let mut position_values = vec![];

@@ -218,7 +218,7 @@ impl PassportBuilder {
             }
             return None;
         }
-        let ecl = ecl.unwrap();
+        let _ecl = ecl.unwrap();
 
         // pid (Passport ID) - a nine-digit number, including leading zeroes.
         if self.pid == None {
@@ -229,7 +229,7 @@ impl PassportBuilder {
         }
         let pid = self.pid.unwrap();
 
-        let cid = self.cid;
+        let _cid = self.cid;
         // cid (Country ID) - ignored, missing or not.
         Some(Passport {
             byr,
@@ -237,9 +237,9 @@ impl PassportBuilder {
             eyr,
             hgt,
             hcl,
-            ecl,
+            _ecl,
             pid,
-            cid,
+            _cid,
         })
     }
 }
@@ -251,9 +251,9 @@ struct Passport {
     eyr: usize,
     hgt: (usize, String),
     hcl: String,
-    ecl: EyeColor,
+    _ecl: EyeColor,
     pid: String,
-    cid: Option<String>,
+    _cid: Option<String>,
 }
 
 impl Passport {

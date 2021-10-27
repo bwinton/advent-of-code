@@ -79,7 +79,7 @@ fn run_one(field: &[Vec<Cell>], horizon: usize, occupied: usize) -> Vec<Vec<Cell
                 Cell::Floor => Cell::Floor,
                 Cell::Empty => {
                     // if there are no occupied seats adjacent to it, the seat becomes occupied.
-                    if surrounding(&field, i, j, horizon) == 0 {
+                    if surrounding(field, i, j, horizon) == 0 {
                         Cell::Occupied
                     } else {
                         Cell::Empty
@@ -87,7 +87,7 @@ fn run_one(field: &[Vec<Cell>], horizon: usize, occupied: usize) -> Vec<Vec<Cell
                 }
                 Cell::Occupied => {
                     // if some seats adjacent to it are also occupied, the seat becomes empty.
-                    if surrounding(&field, i, j, horizon) >= occupied {
+                    if surrounding(field, i, j, horizon) >= occupied {
                         Cell::Empty
                     } else {
                         Cell::Occupied

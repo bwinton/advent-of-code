@@ -69,7 +69,7 @@ impl Group {
     fn attack(&self, groups: &mut BTreeMap<i32, Group>) -> bool {
         if let Some(target) = self.target {
             let target = groups.get_mut(&target).unwrap();
-            let damage = target.get_damage(&self);
+            let damage = target.get_damage(self);
             if damage > 0 {
                 let killed = damage / target.hp;
                 if killed > 0 {

@@ -78,7 +78,7 @@ fn run_moons_a(data: &str, steps: usize) -> u128 {
         for combo in (0..moons.len()).combinations(2) {
             let source = &moons[combo[0]];
             let dest = &moons[combo[1]];
-            let source = source.apply_gravity(&dest);
+            let source = source.apply_gravity(dest);
             let dest = dest.apply_gravity(&source);
             moons[combo[0]] = source;
             moons[combo[1]] = dest;
@@ -118,7 +118,7 @@ fn process_data_b(data: &str) -> u128 {
         for combo in (0..moons.len()).combinations(2) {
             let source = &moons[combo[0]];
             let dest = &moons[combo[1]];
-            let source = source.apply_gravity(&dest);
+            let source = source.apply_gravity(dest);
             let dest = dest.apply_gravity(&source);
             moons[combo[0]] = source;
             moons[combo[1]] = dest;

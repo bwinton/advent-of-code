@@ -88,7 +88,7 @@ fn run_b(world: &HashSet<(isize, isize, isize, isize)>) -> HashSet<(isize, isize
                         if &(x, y, z, w) == cell {
                             continue;
                         }
-                        if check_b(&world, &(x, y, z, w)) {
+                        if check_b(world, &(x, y, z, w)) {
                             rv.insert((x, y, z, w));
                         }
                     }

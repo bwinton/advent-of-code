@@ -151,8 +151,7 @@ fn process_data_a(data: &str) -> usize {
     let mut board = Board::new(clay);
 
     let spring = (500, 0);
-    let mut active = vec![];
-    active.push((spring.0, spring.1));
+    let mut active = vec![(spring.0, spring.1)];
     while !active.is_empty() {
         let curr = active.pop().unwrap();
         let mut next = board.get_next(curr, &active);
@@ -186,8 +185,7 @@ fn process_data_b(data: &str) -> usize {
     let mut board = Board::new(clay);
 
     let spring = (500, 0);
-    let mut active = vec![];
-    active.push((spring.0, spring.1));
+    let mut active = vec![(spring.0, spring.1)];
     while !active.is_empty() {
         let curr = active.pop().unwrap();
         let mut next = board.get_next(curr, &active);

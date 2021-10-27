@@ -8,7 +8,7 @@ static INPUT: &str = include_str!("data/q15.data");
 
 #[derive(Debug)]
 struct Ingredient {
-    name: String,
+    _name: String,
     capacity: i32,
     durability: i32,
     flavor: i32,
@@ -26,7 +26,7 @@ impl FromStr for Ingredient {
         let captures = RE.captures(s);
         match captures {
             Some(cap) => Ok(Ingredient {
-                name: cap[1].to_string(),
+                _name: cap[1].to_string(),
                 capacity: cap[2].parse().unwrap(),
                 durability: cap[3].parse().unwrap(),
                 flavor: cap[4].parse().unwrap(),
@@ -58,7 +58,7 @@ impl Ingredient {
 
 fn get_score(amounts: &[i32], ingredients: &[Ingredient]) -> (i32, i32) {
     let mut sum = Ingredient {
-        name: "Sum".to_string(),
+        _name: "Sum".to_string(),
         capacity: 0,
         durability: 0,
         flavor: 0,

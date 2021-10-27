@@ -20,7 +20,7 @@ fn process_data_a(data: &str) -> i32 {
         for planet in curr {
             total += level;
             if let Some(next) = orbits.get(planet) {
-                queue.push((&next, level + 1));
+                queue.push((next, level + 1));
             }
         }
     }

@@ -176,7 +176,7 @@ impl Hash for Cell {
 pub fn take_min<V: Ord + Clone>(map: &mut BTreeSet<V>) -> Option<V> {
     let opt_min_value: Option<V> = map.iter().next().cloned();
     if let Some(value) = &opt_min_value {
-        map.remove(&value);
+        map.remove(value);
     }
     opt_min_value
 }

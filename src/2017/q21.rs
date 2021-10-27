@@ -144,8 +144,7 @@ fn process_data(data: &str, iterations: usize) -> usize {
     state
         .iter()
         .map(|row| {
-            let new_row: Vec<_> = row.iter().filter(|&x| *x).collect();
-            new_row.len()
+            row.iter().filter(|&x| *x).count()
         })
         .sum()
 }

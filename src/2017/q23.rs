@@ -201,10 +201,10 @@ impl FromStr for Instruction {
 struct State {
     registers: HashMap<char, i64>,
     pc: i64,
-    incoming: Vec<i64>,
-    outgoing: Vec<i64>,
+    _incoming: Vec<i64>,
+    _outgoing: Vec<i64>,
     instructions: Vec<Instruction>,
-    waiting: bool,
+    _waiting: bool,
 }
 
 impl State {
@@ -212,10 +212,10 @@ impl State {
         State {
             registers,
             pc: 0,
-            incoming: Vec::new(),
-            outgoing: Vec::new(),
+            _incoming: Vec::new(),
+            _outgoing: Vec::new(),
             instructions,
-            waiting: false,
+            _waiting: false,
         }
     }
 

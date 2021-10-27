@@ -39,7 +39,7 @@ type KeysRef<'a> = &'a [Key];
 
 #[derive(Clone, Debug)]
 struct Quintuple {
-    key: String,
+    _key: String,
     regex: Regex,
     indices: Vec<usize>,
 }
@@ -47,7 +47,7 @@ struct Quintuple {
 impl Quintuple {
     pub fn new(key: &str) -> Quintuple {
         Quintuple {
-            key: key.to_string(),
+            _key: key.to_string(),
             regex: Regex::new(&key.repeat(5)).unwrap(),
             indices: Vec::new(),
         }
@@ -65,10 +65,7 @@ pub fn get_triple(input: &str) -> Option<String> {
     lazy_static! {
       static ref RE: Regex = Regex::new("(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}").unwrap();
     }
-    match RE.captures(input) {
-        None => None,
-        Some(key) => Some(key[0].chars().next().unwrap().to_string()),
-    }
+    RE.captures(input).map(|key| key[0].chars().next().unwrap().to_string())
 }
 
 fn add_quintuple(i: usize, key: &str, quintuples: &mut Quintuples) {

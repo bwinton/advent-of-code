@@ -229,34 +229,22 @@ impl Eq for State {}
 
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut result = writeln!(
+        writeln!(
             f,
             "i:{:?}, p:{:?}, moves:{}",
             self.index, self.previous, self.moves
-        );
-        if result.is_err() {
-            return result;
-        }
+        )?;
         let mut floors = self.floors.clone();
         floors.reverse();
         for floor in floors {
-            result = write!(f, "{}", floor);
-            if result.is_err() {
-                return result;
-            }
+            write!(f, "{}", floor)?;
             if floor.number - 1 == (self.elevator as i32) {
-                result = writeln!(f, " E");
-                if result.is_err() {
-                    return result;
-                }
+                writeln!(f, " E")?;
             } else {
-                result = writeln!(f, " .");
-                if result.is_err() {
-                    return result;
-                }
+                writeln!(f, " .")?;
             }
         }
-        result
+        Ok(())
         // F4 .  .  .  .  .
         // F3 .  .  .  LG .
         // F2 E  HG HM .  .

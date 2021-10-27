@@ -37,7 +37,7 @@ fn rule_parser<'a>() -> impl Parser<'a, Rule> {
         ))
         .parse(ctx)
         .map_result(|(source, _, dest, _)| Rule {
-            source: Regex::new(&source).unwrap(),
+            source: Regex::new(source).unwrap(),
             dest: dest.to_string(),
         })
     }
@@ -72,12 +72,11 @@ fn process_data_b(data: &str) -> usize {
         .captures_iter(&goal)
         .map(|x| x[0].to_owned())
         .collect();
-    let brackets: Vec<&String> = tokens
+    let brackets = tokens
         .iter()
-        .filter(|&x| *x == "Rn" || *x == "Ar")
-        .collect();
-    let commas: Vec<&String> = tokens.iter().filter(|&x| *x == "Y").collect();
-    tokens.len() - brackets.len() - 2 * commas.len() - 1
+        .filter(|&x| *x == "Rn" || *x == "Ar");
+    let commas = tokens.iter().filter(|&x| *x == "Y");
+    tokens.len() - brackets.count() - 2 * commas.count() - 1
 }
 
 //-----------------------------------------------------

@@ -21,7 +21,7 @@ impl Value {
             Value::Order(items) => {
                 let mut rv = String::new();
                 for rule in items {
-                    rv += &rules[rule.as_str()].to_regex(&rules);
+                    rv += &rules[rule.as_str()].to_regex(rules);
                 }
                 rv
             }
@@ -29,11 +29,11 @@ impl Value {
                 let mut rv = String::new();
                 rv.push('(');
                 for rule in first {
-                    rv += &rules[rule.as_str()].to_regex(&rules);
+                    rv += &rules[rule.as_str()].to_regex(rules);
                 }
                 rv.push('|');
                 for rule in second {
-                    rv += &rules[rule.as_str()].to_regex(&rules);
+                    rv += &rules[rule.as_str()].to_regex(rules);
                 }
                 rv.push(')');
                 rv
@@ -94,7 +94,7 @@ fn matches(
 }
 
 fn is_valid(message: &str, rules: &HashMap<&str, Value>) -> bool {
-    let rv = matches("", message, 0, &"0", rules);
+    let rv = matches("", message, 0, "0", rules);
     for len in rv {
         if len == message.len() {
             return true;
@@ -243,7 +243,7 @@ fn process_data_b(data: &str) -> usize {
     if USE_RE {
         messages
             .into_iter()
-            .filter(|message| matcher.is_match(&message))
+            .filter(|message| matcher.is_match(message))
             .count()
     } else {
         messages

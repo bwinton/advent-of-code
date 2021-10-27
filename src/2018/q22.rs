@@ -13,7 +13,7 @@ struct Path {
     y: i32,
     time: usize,
     item: char,
-    target: (i32, i32),
+    _target: (i32, i32),
 }
 
 impl Ord for Path {
@@ -246,7 +246,7 @@ fn process_data_b(data: &str) -> usize {
         y: 0,
         time: 0,
         item: 't',
-        target,
+        _target: target,
     });
     let mut seen = HashSet::new();
     let mut upcoming = HashMap::new();

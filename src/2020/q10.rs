@@ -1,16 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 static INPUT: &str = include_str!("data/q10.data");
-
-#[derive(Clone, Debug)]
-struct State {
-    current: usize,
-    used: Vec<usize>,
-    remaining: HashSet<usize>,
-}
 
 fn process_data_a(data: &str) -> usize {
     let mut values: Vec<usize> = data.lines().map(|x| x.parse().unwrap()).collect();

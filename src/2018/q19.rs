@@ -12,7 +12,7 @@ use std::str::Lines;
 static INPUT: &str = include_str!("data/q19.data");
 
 trait Instruction: Display + Debug {
-    fn execute(&self, cpu: &mut CPU);
+    fn execute(&self, cpu: &mut Cpu);
 }
 
 fn three_numbers<'a>() -> impl Parser<'a, (&'a str, &'a str, &'a str)> {
@@ -54,7 +54,7 @@ struct AddI {
     dest: usize,
 }
 impl Instruction for AddI {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = cpu.registers[self.a] + self.b;
     }
 }
@@ -82,7 +82,7 @@ struct AddR {
     dest: usize,
 }
 impl Instruction for AddR {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = cpu.registers[self.a] + cpu.registers[self.b];
     }
 }
@@ -110,7 +110,7 @@ struct EqRR {
     dest: usize,
 }
 impl Instruction for EqRR {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = if cpu.registers[self.a] == cpu.registers[self.b] {
             1
         } else {
@@ -142,7 +142,7 @@ struct GtRR {
     dest: usize,
 }
 impl Instruction for GtRR {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = if cpu.registers[self.a] > cpu.registers[self.b] {
             1
         } else {
@@ -174,7 +174,7 @@ struct MulI {
     dest: usize,
 }
 impl Instruction for MulI {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = cpu.registers[self.a] * self.b;
     }
 }
@@ -202,7 +202,7 @@ struct MulR {
     dest: usize,
 }
 impl Instruction for MulR {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = cpu.registers[self.a] * cpu.registers[self.b];
     }
 }
@@ -230,7 +230,7 @@ struct SetI {
     dest: usize,
 }
 impl Instruction for SetI {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = self.value;
     }
 }
@@ -258,7 +258,7 @@ struct SetR {
     dest: usize,
 }
 impl Instruction for SetR {
-    fn execute(&self, cpu: &mut CPU) {
+    fn execute(&self, cpu: &mut Cpu) {
         cpu.registers[self.dest] = cpu.registers[self.source];
     }
 }
@@ -279,16 +279,16 @@ impl SetR {
 }
 
 #[derive(Clone)]
-struct CPU {
+struct Cpu {
     registers: [i32; 6],
     pc: i32,
     pc_reg: usize,
     instructions: Rc<Vec<Box<dyn Instruction>>>,
 }
 
-impl CPU {
-    fn new(pc_reg: usize, instructions: Rc<Vec<Box<dyn Instruction>>>) -> CPU {
-        CPU {
+impl Cpu {
+    fn new(pc_reg: usize, instructions: Rc<Vec<Box<dyn Instruction>>>) -> Cpu {
+        Cpu {
             registers: [0; 6],
             pc: 0,
             pc_reg,
@@ -310,7 +310,7 @@ impl CPU {
     }
 }
 
-impl Display for CPU {
+impl Display for Cpu {
     fn fmt(&self, f: &mut Formatter) -> Result {
         writeln!(f, "{:?}", self.registers)?;
         for (pc, inst) in self.instructions.iter().enumerate() {
@@ -342,7 +342,7 @@ fn process_data_a(data: &'static str) -> i32 {
     ));
 
     let instructions = parse_instructions(lines, &mut builder);
-    let mut state = CPU::new(ip, instructions);
+    let mut state = Cpu::new(ip, instructions);
     while let Some(new) = state.execute() {
         state = new;
     }

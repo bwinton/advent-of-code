@@ -22,14 +22,14 @@ fn get_sum(v: &Value) -> i64 {
     match *v {
         Value::Null | Value::Bool(_) | Value::String(_) => 0,
         Value::Number(ref n) => n.as_i64().unwrap(),
-        Value::Array(ref children) => children.iter().map(|x| get_sum(x)).sum(),
+        Value::Array(ref children) => children.iter().map(get_sum).sum(),
         Value::Object(ref children) => {
             if children
                 .values()
                 .find(|x| *x == &Value::String("red".to_owned()))
                 == None
             {
-                children.values().map(|x| get_sum(x)).sum()
+                children.values().map(get_sum).sum()
             } else {
                 0
             }

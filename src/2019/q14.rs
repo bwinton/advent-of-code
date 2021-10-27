@@ -62,7 +62,7 @@ fn process_data_a(data: &str) -> usize {
     }
     requests.push_back(Element {
         quantity: 1,
-        symbol: &"FUEL",
+        symbol: "FUEL",
     });
     while let Some(mut target) = requests.pop_front() {
         if target.symbol == "ORE" {
@@ -107,12 +107,12 @@ fn munge_data_b(data: &str, base_size: usize) -> usize {
     }
     requests.push_back(Element {
         quantity: total_ore as usize / base_size,
-        symbol: &"FUEL",
+        symbol: "FUEL",
     });
     while total_ore as usize / base_size > 0 {
         let mut target = requests.pop_front().unwrap_or(Element {
             quantity: total_ore as usize / base_size,
-            symbol: &"FUEL",
+            symbol: "FUEL",
         });
         if target.symbol == "ORE" {
             total_ore -= target.quantity as i128;

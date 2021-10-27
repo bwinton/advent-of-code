@@ -51,8 +51,7 @@ fn process_data(input: &str) -> Vec<i64> {
 
 fn find_groups(cells: &[[i32; 128]; 128], row: usize, col: usize, group: i32) -> [[i32; 128]; 128] {
     let mut rv = *cells;
-    let mut upcoming = Vec::new();
-    upcoming.push((row, col));
+    let mut upcoming = vec![(row, col)];
     while let Some(pos) = upcoming.pop() {
         rv[pos.0][pos.1] = group;
         if pos.0 > 0 && rv[pos.0 - 1][pos.1] == -1 {

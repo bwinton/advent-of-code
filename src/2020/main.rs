@@ -1,5 +1,4 @@
 #![feature(exact_size_is_empty)]
-#![feature(vec_remove_item)]
 
 mod q01;
 mod q02;

@@ -21,8 +21,7 @@ fn run_fft(data: &[char], iterations: usize) -> String {
     for _ in 0..iterations {
         let mut next: Vec<i32> = vec![];
         for pattern in &patterns {
-            let sums: Vec<(_, _)> = curr.iter().zip(pattern.clone()).collect();
-            let sum: i32 = sums.into_iter().map(|(x, y)| x * y).sum();
+            let sum: i32 = curr.iter().zip(pattern.clone()).map(|(x, y)| x * y).sum();
             next.push((sum % 10).abs());
         }
         curr = next;

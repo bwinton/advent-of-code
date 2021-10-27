@@ -19,7 +19,7 @@ struct Item {
 
 #[derive(Clone, Debug)]
 struct Group {
-    name: String,
+    _name: String,
     items: Vec<Item>,
 }
 
@@ -29,14 +29,12 @@ struct Player {
     hp: i32,
     damage: i32,
     armor: i32,
-    items: Vec<Item>,
+    _items: Vec<Item>,
 }
 
 impl Player {
     pub fn new(input: &(&Item, &Item, &Vec<&Item>)) -> Player {
-        let mut items = Vec::new();
-        items.push(input.0.clone());
-        items.push(input.1.clone());
+        let mut items = vec![input.0.clone(), input.1.clone()];
         for &item in input.2 {
             items.push(item.clone());
         }
@@ -48,7 +46,7 @@ impl Player {
             hp: 100,
             damage,
             armor,
-            items,
+            _items: items,
         }
     }
 
@@ -59,7 +57,7 @@ impl Player {
             hp: 104,
             damage: 8,
             armor: 1,
-            items: Vec::new(),
+            _items: Vec::new(),
         };
         while me.hp > 0 {
             boss.hp -= 1.max(me.damage - boss.armor);
@@ -140,7 +138,7 @@ fn group_parser<'a>() -> impl Parser<'a, Group> {
                     all_items.insert(0, empty_item);
                 }
                 Group {
-                    name: name.to_string(),
+                    _name: name.to_string(),
                     items: all_items,
                 }
             })
@@ -225,7 +223,7 @@ fn a() {
         hp: 8,
         damage: 5,
         armor: 5,
-        items: Vec::new(),
+        _items: Vec::new(),
     };
     assert_eq!(player.wins(), false);
 }
