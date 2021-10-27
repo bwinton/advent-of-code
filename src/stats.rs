@@ -18,7 +18,7 @@ static ONE_DAY_IN_SECS: u64 = 24 * 60 * 60;
 
 custom_error! { StatsError
     Request{source: reqwest::Error} = "request error",
-    Cache{source: std::io::Error} = "invalid cache file",
+    // Cache{source: std::io::Error} = "invalid cache file",
     Time{source: SystemTimeError} = "time error",
     JSON{source: serde_json::error::Error} = "json error",
     YearNotFound{year:i32} = "Year {year} not found on server.",
@@ -28,7 +28,7 @@ custom_error! { StatsError
 
 #[derive(Debug)]
 struct AocStats {
-    owner_id: String,
+    _owner_id: String,
     members: Vec<Member>,
     event: String,
 }
@@ -40,7 +40,7 @@ impl AocStats {
             members.push(Member::from_data(member.as_object().unwrap()));
         }
         AocStats {
-            owner_id: data["owner_id"].as_str().unwrap().to_owned(),
+            _owner_id: data["owner_id"].as_str().unwrap().to_owned(),
             members,
             event: data["event"].as_str().unwrap().to_owned(),
         }
@@ -51,9 +51,9 @@ impl AocStats {
 struct Member {
     name: String,
     completions: [(Option<i64>, Option<i64>); 25],
-    stars: i64,
-    id: String,
-    global_score: i64,
+    _stars: i64,
+    _id: String,
+    _global_score: i64,
     local_score: i64,
     max_score: i64,
     place: Option<i64>,
@@ -85,9 +85,9 @@ impl Member {
                 ))
                 .to_owned(),
             completions,
-            stars: data["stars"].as_i64().unwrap_or(0),
-            id: data["id"].as_str().unwrap().to_owned(),
-            global_score: data["global_score"].as_i64().unwrap_or(0),
+            _stars: data["stars"].as_i64().unwrap_or(0),
+            _id: data["id"].as_str().unwrap().to_owned(),
+            _global_score: data["global_score"].as_i64().unwrap_or(0),
             local_score: data["local_score"].as_i64().unwrap_or(0),
             max_score: 0,
             place: None,
@@ -159,7 +159,7 @@ fn print_stats(stdout: &mut Stdout, stats: &mut AocStats) -> Result<(), StatsErr
     Ok(())
 }
 
-fn print_year(year: i32, mut stdout: &mut Stdout) -> Result<(), StatsError> {
+fn print_year(year: i32, stdout: &mut Stdout) -> Result<(), StatsError> {
     let cache_name = format!("stats.{}.json", year);
     let stats_url = format!(
         "https://adventofcode.com/{}/leaderboard/private/view/70644.json",
@@ -190,7 +190,7 @@ fn print_year(year: i32, mut stdout: &mut Stdout) -> Result<(), StatsError> {
     }
     let data: Map<String, Value> = parsed_data?;
     let mut stats = AocStats::from_data(&data);
-    print_stats(&mut stdout, &mut stats)
+    print_stats(stdout, &mut stats)
 }
 
 fn main() -> Result<(), StatsError> {

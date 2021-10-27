@@ -30,6 +30,7 @@ mod q25;
 extern crate aoc;
 #[macro_use]
 extern crate enumset;
+#[allow(unused_imports)]
 #[macro_use]
 extern crate indoc;
 #[macro_use]
