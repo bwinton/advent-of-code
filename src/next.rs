@@ -27,7 +27,7 @@ fn get_last() -> Result<(u32, String), NextError> {
             name.parse::<u32>().ok()
         })
         .collect::<Vec<_>>();
-    entries.sort();
+    entries.sort_unstable();
 
     let last_year = entries
         .into_iter()
@@ -50,7 +50,7 @@ fn get_last() -> Result<(u32, String), NextError> {
         .into_iter()
         .last()
         .ok_or(NextError::YearNotFound {})?;
-    Ok((last_year, last_day.to_owned()))
+    Ok((last_year, last_day))
 }
 
 fn add_day(last_year: u32, day: u32, stdout: &mut Stdout) -> Result<(), NextError> {
@@ -63,7 +63,7 @@ fn add_day(last_year: u32, day: u32, stdout: &mut Stdout) -> Result<(), NextErro
     let template = template.replace("X", &format!("{}", day));
 
     let mut question = File::create(format!("src/{}/q{:02}.rs", last_year, day))?;
-    question.write(&template.as_bytes())?;
+    question.write_all(template.as_bytes())?;
 
     // Edit main to add "mod q<:02=day>;" and ", q<:02=day>"…
     stdout.execute(Print(format!("Editing: {}/main.rs\n", last_year)))?;
@@ -95,7 +95,7 @@ fn add_day(last_year: u32, day: u32, stdout: &mut Stdout) -> Result<(), NextErro
     let main = format!("{}q{:02},{}", &main[..next], day, &main[next..]);
 
     let mut main_out = File::create(format!("src/{}/main.rs", last_year))?;
-    main_out.write(&main.as_bytes())?;
+    main_out.write_all(main.as_bytes())?;
 
     Ok(())
 }
@@ -109,7 +109,7 @@ fn add_year(year: u32, stdout: &mut Stdout) -> Result<(), NextError> {
 }
 
 fn add_next(last_year: u32, last_day: &str, stdout: &mut Stdout) -> Result<(), NextError> {
-    stdout.execute(Print(format!("Figuring out what to do…\n")))?;
+    stdout.execute(Print("Figuring out what to do…\n"))?;
     if last_day != "q25.rs" {
         let last_day = &last_day[1..3];
         let last_day = last_day.parse::<u32>()?;

@@ -7,7 +7,7 @@ use std::{
     time::{SystemTime, SystemTimeError},
 };
 
-use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
+use clap::{app_from_crate, Arg};
 use crossterm::{
     queue,
     style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
@@ -201,15 +201,15 @@ fn main() -> Result<(), StatsError> {
     color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(
-            Arg::with_name("year")
-                .help("Which year(s) to run")
-                .long_help(
+            Arg::new("year")
+                .about("Which year(s) to run")
+                .long_about(
                     "Specify a year, or years to run.
  Putting nothing will run all years.
 ",
                 )
                 .index(1)
-                .multiple(true)
+                .multiple_occurrences(true)
                 .default_value("*"),
         )
         .get_matches();
