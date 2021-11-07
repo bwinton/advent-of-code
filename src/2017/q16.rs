@@ -4,8 +4,7 @@
 use aoc::Day;
 
 use regex::Regex;
-use std::iter::FromIterator;
-use std::str::FromStr;
+use std::{iter::FromIterator, str::FromStr};
 
 static INPUT: &str = include_str!("data/q16.data");
 

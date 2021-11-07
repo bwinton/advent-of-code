@@ -1,13 +1,17 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::combinators::whitespace::space;
-use glue::prelude::{digit, find_all, find_any, is, map_result, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    combinators::whitespace::space,
+    prelude::{digit, find_all, find_any, is, map_result, take, Parser},
+    types::MapParserResult,
+};
 
-use std::fmt::{Debug, Display, Formatter, Result};
-use std::rc::Rc;
-use std::str::Lines;
+use std::{
+    fmt::{Debug, Display, Formatter, Result},
+    rc::Rc,
+    str::Lines,
+};
 
 static INPUT: &str = include_str!("data/q19.data");
 

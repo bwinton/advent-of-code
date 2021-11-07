@@ -3,8 +3,10 @@
 
 use std::collections::VecDeque;
 
-use glue::prelude::{digit, find, find_all, find_any, is, optional, take, take_all, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{digit, find, find_all, find_any, is, optional, take, take_all, Parser},
+    types::MapParserResult,
+};
 use mod_exp::mod_exp;
 
 static INPUT: &str = include_str!("data/q22.data");

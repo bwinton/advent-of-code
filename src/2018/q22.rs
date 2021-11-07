@@ -1,9 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashMap, HashSet};
-use std::usize;
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashMap, HashSet},
+    usize,
+};
 
 static INPUT: &str = "4002,5,746";
 

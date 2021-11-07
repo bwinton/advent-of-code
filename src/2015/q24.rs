@@ -2,8 +2,7 @@
 // Setup.
 
 use itertools::Itertools;
-use std::collections::HashSet;
-use std::u32;
+use std::{collections::HashSet, u32};
 
 static INPUT: &str = include_str!("data/q24.data");
 // static INPUT : &'static str = "1

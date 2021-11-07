@@ -1,11 +1,13 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::cmp::Ordering;
-use std::collections::BTreeSet;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::hash::{Hash, Hasher};
-use std::str::FromStr;
+use std::{
+    cmp::Ordering,
+    collections::BTreeSet,
+    fmt::{Display, Formatter, Result as FmtResult},
+    hash::{Hash, Hasher},
+    str::FromStr,
+};
 
 static INPUT: &str = include_str!("data/q15.data");
 

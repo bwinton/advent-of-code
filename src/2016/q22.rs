@@ -3,9 +3,7 @@
 
 use aoc::Day;
 use regex::Regex;
-use std::cmp::Ordering;
-use std::fmt;
-use std::str::FromStr;
+use std::{cmp::Ordering, fmt, str::FromStr};
 
 // Filesystem              Size  Used  Avail  Use%
 // static INPUT : &'static str = "/dev/grid/node-x0-y0   10T    8T     2T   80%

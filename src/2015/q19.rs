@@ -3,8 +3,10 @@
 
 use std::collections::HashSet;
 
-use glue::prelude::{alphabetic, find, find_all, is, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{alphabetic, find, find_all, is, take, Parser},
+    types::MapParserResult,
+};
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -72,9 +74,7 @@ fn process_data_b(data: &str) -> usize {
         .captures_iter(&goal)
         .map(|x| x[0].to_owned())
         .collect();
-    let brackets = tokens
-        .iter()
-        .filter(|&x| *x == "Rn" || *x == "Ar");
+    let brackets = tokens.iter().filter(|&x| *x == "Rn" || *x == "Ar");
     let commas = tokens.iter().filter(|&x| *x == "Y");
     tokens.len() - brackets.count() - 2 * commas.count() - 1
 }

@@ -10,8 +10,7 @@ extern crate lazy_static;
 
 extern crate combine;
 
-use std::fmt::Display;
-use std::ops::Deref;
+use std::{fmt::Display, ops::Deref};
 
 use clap::Arg;
 
@@ -99,9 +98,9 @@ pub fn main(days: &[Box<dyn Day>]) {
     color_backtrace::install();
     let matches = app_from_crate!("\n")
         .arg(
-            Arg::with_name("day")
-                .help("Which day(s) to run")
-                .long_help(
+            Arg::new("day")
+                .about("Which day(s) to run")
+                .long_about(
                     "Specify a day, or days, or parts of a day or days to run.
  Putting a number and an 'a' or 'b' will run that part for that day.
  Putting a number will run both parts for that day.
@@ -109,7 +108,7 @@ pub fn main(days: &[Box<dyn Day>]) {
 ",
                 )
                 .index(1)
-                .multiple(true)
+                .multiple_values(true)
                 .default_value("*"),
         )
         .get_matches();

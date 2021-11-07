@@ -1,8 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use crypto::digest::Digest;
-use crypto::md5::Md5;
+use crypto::{digest::Digest, md5::Md5};
 use std::i32::MAX;
 
 static INPUT: &str = "bgvyzdsv";

@@ -1,11 +1,12 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::collections::HashMap;
-use std::str;
+use std::{collections::HashMap, str};
 
-use glue::prelude::{alphabetic, digit, find_all, find_separated, is, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{alphabetic, digit, find_all, find_separated, is, take, Parser},
+    types::MapParserResult,
+};
 
 static INPUT: &str = include_str!("data/q16.data");
 

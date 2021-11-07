@@ -2,8 +2,7 @@
 // Setup.
 
 use regex::Regex;
-use std::iter::repeat;
-use std::str::FromStr;
+use std::{iter::repeat, str::FromStr};
 
 // use itertools::Itertools;
 

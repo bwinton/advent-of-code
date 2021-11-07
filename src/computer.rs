@@ -1,11 +1,15 @@
-use std::collections::HashMap;
-use std::fmt::{Debug, Display, Formatter, Result};
-use std::rc::Rc;
-use std::result;
+use std::{
+    collections::HashMap,
+    fmt::{Debug, Display, Formatter, Result},
+    rc::Rc,
+    result,
+};
 
-use combine::parser::char::string;
-use combine::parser::char::{digit, letter};
-use combine::{many1, one_of, Parser};
+use combine::{
+    many1, one_of,
+    parser::char::{digit, letter, string},
+    Parser,
+};
 
 pub trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);

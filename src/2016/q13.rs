@@ -2,8 +2,7 @@
 // Setup.
 
 use aoc::Day;
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
+use std::{cmp::Ordering, collections::BinaryHeap};
 
 // static INPUT_NUMBER : i32 = 10;
 // static INPUT_TARGET_X : i32 = 7;
@@ -72,7 +71,7 @@ fn cell_is_wall(x: i32, y: i32) -> bool {
 fn get_next_states(current: &State, seen: &[State]) -> Vec<State> {
     let mut rv = vec![
         State::new(current.x + 1, current.y, current.moves + 1),
-        State::new(current.x, current.y + 1, current.moves + 1)
+        State::new(current.x, current.y + 1, current.moves + 1),
     ];
 
     if current.x > 0 {

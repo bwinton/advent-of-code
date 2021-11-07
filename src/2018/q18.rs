@@ -1,9 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::collections::HashMap;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::str::FromStr;
+use std::{
+    collections::HashMap,
+    fmt::{Display, Formatter, Result as FmtResult},
+    str::FromStr,
+};
 
 static INPUT: &str = include_str!("data/q18.data");
 

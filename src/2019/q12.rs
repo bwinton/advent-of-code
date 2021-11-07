@@ -1,8 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::prelude::{digit, find, find_all, is, optional, take, take_all, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{digit, find, find_all, is, optional, take, take_all, Parser},
+    types::MapParserResult,
+};
 use itertools::Itertools;
 use num_integer::lcm;
 

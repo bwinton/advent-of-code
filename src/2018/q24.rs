@@ -2,9 +2,7 @@
 // Setup.
 
 use regex::Regex;
-use std::borrow::ToOwned;
-use std::collections::BTreeMap;
-use std::str::Lines;
+use std::{borrow::ToOwned, collections::BTreeMap, str::Lines};
 
 static INPUT: &str = include_str!("data/q24.data");
 

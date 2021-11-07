@@ -1,8 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::prelude::{digit, eoi, find_all, find_any, find_separated, is, optional, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{digit, eoi, find_all, find_any, find_separated, is, optional, take, Parser},
+    types::MapParserResult,
+};
 use std::collections::HashSet;
 
 static INPUT: &str = include_str!("data/q08.data");

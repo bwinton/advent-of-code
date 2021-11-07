@@ -3,9 +3,7 @@
 
 use aoc::Day;
 use regex::Regex;
-use std::cmp::Ordering;
-use std::fmt;
-use std::str::FromStr;
+use std::{cmp::Ordering, fmt, str::FromStr};
 
 // static A_INPUT : &'static str = "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.
 // The second floor contains a hydrogen generator.

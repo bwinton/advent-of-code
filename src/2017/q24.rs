@@ -3,9 +3,7 @@
 
 use aoc::Day;
 
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-use std::str::FromStr;
+use std::{cmp::Ordering, collections::BinaryHeap, str::FromStr};
 
 static INPUT: &str = include_str!("data/q24.data");
 

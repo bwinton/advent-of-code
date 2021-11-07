@@ -2,10 +2,8 @@
 // Setup.
 
 use aoc::Day;
-use crypto::digest::Digest;
-use crypto::md5::Md5;
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
+use crypto::{digest::Digest, md5::Md5};
+use std::{cmp::Ordering, collections::BinaryHeap};
 
 // static INPUT : &'static str = "hijkl";
 // static INPUT : &'static str = "ihgpwlah";

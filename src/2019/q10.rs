@@ -2,8 +2,10 @@
 // Setup.
 
 use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
-use std::f64::consts::PI;
+use std::{
+    collections::{HashMap, HashSet},
+    f64::consts::PI,
+};
 
 use num_rational::Rational32;
 

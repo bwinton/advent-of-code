@@ -3,8 +3,10 @@
 
 use std::collections::{HashMap, VecDeque};
 
-use glue::prelude::{alphabetic, digit, find, find_all, find_separated, is, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{alphabetic, digit, find, find_all, find_separated, is, take, Parser},
+    types::MapParserResult,
+};
 
 static INPUT: &str = include_str!("data/q14.data");
 

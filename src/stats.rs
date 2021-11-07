@@ -1,15 +1,18 @@
-use std::fs::{remove_file, File};
-use std::io::{stdout, Stdout, Write};
-use std::path::Path;
-use std::time::{SystemTime, SystemTimeError};
 use std::{
     cmp::Ordering,
     env::{var, VarError},
+    fs::{remove_file, File},
+    io::{stdout, Stdout, Write},
+    path::Path,
+    time::{SystemTime, SystemTimeError},
 };
 
 use clap::{app_from_crate, crate_authors, crate_description, crate_name, crate_version, Arg};
-use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
-use crossterm::{queue, ExecutableCommand, QueueableCommand};
+use crossterm::{
+    queue,
+    style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
+    ExecutableCommand, QueueableCommand,
+};
 use custom_error::custom_error;
 
 use serde_json::{from_reader, Map, Value};

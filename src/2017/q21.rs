@@ -3,8 +3,7 @@
 
 use aoc::Day;
 
-use std::collections::HashSet;
-use std::str::FromStr;
+use std::{collections::HashSet, str::FromStr};
 
 static INPUT: &str = include_str!("data/q21.data");
 
@@ -143,9 +142,7 @@ fn process_data(data: &str, iterations: usize) -> usize {
     // print_board(&state);
     state
         .iter()
-        .map(|row| {
-            row.iter().filter(|&x| *x).count()
-        })
+        .map(|row| row.iter().filter(|&x| *x).count())
         .sum()
 }
 

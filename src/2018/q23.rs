@@ -2,8 +2,7 @@
 // Setup.
 
 use regex::Regex;
-use std::i64;
-use std::str::FromStr;
+use std::{i64, str::FromStr};
 
 static INPUT: &str = include_str!("data/q23.data");
 

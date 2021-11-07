@@ -2,11 +2,13 @@
 // Setup.
 
 use regex::Regex;
-use std::cmp::{max, min};
-use std::collections::HashSet;
-use std::default::Default;
-use std::fmt::{Display, Formatter, Result as FmtResult};
-use std::str::{FromStr, Lines};
+use std::{
+    cmp::{max, min},
+    collections::HashSet,
+    default::Default,
+    fmt::{Display, Formatter, Result as FmtResult},
+    str::{FromStr, Lines},
+};
 
 static INPUT: &str = include_str!("data/q12.data");
 

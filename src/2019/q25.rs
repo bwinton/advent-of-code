@@ -4,17 +4,21 @@
 #[cfg(test)]
 use std::io;
 
-use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashSet};
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashSet},
+};
 
 use crate::intcode::{Intcode, IntcodeError, State};
 
 // use itertools::Itertools;
-use glue::prelude::{
-    alphabetic, alphanumeric, eoi, find, find_all, is, numeric, one_of, optional, take, take_all,
-    take_any, Parser,
+use glue::{
+    prelude::{
+        alphabetic, alphanumeric, eoi, find, find_all, is, numeric, one_of, optional, take,
+        take_all, take_any, Parser,
+    },
+    types::MapParserResult,
 };
-use glue::types::MapParserResult;
 
 static INPUT: &str = include_str!("data/q25.data");
 

@@ -4,15 +4,14 @@
 use aoc::Day;
 
 use regex::Regex;
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::fmt;
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::str::FromStr;
-use std::usize::MAX;
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashMap, HashSet},
+    fmt,
+    hash::{Hash, Hasher},
+    str::FromStr,
+    usize::MAX,
+};
 
 // static INPUT : &'static str = "###########
 // #0.1.....2#

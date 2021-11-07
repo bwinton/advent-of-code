@@ -1,10 +1,12 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::prelude::{
-    alphabetic, digit, find, find_all, find_separated, is, take, take_all, whitespace, Parser,
+use glue::{
+    prelude::{
+        alphabetic, digit, find, find_all, find_separated, is, take, take_all, whitespace, Parser,
+    },
+    types::MapParserResult,
 };
-use glue::types::MapParserResult;
 use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q21.data");

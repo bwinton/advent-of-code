@@ -2,9 +2,11 @@
 // Setup.
 
 use regex::Regex;
-use std::cmp::{max, min};
-use std::collections::HashMap;
-use std::str::FromStr;
+use std::{
+    cmp::{max, min},
+    collections::HashMap,
+    str::FromStr,
+};
 
 static INPUT: &str = include_str!("data/q06.data");
 

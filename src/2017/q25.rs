@@ -3,12 +3,15 @@
 
 use aoc::Day;
 
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::str;
+use std::{
+    collections::{HashMap, HashSet},
+    str,
+};
 
-use glue::prelude::{alphabetic, any, digit, find, find_all, find_any, is, take, Parser};
-use glue::types::MapParserResult;
+use glue::{
+    prelude::{alphabetic, any, digit, find, find_all, find_any, is, take, Parser},
+    types::MapParserResult,
+};
 
 static INPUT: &str = include_str!("data/q25.data");
 

@@ -1,10 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashMap, HashSet};
-use std::hash::Hash;
-use std::hash::Hasher;
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashMap, HashSet},
+    hash::{Hash, Hasher},
+};
 
 static INPUT: &str = include_str!("data/q18.data");
 

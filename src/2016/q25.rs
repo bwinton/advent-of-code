@@ -4,11 +4,12 @@
 use aoc::Day;
 
 use regex::Regex;
-use std::collections::HashSet;
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::i32::MAX;
-use std::str::FromStr;
+use std::{
+    collections::HashSet,
+    hash::{Hash, Hasher},
+    i32::MAX,
+    str::FromStr,
+};
 
 // static INPUT : &'static str = "cpy a b
 // out b

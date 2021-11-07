@@ -2,12 +2,9 @@
 // Setup.
 
 use aoc::Day;
-use crypto::digest::Digest;
-use crypto::md5::Md5;
+use crypto::{digest::Digest, md5::Md5};
 use regex::Regex;
-use std::cmp::Ordering;
-use std::collections::HashMap;
-use std::mem;
+use std::{cmp::Ordering, collections::HashMap, mem};
 
 // static INPUT : &'static str = "abc";
 static INPUT: &str = "zpqevtbw";
@@ -65,7 +62,8 @@ pub fn get_triple(input: &str) -> Option<String> {
     lazy_static! {
       static ref RE: Regex = Regex::new("(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}").unwrap();
     }
-    RE.captures(input).map(|key| key[0].chars().next().unwrap().to_string())
+    RE.captures(input)
+        .map(|key| key[0].chars().next().unwrap().to_string())
 }
 
 fn add_quintuple(i: usize, key: &str, quintuples: &mut Quintuples) {

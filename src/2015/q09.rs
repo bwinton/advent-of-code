@@ -4,9 +4,10 @@
 use itertools::Itertools;
 use permutohedron::Heap;
 use regex::Regex;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::usize;
+use std::{
+    collections::{HashMap, HashSet},
+    usize,
+};
 
 static INPUT: &str = include_str!("data/q09.data");
 

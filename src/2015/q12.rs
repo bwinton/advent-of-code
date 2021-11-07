@@ -2,8 +2,7 @@
 // Setup.
 
 use regex::Regex;
-use serde_json::from_str;
-use serde_json::Value;
+use serde_json::{from_str, Value};
 
 static INPUT: &str = include_str!("data/q12.data");
 

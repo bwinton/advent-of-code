@@ -3,9 +3,10 @@
 
 static INPUT: &str = "";
 
-use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-use std::collections::HashMap;
+use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashMap},
+};
 
 #[derive(Clone, Debug, Eq)]
 struct Spell {

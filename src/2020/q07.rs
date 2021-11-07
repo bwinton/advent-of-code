@@ -3,10 +3,12 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use glue::prelude::{
-    alphabetic, digit, eoi, find_all, find_separated, is, optional, take, take_all, Parser,
+use glue::{
+    prelude::{
+        alphabetic, digit, eoi, find_all, find_separated, is, optional, take, take_all, Parser,
+    },
+    types::MapParserResult,
 };
-use glue::types::MapParserResult;
 
 static INPUT: &str = include_str!("data/q07.data");
 

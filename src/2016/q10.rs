@@ -3,8 +3,7 @@
 
 use aoc::Day;
 use regex::Regex;
-use std::collections::HashMap;
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 static INPUT: &str = include_str!("data/q10.data");
 // static INPUT : &'static str = "value 5 goes to bot 2
