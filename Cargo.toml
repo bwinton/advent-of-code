@@ -8,7 +8,7 @@ edition = "2021"
 debug = true
 
 [dependencies]
-clap = "2.33.3"
+clap = "3.0.0-beta.5"
 chrono = "0.4.19"
 color-backtrace = "0.5.1"
 combine = "4.6.1"
@@ -41,6 +41,10 @@ name = "stats"
 path = "src/stats.rs"
 
 [[bin]]
+name = "next"
+path = "src/next.rs"
+
+[[bin]]
 name = "2015"
 path = "src/2015/main.rs"
 
@@ -63,3 +67,7 @@ path = "src/2019/main.rs"
 [[bin]]
 name = "2020"
 path = "src/2020/main.rs"
+
+[[bin]]
+name = "2021"
+path = "src/2021/main.rs"

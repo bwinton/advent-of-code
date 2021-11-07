@@ -24,7 +24,7 @@ fn process_data_b(data: &str) -> usize {
 //-----------------------------------------------------
 // Questions.
 
-q_impl!("XX");
+q_impl!("X");
 
 #[test]
 fn a() {
@@ -33,5 +33,5 @@ fn a() {
 
 #[test]
 fn b() {
-    assert_eq!(process_data_b(""), 0);
+    assert_eq!(process_data_b(indoc!("")), 0);
 }
