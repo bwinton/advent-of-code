@@ -3,11 +3,17 @@
 
 use std::collections::VecDeque;
 
-use glue::{
-    prelude::{digit, find, find_all, find_any, is, optional, take, take_all, Parser},
-    types::MapParserResult,
-};
+use aoc::nom_util::opt_signed_number;
 use mod_exp::mod_exp;
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::line_ending,
+    combinator::eof,
+    multi::separated_list0,
+    sequence::{terminated, tuple},
+    IResult,
+};
 
 static INPUT: &str = include_str!("data/q22.data");
 
@@ -22,44 +28,34 @@ enum Instruction {
 // deal with increment 11
 // deal into new stack
 
-fn cut_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((
-            is("cut "),
-            take_all((optional(is("-")), take(1.., is(digit)))),
-            is("\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, offset, _)| Instruction::Cut(offset.parse().unwrap()))
-    }
+fn cut(i: &str) -> IResult<&str, Instruction> {
+    let (input, (_, offset, _)) = tuple((tag("cut "), opt_signed_number, line_ending))(i)?;
+    Ok((input, Instruction::Cut(offset as i128)))
 }
 
-fn deal_with_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((is("deal with increment "), take(1.., is(digit)), is("\n")))
-            .parse(ctx)
-            .map_result(|(_, offset, _)| Instruction::Deal(offset.parse().unwrap()))
-    }
+fn deal_with(i: &str) -> IResult<&str, Instruction> {
+    let (input, (_, offset, _)) =
+        tuple((tag("deal with increment "), opt_signed_number, line_ending))(i)?;
+    Ok((input, Instruction::Deal(offset as usize)))
 }
 
-fn new_stack_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        is("deal into new stack\n")
-            .parse(ctx)
-            .map_result(|_| Instruction::NewStack)
-    }
+fn new_stack(i: &str) -> IResult<&str, Instruction> {
+    let (input, _) = tuple((tag("deal into new stack"), line_ending))(i)?;
+    Ok((input, Instruction::NewStack))
 }
 
-fn instruction_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| find_any((cut_parser(), deal_with_parser(), new_stack_parser())).parse(ctx)
+fn instruction(i: &str) -> IResult<&str, Instruction> {
+    let (input, result) = alt((cut, deal_with, new_stack))(i)?;
+    Ok((input, result))
 }
 
-fn parser<'a>() -> impl Parser<'a, Vec<Instruction>> {
-    move |ctx| find(1.., instruction_parser()).parse(ctx)
+fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
+    let (input, instructions) = terminated(separated_list0(line_ending, instruction), eof)(i)?;
+    Ok((input, instructions))
 }
 
 fn deal_cards(data: &str, length: i128, iterations: usize) -> VecDeque<i128> {
-    let instructions = parser().parse(data).unwrap().1;
+    let instructions = parser(data).unwrap().1;
     println!("instructions: {}", instructions.len());
     // println!("  {:?}", instructions);
     let mut cards = VecDeque::new();
@@ -142,7 +138,7 @@ where
 }
 
 fn deal_cards_b(data: &str, length: i128, iterations: i128, target: i128) -> i128 {
-    let instructions = parser().parse(data).unwrap().1.into_iter().rev();
+    let instructions = parser(data).unwrap().1.into_iter().rev();
     let (a, b) = to_linear_equation(instructions, length);
 
     // Applying the function n times simplifies to:

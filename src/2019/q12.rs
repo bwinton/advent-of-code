@@ -1,11 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::{
-    prelude::{digit, find, find_all, is, optional, take, take_all, Parser},
-    types::MapParserResult,
-};
+use aoc::nom_util::opt_signed_number;
 use itertools::Itertools;
+use nom::{bytes::complete::tag, multi::many1, sequence::tuple, IResult};
 use num_integer::lcm;
 
 static INPUT: &str = include_str!("data/q12.data");
@@ -49,31 +47,32 @@ impl Moon {
     }
 }
 
-fn moon_parser<'a>() -> impl Parser<'a, Moon> {
-    move |ctx| {
-        find_all((
-            is("<x="),
-            take_all((optional(is("-")), take(1.., is(digit)))),
-            is(", y="),
-            take_all((optional(is("-")), take(1.., is(digit)))),
-            is(", z="),
-            take_all((optional(is("-")), take(1.., is(digit)))),
-            is(">\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, x, _, y, _, z, _)| Moon {
-            position: (x.parse().unwrap(), y.parse().unwrap(), z.parse().unwrap()),
+fn moon(i: &str) -> IResult<&str, Moon> {
+    let (input, (_, x, _, y, _, z, _)) = tuple((
+        tag("<x="),
+        opt_signed_number,
+        tag(", y="),
+        opt_signed_number,
+        tag(", z="),
+        opt_signed_number,
+        tag(">\n"),
+    ))(i)?;
+    Ok((
+        input,
+        Moon {
+            position: (x as i128, y as i128, z as i128),
             velocity: (0, 0, 0),
-        })
-    }
+        },
+    ))
 }
 
-fn parser<'a>() -> impl Parser<'a, Vec<Moon>> {
-    move |ctx| find(1.., moon_parser()).parse(ctx)
+fn parser(i: &str) -> IResult<&str, Vec<Moon>> {
+    let (input, result) = many1(moon)(i)?;
+    Ok((input, result))
 }
 
 fn run_moons_a(data: &str, steps: usize) -> u128 {
-    let mut moons = parser().parse(data).unwrap().1;
+    let mut moons = parser(data).unwrap().1;
     // println!("Moons: {:?}", moons);
     for _ in 0..steps {
         // Apply gravity.
@@ -99,7 +98,7 @@ fn process_data_a(data: &str) -> u128 {
 }
 
 fn process_data_b(data: &str) -> u128 {
-    let mut moons = parser().parse(data).unwrap().1;
+    let mut moons = parser(data).unwrap().1;
     // println!("Moons: {:?}", moons);
 
     let mut start_keys = [vec![], vec![], vec![]];

@@ -13,9 +13,14 @@ fn opt_sign(i: &str) -> IResult<&str, bool> {
     Ok((input, result))
 }
 
+pub fn unsigned_number(i: &str) -> IResult<&str, u64> {
+    let (input, digits) = digit1(i)?;
+    Ok((input, digits.parse().unwrap()))
+}
+
 pub fn opt_signed_number(i: &str) -> IResult<&str, i64> {
-    let (input, (sign, digits)) = tuple((opt_sign, digit1))(i)?;
-    let mut result: i64 = digits.parse().unwrap();
+    let (input, (sign, result)) = tuple((opt_sign, unsigned_number))(i)?;
+    let mut result = result as i64;
     if !sign {
         result = -result;
     };

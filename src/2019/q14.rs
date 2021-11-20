@@ -3,9 +3,13 @@
 
 use std::collections::{HashMap, VecDeque};
 
-use glue::{
-    prelude::{alphabetic, digit, find, find_all, find_separated, is, take, Parser},
-    types::MapParserResult,
+use aoc::nom_util::unsigned_number;
+use nom::{
+    bytes::complete::tag,
+    character::complete::{alpha1, line_ending},
+    multi::{many1, separated_list1},
+    sequence::tuple,
+    IResult,
 };
 
 static INPUT: &str = include_str!("data/q14.data");
@@ -16,46 +20,41 @@ struct Element<'a> {
     quantity: usize,
 }
 
-fn element_parser<'a>() -> impl Parser<'a, Element<'a>> {
-    move |ctx| {
-        find_all((take(1.., is(digit)), is(" "), take(1.., is(alphabetic))))
-            .parse(ctx)
-            .map_result(|(quantity, _, symbol)| Element {
-                quantity: quantity.parse().unwrap(),
-                symbol,
-            })
-    }
+fn element(i: &str) -> IResult<&str, Element> {
+    let (input, (quantity, _, symbol)) = tuple((unsigned_number, tag(" "), alpha1))(i)?;
+    Ok((
+        input,
+        Element {
+            quantity: quantity as usize,
+            symbol,
+        },
+    ))
 }
 
-fn rule_parser<'a>() -> impl Parser<'a, (Element<'a>, Vec<Element<'a>>)> {
-    move |ctx| {
-        find_all((
-            find_separated(1.., element_parser(), is(", ")),
-            is(" => "),
-            element_parser(),
-            is("\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(sources, _, dest, _)| (dest, sources))
-    }
+fn rule(i: &str) -> IResult<&str, (Element, Vec<Element>)> {
+    let (input, (sources, _, dest, _)) = tuple((
+        separated_list1(tag(", "), element),
+        tag(" => "),
+        element,
+        line_ending,
+    ))(i)?;
+    Ok((input, (dest, sources)))
 }
 
-fn parser<'a>() -> impl Parser<'a, HashMap<&'a str, (usize, Vec<Element<'a>>)>> {
-    move |ctx| {
-        find(1.., rule_parser()).parse(ctx).map_result(|rules| {
-            let mut rv = HashMap::new();
-            for (key, value) in rules {
-                if let Some(previous) = rv.insert(key.symbol, (key.quantity, value)) {
-                    println!("Duplicate Key!!! {:?}", previous);
-                };
-            }
-            rv
-        })
+fn parser(i: &str) -> IResult<&str, HashMap<&str, (usize, Vec<Element>)>> {
+    let (input, rules) = many1(rule)(i)?;
+    let mut rv = HashMap::new();
+    for (key, value) in rules {
+        if let Some(previous) = rv.insert(key.symbol, (key.quantity, value)) {
+            println!("Duplicate Key!!! {:?}", previous);
+        };
     }
+
+    Ok((input, rv))
 }
 
 fn process_data_a(data: &str) -> usize {
-    let rules = parser().parse(data).unwrap().1;
+    let rules = parser(data).unwrap().1;
     let mut total_ore = 0;
     let mut requests = VecDeque::new();
     let mut leftovers = HashMap::new();
@@ -99,7 +98,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn munge_data_b(data: &str, base_size: usize) -> usize {
-    let rules = parser().parse(data).unwrap().1;
+    let rules = parser(data).unwrap().1;
     let mut total_fuel = 0;
     let mut total_ore: i128 = 1_000_000_000_000;
     let mut requests = VecDeque::new();

@@ -53,7 +53,7 @@ fn rule(i: &str) -> IResult<&str, (Bag, Vec<Bag>)> {
             tag("no other bags").map(|_| Vec::new()),
             separated_list1(tag(", "), multi_bag),
         )),
-        tag(".")
+        tag("."),
     ))(i)?;
 
     Ok((input, (source, dests)))

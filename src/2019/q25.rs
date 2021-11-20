@@ -9,16 +9,17 @@ use std::{
     collections::{BinaryHeap, HashSet},
 };
 
-use crate::intcode::{Intcode, IntcodeError, State};
-
-// use itertools::Itertools;
-use glue::{
-    prelude::{
-        alphabetic, alphanumeric, eoi, find, find_all, is, numeric, one_of, optional, take,
-        take_all, take_any, Parser,
-    },
-    types::MapParserResult,
+use nom::{
+    branch::permutation,
+    bytes::complete::{tag, take_while},
+    character::complete::{digit1, line_ending},
+    combinator::{eof, opt},
+    multi::many0,
+    sequence::{terminated, tuple},
+    AsChar, IResult,
 };
+
+use crate::intcode::{Intcode, IntcodeError, State};
 
 static INPUT: &str = include_str!("data/q25.data");
 
@@ -75,9 +76,10 @@ fn run_machine_interactive(data: Vec<i128>) -> i128 {
 struct Room {
     name: String,
     doors: Vec<String>,
-    items: Option<Vec<String>>,
+    items: Vec<String>,
 }
 
+#[derive(Debug)]
 enum MoveResult {
     Room(Room),
     Item(String),
@@ -91,154 +93,130 @@ impl MoveResult {
             _ => None,
         }
     }
+}
 
-    // fn as_item(self) -> Option<String> {
-    //     match self {
-    //         MoveResult::Item(item) => Some(item),
-    //         _ => None
-    //     }
-    // }
+fn is_name_char(c: char) -> bool {
+    c.is_alpha() || c == ' ' || c == '-'
 }
 
 // == Hull Breach ==
-fn room_name_parser<'a>() -> impl Parser<'a, String> {
-    move |ctx| {
-        find_all((
-            is("=="),
-            take(1.., take_any((is(alphabetic), is(one_of(" -"))))),
-            is("=="),
-        ))
-        .parse(ctx)
-        .map_result(|(_, title, _)| title.trim().to_owned())
-    }
+fn room_name(i: &str) -> IResult<&str, &str> {
+    let (input, (_, title, _)) = tuple((tag("=="), take_while(is_name_char), tag("==")))(i)?;
+    Ok((input, title.trim()))
 }
 
 // Doors here lead:\n- north\n- east\n- south\n
-fn doors_parser<'a>() -> impl Parser<'a, Vec<String>> {
-    move |ctx| {
-        find_all((
-            is("\nDoors here lead:\n"),
-            find(
-                0..,
-                take_any((
-                    is("- north\n"),
-                    is("- east\n"),
-                    is("- south\n"),
-                    is("- west\n"),
-                )),
-            ),
-        ))
-        .parse(ctx)
-        .map_result(|(_, doors)| {
-            let mut rv = vec![];
-            for door in doors {
-                rv.push(door[2..].to_owned());
-            }
-            rv
-        })
+fn doors(i: &str) -> IResult<&str, Vec<String>> {
+    let (input, (_, (north, east, south, west))) = tuple((
+        tag("\nDoors here lead:\n"),
+        permutation((
+            opt(tuple((tag("- "), tag("north"), line_ending))),
+            opt(tuple((tag("- "), tag("east"), line_ending))),
+            opt(tuple((tag("- "), tag("south"), line_ending))),
+            opt(tuple((tag("- "), tag("west"), line_ending))),
+        )),
+    ))(i)?;
+
+    let mut rv = vec![];
+
+    for door in [north, east, south, west].into_iter().flatten() {
+        rv.push(door.1.to_owned());
     }
+
+    Ok((input, rv))
+}
+
+fn is_item_char(c: char) -> bool {
+    c.is_ascii_alphanumeric() || c == ' '
 }
 
 // Items here:\n- spool of cat6\n
-fn items_parser<'a>() -> impl Parser<'a, Vec<String>> {
-    move |ctx| {
-        find_all((
-            is("\nItems here:\n"),
-            find(
-                0..,
-                take_all((
-                    is("- "),
-                    take(0.., take_any((is(alphanumeric), is(one_of(" ."))))),
-                    is('\n'),
-                )),
-            ),
-        ))
-        .parse(ctx)
-        .map_result(|(_, items)| {
-            let mut rv = vec![];
-            for item in items {
-                rv.push(item[2..].to_owned());
-            }
-            rv
-        })
+fn items(i: &str) -> IResult<&str, Vec<String>> {
+    let (input, (_, items)) = tuple((
+        tag("\nItems here:\n"),
+        many0(tuple((tag("- "), take_while(is_item_char), tag("\n")))),
+    ))(i)?;
+
+    let mut rv = vec![];
+    for item in items {
+        rv.push(item.1.to_owned());
     }
+
+    Ok((input, rv))
 }
 
-fn room_parser<'a>() -> impl Parser<'a, Room> {
-    move |ctx| {
-        find_all((
-            is("\n\n"),
-            room_name_parser(),
-            is('\n'),
-            take(1.., take_any((is(alphanumeric), is(one_of(" .,-?':;"))))),
-            is("\n"),
-            doors_parser(),
-            optional(items_parser()),
-        ))
-        .parse(ctx)
-        .map_result(|(_, name, _, _comment, _, doors, items)| {
-            // println!("Room : {}\n  {}\n  {:?}\n  {:?}", name, _comment, doors, items);
-            Room { name, doors, items }
-        })
-    }
+fn is_comment_char(c: char) -> bool {
+    c.is_ascii_alphanumeric() || " .,-?':;".find(c).is_some()
 }
 
-fn take_parser<'a>() -> impl Parser<'a, String> {
-    move |ctx| {
-        find_all((
-            is("You take the "),
-            take(0.., take_any((is(alphanumeric), is(one_of(" "))))),
-            is(".\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, item, _)| item.to_owned())
-    }
+fn room(i: &str) -> IResult<&str, Room> {
+    let (input, (_, name, _, _comment, _, doors, items)) = tuple((
+        tag("\n\n"),
+        room_name,
+        line_ending,
+        take_while(is_comment_char),
+        line_ending,
+        doors,
+        opt(items),
+    ))(i)?;
+
+    Ok((
+        input,
+        Room {
+            name: name.to_owned(),
+            doors,
+            items: items.unwrap_or_default(),
+        },
+    ))
 }
 
-fn electromagnet_parser<'a>() -> impl Parser<'a, String> {
-    move |ctx| {
-        { is("The giant electromagnet is stuck to you.  You can\'t move!!\n") }
-            .parse(ctx)
-            .map_result(|_| "ElectroMagnet".to_owned())
-    }
+fn take(i: &str) -> IResult<&str, &str> {
+    let (input, (_, item, _)) =
+        tuple((tag("You take the "), take_while(is_item_char), tag(".\n")))(i)?;
+
+    Ok((input, item))
 }
 
-fn move_parser<'a>() -> impl Parser<'a, MoveResult> {
-    move |ctx| {
-        find_all((
-            is("\n"),
-            optional(room_parser()),
-            optional(take_parser()),
-            optional(electromagnet_parser()),
-            is("\nCommand?\n"),
-            eoi(),
-        ))
-        .parse(ctx)
-        .map_result(|(_, room, item, electromagnet, _, _)| {
-            if let Some(room) = room {
-                MoveResult::Room(room)
-            } else if let Some(item) = item {
-                MoveResult::Item(item)
-            } else if let Some(electromagnet) = electromagnet {
-                MoveResult::Error(electromagnet)
-            } else {
-                MoveResult::Error("Missing room and item.".to_owned())
-            }
-        })
-    }
+fn electromagnet(i: &str) -> IResult<&str, &str> {
+    let (input, _) = tag("The giant electromagnet is stuck to you.  You can\'t move!!\n")(i)?;
+
+    Ok((input, "ElectroMagnet"))
 }
 
-fn win_parser<'a>() -> impl Parser<'a, String> {
-    move |ctx| {
-        find_all((
-            is("\n\n\n== Pressure-Sensitive Floor ==\nAnalyzing...\n\nDoors here lead:\n- east\n\nA loud, robotic voice says \"Analysis complete! You may proceed.\" and you enter the cockpit.\nSanta notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.\n\"Oh, hello! You should be able to get in by typing "),
-            take(0.., is(numeric)),
-            is(" on the keypad at the main airlock.\"\n")
-        )).parse(ctx)
-        .map_result(|(_, code, _)| { code.to_owned() })
-    }
+fn move_p(i: &str) -> IResult<&str, MoveResult> {
+    let (input, (_, room, item, electromagnet, _)) = terminated(
+        tuple((
+            opt(line_ending),
+            opt(room),
+            opt(take),
+            opt(electromagnet),
+            tag("\nCommand?\n"),
+        )),
+        eof,
+    )(i)?;
+
+    let rv = if let Some(room) = room {
+        MoveResult::Room(room)
+    } else if let Some(item) = item {
+        MoveResult::Item(item.to_owned())
+    } else if let Some(electromagnet) = electromagnet {
+        MoveResult::Error(electromagnet.to_owned())
+    } else {
+        MoveResult::Error("Missing room and item.".to_owned())
+    };
+
+    Ok((input, rv))
 }
 
+fn win(i: &str) -> IResult<&str, &str> {
+    let (input, (_, code, _)) = tuple((
+        tag("\n\n\n== Pressure-Sensitive Floor ==\nAnalyzing...\n\nDoors here lead:\n- east\n\nA loud, robotic voice says \"Analysis complete! You may proceed.\" and you enter the cockpit.\nSanta notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.\n\"Oh, hello! You should be able to get in by typing "),
+        digit1,
+        tag(" on the keypad at the main airlock.\"\n"),
+    ))(i)?;
+
+    Ok((input, code))
+}
 #[derive(Clone, Debug)]
 struct RoomState {
     room: Room,
@@ -289,11 +267,12 @@ fn move_one_state(
     command: &str,
     seen: &mut HashSet<(String, Vec<String>)>,
 ) -> Option<RoomState> {
+    println!("\nMoving {}", command);
     let mut next = curr.clone();
     next.steps.push(command.to_owned());
     next.machine
         .inputs
-        .extend(command.chars().map(|x| x as i128));
+        .extend(command.chars().chain(['\n'].into_iter()).map(|x| x as i128));
     // if curr.room.name == END_STATE_NAME {
     //     println!("Move {}: {} -> {:?}, {:?}", curr.steps.len(), curr.room.name, command, curr.keys);
     // }
@@ -309,17 +288,18 @@ fn move_one_state(
         return None;
     }
     if state == Ok(State::Halted) {
-        let output = win_parser().parse(&output);
+        let output = win(&output);
         if output.is_err() {
             return None;
         }
-        next.code = output.unwrap().1;
+        next.code = output.unwrap().1.to_owned();
         return Some(next);
     }
 
-    let output = move_parser().parse(&output);
+    let output = move_p(&output);
     if output.is_err() {
         if let Err(_output) = output {
+            println!("/nPARSING ERROR:/n {:?}", &_output);
             // if command != "take giant electromagnet\n" {
             //     println!("  ERROR: {} -> {}, {:?} {:?}", curr.room.name, command, curr.keys, _output.0.bounds);
             //     println!("       : {:?}", &_output.0.input);
@@ -333,9 +313,9 @@ fn move_one_state(
             next.room = room;
         }
         MoveResult::Item(item) => {
-            let mut items = next.room.items.unwrap();
+            let mut items = next.room.items;
             items.retain(|x| x != &format!("{}\n", item));
-            next.room.items = Some(items);
+            next.room.items = items;
             next.keys.insert(item);
         }
         MoveResult::Error(_error) => {
@@ -355,11 +335,11 @@ fn move_one_state(
 fn run_machine(data: Vec<i128>) -> String {
     let mut machine = Intcode::new(data, vec![]);
     let _state = machine.run_tape_until(RUN_TAPE_LIMIT);
-    // println!("Initial state: {:?}", state);
+    // println!("Initial state: {:?}", _state);
     let outputs = &mut machine.outputs;
     let output: String = outputs.iter().map(|x| *x as u8 as char).rev().collect();
     outputs.clear();
-    let output = move_parser().parse(&output);
+    let output = move_p(&output);
     if output.is_err() {
         if let Err(_output) = output {
             // println!("  ERROR: {:?}", &output.0.input);
@@ -375,29 +355,41 @@ fn run_machine(data: Vec<i128>) -> String {
     let mut seen: HashSet<(String, Vec<String>)> = HashSet::new();
     while !states.is_empty() {
         let curr = states.pop().unwrap();
+        // println!("Got state: {:?}", curr);
         if !curr.code.is_empty() {
             return curr.code;
         }
 
         let mut keys: Vec<_> = curr.keys.clone().into_iter().collect();
         keys.sort();
+        // println!("Got keys: {:?}", keys);
         seen.insert((curr.room.name.clone(), keys));
 
         // Try to pick up anything lying around.
-        if let Some(items) = &curr.room.items.clone() {
-            for item in items {
-                let command = format!("take {}", item);
-                if let Some(next) = move_one_state(&curr, &command, &mut seen) {
-                    // println!("Move {}: {} from {} to {}\n", next.steps.len(), command, curr.room.name, next.room.name);
-                    states.push(next);
-                }
+        for item in &curr.room.items {
+            let command = format!("take {}", item);
+            if let Some(next) = move_one_state(&curr, &command, &mut seen) {
+                println!(
+                    "Move {}: {} from {} to {}\n",
+                    next.steps.len(),
+                    command,
+                    curr.room.name,
+                    next.room.name
+                );
+                states.push(next);
             }
         }
 
         // Otherwise, try to move.
         for command in &curr.room.doors {
             if let Some(next) = move_one_state(&curr, command, &mut seen) {
-                // println!("Move {}: {} from {} to {}\n", next.steps.len(), command, curr.room.name, next.room.name);
+                println!(
+                    "Move {}: {} from {} to {}\n",
+                    next.steps.len(),
+                    command,
+                    curr.room.name,
+                    next.room.name
+                );
                 states.push(next);
             }
         }
@@ -436,26 +428,65 @@ fn a() {
 
 #[test]
 fn b() {
-    let result = is("\n\n").parse("\n\n");
+    let result: IResult<&str, &str> = tag("\n\n")("\n\n");
     println!("{:?}", result);
-    let result = room_name_parser().parse("== Engineering ==");
+    let result = room_name("== Engineering ==");
     println!("{:?}", result);
-    let result = is('\n').parse("\n");
+    let result: IResult<&str, &str> = tag("\n")("\n");
     println!("{:?}", result);
-    let result = take(1.., take_any((is(alphanumeric), is(one_of(" .,-?':;")))))
-        .parse("You see a whiteboard with plans for Springdroid v2.");
+    let result: IResult<&str, &str> =
+        take_while(is_comment_char)("You see a whiteboard with plans for Springdroid v2.");
     println!("{:?}", result);
-    let result = is('\n').parse("\n");
+    let result: IResult<&str, &str> = tag("\n")("\n");
     println!("{:?}", result);
-    let result = doors_parser().parse("\nDoors here lead:\n- north\n- east\n- west\n");
+    let result = doors("\nDoors here lead:\n- north\n- east\n- west\n");
     println!("{:?}", result);
-    let result = optional(items_parser()).parse("\nItems here:\n- ornament\n");
+    let result = opt(items)("\nItems here:\n- ornament\n");
     println!("{:?}", result);
 
-    let result = room_parser().parse("\n\n== Engineering ==\nYou see a whiteboard with plans for Springdroid v2.\n\nDoors here lead:\n- north\n- east\n- west\n\nItems here:\n- ornament\n");
+    let result = room(
+        "
+
+== Corridor ==
+The metal walls and the metal floor are slightly different colors. Or are they?
+
+Doors here lead:
+- north
+- east
+- south
+
+Items here:
+- spool of cat6
+",
+    );
     println!("{:?}", result);
     if let Err(error) = result {
-        println!("Error: {}", &error.0.input[error.0.bounds]);
+        println!("Error: {:?}", error);
     }
+    let result = move_p(
+        "
+
+
+== Corridor ==
+The metal walls and the metal floor are slightly different colors. Or are they?
+
+Doors here lead:
+- north
+- east
+- south
+
+Items here:
+- spool of cat6
+
+Command?
+",
+    );
+    println!("{:?}", result);
+    if let Err(error) = result {
+        println!("Error: {:?}", error);
+    }
+
+    let result = move_p("\nYou take the ornament.\n\nCommand?\n");
+    println!("{:?}", result);
     // assert!(false);
 }
