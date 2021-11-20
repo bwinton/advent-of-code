@@ -1,9 +1,18 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::{
-    prelude::{digit, eoi, find_all, find_any, find_separated, is, optional, take, Parser},
-    types::MapParserResult,
+use aoc::nom_util::opt_signed_number;
+
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::line_ending,
+    combinator::eof,
+    error::{Error, ErrorKind},
+    multi::separated_list0,
+    sequence::{terminated, tuple},
+    Err::Failure,
+    IResult,
 };
 use std::collections::HashSet;
 
@@ -33,43 +42,26 @@ impl<'a> State<'a> {
     }
 }
 
-fn number_parser<'a>() -> impl Parser<'a, i64> {
-    move |ctx| {
-        find_all((optional(is('+')), optional(is('-')), take(1.., is(digit))))
-            .parse(ctx)
-            .map_result(|(_, minus, digits)| {
-                let mut rv: i64 = digits.parse().unwrap();
-                if minus.is_some() {
-                    rv = -rv;
-                }
-                rv
-            })
-    }
+fn code(i: &str) -> IResult<&str, &str> {
+    let (input, result) = alt((tag("acc"), tag("jmp"), tag("nop")))(i)?;
+    Ok((input, result))
 }
 
-fn instruction_parser<'a>() -> impl Parser<'a, Instruction> {
-    move |ctx| {
-        find_all((
-            find_any((is("acc"), is("jmp"), is("nop"))),
-            is(' '),
-            number_parser(),
-        ))
-        .parse(ctx)
-        .map_result(|(inst, _, number)| match inst {
-            "acc" => Instruction::Acc(number),
-            "jmp" => Instruction::Jmp(number),
-            "nop" => Instruction::Nop(number),
-            x => panic!("Unknown instruction {:?}", x),
-        })
-    }
+fn instruction(i: &str) -> IResult<&str, Instruction> {
+    let (input, (inst, _, value)) = tuple((code, tag(" "), opt_signed_number))(i)?;
+
+    let result = match inst {
+        "acc" => Instruction::Acc(value),
+        "jmp" => Instruction::Jmp(value),
+        "nop" => Instruction::Nop(value),
+        _ => return Err(Failure(Error::new(i, ErrorKind::Alt))),
+    };
+    Ok((input, result))
 }
 
-fn parser<'a>() -> impl Parser<'a, Vec<Instruction>> {
-    move |ctx| {
-        find_all((find_separated(1.., instruction_parser(), is('\n')), eoi()))
-            .parse(ctx)
-            .map_result(|(instructions, _)| instructions)
-    }
+fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
+    let (input, instructions) = terminated(separated_list0(line_ending, instruction), eof)(i)?;
+    Ok((input, instructions))
 }
 
 fn execute(state: &mut State) {
@@ -87,7 +79,7 @@ fn execute(state: &mut State) {
 }
 
 fn process_data_a(data: &str) -> i64 {
-    let instructions = parser().parse(data).unwrap().1;
+    let instructions = parser(data).unwrap().1;
     let mut state = State::new(&instructions);
     let mut seen = HashSet::new();
     while !seen.contains(&state.pc) {
@@ -95,11 +87,10 @@ fn process_data_a(data: &str) -> i64 {
         execute(&mut state);
     }
     state.acc
-    // println!("{:?}", instructions);
 }
 
 fn process_data_b(data: &str) -> i64 {
-    let instructions = parser().parse(data).unwrap().1;
+    let instructions = parser(data).unwrap().1;
     for index in 0..instructions.len() {
         let mut curr = instructions.clone();
         match instructions[index] {

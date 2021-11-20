@@ -1,5 +1,6 @@
 pub mod computer;
 pub mod letters;
+pub mod nom_util;
 
 #[macro_use]
 extern crate clap;
@@ -10,7 +11,7 @@ extern crate lazy_static;
 
 extern crate combine;
 
-use std::{fmt::Display, ops::Deref};
+use std::ops::Deref;
 
 use clap::Arg;
 
@@ -65,16 +66,6 @@ macro_rules! q_impl {
             }
         }
     };
-}
-
-pub fn print_vec(v: &[impl Display]) -> String {
-    format!(
-        "[{}]",
-        v.iter().fold(String::new(), |acc, ref num| {
-            let len = acc.is_empty();
-            acc + if len { ", " } else { "" } + &num.to_string()
-        })
-    )
 }
 
 fn select(day: &dyn Day, arg: &str) {

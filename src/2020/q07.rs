@@ -3,11 +3,15 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use glue::{
-    prelude::{
-        alphabetic, digit, eoi, find_all, find_separated, is, optional, take, take_all, Parser,
-    },
-    types::MapParserResult,
+use aoc::nom_util::opt_signed_number;
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{alpha1, line_ending},
+    combinator::{eof, opt},
+    multi::{separated_list0, separated_list1},
+    sequence::{terminated, tuple},
+    IResult, Parser,
 };
 
 static INPUT: &str = include_str!("data/q07.data");
@@ -19,75 +23,57 @@ struct Bag {
 }
 
 // shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+fn bag(i: &str) -> IResult<&str, Bag> {
+    let (input, (mod1, space, mod2, _, _)) =
+        tuple((alpha1, tag(" "), alpha1, tag(" bag"), opt(tag("s"))))(i)?;
 
-fn bag_parser<'a>() -> impl Parser<'a, Bag> {
-    move |ctx| {
-        find_all((
-            take_all((
-                take(1.., is(alphabetic)),
-                is(" "),
-                take(1.., is(alphabetic)),
-            )),
-            is(" bag"),
-            optional(is("s")),
-        ))
-        .parse(ctx)
-        .map_result(|(name, _, _)| Bag {
+    let name = format!("{}{}{}", mod1, space, mod2);
+
+    Ok((
+        input,
+        Bag {
             quantity: 1,
-            symbol: name.to_owned(),
-        })
-    }
+            symbol: name,
+        },
+    ))
 }
 
-fn multi_bag_parser<'a>() -> impl Parser<'a, Bag> {
-    move |ctx| {
-        find_all((take(1.., is(digit)), is(" "), bag_parser()))
-            .parse(ctx)
-            .map_result(|(quantity, _, mut bag)| {
-                let quantity: &str = quantity;
-                // println!("Found bag {} {:?}", quantity, bag);
-                bag.quantity = quantity.parse().unwrap();
-                bag
-            })
-    }
+fn multi_bag(i: &str) -> IResult<&str, Bag> {
+    let (input, (quantity, _, mut bag)) = tuple((opt_signed_number, tag(" "), bag))(i)?;
+    bag.quantity = quantity as usize;
+    Ok((input, bag))
 }
 
-fn rule_parser<'a>() -> impl Parser<'a, (Bag, Vec<Bag>)> {
-    move |ctx| {
-        // faded maroon bags contain no other bags.
-        find_all((
-            bag_parser(),
-            is(" contain "),
-            optional(is("no other bags")),
-            optional(find_separated(1.., multi_bag_parser(), is(", "))),
-            is("."),
-        ))
-        .parse(ctx)
-        .map_result(|(source, _, _none, dests, _)| {
-            // println!("Found rule {:?} {:?} {:?}", source, none, dests);
-            (source, dests.unwrap_or_default())
-        })
-    }
+fn rule(i: &str) -> IResult<&str, (Bag, Vec<Bag>)> {
+    // faded maroon bags contain no other bags.
+    let (input, (source, _, dests, _)) = tuple((
+        bag,
+        tag(" contain "),
+        alt((
+            tag("no other bags").map(|_| Vec::new()),
+            separated_list1(tag(", "), multi_bag),
+        )),
+        tag(".")
+    ))(i)?;
+
+    Ok((input, (source, dests)))
 }
 
-fn parser<'a>() -> impl Parser<'a, HashMap<String, Vec<Bag>>> {
-    move |ctx| {
-        find_all((find_separated(1.., rule_parser(), is('\n')), eoi()))
-            .parse(ctx)
-            .map_result(|(rules, _)| {
-                let mut rv = HashMap::new();
-                for (key, value) in rules {
-                    if let Some(previous) = rv.insert(key.symbol, value) {
-                        println!("Duplicate Key!!! {:?}", previous);
-                    };
-                }
-                rv
-            })
+fn parser(i: &str) -> IResult<&str, HashMap<String, Vec<Bag>>> {
+    let (input, rules) = terminated(separated_list0(line_ending, rule), eof)(i)?;
+
+    let mut rv = HashMap::new();
+    for (key, value) in rules {
+        if let Some(previous) = rv.insert(key.symbol, value) {
+            println!("Duplicate Key!!! {:?}", previous);
+        };
     }
+
+    Ok((input, rv))
 }
 
 fn process_data_a(data: &str) -> usize {
-    let rules = parser().parse(data).unwrap().1;
+    let rules = parser(data).unwrap().1;
 
     // println!("{:?}\n{:?}", rules.len(), rules);
     let mut stack = VecDeque::new();
@@ -112,7 +98,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
-    let rules = parser().parse(data).unwrap().1;
+    let rules = parser(data).unwrap().1;
 
     // println!("{:?}\n{:?}", rules.len(), rules);
     let mut stack = VecDeque::new();
