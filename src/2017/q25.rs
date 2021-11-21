@@ -1,16 +1,19 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::Day;
+use aoc::{nom_util::unsigned_number, Day};
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{alpha1, line_ending},
+    multi::many1,
+    sequence::tuple,
+    IResult,
+};
 
 use std::{
     collections::{HashMap, HashSet},
     str,
-};
-
-use glue::{
-    prelude::{alphabetic, any, digit, find, find_all, find_any, is, take, Parser},
-    types::MapParserResult,
 };
 
 static INPUT: &str = include_str!("data/q25.data");
@@ -56,128 +59,97 @@ impl Machine {
     }
 }
 
-fn machine_name_parser<'a>() -> impl Parser<'a, char> {
-    move |ctx| {
-        find_all((is("Begin in state "), is(alphabetic), is(".\n")))
-            .parse(ctx)
-            .map_result(|(_, state, _)| state.chars().next().unwrap())
-    }
+fn machine_name(i: &str) -> IResult<&str, char> {
+    let (input, (_, state, _)) = tuple((tag("Begin in state "), alpha1, tag(".\n")))(i)?;
+    Ok((input, state.chars().next().unwrap()))
 }
 
-fn machine_checksum_parser<'a>() -> impl Parser<'a, usize> {
-    move |ctx| {
-        find_all((
-            is("Perform a diagnostic checksum after "),
-            take(1.., is(digit)),
-            is(" steps.\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, number, _)| number.parse().unwrap())
-    }
+fn machine_checksum(i: &str) -> IResult<&str, usize> {
+    let (input, (_, number, _)) = tuple((
+        tag("Perform a diagnostic checksum after "),
+        unsigned_number,
+        tag(" steps.\n"),
+    ))(i)?;
+    Ok((input, number as usize))
 }
 
-fn state_name_parser<'a>() -> impl Parser<'a, char> {
-    move |ctx| {
-        find_all((is("In state "), is(any), is(":\n")))
-            .parse(ctx)
-            .map_result(|(_, name, _)| name.chars().next().unwrap())
-    }
+fn state_name(i: &str) -> IResult<&str, char> {
+    let (input, (_, state, _)) = tuple((tag("In state "), alpha1, tag(":\n")))(i)?;
+    Ok((input, state.chars().next().unwrap()))
 }
 
-fn action_test_parser<'a>() -> impl Parser<'a, bool> {
-    move |ctx| {
-        find_all((
-            is("  If the current value is "),
-            take(1.., is(digit)),
-            is(":\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, number, _)| number == "1")
-    }
+fn action_test(i: &str) -> IResult<&str, bool> {
+    let (input, (_, number, _)) = tuple((
+        tag("  If the current value is "),
+        unsigned_number,
+        tag(":\n"),
+    ))(i)?;
+    Ok((input, number == 1))
 }
 
-fn action_write_parser<'a>() -> impl Parser<'a, bool> {
-    move |ctx| {
-        find_all((
-            is("    - Write the value "),
-            take(1.., is(digit)),
-            is(".\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, number, _)| number == "1")
-    }
+fn action_write(i: &str) -> IResult<&str, bool> {
+    let (input, (_, number, _)) =
+        tuple((tag("    - Write the value "), unsigned_number, tag(".\n")))(i)?;
+    Ok((input, number == 1))
 }
 
-fn action_move_parser<'a>() -> impl Parser<'a, i32> {
-    move |ctx| {
-        find_all((
-            is("    - Move one slot to the "),
-            find_any((is("left"), is("right"))),
-            is(".\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(_, found, _)| if found == "left" { -1 } else { 1 })
-    }
+fn action_move(i: &str) -> IResult<&str, i32> {
+    let (input, (_, found, _)) = tuple((
+        tag("    - Move one slot to the "),
+        alt((tag("left"), tag("right"))),
+        tag(".\n"),
+    ))(i)?;
+    Ok((input, if found == "left" { -1 } else { 1 }))
 }
 
-fn action_next_parser<'a>() -> impl Parser<'a, char> {
-    move |ctx| {
-        find_all((is("    - Continue with state "), is(any), is(".\n")))
-            .parse(ctx)
-            .map_result(|(_, state, _)| state.chars().next().unwrap())
-    }
+fn action_next(i: &str) -> IResult<&str, char> {
+    let (input, (_, state, _)) = tuple((tag("    - Continue with state "), alpha1, tag(".\n")))(i)?;
+    Ok((input, state.chars().next().unwrap()))
 }
 
-fn action_parser<'a>() -> impl Parser<'a, Action> {
-    move |ctx| {
-        find_all((
-            action_test_parser(),
-            action_write_parser(),
-            action_move_parser(),
-            action_next_parser(),
-        ))
-        .parse(ctx)
-        .map_result(|(test, write, direction, next)| Action {
+fn action(i: &str) -> IResult<&str, Action> {
+    let (input, (test, write, direction, next)) =
+        tuple((action_test, action_write, action_move, action_next))(i)?;
+    Ok((
+        input,
+        Action {
             test,
             write,
             direction,
             next,
-        })
-    }
+        },
+    ))
 }
 
-fn state_parser<'a>() -> impl Parser<'a, State> {
-    move |ctx| {
-        find_all((is("\n"), state_name_parser(), find(1.., action_parser())))
-            .parse(ctx)
-            .map_result(|(_, name, actions)| State {
-                name,
-                actions: actions.iter().cloned().map(|x| (x.test, x)).collect(),
-            })
-    }
+fn state(i: &str) -> IResult<&str, State> {
+    let (input, (_, name, actions)) = tuple((line_ending, state_name, many1(action)))(i)?;
+    Ok((
+        input,
+        State {
+            name,
+            actions: actions.iter().cloned().map(|x| (x.test, x)).collect(),
+        },
+    ))
 }
 
-fn machine_parser<'a>() -> impl Parser<'a, Machine> {
-    move |ctx| {
-        find_all((
-            machine_name_parser(),
-            machine_checksum_parser(),
-            find(1.., state_parser()),
-        ))
-        .parse(ctx)
-        .map_result(|(state, checksum, states)| Machine {
+fn machine(i: &str) -> IResult<&str, Machine> {
+    let (input, (state, checksum, states)) =
+        tuple((machine_name, machine_checksum, many1(state)))(i)?;
+    Ok((
+        input,
+        Machine {
             tape: HashSet::new(),
             position: 0,
             state,
             checksum,
             steps: 0,
             states: states.iter().cloned().map(|x| (x.name, x)).collect(),
-        })
-    }
+        },
+    ))
 }
 
 fn process_data_a(data: &str) -> usize {
-    let mut machine = machine_parser().parse(data).unwrap().1;
+    let mut machine = machine(data).unwrap().1;
     while machine.steps < machine.checksum {
         machine.step();
     }

@@ -1,57 +1,57 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::{
-    combinators::whitespace::space,
-    prelude::{digit, find_all, find_any, is, map_result, take, Parser},
-    types::MapParserResult,
-};
+use std::{fmt::Debug, rc::Rc, str::Lines};
 
-use std::{
-    fmt::{Debug, Display, Formatter, Result},
-    rc::Rc,
-    str::Lines,
+use aoc::nom_util::unsigned_number;
+use nom::{
+    branch::alt, bytes::complete::tag, character::complete::space1, multi::many_m_n,
+    sequence::tuple, IResult,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
 
-trait Instruction: Display + Debug {
+trait Instruction: Debug {
     fn execute(&self, cpu: &mut Cpu);
 }
 
-fn three_numbers<'a>() -> impl Parser<'a, (&'a str, &'a str, &'a str)> {
-    map_result(
-        find_all((
-            space(1..),
-            take(1.., is(digit)),
-            space(1..),
-            take(1.., is(digit)),
-            space(1..),
-            take(1.., is(digit)),
-        )),
-        |(_, one, _, two, _, three)| (one, two, three),
-    )
+fn three_numbers(i: &str) -> IResult<&str, (usize, usize, usize)> {
+    let (input, result) = many_m_n(3, 3, tuple((space1, unsigned_number)))(i)?;
+    Ok((
+        input,
+        (
+            result[0].1 as usize,
+            result[1].1 as usize,
+            result[2].1 as usize,
+        ),
+    ))
 }
 
-fn parse_instructions<'a>(
-    lines: Lines<'a>,
-    builder: &mut impl Parser<'a, Box<dyn Instruction>>,
-) -> Rc<Vec<Box<dyn Instruction>>> {
+fn parse_instructions(lines: Lines) -> Rc<Vec<Box<dyn Instruction>>> {
     let mut instructions: Vec<Box<dyn Instruction>> = vec![];
     for line in lines {
-        match builder.parse(line) {
+        match alt((
+            AddI::parser,
+            AddR::parser,
+            EqRR::parser,
+            GtRR::parser,
+            MulI::parser,
+            MulR::parser,
+            SetI::parser,
+            SetR::parser,
+        ))(line)
+        {
             Ok((_, i)) => {
                 // println!("{} => {:?}", line, i);
                 instructions.push(i);
             }
-            Err((_, e)) => panic!("Unknown instruction {:?}", e),
+            Err(e) => panic!("Unknown instruction {:?}", e),
         }
     }
     Rc::new(instructions)
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "addi {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct AddI {
     a: usize,
     b: i32,
@@ -63,23 +63,21 @@ impl Instruction for AddI {
     }
 }
 impl AddI {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("addi"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(AddI {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("addi"), three_numbers))(i)?;
+        Ok((
+            input,
+            Box::new(AddI {
+                a,
+                b: b as i32,
+                dest,
+            }),
+        ))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "addr {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct AddR {
     a: usize,
     b: usize,
@@ -91,23 +89,14 @@ impl Instruction for AddR {
     }
 }
 impl AddR {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("addr"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(AddR {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("addr"), three_numbers))(i)?;
+        Ok((input, Box::new(AddR { a, b, dest })))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "eqrr {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct EqRR {
     a: usize,
     b: usize,
@@ -123,23 +112,14 @@ impl Instruction for EqRR {
     }
 }
 impl EqRR {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("eqrr"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(EqRR {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("eqrr"), three_numbers))(i)?;
+        Ok((input, Box::new(EqRR { a, b, dest })))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "gtrr {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct GtRR {
     a: usize,
     b: usize,
@@ -155,23 +135,14 @@ impl Instruction for GtRR {
     }
 }
 impl GtRR {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("gtrr"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(GtRR {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("gtrr"), three_numbers))(i)?;
+        Ok((input, Box::new(GtRR { a, b, dest })))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "muli {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct MulI {
     a: usize,
     b: i32,
@@ -183,23 +154,21 @@ impl Instruction for MulI {
     }
 }
 impl MulI {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("muli"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(MulI {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("muli"), three_numbers))(i)?;
+        Ok((
+            input,
+            Box::new(MulI {
+                a,
+                b: b as i32,
+                dest,
+            }),
+        ))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "mulr {} {} {}", a, b, dest)]
+#[derive(Debug)]
 struct MulR {
     a: usize,
     b: usize,
@@ -211,26 +180,17 @@ impl Instruction for MulR {
     }
 }
 impl MulR {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("mulr"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (a, b, dest))| {
-                    Box::new(MulR {
-                        a: a.parse().unwrap(),
-                        b: b.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (a, b, dest))) = tuple((tag("mulr"), three_numbers))(i)?;
+        Ok((input, Box::new(MulR { a, b, dest })))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "seti {} {} {}", value, ignored, dest)]
+#[derive(Debug)]
 struct SetI {
     value: i32,
-    ignored: i8,
+    _ignored: i8,
     dest: usize,
 }
 impl Instruction for SetI {
@@ -239,26 +199,24 @@ impl Instruction for SetI {
     }
 }
 impl SetI {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("seti"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (value, ignored, dest))| {
-                    Box::new(SetI {
-                        value: value.parse().unwrap(),
-                        ignored: ignored.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (value, ignored, dest))) = tuple((tag("seti"), three_numbers))(i)?;
+        Ok((
+            input,
+            Box::new(SetI {
+                value: value as i32,
+                _ignored: ignored as i8,
+                dest,
+            }),
+        ))
+        // }) as Box<dyn Instruction>
     }
 }
 
-#[derive(Debug, Display)]
-#[display(fmt = "setr {} {} {}", source, ignored, dest)]
+#[derive(Debug)]
 struct SetR {
     source: usize,
-    ignored: i8,
+    _ignored: i8,
     dest: usize,
 }
 impl Instruction for SetR {
@@ -267,18 +225,17 @@ impl Instruction for SetR {
     }
 }
 impl SetR {
-    fn parser<'a>() -> impl Parser<'a, Box<dyn Instruction + 'a>> {
-        move |ctx| {
-            find_all((is("setr"), three_numbers()))
-                .parse(ctx)
-                .map_result(|(_, (source, ignored, dest))| {
-                    Box::new(SetR {
-                        source: source.parse().unwrap(),
-                        ignored: ignored.parse().unwrap(),
-                        dest: dest.parse().unwrap(),
-                    }) as Box<dyn Instruction>
-                })
-        }
+    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+        let (input, (_, (source, ignored, dest))) = tuple((tag("setr"), three_numbers))(i)?;
+        Ok((
+            input,
+            Box::new(SetR {
+                source,
+                _ignored: ignored as i8,
+                dest,
+            }),
+        ))
+        // }) as Box<dyn Instruction>
     }
 }
 
@@ -314,38 +271,12 @@ impl Cpu {
     }
 }
 
-impl Display for Cpu {
-    fn fmt(&self, f: &mut Formatter) -> Result {
-        writeln!(f, "{:?}", self.registers)?;
-        for (pc, inst) in self.instructions.iter().enumerate() {
-            writeln!(
-                f,
-                "{} {}",
-                if (pc as i32) == self.pc { "->" } else { "  " },
-                inst
-            )?
-        }
-        Ok(())
-    }
-}
-
-fn process_data_a(data: &'static str) -> i32 {
+fn process_data_a(data: &str) -> i32 {
     let mut lines = data.lines();
     let mut ip = lines.next().unwrap().to_string();
     let ip = ip.pop().unwrap().to_digit(10).unwrap() as usize;
 
-    let mut builder = find_any((
-        AddI::parser(),
-        AddR::parser(),
-        EqRR::parser(),
-        GtRR::parser(),
-        MulI::parser(),
-        MulR::parser(),
-        SetI::parser(),
-        SetR::parser(),
-    ));
-
-    let instructions = parse_instructions(lines, &mut builder);
+    let instructions = parse_instructions(lines);
     let mut state = Cpu::new(ip, instructions);
     while let Some(new) = state.execute() {
         state = new;

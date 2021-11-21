@@ -1,13 +1,16 @@
 //-----------------------------------------------------
 // Setup.
 
-use glue::{
-    prelude::{
-        alphabetic, digit, find, find_all, find_separated, is, take, take_all, whitespace, Parser,
-    },
-    types::MapParserResult,
-};
+use aoc::nom_util::unsigned_number;
 use itertools::Itertools;
+use nom::{
+    bytes::complete::tag,
+    character::complete::{alpha1, digit1, line_ending, space1},
+    combinator::{eof, opt},
+    multi::{many1, separated_list0},
+    sequence::{terminated, tuple},
+    IResult,
+};
 
 static INPUT: &str = include_str!("data/q21.data");
 
@@ -72,88 +75,85 @@ impl Player {
     }
 }
 
-fn modifier_parser<'a>() -> impl Parser<'a, &'a str> {
-    move |ctx| take_all((is(" +"), take(1.., is(digit)))).parse(ctx)
+fn modifier(i: &str) -> IResult<&str, String> {
+    let (input, (first, number)) = tuple((tag(" +"), digit1))(i)?;
+    Ok((input, first.to_owned() + number))
 }
 
-fn name_parser<'a>() -> impl Parser<'a, &'a str> {
-    move |ctx| take_all((take(1.., is(alphabetic)), take(0..1, modifier_parser()))).parse(ctx)
+fn name(i: &str) -> IResult<&str, String> {
+    let (input, (first, number)) = tuple((alpha1, opt(modifier)))(i)?;
+    Ok((input, first.to_owned() + &number.unwrap_or_default()))
 }
 
-fn header_parser<'a>() -> impl Parser<'a, &'a str> {
-    move |ctx| {
-        find_all((
-            take(1.., is(alphabetic)),
-            find_all((
-                is(":"),
-                take(1.., is(whitespace)),
-                is("Cost"),
-                take(1.., is(whitespace)),
-                is("Damage"),
-                take(1.., is(whitespace)),
-                is("Armor\n"),
-            )),
-        ))
-        .parse(ctx)
-        .map_result(|(name, _)| name)
+fn header(i: &str) -> IResult<&str, &str> {
+    let (input, (name, ..)) = tuple((
+        alpha1,
+        tag(":"),
+        space1,
+        tag("Cost"),
+        space1,
+        tag("Damage"),
+        space1,
+        tag("Armor\n"),
+    ))(i)?;
+    Ok((input, name))
+}
+
+fn item(i: &str) -> IResult<&str, Item> {
+    let (input, (name, _, cost, _, damage, _, armor, _)) = tuple((
+        name,
+        space1,
+        unsigned_number,
+        space1,
+        unsigned_number,
+        space1,
+        unsigned_number,
+        opt(tag("\n")),
+    ))(i)?;
+    Ok((
+        input,
+        Item {
+            name,
+            cost: cost as i32,
+            damage: damage as i32,
+            armor: armor as i32,
+        },
+    ))
+}
+
+fn group(i: &str) -> IResult<&str, Group> {
+    let (input, (name, items)) = tuple((header, many1(item)))(i)?;
+
+    let empty_item = Item {
+        name: "None".to_owned(),
+        cost: 0,
+        damage: 0,
+        armor: 0,
+    };
+    let mut all_items = items;
+    if name != "Weapons" {
+        all_items.insert(0, empty_item.clone());
     }
-}
-
-fn item_parser<'a>() -> impl Parser<'a, Item> {
-    move |ctx| {
-        find_all((
-            name_parser(),
-            take(1.., is(whitespace)),
-            take(1.., is(digit)),
-            take(1.., is(whitespace)),
-            take(1.., is(digit)),
-            take(1.., is(whitespace)),
-            take(1.., is(digit)),
-            is("\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(name, _, cost, _, damage, _, armor, _)| Item {
-            name: name.to_string(),
-            cost: cost.parse().unwrap(),
-            damage: damage.parse().unwrap(),
-            armor: armor.parse().unwrap(),
-        })
+    if name == "Rings" {
+        all_items.insert(0, empty_item);
     }
+    Ok((
+        input,
+        Group {
+            _name: name.to_string(),
+            items: all_items,
+        },
+    ))
 }
 
-fn group_parser<'a>() -> impl Parser<'a, Group> {
-    move |ctx| {
-        find_all((header_parser(), find(0.., item_parser())))
-            .parse(ctx)
-            .map_result(|(name, items)| {
-                let empty_item = Item {
-                    name: "None".to_owned(),
-                    cost: 0,
-                    damage: 0,
-                    armor: 0,
-                };
-                let mut all_items = items;
-                if name != "Weapons" {
-                    all_items.insert(0, empty_item.clone());
-                }
-                if name == "Rings" {
-                    all_items.insert(0, empty_item);
-                }
-                Group {
-                    _name: name.to_string(),
-                    items: all_items,
-                }
-            })
-    }
-}
-
-fn store_parser<'a>() -> impl Parser<'a, Vec<Group>> {
-    move |ctx| find_separated(0.., group_parser(), is("\n")).parse(ctx)
+fn store(i: &str) -> IResult<&str, Vec<Group>> {
+    let (input, groups) = terminated(separated_list0(line_ending, group), eof)(i)?;
+    Ok((input, groups))
 }
 
 fn process_data_a(data: &str) -> i32 {
     let mut players = Vec::new();
-    let store = store_parser().parse(data).unwrap().1;
+    let store = store(data).unwrap().1;
     for items in iproduct!(
         store[0].items.iter(),
         store[1].items.iter(),
@@ -181,7 +181,7 @@ fn process_data_a(data: &str) -> i32 {
 
 fn process_data_b(data: &str) -> i32 {
     let mut players = Vec::new();
-    let store = store_parser().parse(data).unwrap().1;
+    let store = store(data).unwrap().1;
     for items in iproduct!(
         store[0].items.iter(),
         store[1].items.iter(),
@@ -227,7 +227,7 @@ fn a() {
         armor: 5,
         _items: Vec::new(),
     };
-    assert_eq!(player.wins(), false);
+    assert!(!player.wins());
 }
 
 #[test]

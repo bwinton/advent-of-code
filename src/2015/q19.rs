@@ -3,9 +3,12 @@
 
 use std::collections::HashSet;
 
-use glue::{
-    prelude::{alphabetic, find, find_all, is, take, Parser},
-    types::MapParserResult,
+use nom::{
+    bytes::complete::tag,
+    character::complete::{alpha1, line_ending},
+    multi::many1,
+    sequence::tuple,
+    IResult,
 };
 use regex::Regex;
 
@@ -29,36 +32,24 @@ impl Rule {
     }
 }
 
-fn rule_parser<'a>() -> impl Parser<'a, Rule> {
-    move |ctx| {
-        find_all((
-            take(1.., is(alphabetic)),
-            is(" => "),
-            take(1.., is(alphabetic)),
-            is("\n"),
-        ))
-        .parse(ctx)
-        .map_result(|(source, _, dest, _)| Rule {
+fn rule(i: &str) -> IResult<&str, Rule> {
+    let (input, (source, _, dest, _)) = tuple((alpha1, tag(" => "), alpha1, line_ending))(i)?;
+    Ok((
+        input,
+        Rule {
             source: Regex::new(source).unwrap(),
             dest: dest.to_string(),
-        })
-    }
+        },
+    ))
 }
 
-fn parser<'a>() -> impl Parser<'a, (Vec<Rule>, String)> {
-    move |ctx| {
-        find_all((
-            find(1.., rule_parser()),
-            is("\n"),
-            take(1.., is(alphabetic)),
-        ))
-        .parse(ctx)
-        .map_result(|(rules, _, start)| (rules, start.to_string()))
-    }
+fn parser(i: &str) -> IResult<&str, (Vec<Rule>, String)> {
+    let (input, (rules, _, start)) = tuple((many1(rule), line_ending, alpha1))(i)?;
+    Ok((input, (rules, start.to_string())))
 }
 
 fn process_data_a(data: &str) -> usize {
-    let (rules, start) = parser().parse(data).unwrap().1;
+    let (rules, start) = parser(data).unwrap().1;
     let mut rv = HashSet::new();
     for rule in rules {
         let matches = rule.match_all(&start);
@@ -68,7 +59,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
-    let (_, goal) = parser().parse(data).unwrap().1;
+    let (_, goal) = parser(data).unwrap().1;
     let tokens: Vec<String> = Regex::new("[A-Z][a-z]?")
         .unwrap()
         .captures_iter(&goal)
