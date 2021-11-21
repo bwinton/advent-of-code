@@ -9,8 +9,6 @@ extern crate derive_more;
 #[macro_use]
 extern crate lazy_static;
 
-extern crate combine;
-
 use std::ops::Deref;
 
 use clap::Arg;

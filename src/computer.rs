@@ -2,24 +2,24 @@ use std::{
     collections::HashMap,
     fmt::{Debug, Display, Formatter, Result},
     rc::Rc,
-    result,
 };
 
-use combine::{
-    many1, one_of,
-    parser::char::{digit, letter, string},
-    Parser,
+use nom::{
+    bytes::complete::tag,
+    error::{Error, ErrorKind},
+    sequence::tuple,
+    Err::Failure,
+    IResult,
 };
+
+use crate::nom_util::{opt_signed_number, single_letter};
 
 pub trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);
 }
 
-#[derive(Debug)]
-pub struct InstructionError(());
-
-pub type InstructionResult = result::Result<Rc<dyn Instruction>, InstructionError>;
-pub type InstructionsResult = result::Result<Vec<Rc<dyn Instruction>>, InstructionError>;
+pub type InstructionResult<'a> = IResult<&'a str, Rc<dyn Instruction>>;
+pub type InstructionsResult<'a> = IResult<&'a str, Vec<Rc<dyn Instruction>>>;
 
 #[derive(Debug, Display)]
 #[display(fmt = "hlf {}", register)]
@@ -27,12 +27,9 @@ pub struct Half {
     register: char,
 }
 impl Half {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("hlf ").with(letter()).parse(s).map(|x| x.0);
-        match result {
-            Ok(reg) => Ok(Rc::new(Half { register: reg })),
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, register)) = tuple((tag("hlf "), single_letter))(i)?;
+        Ok((input, Rc::new(Self { register })))
     }
 }
 impl Instruction for Half {
@@ -47,12 +44,9 @@ pub struct Triple {
     register: char,
 }
 impl Triple {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("tpl ").with(letter()).parse(s).map(|x| x.0);
-        match result {
-            Ok(reg) => Ok(Rc::new(Triple { register: reg })),
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, register)) = tuple((tag("tpl "), single_letter))(i)?;
+        Ok((input, Rc::new(Self { register })))
     }
 }
 impl Instruction for Triple {
@@ -67,12 +61,9 @@ pub struct Increment {
     register: char,
 }
 impl Increment {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("inc ").with(letter()).parse(s).map(|x| x.0);
-        match result {
-            Ok(reg) => Ok(Rc::new(Increment { register: reg })),
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, register)) = tuple((tag("inc "), single_letter))(i)?;
+        Ok((input, Rc::new(Self { register })))
     }
 }
 impl Instruction for Increment {
@@ -87,21 +78,9 @@ pub struct Jump {
     offset: i64,
 }
 impl Jump {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("jmp ")
-            .with(one_of("+-".chars()).and(many1::<String, _, _>(digit())))
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok((sign, value)) => {
-                let mut offset: i64 = value.parse().unwrap();
-                if sign == '-' {
-                    offset = -offset;
-                }
-                Ok(Rc::new(Jump { offset }))
-            }
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, offset)) = tuple((tag("jmp "), opt_signed_number))(i)?;
+        Ok((input, Rc::new(Self { offset })))
     }
 }
 impl Instruction for Jump {
@@ -117,28 +96,10 @@ pub struct JumpEven {
     offset: i64,
 }
 impl JumpEven {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("jie ")
-            .with(
-                letter().and(
-                    string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit()))),
-                ),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok((reg, (sign, value))) => {
-                let mut offset: i64 = value.parse().unwrap();
-                if sign == '-' {
-                    offset = -offset;
-                }
-                Ok(Rc::new(JumpEven {
-                    register: reg,
-                    offset,
-                }))
-            }
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, register, _, offset)) =
+            tuple((tag("jie "), single_letter, tag(", "), opt_signed_number))(i)?;
+        Ok((input, Rc::new(Self { register, offset })))
     }
 }
 impl Instruction for JumpEven {
@@ -158,28 +119,10 @@ pub struct JumpOne {
     offset: i64,
 }
 impl JumpOne {
-    pub fn build(s: &str) -> InstructionResult {
-        let result = string("jio ")
-            .with(
-                letter().and(
-                    string(", ").with(one_of("+-".chars()).and(many1::<String, _, _>(digit()))),
-                ),
-            )
-            .parse(s)
-            .map(|x| x.0);
-        match result {
-            Ok((reg, (sign, value))) => {
-                let mut offset: i64 = value.parse().unwrap();
-                if sign == '-' {
-                    offset = -offset;
-                }
-                Ok(Rc::new(JumpOne {
-                    register: reg,
-                    offset,
-                }))
-            }
-            _ => Err(InstructionError(())),
-        }
+    pub fn build(i: &str) -> InstructionResult {
+        let (input, (_, register, _, offset)) =
+            tuple((tag("jio "), single_letter, tag(", "), opt_signed_number))(i)?;
+        Ok((input, Rc::new(Self { register, offset })))
     }
 }
 impl Instruction for JumpOne {
@@ -239,25 +182,25 @@ impl Display for CPU {
     }
 }
 
-pub fn parse_instructions(
-    s: &str,
+pub fn parse_instructions<'a>(
+    s: &'a str,
     builders: &[fn(s: &str) -> InstructionResult],
-) -> InstructionsResult {
+) -> InstructionsResult<'a> {
     let mut instructions: Vec<Rc<dyn Instruction>> = vec![];
     for line in s.lines() {
         let mut found = false;
         for builder in builders {
             if let Ok(inst) = builder(line) {
                 found = true;
-                instructions.push(inst);
+                instructions.push(inst.1);
                 break;
             }
         }
         if !found {
             //Error!!!
             println!("Unknown instruction {}", line);
-            return Err(InstructionError(()));
+            return Err(Failure(Error::new(line, ErrorKind::Alt)));
         }
     }
-    Ok(instructions)
+    Ok(("", instructions))
 }

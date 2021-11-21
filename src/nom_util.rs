@@ -1,6 +1,10 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::digit1, combinator::opt,
-    sequence::tuple, IResult,
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{digit1, satisfy},
+    combinator::opt,
+    sequence::tuple,
+    IResult,
 };
 
 fn opt_sign(i: &str) -> IResult<&str, bool> {
@@ -25,4 +29,9 @@ pub fn opt_signed_number(i: &str) -> IResult<&str, i64> {
         result = -result;
     };
     Ok((input, result))
+}
+
+pub fn single_letter(i: &str) -> IResult<&str, char> {
+    let (input, letter) = satisfy(|c| c.is_ascii_alphabetic())(i)?;
+    Ok((input, letter))
 }
