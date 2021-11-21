@@ -5,8 +5,7 @@ use std::{fmt::Debug, rc::Rc, str::Lines};
 
 use aoc::nom_util::unsigned_number;
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::space1, multi::many_m_n,
-    sequence::tuple, IResult,
+    bytes::complete::tag, character::complete::space1, multi::many_m_n, sequence::tuple, IResult,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -27,28 +26,25 @@ fn three_numbers(i: &str) -> IResult<&str, (usize, usize, usize)> {
     ))
 }
 
-fn parse_instructions(lines: Lines) -> Rc<Vec<Box<dyn Instruction>>> {
-    let mut instructions: Vec<Box<dyn Instruction>> = vec![];
+type InstructionParser = fn(s: &str) -> IResult<&str, Rc<dyn Instruction>>;
+
+fn parse_instructions(lines: Lines, builders: &[InstructionParser]) -> Vec<Rc<dyn Instruction>> {
+    let mut instructions: Vec<Rc<dyn Instruction>> = vec![];
     for line in lines {
-        match alt((
-            AddI::parser,
-            AddR::parser,
-            EqRR::parser,
-            GtRR::parser,
-            MulI::parser,
-            MulR::parser,
-            SetI::parser,
-            SetR::parser,
-        ))(line)
-        {
-            Ok((_, i)) => {
-                // println!("{} => {:?}", line, i);
-                instructions.push(i);
+        let mut found = false;
+        for builder in builders {
+            if let Ok(inst) = builder(line) {
+                found = true;
+                instructions.push(inst.1);
+                break;
             }
-            Err(e) => panic!("Unknown instruction {:?}", e),
+        }
+        if !found {
+            panic!("Unknown instruction {}", line);
+            // return Err(Failure(Error::new(line, ErrorKind::Alt)));
         }
     }
-    Rc::new(instructions)
+    instructions
 }
 
 #[derive(Debug)]
@@ -63,17 +59,16 @@ impl Instruction for AddI {
     }
 }
 impl AddI {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("addi"), three_numbers))(i)?;
         Ok((
             input,
-            Box::new(AddI {
+            Rc::new(AddI {
                 a,
                 b: b as i32,
                 dest,
             }),
         ))
-        // }) as Box<dyn Instruction>
     }
 }
 
@@ -89,10 +84,9 @@ impl Instruction for AddR {
     }
 }
 impl AddR {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("addr"), three_numbers))(i)?;
-        Ok((input, Box::new(AddR { a, b, dest })))
-        // }) as Box<dyn Instruction>
+        Ok((input, Rc::new(AddR { a, b, dest })))
     }
 }
 
@@ -112,10 +106,9 @@ impl Instruction for EqRR {
     }
 }
 impl EqRR {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("eqrr"), three_numbers))(i)?;
-        Ok((input, Box::new(EqRR { a, b, dest })))
-        // }) as Box<dyn Instruction>
+        Ok((input, Rc::new(EqRR { a, b, dest })))
     }
 }
 
@@ -135,10 +128,9 @@ impl Instruction for GtRR {
     }
 }
 impl GtRR {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("gtrr"), three_numbers))(i)?;
-        Ok((input, Box::new(GtRR { a, b, dest })))
-        // }) as Box<dyn Instruction>
+        Ok((input, Rc::new(GtRR { a, b, dest })))
     }
 }
 
@@ -154,17 +146,16 @@ impl Instruction for MulI {
     }
 }
 impl MulI {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("muli"), three_numbers))(i)?;
         Ok((
             input,
-            Box::new(MulI {
+            Rc::new(MulI {
                 a,
                 b: b as i32,
                 dest,
             }),
         ))
-        // }) as Box<dyn Instruction>
     }
 }
 
@@ -180,10 +171,9 @@ impl Instruction for MulR {
     }
 }
 impl MulR {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (a, b, dest))) = tuple((tag("mulr"), three_numbers))(i)?;
-        Ok((input, Box::new(MulR { a, b, dest })))
-        // }) as Box<dyn Instruction>
+        Ok((input, Rc::new(MulR { a, b, dest })))
     }
 }
 
@@ -199,17 +189,16 @@ impl Instruction for SetI {
     }
 }
 impl SetI {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (value, ignored, dest))) = tuple((tag("seti"), three_numbers))(i)?;
         Ok((
             input,
-            Box::new(SetI {
+            Rc::new(SetI {
                 value: value as i32,
                 _ignored: ignored as i8,
                 dest,
             }),
         ))
-        // }) as Box<dyn Instruction>
     }
 }
 
@@ -225,17 +214,16 @@ impl Instruction for SetR {
     }
 }
 impl SetR {
-    fn parser(i: &str) -> IResult<&str, Box<dyn Instruction>> {
+    fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
         let (input, (_, (source, ignored, dest))) = tuple((tag("setr"), three_numbers))(i)?;
         Ok((
             input,
-            Box::new(SetR {
+            Rc::new(SetR {
                 source,
                 _ignored: ignored as i8,
                 dest,
             }),
         ))
-        // }) as Box<dyn Instruction>
     }
 }
 
@@ -244,11 +232,11 @@ struct Cpu {
     registers: [i32; 6],
     pc: i32,
     pc_reg: usize,
-    instructions: Rc<Vec<Box<dyn Instruction>>>,
+    instructions: Rc<Vec<Rc<dyn Instruction>>>,
 }
 
 impl Cpu {
-    fn new(pc_reg: usize, instructions: Rc<Vec<Box<dyn Instruction>>>) -> Cpu {
+    fn new(pc_reg: usize, instructions: Rc<Vec<Rc<dyn Instruction>>>) -> Cpu {
         Cpu {
             registers: [0; 6],
             pc: 0,
@@ -276,8 +264,18 @@ fn process_data_a(data: &str) -> i32 {
     let mut ip = lines.next().unwrap().to_string();
     let ip = ip.pop().unwrap().to_digit(10).unwrap() as usize;
 
-    let instructions = parse_instructions(lines);
-    let mut state = Cpu::new(ip, instructions);
+    let builders: Vec<InstructionParser> = vec![
+        AddI::parser,
+        AddR::parser,
+        EqRR::parser,
+        GtRR::parser,
+        MulI::parser,
+        MulR::parser,
+        SetI::parser,
+        SetR::parser,
+    ];
+    let instructions = parse_instructions(lines, &builders);
+    let mut state = Cpu::new(ip, Rc::new(instructions));
     while let Some(new) = state.execute() {
         state = new;
     }
