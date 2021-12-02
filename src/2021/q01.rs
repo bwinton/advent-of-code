@@ -3,35 +3,16 @@
 
 static INPUT: &str = include_str!("data/q01.data");
 
+fn body(data: &[i32], skip: usize) -> usize {
+    data.iter().zip(data.iter().skip(skip)).filter(|(a,b)| a < b ).count()
+}
+
 fn process_data_a(data: &str) -> usize {
-    let mut rv = 0;
-    let mut prev = 9999999;
-    for line in data.lines() {
-        let curr: u32 = line.parse().unwrap();
-        if curr > prev {
-            rv += 1;
-        }
-        prev = curr;
-    }
-    rv
+    body(&data.lines().map(|x| x.parse().unwrap()).collect::<Vec<i32>>(), 1)
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rv = 0;
-    let mut lines = data.lines();
-    let mut a: i32 = lines.next().unwrap().parse().unwrap();
-    let mut b: i32 = lines.next().unwrap().parse().unwrap();
-    let mut c: i32 = lines.next().unwrap().parse().unwrap();
-    for line in lines {
-        let d = line.parse().unwrap();
-        if d > a {
-            rv += 1;
-        };
-        a = b;
-        b = c;
-        c = d;
-    }
-    rv
+    body(&data.lines().map(|x| x.parse().unwrap()).collect::<Vec<i32>>(), 3)
 }
 
 //-----------------------------------------------------
