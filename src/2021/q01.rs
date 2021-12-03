@@ -4,15 +4,30 @@
 static INPUT: &str = include_str!("data/q01.data");
 
 fn body(data: &[i32], skip: usize) -> usize {
-    data.iter().zip(data.iter().skip(skip)).filter(|(a,b)| a < b ).count()
+    data.iter()
+        .zip(data.iter().skip(skip))
+        .filter(|(a, b)| a < b)
+        .count()
 }
 
 fn process_data_a(data: &str) -> usize {
-    body(&data.lines().map(|x| x.parse().unwrap()).collect::<Vec<i32>>(), 1)
+    body(
+        &data
+            .lines()
+            .map(|x| x.parse().unwrap())
+            .collect::<Vec<i32>>(),
+        1,
+    )
 }
 
 fn process_data_b(data: &str) -> usize {
-    body(&data.lines().map(|x| x.parse().unwrap()).collect::<Vec<i32>>(), 3)
+    body(
+        &data
+            .lines()
+            .map(|x| x.parse().unwrap())
+            .collect::<Vec<i32>>(),
+        3,
+    )
 }
 
 //-----------------------------------------------------
