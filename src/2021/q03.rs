@@ -1,9 +1,11 @@
+use itertools::Itertools;
+
 //-----------------------------------------------------
 // Setup.
 
 static INPUT: &str = include_str!("data/q03.data");
 
-fn process_data_a(data: &str) -> usize {
+fn process_data_a(data: &str) -> i32 {
     let mut bits = vec![];
     let mut len = 0;
     for line in data.lines() {
@@ -19,20 +21,10 @@ fn process_data_a(data: &str) -> usize {
         }
     }
     // println!("{:?} {}", bits, len);
-    let mut gamma = 0;
-    let mut epislon = 0;
-    for digit in bits {
-        if digit > (len / 2) {
-            gamma += 1;
-        } else {
-            epislon += 1;
-        }
-        gamma *= 2;
-        epislon *= 2;
-    }
-    gamma /= 2;
-    epislon /= 2;
-    // println!("{}x{}, {}", gamma, epislon, gamma*epislon);
+    let bits = bits.iter().map(|&digit| if digit > (len / 2) {'1'} else {'0'}).join("");
+    let gamma = i32::from_str_radix(&bits, 2).unwrap();
+    let epislon = !gamma & ((1<<bits.len()) - 1);
+    // println!("{}x{} = {}", gamma, epislon, gamma*epislon);
     gamma * epislon
 }
 
@@ -95,7 +87,7 @@ fn process_data_b(data: &str) -> usize {
             break;
         }
     }
-    println!("{} x {} = {}", og_value, co_value, og_value * co_value);
+    // println!("{} x {} = {}", og_value, co_value, og_value * co_value);
     og_value * co_value
 }
 
