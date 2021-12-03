@@ -6,15 +6,14 @@ static INPUT: &str = include_str!("data/q02.data");
 fn process_data_a(data: &str) -> i32 {
     let mut position = (0, 0);
     for line in data.lines() {
-        let values: Vec<_> = line.split(' ').collect();
-        let direction = values[0];
-        let value: i32 = values[1].parse().unwrap();
+        let (direction, value) = line.split_once(' ').unwrap();
+        let value: i32 = value.parse().unwrap();
         match direction {
             "forward" => position.0 += value,
             "down" => position.1 += value,
             "up" => position.1 -= value,
             _ => {
-                println!("Unknown direction: {:?}", values)
+                println!("Unknown direction: {:?}", direction)
             }
         }
         // Do something
@@ -26,9 +25,8 @@ fn process_data_b(data: &str) -> i32 {
     let mut position = (0, 0);
     let mut aim = 0;
     for line in data.lines() {
-        let values: Vec<_> = line.split(' ').collect();
-        let direction = values[0];
-        let value: i32 = values[1].parse().unwrap();
+        let (direction, value) = line.split_once(' ').unwrap();
+        let value: i32 = value.parse().unwrap();
         match direction {
             "forward" => {
                 position.0 += value;
@@ -37,7 +35,7 @@ fn process_data_b(data: &str) -> i32 {
             "down" => aim += value,
             "up" => aim -= value,
             _ => {
-                println!("Unknown direction: {:?}", values)
+                println!("Unknown direction: {:?}", direction)
             }
         }
         // Do something

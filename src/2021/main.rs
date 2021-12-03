@@ -18,7 +18,7 @@ extern crate itertools;
 extern crate lazy_static;
 
 fn main() {
-    let days = q_vec!(q01, q02,q03,);
+    let days = q_vec!(q01, q02, q03,);
 
     aoc::main(&days)
 }
