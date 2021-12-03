@@ -9,7 +9,6 @@ fn process_data_a(data: &str) -> i32 {
     let mut bits = vec![];
     let mut len = 0;
     for line in data.lines() {
-        // Do something
         len += 1;
         for (i, bit) in line.chars().enumerate() {
             if bits.len() <= i {
@@ -20,73 +19,42 @@ fn process_data_a(data: &str) -> i32 {
             }
         }
     }
-    // println!("{:?} {}", bits, len);
-    let bits = bits.iter().map(|&digit| if digit > (len / 2) {'1'} else {'0'}).join("");
+    let bits = bits
+        .iter()
+        .map(|&digit| if digit > (len / 2) { '1' } else { '0' })
+        .join("");
     let gamma = i32::from_str_radix(&bits, 2).unwrap();
-    let epislon = !gamma & ((1<<bits.len()) - 1);
+    let epislon = !gamma & ((1 << bits.len()) - 1);
     // println!("{}x{} = {}", gamma, epislon, gamma*epislon);
     gamma * epislon
 }
 
-fn process_data_b(data: &str) -> usize {
-    let mut og_lines: Vec<_> = data.lines().collect();
-    let mut co_lines = og_lines.clone();
-    let mut og_value = 0;
-    let mut co_value = 0;
-    for i in 0..data.lines().next().unwrap().len() {
-        let mut zero_lines = vec![];
-        let mut one_lines = vec![];
-        for &line in og_lines.iter() {
-            if line.chars().nth(i).unwrap() == '1' {
-                one_lines.push(line);
-            } else {
-                zero_lines.push(line);
-            }
-        }
-
-        if one_lines.len() >= zero_lines.len() {
-            og_lines = one_lines;
+fn get_value(lines: &[(i32, &str)], smaller: bool) -> i32 {
+    let mut curr = Vec::from(lines);
+    for i in 0..lines[0].1.len() {
+        let mid = curr[curr.len() / 2];
+        let retain = mid.1.chars().nth(i).unwrap();
+        let index = curr.partition_point(|&(_, line)| line.chars().nth(i).unwrap() == '0');
+        curr = if smaller ^ (retain == '0') {
+            curr[..index].to_vec()
         } else {
-            og_lines = zero_lines;
-        }
-        if og_lines.len() == 1 {
-            for digit in og_lines[0].chars() {
-                if digit == '1' {
-                    og_value += 1;
-                }
-                og_value *= 2;
-            }
-            og_value /= 2;
-            break;
+            curr[index..].to_vec()
+        };
+        if curr.len() == 1 {
+            return curr[0].0;
         }
     }
-    for i in 0..data.lines().next().unwrap().len() {
-        let mut zero_lines = vec![];
-        let mut one_lines = vec![];
-        for &line in co_lines.iter() {
-            if line.chars().nth(i).unwrap() == '1' {
-                one_lines.push(line);
-            } else {
-                zero_lines.push(line);
-            }
-        }
+    0
+}
 
-        if one_lines.len() < zero_lines.len() {
-            co_lines = one_lines;
-        } else {
-            co_lines = zero_lines;
-        }
-        if co_lines.len() == 1 {
-            for digit in co_lines[0].chars() {
-                if digit == '1' {
-                    co_value += 1;
-                }
-                co_value *= 2;
-            }
-            co_value /= 2;
-            break;
-        }
-    }
+fn process_data_b(data: &str) -> i32 {
+    let lines: Vec<_> = data
+        .lines()
+        .map(|x| (i32::from_str_radix(x, 2).unwrap(), x))
+        .sorted()
+        .collect();
+    let og_value = get_value(&lines, false);
+    let co_value = get_value(&lines, true);
     // println!("{} x {} = {}", og_value, co_value, og_value * co_value);
     og_value * co_value
 }
