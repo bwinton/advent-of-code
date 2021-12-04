@@ -1,7 +1,70 @@
+use std::{
+    collections::{HashMap, HashSet},
+    str::Lines,
+};
+
 //-----------------------------------------------------
 // Setup.
 
 static INPUT: &str = include_str!("data/q04.data");
+
+type Board = Vec<Vec<(u32, bool)>>;
+type Location = (usize, usize, usize);
+
+fn get_numbers(lines: &mut Lines) -> Vec<u32> {
+    let numbers: Vec<u32> = lines
+        .next()
+        .unwrap()
+        .split(',')
+        .map(|x| x.parse().unwrap())
+        .collect();
+    lines.next();
+    numbers
+}
+
+fn get_boards(lines: Lines) -> (Vec<Board>, HashMap<u32, Vec<Location>>) {
+    let mut boards = vec![];
+    let mut board = vec![];
+    let mut numbers = HashMap::new();
+    for line in lines {
+        if line.is_empty() {
+            // Done the board.
+            boards.push(board);
+            board = vec![];
+            continue;
+        }
+        let row: Vec<(u32, bool)> = line
+            .split_ascii_whitespace()
+            .map(|x| (x.parse().unwrap(), false))
+            .collect();
+        for (col, value) in row.iter().enumerate() {
+            numbers
+                .entry(value.0)
+                .or_insert_with(Vec::new)
+                .push((boards.len(), board.len(), col));
+        }
+        board.push(row);
+    }
+    if !board.is_empty() {
+        boards.push(board);
+    }
+    (boards, numbers)
+}
+
+fn check_board(board: &[Vec<(u32, bool)>], row: usize, col: usize) -> bool {
+    // Check the row…
+    if board[row].iter().all(|&(_, checked)| checked) {
+        return true;
+    }
+
+    // Check the column…
+    let mut rv = true;
+    for row in board.iter().take(board[0].len()) {
+        rv &= row[col].1;
+    }
+
+    rv
+}
 
 fn get_score(number: u32, board: &[Vec<(u32, bool)>]) -> u32 {
     let mut unmarked = 0;
@@ -18,58 +81,19 @@ fn get_score(number: u32, board: &[Vec<(u32, bool)>]) -> u32 {
 
 fn process_data_a(data: &str) -> u32 {
     let mut lines = data.lines();
-    let numbers: Vec<u32> = lines
-        .next()
-        .unwrap()
-        .split(',')
-        .map(|x| x.parse().unwrap())
-        .collect();
-    lines.next();
-    let mut boards = vec![];
-    let mut board = vec![];
-    for line in lines {
-        if line.is_empty() {
-            // Done the board.
-            boards.push(board);
-            board = vec![];
-            continue;
-        }
-        let row: Vec<(u32, bool)> = line
-            .split_ascii_whitespace()
-            .map(|x| (x.parse().unwrap(), false))
-            .collect();
-        board.push(row);
-    }
-    if !board.is_empty() {
-        boards.push(board);
-    }
+
+    let numbers = get_numbers(&mut lines);
+    let (mut boards, cache) = get_boards(lines);
 
     for number in numbers {
         // Toggle the numbers.
-        for board in boards.iter_mut() {
-            for row in board.iter_mut() {
-                for item in row.iter_mut() {
-                    if item.0 == number {
-                        item.1 = true;
-                    }
+        if let Some(occurrences) = cache.get(&number) {
+            for &(board, row, col) in occurrences {
+                let item = &mut boards[board][row][col];
+                item.1 = true;
+                if check_board(&boards[board], row, col) {
+                    return get_score(number, &boards[board]);
                 }
-            }
-        }
-
-        // Check the boards
-        for board in &boards {
-            for row in board {
-                if row.iter().all(|&(_, checked)| checked) {
-                    return get_score(number, board);
-                }
-            }
-            'column: for i in 0..board[0].len() {
-                for row in board.iter() {
-                    if !row[i].1 {
-                        continue 'column;
-                    }
-                }
-                return get_score(number, board);
             }
         }
     }
@@ -78,62 +102,30 @@ fn process_data_a(data: &str) -> u32 {
 
 fn process_data_b(data: &str) -> u32 {
     let mut lines = data.lines();
-    let numbers: Vec<u32> = lines
-        .next()
-        .unwrap()
-        .split(',')
-        .map(|x| x.parse().unwrap())
-        .collect();
-    lines.next();
-    let mut boards = vec![];
-    let mut board = vec![];
-    for line in lines {
-        if line.is_empty() {
-            // Done the board.
-            boards.push(board);
-            board = vec![];
-            continue;
-        }
-        let row: Vec<(u32, bool)> = line
-            .split_ascii_whitespace()
-            .map(|x| (x.parse().unwrap(), false))
-            .collect();
-        board.push(row);
-    }
-    boards.push(board);
+
+    let numbers = get_numbers(&mut lines);
+    let (mut boards, cache) = get_boards(lines);
+    let mut remaining: HashSet<usize> = (0..boards.len()).collect();
 
     for number in numbers {
+        let &last_board = remaining.iter().next().unwrap();
+
         // Toggle the numbers.
-        for board in boards.iter_mut() {
-            for row in board.iter_mut() {
-                for item in row.iter_mut() {
-                    if item.0 == number {
-                        item.1 = true;
-                    }
+        if let Some(occurrences) = cache.get(&number) {
+            for &(board, row, col) in occurrences {
+                if boards[board].is_empty() {
+                    continue;
+                }
+                let item = &mut boards[board][row][col];
+                item.1 = true;
+                if check_board(&boards[board], row, col) {
+                    remaining.remove(&board);
                 }
             }
         }
 
-        let last_board = boards[0].clone();
-        boards.retain(|board| {
-            // Check the boards
-            for row in board {
-                if row.iter().all(|&(_, checked)| checked) {
-                    return false;
-                }
-            }
-            'column: for i in 0..board[0].len() {
-                for row in board {
-                    if !row[i].1 {
-                        continue 'column;
-                    }
-                }
-                return false;
-            }
-            true
-        });
-        if boards.is_empty() {
-            return get_score(number, &last_board);
+        if remaining.is_empty() {
+            return get_score(number, &boards[last_board]);
         }
     }
     0
