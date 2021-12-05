@@ -1,4 +1,5 @@
 #![feature(exact_size_is_empty)]
+#![feature(destructuring_assignment)]
 
 // modules
 mod q01;

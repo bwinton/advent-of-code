@@ -165,21 +165,26 @@ fn get_input() -> Result<(), NextError> {
             .date()
             .and_hms(0, 0, 1);
         let duration = tonight - today;
-        println!("  Sleeping for {} until {}", duration, tonight);
+        println!("  Sleeping for {:?} until {}", duration.to_std(), tonight);
         std::thread::sleep(
             duration
                 .to_std()
                 .map_err(|_| NextError::DurationError { duration })?,
         );
+        println!("  Waking up and getting the response!");
         let mut response = get_url(year, day)?;
+        println!("  {:?}", response.status());
         if !response.status().is_success() {
             // try again in 5 seconds…
+            println!("  Trying again in {:?}!", Duration::seconds(5).to_std());
             std::thread::sleep(
                 Duration::seconds(5)
                     .to_std()
                     .map_err(|_| NextError::DurationError { duration })?,
             );
+            println!("  Waking up and getting the response!");
             response = get_url(year, day)?;
+            println!("  {:?}", response.status());
             if !response.status().is_success() {
                 return Err(NextError::InputNotFound { year, day });
             }
