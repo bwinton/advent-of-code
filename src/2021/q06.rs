@@ -5,26 +5,24 @@ static INPUT: &str = include_str!("data/q06.data");
 
 fn process_data_a(data: &str) -> u64 {
     let line: Vec<usize> = data.trim().split(',').map(|x| x.parse().unwrap()).collect();
-    let mut fish = [0;9];
+    let mut fish = [0; 9];
     for i in line {
         fish[i] += 1
     }
-    for _ in 0..80 {
-        fish.rotate_left(1);
-        fish[6] += fish[8];
+    for i in 0..80 {
+        fish[(i + 7) % 9] += fish[i % 9];
     }
     fish.iter().sum()
 }
 
 fn process_data_b(data: &str) -> u64 {
     let line: Vec<usize> = data.trim().split(',').map(|x| x.parse().unwrap()).collect();
-    let mut fish = [0;9];
+    let mut fish = [0; 9];
     for i in line {
         fish[i] += 1
     }
-    for _ in 0..256 {
-        fish.rotate_left(1);
-        fish[6] += fish[8];
+    for i in 0..256 {
+        fish[(i + 7) % 9] += fish[i % 9];
     }
     fish.iter().sum()
 }
