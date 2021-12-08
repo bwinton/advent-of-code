@@ -339,6 +339,7 @@ fn run_machine(data: Vec<i128>) -> String {
     let outputs = &mut machine.outputs;
     let output: String = outputs.iter().map(|x| *x as u8 as char).rev().collect();
     outputs.clear();
+    // println!("output: {}", output);
     let output = move_p(&output);
     if output.is_err() {
         if let Err(_output) = output {
