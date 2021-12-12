@@ -45,14 +45,34 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rooms: HashMap<&str, HashSet<&str>> = HashMap::new();
+    const START_LOCATION: usize = 0;
+    const END_LOCATION: usize = 1;
+    let mut room_names = vec!["start", "end"];
+    let mut small_rooms = HashSet::with_capacity(50);
+    let mut rooms: HashMap<usize, HashSet<usize>> = HashMap::with_capacity(50);
     for line in data.lines() {
         // Do something
-        let (start, end) = line.split_once("-").unwrap();
-        if start != "end" && end != "start" {
+        let (start_name, end_name) = line.split_once("-").unwrap();
+        let start = room_names.iter().position(|&x| x == start_name).unwrap_or_else(|| {
+            room_names.push(start_name);
+            room_names.len() - 1
+        });
+        let end = room_names.iter().position(|&x| x == end_name).unwrap_or_else(|| {
+            room_names.push(end_name);
+            room_names.len() - 1
+        });
+
+        if start_name.chars().all(|c| c.is_lowercase()) {
+            small_rooms.insert(start);
+        }
+        if end_name.chars().all(|c| c.is_lowercase()) {
+            small_rooms.insert(end);
+        }
+
+        if start_name != "end" && end_name != "start" {
             rooms.entry(start).or_default().insert(end);
         }
-        if start != "start" && end != "end" {
+        if start_name != "start" && end_name != "end" {
             rooms.entry(end).or_default().insert(start);
         }
     }
@@ -61,22 +81,26 @@ fn process_data_b(data: &str) -> usize {
 
     let mut paths = 0;
     let mut stack = Vec::with_capacity(50);
-    let mut seen: HashSet<Vec<&str>> = HashSet::with_capacity(rooms.len() + 10);
-    stack.push((vec!["start"], HashMap::new()));
+    let mut seen: HashSet<Vec<usize>> = HashSet::with_capacity(rooms.len() + 10);
+    stack.push((vec![START_LOCATION], HashMap::new()));
     while !stack.is_empty() {
         let (curr_path, curr_smalls) = stack.pop().unwrap();
-        let &curr_room = curr_path.last().unwrap();
+        if seen.contains(&curr_path) {
+            continue;
+        }
+        seen.insert(curr_path.clone());
+        let curr_room = curr_path.last().unwrap();
         for &next in &rooms[curr_room] {
-            if next == "end" {
+            if next == END_LOCATION {
                 // Found one!
                 // println!("{:?},{}", curr_path.join(","), next);
                 paths += 1;
                 continue;
             }
             let mut next_path = curr_path.clone();
-            let mut next_smalls: HashMap<&str, usize> = curr_smalls.clone();
+            let mut next_smalls: HashMap<usize, usize> = curr_smalls.clone();
             next_path.push(next);
-            if next.chars().all(|c| c.is_lowercase()) {
+            if small_rooms.contains(&next) {
                 let test = next_smalls.entry(next).or_default();
                 *test += 1;
                 // println!("Getting next_smalls: {:?}", next_smalls);
@@ -84,10 +108,7 @@ fn process_data_b(data: &str) -> usize {
                     continue;
                 }
             }
-            if !seen.contains(&next_path) && !stack.iter().any(|(path, _)| path == &next_path) {
-                stack.push((next_path.clone(), next_smalls));
-                seen.insert(next_path);
-            }
+            stack.push((next_path, next_smalls));
         }
     }
     paths
