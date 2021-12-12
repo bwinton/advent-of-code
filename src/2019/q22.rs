@@ -3,15 +3,13 @@
 
 use std::collections::VecDeque;
 
-use aoc::nom_util::opt_signed_number;
 use mod_exp::mod_exp;
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::line_ending,
-    combinator::eof,
+    character::complete::{i32, line_ending},
     multi::separated_list0,
-    sequence::{terminated, tuple},
+    sequence::tuple,
     IResult,
 };
 
@@ -29,18 +27,18 @@ enum Instruction {
 // deal into new stack
 
 fn cut(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, offset, _)) = tuple((tag("cut "), opt_signed_number, line_ending))(i)?;
+    let (input, (_, offset)) = tuple((tag("cut "), i32))(i)?;
     Ok((input, Instruction::Cut(offset as i128)))
 }
 
 fn deal_with(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, offset, _)) =
-        tuple((tag("deal with increment "), opt_signed_number, line_ending))(i)?;
+    let (input, (_, offset)) =
+        tuple((tag("deal with increment "), i32))(i)?;
     Ok((input, Instruction::Deal(offset as usize)))
 }
 
 fn new_stack(i: &str) -> IResult<&str, Instruction> {
-    let (input, _) = tuple((tag("deal into new stack"), line_ending))(i)?;
+    let (input, _) = tag("deal into new stack")(i)?;
     Ok((input, Instruction::NewStack))
 }
 
@@ -50,13 +48,14 @@ fn instruction(i: &str) -> IResult<&str, Instruction> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
-    let (input, instructions) = terminated(separated_list0(line_ending, instruction), eof)(i)?;
+    let (input, instructions) = separated_list0(line_ending, instruction)(i)?;
     Ok((input, instructions))
 }
 
 fn deal_cards(data: &str, length: i128, iterations: usize) -> VecDeque<i128> {
+    // println!("{:?}", parser(data));
     let instructions = parser(data).unwrap().1;
-    println!("instructions: {}", instructions.len());
+    // println!("instructions: {}", instructions.len());
     // println!("  {:?}", instructions);
     let mut cards = VecDeque::new();
     for i in 0..length {

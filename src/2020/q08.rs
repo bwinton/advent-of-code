@@ -1,12 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::nom_util::opt_signed_number;
-
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::line_ending,
+    character::complete::{i64, line_ending},
     combinator::eof,
     error::{Error, ErrorKind},
     multi::separated_list0,
@@ -48,7 +46,7 @@ fn code(i: &str) -> IResult<&str, &str> {
 }
 
 fn instruction(i: &str) -> IResult<&str, Instruction> {
-    let (input, (inst, _, value)) = tuple((code, tag(" "), opt_signed_number))(i)?;
+    let (input, (inst, _, value)) = tuple((code, tag(" "), i64))(i)?;
 
     let result = match inst {
         "acc" => Instruction::Acc(value),

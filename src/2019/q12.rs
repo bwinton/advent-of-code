@@ -1,9 +1,8 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::nom_util::opt_signed_number;
 use itertools::Itertools;
-use nom::{bytes::complete::tag, multi::many1, sequence::tuple, IResult};
+use nom::{bytes::complete::tag, character::complete::i32, multi::many1, sequence::tuple, IResult};
 use num_integer::lcm;
 
 static INPUT: &str = include_str!("data/q12.data");
@@ -50,11 +49,11 @@ impl Moon {
 fn moon(i: &str) -> IResult<&str, Moon> {
     let (input, (_, x, _, y, _, z, _)) = tuple((
         tag("<x="),
-        opt_signed_number,
+        i32,
         tag(", y="),
-        opt_signed_number,
+        i32,
         tag(", z="),
-        opt_signed_number,
+        i32,
         tag(">\n"),
     ))(i)?;
     Ok((

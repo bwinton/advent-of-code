@@ -6,13 +6,14 @@ use std::{
 
 use nom::{
     bytes::complete::tag,
+    character::complete::i64,
     error::{Error, ErrorKind},
     sequence::tuple,
     Err::Failure,
     IResult,
 };
 
-use crate::nom_util::{opt_signed_number, single_letter};
+use crate::nom_util::{single_letter};
 
 pub trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);
@@ -79,7 +80,7 @@ pub struct Jump {
 }
 impl Jump {
     pub fn build(i: &str) -> InstructionResult {
-        let (input, (_, offset)) = tuple((tag("jmp "), opt_signed_number))(i)?;
+        let (input, (_, offset)) = tuple((tag("jmp "), i64))(i)?;
         Ok((input, Rc::new(Self { offset })))
     }
 }
@@ -98,7 +99,7 @@ pub struct JumpEven {
 impl JumpEven {
     pub fn build(i: &str) -> InstructionResult {
         let (input, (_, register, _, offset)) =
-            tuple((tag("jie "), single_letter, tag(", "), opt_signed_number))(i)?;
+            tuple((tag("jie "), single_letter, tag(", "), i64))(i)?;
         Ok((input, Rc::new(Self { register, offset })))
     }
 }
@@ -121,7 +122,7 @@ pub struct JumpOne {
 impl JumpOne {
     pub fn build(i: &str) -> InstructionResult {
         let (input, (_, register, _, offset)) =
-            tuple((tag("jio "), single_letter, tag(", "), opt_signed_number))(i)?;
+            tuple((tag("jio "), single_letter, tag(", "), i64))(i)?;
         Ok((input, Rc::new(Self { register, offset })))
     }
 }

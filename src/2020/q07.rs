@@ -3,11 +3,10 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use aoc::nom_util::opt_signed_number;
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
+    character::complete::{alpha1, i32, line_ending},
     combinator::{eof, opt},
     multi::{separated_list0, separated_list1},
     sequence::{terminated, tuple},
@@ -39,7 +38,7 @@ fn bag(i: &str) -> IResult<&str, Bag> {
 }
 
 fn multi_bag(i: &str) -> IResult<&str, Bag> {
-    let (input, (quantity, _, mut bag)) = tuple((opt_signed_number, tag(" "), bag))(i)?;
+    let (input, (quantity, _, mut bag)) = tuple((i32, tag(" "), bag))(i)?;
     bag.quantity = quantity as usize;
     Ok((input, bag))
 }

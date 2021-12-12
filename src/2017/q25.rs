@@ -1,11 +1,11 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::{nom_util::unsigned_number, Day};
+use aoc::Day;
 use nom::{
     branch::alt,
     bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
+    character::complete::{alpha1, line_ending, u64},
     multi::many1,
     sequence::tuple,
     IResult,
@@ -67,7 +67,7 @@ fn machine_name(i: &str) -> IResult<&str, char> {
 fn machine_checksum(i: &str) -> IResult<&str, usize> {
     let (input, (_, number, _)) = tuple((
         tag("Perform a diagnostic checksum after "),
-        unsigned_number,
+        u64,
         tag(" steps.\n"),
     ))(i)?;
     Ok((input, number as usize))
@@ -81,7 +81,7 @@ fn state_name(i: &str) -> IResult<&str, char> {
 fn action_test(i: &str) -> IResult<&str, bool> {
     let (input, (_, number, _)) = tuple((
         tag("  If the current value is "),
-        unsigned_number,
+        u64,
         tag(":\n"),
     ))(i)?;
     Ok((input, number == 1))
@@ -89,7 +89,7 @@ fn action_test(i: &str) -> IResult<&str, bool> {
 
 fn action_write(i: &str) -> IResult<&str, bool> {
     let (input, (_, number, _)) =
-        tuple((tag("    - Write the value "), unsigned_number, tag(".\n")))(i)?;
+        tuple((tag("    - Write the value "), u64, tag(".\n")))(i)?;
     Ok((input, number == 1))
 }
 

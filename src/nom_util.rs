@@ -1,35 +1,7 @@
 use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{digit1, satisfy},
-    combinator::opt,
-    sequence::tuple,
+    character::complete::satisfy,
     IResult,
 };
-
-fn opt_sign(i: &str) -> IResult<&str, bool> {
-    let (input, sign) = opt(alt((tag("-"), tag("+"))))(i)?;
-    let result = if let Some(sign) = sign {
-        sign == "+"
-    } else {
-        true
-    };
-    Ok((input, result))
-}
-
-pub fn unsigned_number(i: &str) -> IResult<&str, u64> {
-    let (input, digits) = digit1(i)?;
-    Ok((input, digits.parse().unwrap()))
-}
-
-pub fn opt_signed_number(i: &str) -> IResult<&str, i64> {
-    let (input, (sign, result)) = tuple((opt_sign, unsigned_number))(i)?;
-    let mut result = result as i64;
-    if !sign {
-        result = -result;
-    };
-    Ok((input, result))
-}
 
 pub fn single_letter(i: &str) -> IResult<&str, char> {
     let (input, letter) = satisfy(|c| c.is_ascii_alphabetic())(i)?;

@@ -3,9 +3,8 @@
 
 use std::{fmt::Debug, rc::Rc, str::Lines};
 
-use aoc::nom_util::unsigned_number;
 use nom::{
-    bytes::complete::tag, character::complete::space1, multi::many_m_n, sequence::tuple, IResult,
+    bytes::complete::tag, character::complete::{space1, u64}, multi::many_m_n, sequence::tuple, IResult,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -15,7 +14,7 @@ trait Instruction: Debug {
 }
 
 fn three_numbers(i: &str) -> IResult<&str, (usize, usize, usize)> {
-    let (input, result) = many_m_n(3, 3, tuple((space1, unsigned_number)))(i)?;
+    let (input, result) = many_m_n(3, 3, tuple((space1, u64)))(i)?;
     Ok((
         input,
         (

@@ -1,11 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::nom_util::unsigned_number;
 use itertools::Itertools;
 use nom::{
     bytes::complete::tag,
-    character::complete::{alpha1, digit1, line_ending, space1},
+    character::complete::{alpha1, digit1, i32, line_ending, space1},
     combinator::{eof, opt},
     multi::{many1, separated_list0},
     sequence::{terminated, tuple},
@@ -103,20 +102,20 @@ fn item(i: &str) -> IResult<&str, Item> {
     let (input, (name, _, cost, _, damage, _, armor, _)) = tuple((
         name,
         space1,
-        unsigned_number,
+        i32,
         space1,
-        unsigned_number,
+        i32,
         space1,
-        unsigned_number,
+        i32,
         opt(tag("\n")),
     ))(i)?;
     Ok((
         input,
         Item {
             name,
-            cost: cost as i32,
-            damage: damage as i32,
-            armor: armor as i32,
+            cost,
+            damage,
+            armor,
         },
     ))
 }

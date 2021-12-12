@@ -3,10 +3,9 @@
 
 use std::collections::{HashMap, VecDeque};
 
-use aoc::nom_util::unsigned_number;
 use nom::{
     bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
+    character::complete::{alpha1, line_ending, u64},
     multi::{many1, separated_list1},
     sequence::tuple,
     IResult,
@@ -21,7 +20,7 @@ struct Element<'a> {
 }
 
 fn element(i: &str) -> IResult<&str, Element> {
-    let (input, (quantity, _, symbol)) = tuple((unsigned_number, tag(" "), alpha1))(i)?;
+    let (input, (quantity, _, symbol)) = tuple((u64, tag(" "), alpha1))(i)?;
     Ok((
         input,
         Element {

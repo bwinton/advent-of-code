@@ -3,9 +3,8 @@
 
 use std::{collections::HashMap, str};
 
-use aoc::nom_util::unsigned_number;
 use nom::{
-    bytes::complete::tag, character::complete::alpha1, multi::separated_list0, sequence::tuple,
+    bytes::complete::tag, character::complete::{alpha1, u64}, multi::separated_list0, sequence::tuple,
     IResult,
 };
 
@@ -46,12 +45,12 @@ impl AuntSue {
 }
 
 fn aunt_name(i: &str) -> IResult<&str, u32> {
-    let (input, (_, name, _)) = tuple((tag("Sue "), unsigned_number, tag(": ")))(i)?;
+    let (input, (_, name, _)) = tuple((tag("Sue "), u64, tag(": ")))(i)?;
     Ok((input, name as u32))
 }
 
 fn feature(i: &str) -> IResult<&str, (String, u32)> {
-    let (input, (name, _, amount)) = tuple((alpha1, tag(": "), unsigned_number))(i)?;
+    let (input, (name, _, amount)) = tuple((alpha1, tag(": "), u64))(i)?;
     Ok((input, (name.to_string(), amount as u32)))
 }
 
