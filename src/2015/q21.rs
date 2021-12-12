@@ -99,16 +99,8 @@ fn header(i: &str) -> IResult<&str, &str> {
 }
 
 fn item(i: &str) -> IResult<&str, Item> {
-    let (input, (name, _, cost, _, damage, _, armor, _)) = tuple((
-        name,
-        space1,
-        i32,
-        space1,
-        i32,
-        space1,
-        i32,
-        opt(tag("\n")),
-    ))(i)?;
+    let (input, (name, _, cost, _, damage, _, armor, _)) =
+        tuple((name, space1, i32, space1, i32, space1, i32, opt(tag("\n"))))(i)?;
     Ok((
         input,
         Item {

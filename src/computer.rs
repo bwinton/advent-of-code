@@ -13,7 +13,7 @@ use nom::{
     IResult,
 };
 
-use crate::nom_util::{single_letter};
+use crate::nom_util::single_letter;
 
 pub trait Instruction: Display + Debug {
     fn execute(&self, cpu: &mut CPU);

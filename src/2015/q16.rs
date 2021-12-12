@@ -4,7 +4,10 @@
 use std::{collections::HashMap, str};
 
 use nom::{
-    bytes::complete::tag, character::complete::{alpha1, u64}, multi::separated_list0, sequence::tuple,
+    bytes::complete::tag,
+    character::complete::{alpha1, u64},
+    multi::separated_list0,
+    sequence::tuple,
     IResult,
 };
 

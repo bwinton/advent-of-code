@@ -79,17 +79,12 @@ fn state_name(i: &str) -> IResult<&str, char> {
 }
 
 fn action_test(i: &str) -> IResult<&str, bool> {
-    let (input, (_, number, _)) = tuple((
-        tag("  If the current value is "),
-        u64,
-        tag(":\n"),
-    ))(i)?;
+    let (input, (_, number, _)) = tuple((tag("  If the current value is "), u64, tag(":\n")))(i)?;
     Ok((input, number == 1))
 }
 
 fn action_write(i: &str) -> IResult<&str, bool> {
-    let (input, (_, number, _)) =
-        tuple((tag("    - Write the value "), u64, tag(".\n")))(i)?;
+    let (input, (_, number, _)) = tuple((tag("    - Write the value "), u64, tag(".\n")))(i)?;
     Ok((input, number == 1))
 }
 

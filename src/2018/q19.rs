@@ -4,7 +4,11 @@
 use std::{fmt::Debug, rc::Rc, str::Lines};
 
 use nom::{
-    bytes::complete::tag, character::complete::{space1, u64}, multi::many_m_n, sequence::tuple, IResult,
+    bytes::complete::tag,
+    character::complete::{space1, u64},
+    multi::many_m_n,
+    sequence::tuple,
+    IResult,
 };
 
 static INPUT: &str = include_str!("data/q19.data");

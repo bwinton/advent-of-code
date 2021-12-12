@@ -32,8 +32,7 @@ fn cut(i: &str) -> IResult<&str, Instruction> {
 }
 
 fn deal_with(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, offset)) =
-        tuple((tag("deal with increment "), i32))(i)?;
+    let (input, (_, offset)) = tuple((tag("deal with increment "), i32))(i)?;
     Ok((input, Instruction::Deal(offset as usize)))
 }
 
