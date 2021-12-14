@@ -250,7 +250,15 @@ lazy_static! {
 }
 
 pub fn recognize_letters(image: &[bool]) -> String {
-    let column_count = image.len() / 6;
+    let mut image = image.to_vec();
+    let mut column_count = image.len() / 6;
+    for _ in (column_count % 5)..5 {
+        for x in 0..6 {
+            let x = 6 - x;
+            image.insert(x * column_count, false);
+        }
+        column_count = image.len() / 6;
+    }
     let char_count = column_count / 5;
 
     let mut offset = 0;

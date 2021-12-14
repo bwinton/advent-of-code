@@ -1,4 +1,8 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    cmp::Ordering,
+    collections::{HashMap, HashSet},
+};
+// use itertools::Itertools;
 
 //-----------------------------------------------------
 // Setup.
@@ -44,74 +48,92 @@ fn process_data_a(data: &str) -> usize {
     paths
 }
 
-fn process_data_b(data: &str) -> usize {
-    const START_LOCATION: usize = 0;
-    const END_LOCATION: usize = 1;
+const START_LOCATION: usize = 0;
+const END_LOCATION: usize = 1;
+
+fn get_rooms(data: &str) -> (Vec<HashSet<usize>>, HashSet<usize>) {
+    let max_rooms = data.lines().count();
     let mut room_names = vec!["start", "end"];
     let mut small_rooms = HashSet::with_capacity(50);
-    let mut rooms: HashMap<usize, HashSet<usize>> = HashMap::with_capacity(50);
+    let mut rooms = vec![HashSet::new(); max_rooms];
     for line in data.lines() {
         // Do something
         let (start_name, end_name) = line.split_once("-").unwrap();
-        let start = room_names.iter().position(|&x| x == start_name).unwrap_or_else(|| {
-            room_names.push(start_name);
-            room_names.len() - 1
-        });
-        let end = room_names.iter().position(|&x| x == end_name).unwrap_or_else(|| {
-            room_names.push(end_name);
-            room_names.len() - 1
-        });
+        let start = room_names
+            .iter()
+            .position(|&x| x == start_name)
+            .unwrap_or_else(|| {
+                room_names.push(start_name);
+                room_names.len() - 1
+            });
+        let end = room_names
+            .iter()
+            .position(|&x| x == end_name)
+            .unwrap_or_else(|| {
+                room_names.push(end_name);
+                room_names.len() - 1
+            });
 
-        if start_name.chars().all(|c| c.is_lowercase()) {
+        if !small_rooms.contains(&start) && start_name.chars().all(|c| c.is_lowercase()) {
             small_rooms.insert(start);
         }
-        if end_name.chars().all(|c| c.is_lowercase()) {
+        if !small_rooms.contains(&end) && end_name.chars().all(|c| c.is_lowercase()) {
             small_rooms.insert(end);
         }
 
         if start_name != "end" && end_name != "start" {
-            rooms.entry(start).or_default().insert(end);
+            rooms[start].insert(end);
         }
         if start_name != "start" && end_name != "end" {
-            rooms.entry(end).or_default().insert(start);
+            rooms[end].insert(start);
         }
     }
+    (rooms, small_rooms)
+}
 
-    // println!("{:?}", rooms);
-
+fn get_paths(rooms: Vec<HashSet<usize>>, small_rooms: HashSet<usize>) -> usize {
     let mut paths = 0;
     let mut stack = Vec::with_capacity(50);
-    let mut seen: HashSet<Vec<usize>> = HashSet::with_capacity(rooms.len() + 10);
-    stack.push((vec![START_LOCATION], HashMap::new()));
+    let mut path = Vec::with_capacity(50);
+    path.push(START_LOCATION);
+    stack.push((path, START_LOCATION, false));
     while !stack.is_empty() {
-        let (curr_path, curr_smalls) = stack.pop().unwrap();
-        if seen.contains(&curr_path) {
-            continue;
-        }
-        seen.insert(curr_path.clone());
-        let curr_room = curr_path.last().unwrap();
+        let (curr_path, curr_room, found_twice) = stack.pop().unwrap();
         for &next in &rooms[curr_room] {
             if next == END_LOCATION {
                 // Found one!
-                // println!("{:?},{}", curr_path.join(","), next);
                 paths += 1;
                 continue;
             }
             let mut next_path = curr_path.clone();
-            let mut next_smalls: HashMap<usize, usize> = curr_smalls.clone();
+            let mut found_twice = found_twice;
             next_path.push(next);
+
             if small_rooms.contains(&next) {
-                let test = next_smalls.entry(next).or_default();
-                *test += 1;
-                // println!("Getting next_smalls: {:?}", next_smalls);
-                if *test > 2 || next_smalls.iter().filter(|&(_, &v)| v > 1).count() > 1 {
-                    continue;
+                match next_path.iter().filter(|&v| v == &next).count().cmp(&2) {
+                    Ordering::Greater => {
+                        continue;
+                    }
+                    Ordering::Equal => {
+                        if found_twice {
+                            continue;
+                        } else {
+                            found_twice = true;
+                        }
+                    }
+                    Ordering::Less => {}
                 }
             }
-            stack.push((next_path, next_smalls));
+            // println!("Seen {}", debug.iter().join(","));
+            stack.push((next_path, next, found_twice));
         }
     }
     paths
+}
+
+fn process_data_b(data: &str) -> usize {
+    let (rooms, small_rooms) = get_rooms(data);
+    get_paths(rooms, small_rooms)
 }
 
 //-----------------------------------------------------
