@@ -267,6 +267,7 @@ fn a() {
 
 #[test]
 fn b() {
+    assert_eq!(process_data_b(indoc!("D2FE28")), 2021);
     assert_eq!(process_data_b(indoc!("C200B40A82")), 3);
     assert_eq!(process_data_b(indoc!("04005AC33890")), 54);
     assert_eq!(process_data_b(indoc!("880086C3E88112")), 7);
