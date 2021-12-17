@@ -3,25 +3,141 @@
 
 use itertools::Itertools;
 
+use nom::{bits::complete::take, sequence::tuple, IResult};
+
 static INPUT: &str = include_str!("data/q16.data");
 
 #[derive(Debug, Clone)]
-struct Instruction {
+struct InstructionV2 {
     version: u64,
+    instruction_type: InstructionType,
+}
+
+impl InstructionV2 {
+    fn get_versions(&self) -> u64 {
+        let mut rv = self.version;
+        match &self.instruction_type {
+            InstructionType::Sum(sub_instructions) |
+            InstructionType::Product(sub_instructions) // |
+            // InstructionType::Minimum(sub_instructions) |
+            // InstructionType::Maximum(sub_instructions) |
+            // InstructionType::GreaterThan(sub_instructions) |
+            // InstructionType::LessThan(sub_instructions) |
+            // InstructionType::EqualTo(sub_instructions)
+             => {
+                for instruction in sub_instructions {
+                    rv += instruction.get_versions();
+                }
+            }
+            _ => {}
+        }
+        rv
+    }
+
+    fn evaluate(&self) -> u64 {
+        self.instruction_type.evaluate()
+    }
+}
+
+#[derive(Debug, Clone)]
+enum InstructionType {
+    Sum(Vec<InstructionV2>),
+    Product(Vec<InstructionV2>),
+    // Minimum(Vec<InstructionV2>),
+    // Maximum(Vec<InstructionV2>),
+    Literal(u64),
+    // GreaterThan(Vec<InstructionV2>),
+    // LessThan(Vec<InstructionV2>),
+    // EqualTo(Vec<InstructionV2>),
+}
+
+impl InstructionType {
+    fn evaluate(&self) -> u64 {
+        0
+    }
+}
+
+fn version(i: (&[u8], usize)) -> IResult<(&[u8], usize), u64> {
+    take(3usize)(i)
+}
+
+fn type_id(i: (&[u8], usize)) -> IResult<(&[u8], usize), u64> {
+    take(3usize)(i)
+}
+
+fn literal(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
+    let mut rv = 0;
+    let mut input = i;
+    loop {
+        let (next, len_flag): (_, u32) = take(1usize)(input)?;
+        let (next, value): (_, u64) = take(4usize)(next)?;
+        input = next;
+        rv <<= 4;
+        rv += value;
+        if len_flag == 0 {
+            break;
+        }
+    }
+    Ok((input, InstructionType::Literal(rv)))
+}
+
+fn operation(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
+    let (mut input, len_flag): (_, u32) = take(1usize)(i)?;
+    if len_flag == 0 {
+        let (next, length): (_, u32) = take(15usize)(input)?;
+        let mut curr = next.0.len() * 8 + 8 - next.1;
+        let target = curr - length as usize;
+        input = next;
+        // Parse until we get length number of bits…
+        let mut subs = vec![];
+        while curr > target as usize {
+            let (next, sub) = instruction(input)?;
+            curr = next.0.len() * 8 + 8 - next.1;
+            subs.push(sub);
+            input = next;
+        }
+        Ok((input, InstructionType::Sum(subs)))
+    } else {
+        let (next, length) = take(11usize)(input)?;
+        input = next;
+        let mut subs = vec![];
+        for _ in 0..length {
+            let (next, sub) = instruction(input)?;
+            subs.push(sub);
+            input = next;
+        }
+        Ok((input, InstructionType::Product(subs)))
+    }
+}
+
+fn instruction(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
+    let (input, (version, type_id)) = tuple((version, type_id))(i)?;
+
+    let (input, result) = match type_id {
+        4 => literal(input)?,
+        _ => operation(input)?,
+    };
+    Ok((
+        input,
+        InstructionV2 {
+            version,
+            instruction_type: result,
+        },
+    ))
+}
+
+fn parser(input: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
+    instruction(input)
+}
+
+#[derive(Debug, Clone)]
+struct Instruction {
     type_id: u64,
     sub_instructions: Vec<Instruction>,
     value: u64,
 }
 
 impl Instruction {
-    fn get_versions(&self) -> u64 {
-        let mut rv = self.version;
-        for instruction in &self.sub_instructions {
-            rv += instruction.get_versions();
-        }
-        rv
-    }
-
     fn evaluate(&self, prefix: usize) -> u64 {
         let mut rv = 0;
         match self.type_id {
@@ -182,7 +298,7 @@ fn get_operator(bits: &[u8], start: usize) -> (Vec<Instruction>, usize) {
 
 fn parse_packet(bits: &[u8], index: usize) -> (Vec<Instruction>, usize) {
     let mut rv = vec![];
-    let (version, index) = get_number(bits, index, 3);
+    let (_version, index) = get_number(bits, index, 3);
     let (type_id, index) = get_number(bits, index, 3);
     let mut index = index;
     // println!("{:?}, {:?}", version, type_id);
@@ -192,7 +308,6 @@ fn parse_packet(bits: &[u8], index: usize) -> (Vec<Instruction>, usize) {
             index = next;
             // println!("  Literal {}", value);
             rv.push(Instruction {
-                version,
                 type_id,
                 sub_instructions: vec![],
                 value,
@@ -203,7 +318,6 @@ fn parse_packet(bits: &[u8], index: usize) -> (Vec<Instruction>, usize) {
             index = next;
             // println!("  Operator {}", sub_instructions.len());
             rv.push(Instruction {
-                version,
                 type_id,
                 sub_instructions,
                 value: 0,
@@ -216,28 +330,25 @@ fn parse_packet(bits: &[u8], index: usize) -> (Vec<Instruction>, usize) {
 fn process_data_a(data: &str) -> u64 {
     let mut bits: Vec<u8> = vec![];
     let data = data.trim();
-    for value in data.chars() {
-        // Do something
-        let test = u8::from_str_radix(&value.to_string(), 16);
-        if test.is_err() {
-            println!("Error parsing {}: {:?}", value, test);
-        }
-        let value = test.unwrap();
-        let add = format!("{:04b}", value);
-        // println!("{:X} => {}", value, add);
-        bits.extend(add.chars().map(|c| c.to_string().parse::<u8>().unwrap()));
+    for mut value in &data.chars().chunks(2) {
+        let value = u8::from_str_radix(&value.join(""), 16).unwrap();
+        bits.push(value);
     }
     // println!("{:?}", bits);
-    let (instructions, _) = parse_packet(&bits, 0);
-    // println!("{:?}", instructions);
-    let mut rv = 0;
-    for instruction in instructions {
-        rv += instruction.get_versions();
-    }
-    rv
+    let (_, instruction) = parser((&bits, 0)).unwrap();
+    instruction.get_versions()
 }
 
 fn process_data_b(data: &str) -> u64 {
+    let mut bits: Vec<u8> = vec![];
+    let data = data.trim();
+    for mut value in &data.chars().chunks(2) {
+        let value = u8::from_str_radix(&value.join(""), 16).unwrap();
+        bits.push(value);
+    }
+    let (_, result) = parser((&bits, 0)).unwrap();
+    println!("Got Result = {}", result.evaluate());
+
     let mut bits: Vec<u8> = vec![];
     let data = data.trim();
     for value in data.chars() {
