@@ -29,7 +29,7 @@ extern crate enumset;
 extern crate indoc;
 // #[macro_use]
 extern crate itertools;
-// #[macro_use]
+#[macro_use]
 extern crate lazy_static;
 
 fn main() {
