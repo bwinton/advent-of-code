@@ -88,8 +88,8 @@ pub fn main(days: &[Box<dyn Day>]) {
     let matches = app_from_crate!("\n")
         .arg(
             Arg::new("day")
-                .about("Which day(s) to run")
-                .long_about(
+                .help("Which day(s) to run")
+                .long_help(
                     "Specify a day, or days, or parts of a day or days to run.
  Putting a number and an 'a' or 'b' will run that part for that day.
  Putting a number will run both parts for that day.

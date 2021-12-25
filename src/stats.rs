@@ -202,8 +202,8 @@ fn main() -> Result<(), StatsError> {
     let matches = app_from_crate!("\n")
         .arg(
             Arg::new("year")
-                .about("Which year(s) to run")
-                .long_about(
+                .help("Which year(s) to run")
+                .long_help(
                     "Specify a year, or years to run.
  Putting nothing will run all years.
 ",

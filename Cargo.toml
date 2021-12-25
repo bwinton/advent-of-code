@@ -8,7 +8,7 @@ edition = "2021"
 debug = true
 
 [dependencies]
-clap = "3.0.0-beta.5"
+clap = { version = "3.0.0-rc.8", features = ["color", "suggestions", "cargo"] }
 chrono = "0.4.19"
 color-backtrace = "0.5.1"
 crossterm = "0.22.1"

@@ -202,24 +202,24 @@ fn main() -> Result<(), NextError> {
         .arg(
             Arg::new("year")
                 .short('y')
-                .about("Which year to add")
-                .long_about("Specify a year to add.")
+                .help("Which year to add")
+                .long_help("Specify a year to add.")
                 .takes_value(true)
                 .group("arg"),
         )
         .arg(
             Arg::new("day")
                 .short('d')
-                .about("Which day to add")
-                .long_about("Specify a day to add.")
+                .help("Which day to add")
+                .long_help("Specify a day to add.")
                 .takes_value(true)
                 .group("arg"),
         )
         .arg(
             Arg::new("input")
                 .short('i')
-                .about("Get input")
-                .long_about("Get input for today.")
+                .help("Get input")
+                .long_help("Get input for today.")
                 .takes_value(false)
                 .group("arg"),
         )
