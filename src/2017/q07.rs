@@ -20,17 +20,14 @@ impl FromStr for Disc {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Disc, ()> {
-        lazy_static! {
-            static ref MAIN_RE: Regex =
-                Regex::new(r"^([a-z]+) \((\d+)\)( -> (([a-z]+(, )?)+))?$").unwrap();
-        }
+        let main_re: &Regex = regex!(r"^([a-z]+) \((\d+)\)( -> (([a-z]+(, )?)+))?$");
         let mut rv = Disc {
             name: "".to_string(),
             weight: 0,
             sum: 0,
             holdings: Vec::new(),
         };
-        let cap = MAIN_RE.captures(s);
+        let cap = main_re.captures(s);
         match cap {
             None => Err(()),
             Some(x) => {

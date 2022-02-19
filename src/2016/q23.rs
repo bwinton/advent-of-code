@@ -130,69 +130,67 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref COPY_LITERAL_RE: Regex = Regex::new(r"^cpy (-?[0-9]+) ([a-z])$").unwrap();
-            static ref COPY_REGISTER_RE: Regex = Regex::new(r"^cpy ([a-z]) ([a-z])$").unwrap();
-            static ref INCREMENT_RE: Regex = Regex::new(r"^inc ([a-z])$").unwrap();
-            static ref DECREMENT_RE: Regex = Regex::new(r"^dec ([a-z])$").unwrap();
-            static ref JUMP_LITLIT_RE: Regex = Regex::new(r"^jnz (-?[0-9]+) (-?[0-9]+)$").unwrap();
-            static ref JUMP_LITREG_RE: Regex = Regex::new(r"^jnz (-?[0-9]+) ([a-z])$").unwrap();
-            static ref JUMP_REGLIT_RE: Regex = Regex::new(r"^jnz ([a-z]) (-?[0-9]+)$").unwrap();
-            static ref JUMP_REGREG_RE: Regex = Regex::new(r"^jnz ([a-z]) ([a-z])$").unwrap();
-            static ref TOGGLE_RE: Regex = Regex::new(r"^tgl ([a-z])$").unwrap();
-        }
+        let copy_literal_re: &Regex = regex!(r"^cpy (-?[0-9]+) ([a-z])$");
+        let copy_register_re: &Regex = regex!(r"^cpy ([a-z]) ([a-z])$");
+        let increment_re: &Regex = regex!(r"^inc ([a-z])$");
+        let decrement_re: &Regex = regex!(r"^dec ([a-z])$");
+        let jump_litlit_re: &Regex = regex!(r"^jnz (-?[0-9]+) (-?[0-9]+)$");
+        let jump_litreg_re: &Regex = regex!(r"^jnz (-?[0-9]+) ([a-z])$");
+        let jump_reglit_re: &Regex = regex!(r"^jnz ([a-z]) (-?[0-9]+)$");
+        let jump_regreg_re: &Regex = regex!(r"^jnz ([a-z]) ([a-z])$");
+        let toggle_re: &Regex = regex!(r"^tgl ([a-z])$");
 
-        if let Some(cap) = COPY_LITERAL_RE.captures(s) {
+        if let Some(cap) = copy_literal_re.captures(s) {
             return Ok(Instruction::CopyLiteral(
                 cap[1].parse().unwrap(),
                 reg_index(&cap[2]).unwrap(),
             ));
         }
 
-        if let Some(cap) = COPY_REGISTER_RE.captures(s) {
+        if let Some(cap) = copy_register_re.captures(s) {
             return Ok(Instruction::CopyRegister(
                 reg_index(&cap[1]).unwrap(),
                 reg_index(&cap[2]).unwrap(),
             ));
         }
 
-        if let Some(cap) = INCREMENT_RE.captures(s) {
+        if let Some(cap) = increment_re.captures(s) {
             return Ok(Instruction::Increment(reg_index(&cap[1]).unwrap()));
         }
 
-        if let Some(cap) = DECREMENT_RE.captures(s) {
+        if let Some(cap) = decrement_re.captures(s) {
             return Ok(Instruction::Decrement(reg_index(&cap[1]).unwrap()));
         }
 
-        if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
+        if let Some(cap) = jump_litlit_re.captures(s) {
             return Ok(Instruction::JumpLitLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_LITREG_RE.captures(s) {
+        if let Some(cap) = jump_litreg_re.captures(s) {
             return Ok(Instruction::JumpLitReg(
                 cap[1].parse().unwrap(),
                 reg_index(&cap[2]).unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
+        if let Some(cap) = jump_reglit_re.captures(s) {
             return Ok(Instruction::JumpRegLit(
                 reg_index(&cap[1]).unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_REGREG_RE.captures(s) {
+        if let Some(cap) = jump_regreg_re.captures(s) {
             return Ok(Instruction::JumpRegReg(
                 reg_index(&cap[1]).unwrap(),
                 reg_index(&cap[2]).unwrap(),
             ));
         }
 
-        if let Some(cap) = TOGGLE_RE.captures(s) {
+        if let Some(cap) = toggle_re.captures(s) {
             return Ok(Instruction::Toggle(reg_index(&cap[1]).unwrap()));
         }
 

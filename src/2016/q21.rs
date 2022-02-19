@@ -41,7 +41,7 @@ impl Instruction {
             Instruction::SwapLetter(a, b) => {
                 rv = rv.replace(&a, "?");
                 rv = rv.replace(&b, &a);
-                rv = rv.replace("?", &b);
+                rv = rv.replace('?', &b);
             }
             Instruction::RotateLeft(n) => {
                 let data: Vec<char> = rv.chars().collect();
@@ -98,7 +98,7 @@ impl Instruction {
             Instruction::SwapLetter(a, b) => {
                 rv = rv.replace(&a, "?");
                 rv = rv.replace(&b, &a);
-                rv = rv.replace("?", &b);
+                rv = rv.replace('?', &b);
             }
             Instruction::RotateLeft(n) => {
                 let data: Vec<char> = rv.chars().collect();
@@ -152,55 +152,48 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref SWAP_POSITION_RE: Regex =
-                Regex::new("swap position ([0-9]+) with position ([0-9]+)").unwrap();
-            static ref SWAP_LETTER_RE: Regex =
-                Regex::new("swap letter ([a-z]) with letter ([a-z])").unwrap();
-            static ref ROTATE_LEFT_RE: Regex = Regex::new("rotate left ([0-9]+) steps?").unwrap();
-            static ref ROTATE_RIGHT_RE: Regex = Regex::new("rotate right ([0-9]+) steps?").unwrap();
-            static ref ROTATE_LETTER_RE: Regex =
-                Regex::new("rotate based on position of letter ([a-z])").unwrap();
-            static ref REVERSE_RE: Regex =
-                Regex::new("reverse positions ([0-9]+) through ([0-9]+)").unwrap();
-            static ref MOVE_RE: Regex =
-                Regex::new("move position ([0-9]+) to position ([0-9]+)").unwrap();
-        }
+        let swap_position_re: &Regex = regex!("swap position ([0-9]+) with position ([0-9]+)");
+        let swap_letter_re: &Regex = regex!("swap letter ([a-z]) with letter ([a-z])");
+        let rotate_left_re: &Regex = regex!("rotate left ([0-9]+) steps?");
+        let rotate_right_re: &Regex = regex!("rotate right ([0-9]+) steps?");
+        let rotate_letter_re: &Regex = regex!("rotate based on position of letter ([a-z])");
+        let reverse_re: &Regex = regex!("reverse positions ([0-9]+) through ([0-9]+)");
+        let move_re: &Regex = regex!("move position ([0-9]+) to position ([0-9]+)");
 
-        if let Some(cap) = SWAP_POSITION_RE.captures(s) {
+        if let Some(cap) = swap_position_re.captures(s) {
             return Ok(Instruction::SwapPosition(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = SWAP_LETTER_RE.captures(s) {
+        if let Some(cap) = swap_letter_re.captures(s) {
             return Ok(Instruction::SwapLetter(
                 cap[1].to_string(),
                 cap[2].to_string(),
             ));
         }
 
-        if let Some(cap) = ROTATE_LEFT_RE.captures(s) {
+        if let Some(cap) = rotate_left_re.captures(s) {
             return Ok(Instruction::RotateLeft(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = ROTATE_RIGHT_RE.captures(s) {
+        if let Some(cap) = rotate_right_re.captures(s) {
             return Ok(Instruction::RotateRight(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = ROTATE_LETTER_RE.captures(s) {
+        if let Some(cap) = rotate_letter_re.captures(s) {
             return Ok(Instruction::RotateLetter(cap[1].to_string()));
         }
 
-        if let Some(cap) = REVERSE_RE.captures(s) {
+        if let Some(cap) = reverse_re.captures(s) {
             return Ok(Instruction::Reverse(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = MOVE_RE.captures(s) {
+        if let Some(cap) = move_re.captures(s) {
             return Ok(Instruction::Move(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),

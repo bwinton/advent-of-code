@@ -3,7 +3,7 @@
 
 static INPUT: &str = include_str!("data/q11.data");
 
-fn increment_neighbours(board: &mut Vec<Vec<(u8, bool)>>, x: i8, y: i8) {
+fn increment_neighbours(board: &mut [Vec<(u8, bool)>], x: i8, y: i8) {
     let i_low: i8 = if x == 0 { 0 } else { -1 };
     let i_high: i8 = if x == (board.len() - 1) as i8 { 0 } else { 1 };
     let j_low: i8 = if y == 0 { 0 } else { -1 };

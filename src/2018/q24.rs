@@ -81,11 +81,11 @@ impl Group {
 }
 
 fn get_groups(lines: &mut Lines, groups: &mut BTreeMap<i32, Group>) -> Vec<i32> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"(\d+) units each with (\d+) hit points (\([^)]*\) )?with an attack that does (\d+) ([a-z]+) damage at initiative (\d+)").unwrap();
-        static ref IMMUNE_RE: Regex = Regex::new(r"immune to ([a-z, ]+)").unwrap();
-        static ref WEAK_RE: Regex = Regex::new(r"weak to ([a-z, ]+)").unwrap();
-    }
+    let re: &Regex = regex!(
+        r"(\d+) units each with (\d+) hit points (\([^)]*\) )?with an attack that does (\d+) ([a-z]+) damage at initiative (\d+)"
+    );
+    let immune_re: &Regex = regex!(r"immune to ([a-z, ]+)");
+    let weak_re: &Regex = regex!(r"weak to ([a-z, ]+)");
 
     // Skip the header.
     let group_type = if lines.next().unwrap() == "Immune System:" {
@@ -98,7 +98,7 @@ fn get_groups(lines: &mut Lines, groups: &mut BTreeMap<i32, Group>) -> Vec<i32> 
         if line.is_empty() {
             break;
         }
-        if let Some(cap) = RE.captures(line) {
+        if let Some(cap) = re.captures(line) {
             let mut group = Group {
                 group_type,
                 units: cap[1].parse().unwrap(),
@@ -116,9 +116,9 @@ fn get_groups(lines: &mut Lines, groups: &mut BTreeMap<i32, Group>) -> Vec<i32> 
                 modifiers = &modifiers[1..modifiers.len() - 2];
                 let modifiers = modifiers.split("; ").collect::<Vec<&str>>();
                 for modifier in modifiers {
-                    if let Some(cap) = IMMUNE_RE.captures(modifier) {
+                    if let Some(cap) = immune_re.captures(modifier) {
                         group.immunities = cap[1].split(", ").map(ToOwned::to_owned).collect();
-                    } else if let Some(cap) = WEAK_RE.captures(modifier) {
+                    } else if let Some(cap) = weak_re.captures(modifier) {
                         group.weaknesses = cap[1].split(", ").map(ToOwned::to_owned).collect();
                     }
                 }

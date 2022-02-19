@@ -3,15 +3,13 @@
 
 use std::collections::{HashMap, HashSet};
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q21.data");
 
-lazy_static! {
-    // mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-
-    static ref FOOD_RE: Regex = Regex::new(r"^(.*) \(contains (.*)\)$").unwrap();
-}
+// mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+static FOOD_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^(.*) \(contains (.*)\)$").unwrap());
 
 fn process_data_a(data: &str) -> usize {
     let mut mapping: HashMap<String, HashSet<String>> = HashMap::new();

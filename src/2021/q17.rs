@@ -1,14 +1,15 @@
 //-----------------------------------------------------
 // Setup.
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q17.data");
 
-lazy_static! {
-    // target area: x=20..30, y=-10..-5
-    static ref AREA_RE: Regex = Regex::new("^target area: x=(-?[0-9]+)..(-?[0-9]+), y=(-?[0-9]+)..(-?[0-9]+)$").unwrap();
-}
+// target area: x=20..30, y=-10..-5
+static AREA_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new("^target area: x=(-?[0-9]+)..(-?[0-9]+), y=(-?[0-9]+)..(-?[0-9]+)$").unwrap()
+});
 
 fn step(position: (i64, i64), velocity: (i64, i64)) -> ((i64, i64), (i64, i64)) {
     let (mut position, mut velocity) = (position, velocity);

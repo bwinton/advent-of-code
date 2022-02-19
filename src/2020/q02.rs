@@ -1,13 +1,12 @@
 //-----------------------------------------------------
 // Setup.
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q02.data");
 
-lazy_static! {
-    static ref RE: Regex = Regex::new(r"(\d+)-(\d+) (.): (.*)").unwrap();
-}
+static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\d+)-(\d+) (.): (.*)").unwrap());
 
 fn process_data_a(data: &str) -> usize {
     let mut rv = 0;

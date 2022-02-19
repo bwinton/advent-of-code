@@ -43,11 +43,8 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref RE: Regex =
-                Regex::new(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)").unwrap();
-        }
-        let captures = RE.captures(s);
+        let re: &Regex = regex!(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)");
+        let captures = re.captures(s);
         match captures {
             Some(cap) => Ok(Instruction {
                 op: cap[1].parse().unwrap(),

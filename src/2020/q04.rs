@@ -1,15 +1,14 @@
 //-----------------------------------------------------
 // Setup.
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q04.data");
 
-lazy_static! {
-    static ref HCL_RE: Regex = Regex::new(r"^#[0-9a-z]{6}$").unwrap();
-    static ref HGT_RE: Regex = Regex::new(r"^([0-9a-z]+)(cm|in)$").unwrap();
-    static ref PID_RE: Regex = Regex::new(r"^[0-9]{9}$").unwrap();
-}
+static HCL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^#[0-9a-z]{6}$").unwrap());
+static HGT_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9a-z]+)(cm|in)$").unwrap());
+static PID_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{9}$").unwrap());
 
 #[derive(Debug)]
 enum EyeColor {

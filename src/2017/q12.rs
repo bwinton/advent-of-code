@@ -10,11 +10,9 @@ static INPUT: &str = include_str!("data/q12.data");
 
 fn parse_lines(data: &str) -> Vec<HashSet<u32>> {
     let mut rv: Vec<HashSet<u32>> = Vec::new();
-    lazy_static! {
-        static ref MAIN_RE: Regex = Regex::new(r"^(\d+) <-> (.*)$").unwrap();
-    }
+    let main_re: &Regex = regex!(r"^(\d+) <-> (.*)$");
     for line in data.lines() {
-        let cap = MAIN_RE.captures(line).unwrap();
+        let cap = main_re.captures(line).unwrap();
         let mut dests: HashSet<u32> = cap[2].split(", ").map(|x| x.parse().unwrap()).collect();
         dests.insert(cap[1].parse().unwrap());
         for item in &mut rv {

@@ -7,10 +7,8 @@ use std::collections::HashSet;
 static INPUT: &str = include_str!("data/q05.data");
 
 fn has_three_vowels(line: &str) -> bool {
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"[aeiou].*[aeiou].*[aeiou]").unwrap();
-    }
-    RE.is_match(line)
+    let re: &Regex = regex!(r"[aeiou].*[aeiou].*[aeiou]");
+    re.is_match(line)
 }
 
 fn has_pair(line: &str) -> bool {
@@ -27,10 +25,8 @@ fn has_pair(line: &str) -> bool {
 }
 
 fn is_disallowed(line: &str) -> bool {
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"ab|cd|pq|xy").unwrap();
-    }
-    RE.is_match(line)
+    let re: &Regex = regex!(r"ab|cd|pq|xy");
+    re.is_match(line)
 }
 
 fn has_two_pair(line: &str) -> bool {

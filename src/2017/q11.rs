@@ -2,6 +2,7 @@
 // Setup.
 
 use aoc::Day;
+use once_cell::sync::Lazy;
 
 use std::collections::HashMap;
 
@@ -29,40 +30,40 @@ impl HexPosition {
 }
 
 fn process_data_a(data: &str) -> u32 {
-    lazy_static! {
-        static ref DIRECTIONS: HashMap<&'static str, HexPosition> = hashmap![
-          "nw" => HexPosition{ x: -1, y: 0, z: 1},
-          "n" => HexPosition{ x: 0, y: -1, z: 1},
-          "ne" => HexPosition{ x: 1, y: -1, z: 0},
-          "se" => HexPosition{ x: 1, y: 0, z: -1},
-          "s" => HexPosition{ x: 0, y: 1, z: -1},
-          "sw" => HexPosition{ x: -1, y: 1, z: 0},
-        ];
-    }
+    let directions: Lazy<HashMap<&'static str, HexPosition>> = Lazy::new(|| {
+        hashmap![
+            "nw" => HexPosition{ x: -1, y: 0, z: 1},
+            "n" => HexPosition{ x: 0, y: -1, z: 1},
+            "ne" => HexPosition{ x: 1, y: -1, z: 0},
+            "se" => HexPosition{ x: 1, y: 0, z: -1},
+            "s" => HexPosition{ x: 0, y: 1, z: -1},
+            "sw" => HexPosition{ x: -1, y: 1, z: 0},
+        ]
+    });
     let mut position = HexPosition { x: 0, y: 0, z: 0 };
 
     for hexmove in data.split(',') {
-        position = position.go(&DIRECTIONS[hexmove]);
+        position = position.go(&directions[hexmove]);
     }
     position.distance()
 }
 
 fn process_data_b(data: &str) -> u32 {
-    lazy_static! {
-        static ref DIRECTIONS: HashMap<&'static str, HexPosition> = hashmap![
+    let directions: Lazy<HashMap<&'static str, HexPosition>> = Lazy::new(|| {
+        hashmap![
           "nw" => HexPosition{ x: -1, y: 0, z: 1},
           "n" => HexPosition{ x: 0, y: -1, z: 1},
           "ne" => HexPosition{ x: 1, y: -1, z: 0},
           "se" => HexPosition{ x: 1, y: 0, z: -1},
           "s" => HexPosition{ x: 0, y: 1, z: -1},
           "sw" => HexPosition{ x: -1, y: 1, z: 0},
-        ];
-    }
+        ]
+    });
     let mut position = HexPosition { x: 0, y: 0, z: 0 };
     let mut rv = position.distance();
 
     for hexmove in data.split(',') {
-        position = position.go(&DIRECTIONS[hexmove]);
+        position = position.go(&directions[hexmove]);
         if position.distance() > rv {
             rv = position.distance();
         }

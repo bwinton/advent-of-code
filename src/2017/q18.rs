@@ -148,114 +148,112 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref SEND_REG_RE: Regex = Regex::new(r"^snd ([a-z])$").unwrap();
-            static ref SEND_LIT_RE: Regex = Regex::new(r"^snd (-?\d+)$").unwrap();
-            static ref SET_REG_RE: Regex = Regex::new(r"^set ([a-z]) ([a-z])$").unwrap();
-            static ref SET_LIT_RE: Regex = Regex::new(r"^set ([a-z]) (-?\d+)$").unwrap();
-            static ref ADD_REG_RE: Regex = Regex::new(r"^add ([a-z]) ([a-z])$").unwrap();
-            static ref ADD_LIT_RE: Regex = Regex::new(r"^add ([a-z]) (-?\d+)$").unwrap();
-            static ref MUL_REG_RE: Regex = Regex::new(r"^mul ([a-z]) ([a-z])$").unwrap();
-            static ref MUL_LIT_RE: Regex = Regex::new(r"^mul ([a-z]) (-?\d+)$").unwrap();
-            static ref MOD_REG_RE: Regex = Regex::new(r"^mod ([a-z]) ([a-z])$").unwrap();
-            static ref MOD_LIT_RE: Regex = Regex::new(r"^mod ([a-z]) (-?\d+)$").unwrap();
-            static ref RECEIVE_RE: Regex = Regex::new(r"^rcv ([a-z])$").unwrap();
-            static ref JUMP_LITLIT_RE: Regex = Regex::new(r"^jgz (-?[0-9]+) (-?[0-9]+)$").unwrap();
-            static ref JUMP_LITREG_RE: Regex = Regex::new(r"^jgz (-?[0-9]+) ([a-z])$").unwrap();
-            static ref JUMP_REGLIT_RE: Regex = Regex::new(r"^jgz ([a-z]) (-?[0-9]+)$").unwrap();
-            static ref JUMP_REGREG_RE: Regex = Regex::new(r"^jgz ([a-z]) ([a-z])$").unwrap();
-        }
+        let send_reg_re: &Regex = regex!(r"^snd ([a-z])$");
+        let send_lit_re: &Regex = regex!(r"^snd (-?\d+)$");
+        let set_reg_re: &Regex = regex!(r"^set ([a-z]) ([a-z])$");
+        let set_lit_re: &Regex = regex!(r"^set ([a-z]) (-?\d+)$");
+        let add_reg_re: &Regex = regex!(r"^add ([a-z]) ([a-z])$");
+        let add_lit_re: &Regex = regex!(r"^add ([a-z]) (-?\d+)$");
+        let mul_reg_re: &Regex = regex!(r"^mul ([a-z]) ([a-z])$");
+        let mul_lit_re: &Regex = regex!(r"^mul ([a-z]) (-?\d+)$");
+        let mod_reg_re: &Regex = regex!(r"^mod ([a-z]) ([a-z])$");
+        let mod_lit_re: &Regex = regex!(r"^mod ([a-z]) (-?\d+)$");
+        let receive_re: &Regex = regex!(r"^rcv ([a-z])$");
+        let jump_litlit_re: &Regex = regex!(r"^jgz (-?[0-9]+) (-?[0-9]+)$");
+        let jump_litreg_re: &Regex = regex!(r"^jgz (-?[0-9]+) ([a-z])$");
+        let jump_reglit_re: &Regex = regex!(r"^jgz ([a-z]) (-?[0-9]+)$");
+        let jump_regreg_re: &Regex = regex!(r"^jgz ([a-z]) ([a-z])$");
 
-        if let Some(cap) = SEND_REG_RE.captures(s) {
+        if let Some(cap) = send_reg_re.captures(s) {
             return Ok(Instruction::SendReg(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = SEND_LIT_RE.captures(s) {
+        if let Some(cap) = send_lit_re.captures(s) {
             return Ok(Instruction::SendLit(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = SET_REG_RE.captures(s) {
+        if let Some(cap) = set_reg_re.captures(s) {
             return Ok(Instruction::SetReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = SET_LIT_RE.captures(s) {
+        if let Some(cap) = set_lit_re.captures(s) {
             return Ok(Instruction::SetLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = ADD_REG_RE.captures(s) {
+        if let Some(cap) = add_reg_re.captures(s) {
             return Ok(Instruction::AddReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = ADD_LIT_RE.captures(s) {
+        if let Some(cap) = add_lit_re.captures(s) {
             return Ok(Instruction::AddLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = MUL_REG_RE.captures(s) {
+        if let Some(cap) = mul_reg_re.captures(s) {
             return Ok(Instruction::MulReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = MUL_LIT_RE.captures(s) {
+        if let Some(cap) = mul_lit_re.captures(s) {
             return Ok(Instruction::MulLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = MOD_REG_RE.captures(s) {
+        if let Some(cap) = mod_reg_re.captures(s) {
             return Ok(Instruction::ModReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = MOD_LIT_RE.captures(s) {
+        if let Some(cap) = mod_lit_re.captures(s) {
             return Ok(Instruction::ModLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = RECEIVE_RE.captures(s) {
+        if let Some(cap) = receive_re.captures(s) {
             return Ok(Instruction::Receive(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = JUMP_REGREG_RE.captures(s) {
+        if let Some(cap) = jump_regreg_re.captures(s) {
             return Ok(Instruction::JumpRegReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_REGLIT_RE.captures(s) {
+        if let Some(cap) = jump_reglit_re.captures(s) {
             return Ok(Instruction::JumpRegLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_LITREG_RE.captures(s) {
+        if let Some(cap) = jump_litreg_re.captures(s) {
             return Ok(Instruction::JumpLitReg(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = JUMP_LITLIT_RE.captures(s) {
+        if let Some(cap) = jump_litlit_re.captures(s) {
             return Ok(Instruction::JumpLitLit(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),

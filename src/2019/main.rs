@@ -30,12 +30,6 @@ mod intcode;
 
 #[macro_use]
 extern crate aoc;
-// #[macro_use]
-// extern crate derive_more;
-// #[macro_use]
-// extern crate lazy_static;
-// #[macro_use]
-// extern crate maplit;
 
 fn main() {
     let days = q_vec!(

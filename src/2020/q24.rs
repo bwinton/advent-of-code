@@ -1,14 +1,13 @@
 use std::collections::{HashMap, HashSet};
 
+use once_cell::sync::Lazy;
 //-----------------------------------------------------
 // Setup.
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q24.data");
 
-lazy_static! {
-    static ref DIR_RE: Regex = Regex::new(r"(e|se|sw|w|nw|ne)").unwrap();
-}
+static DIR_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(e|se|sw|w|nw|ne)").unwrap());
 
 #[derive(Debug)]
 enum Direction {

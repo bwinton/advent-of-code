@@ -116,18 +116,16 @@ impl Board {
 }
 
 fn parse_wall(s: &str) -> HashSet<(i32, i32)> {
-    lazy_static! {
-        static ref X_RE: Regex = Regex::new(r"x=(\d+), y=(\d+)\.\.(\d+)").unwrap();
-        static ref Y_RE: Regex = Regex::new(r"y=(\d+), x=(\d+)\.\.(\d+)").unwrap();
-    }
+    let x_re: &Regex = regex!(r"x=(\d+), y=(\d+)\.\.(\d+)");
+    let y_re: &Regex = regex!(r"y=(\d+), x=(\d+)\.\.(\d+)");
     let mut rv = HashSet::new();
 
-    if let Some(cap) = X_RE.captures(s) {
+    if let Some(cap) = x_re.captures(s) {
         let x = cap[1].parse().unwrap();
         for y in cap[2].parse().unwrap()..=cap[3].parse().unwrap() {
             rv.insert((x, y));
         }
-    } else if let Some(cap) = Y_RE.captures(s) {
+    } else if let Some(cap) = y_re.captures(s) {
         let y = cap[1].parse().unwrap();
         for x in cap[2].parse().unwrap()..=cap[3].parse().unwrap() {
             rv.insert((x, y));

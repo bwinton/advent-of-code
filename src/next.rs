@@ -6,7 +6,7 @@ use std::{
 };
 
 use chrono::{Datelike, Duration, Local};
-use clap::{app_from_crate, Arg};
+use clap::{command, Arg};
 use crossterm::{style::Print, ExecutableCommand};
 use custom_error::custom_error;
 use reqwest::{
@@ -70,7 +70,7 @@ fn add_day(last_year: u32, day: u32, stdout: &mut Stdout) -> Result<(), NextErro
     // Copy the template, replacing "XX" with "<:02=day>", and "X" with "<day>".
     let template = String::from_utf8(read("template/qXX.rs")?)?;
     let template = template.replace("XX", &format!("{:02}", day));
-    let template = template.replace("X", &format!("{}", day));
+    let template = template.replace('X', &format!("{}", day));
 
     let mut question = File::create(format!("src/{}/q{:02}.rs", last_year, day))?;
     question.write_all(template.as_bytes())?;
@@ -198,7 +198,7 @@ fn get_input() -> Result<(), NextError> {
 fn main() -> Result<(), NextError> {
     let mut stdout = stdout();
     color_backtrace::install();
-    let matches = app_from_crate!("\n")
+    let matches = command!("\n")
         .arg(
             Arg::new("year")
                 .short('y')

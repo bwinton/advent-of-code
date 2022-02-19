@@ -7,11 +7,9 @@ use serde_json::{from_str, Value};
 static INPUT: &str = include_str!("data/q12.data");
 
 fn process_data_a(data: &str) -> i64 {
-    lazy_static! {
-        static ref NUMBERS: Regex = Regex::new(r"-?\d+").unwrap();
-    }
+    let numbers: &Regex = regex!(r"-?\d+");
     let mut rv = 0;
-    for cap in NUMBERS.captures_iter(data) {
+    for cap in numbers.captures_iter(data) {
         rv += &cap[0].parse().unwrap();
     }
     rv

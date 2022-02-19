@@ -18,11 +18,9 @@ impl FromStr for Bot {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Bot, ()> {
-        lazy_static! {
-            static ref RE: Regex = Regex::new(r"pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(-?\d+)").unwrap();
-        }
+        let re: &Regex = regex!(r"pos=<(-?\d+),(-?\d+),(-?\d+)>, r=(-?\d+)");
 
-        if let Some(cap) = RE.captures(s) {
+        if let Some(cap) = re.captures(s) {
             let x = cap[1].parse().unwrap();
             let y = cap[2].parse().unwrap();
             let z = cap[3].parse().unwrap();

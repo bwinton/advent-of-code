@@ -3,15 +3,14 @@
 
 use std::{collections::HashMap, ops::RangeInclusive};
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q16.data");
 
-lazy_static! {
-    // departure date: 26-827 or 843-970
-
-    static ref RULE_RE: Regex = Regex::new(r"^(.*): ([0-9]*)-([0-9]*) or ([0-9]*)-([0-9]*)$").unwrap();
-}
+// departure date: 26-827 or 843-970
+static RULE_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^(.*): ([0-9]*)-([0-9]*) or ([0-9]*)-([0-9]*)$").unwrap());
 
 #[derive(Debug)]
 struct Rule {

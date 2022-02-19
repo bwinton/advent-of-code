@@ -3,14 +3,18 @@
 
 use std::ops::RangeInclusive;
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q22.data");
 
-lazy_static! {
-    // on x=10..12,y=10..12,z=10..12
-    static ref LINE_RE: Regex = Regex::new("^(on|off) x=(-?[0-9]+)..(-?[0-9]+),y=(-?[0-9]+)..(-?[0-9]+),z=(-?[0-9]+)..(-?[0-9]+)$").unwrap();
-}
+// on x=10..12,y=10..12,z=10..12
+static LINE_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(
+        "^(on|off) x=(-?[0-9]+)..(-?[0-9]+),y=(-?[0-9]+)..(-?[0-9]+),z=(-?[0-9]+)..(-?[0-9]+)$",
+    )
+    .unwrap()
+});
 
 #[derive(Clone, Debug)]
 struct Cube {

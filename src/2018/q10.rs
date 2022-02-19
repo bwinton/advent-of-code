@@ -21,13 +21,9 @@ impl FromStr for Point {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Point, ()> {
-        lazy_static! {
-            static ref RE: Regex =
-                Regex::new(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>")
-                    .unwrap();
-        }
+        let re: &Regex = regex!(r"position=< *(-?\d+), *(-?\d+)> velocity=< *(-?\d+), *(-?\d+)>");
 
-        if let Some(cap) = RE.captures(s) {
+        if let Some(cap) = re.captures(s) {
             return Ok(Point {
                 p_x: cap[1].parse().unwrap(),
                 p_y: cap[2].parse().unwrap(),

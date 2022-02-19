@@ -3,13 +3,13 @@
 
 use std::collections::HashMap;
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q14.data");
 
-lazy_static! {
-    static ref INSTRUCTION_RE: Regex = Regex::new(r"^mem\[([0-9]+)\] = ([0-9]+)$").unwrap();
-}
+static INSTRUCTION_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"^mem\[([0-9]+)\] = ([0-9]+)$").unwrap());
 
 #[derive(Debug)]
 struct Instruction {

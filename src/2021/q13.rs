@@ -37,12 +37,12 @@ fn process_data_a(data: &str) -> usize {
             continue;
         }
         if getting_points {
-            let (x, y) = line.split_once(",").unwrap();
+            let (x, y) = line.split_once(',').unwrap();
             let x: usize = x.parse().unwrap();
             let y: usize = y.parse().unwrap();
             grid.insert((x, y));
         } else {
-            let (coord, value) = line[11..].split_once("=").unwrap();
+            let (coord, value) = line[11..].split_once('=').unwrap();
             let value: usize = value.parse().unwrap();
             folds.push((coord, value));
         }
@@ -64,12 +64,12 @@ fn process_data_b(data: &str) -> String {
             continue;
         }
         if getting_points {
-            let (x, y) = line.split_once(",").unwrap();
+            let (x, y) = line.split_once(',').unwrap();
             let x: usize = x.parse().unwrap();
             let y: usize = y.parse().unwrap();
             grid.insert((x, y));
         } else {
-            let (coord, value) = line[11..].split_once("=").unwrap();
+            let (coord, value) = line[11..].split_once('=').unwrap();
             let value: usize = value.parse().unwrap();
             folds.push((coord, value));
         }

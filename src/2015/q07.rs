@@ -37,36 +37,30 @@ impl FromStr for Gate {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Gate, ()> {
-        lazy_static! {
-            static ref VALUE_WIRE_RE: Regex = Regex::new("^([a-z]+) -> ([a-z]+)$").unwrap();
-            static ref VALUE_VAL_RE: Regex = Regex::new("^([0-9]+) -> ([a-z]+)$").unwrap();
-            static ref AND_WIRE_RE: Regex =
-                Regex::new("^([a-z]+) AND ([a-z]+) -> ([a-z]+)$").unwrap();
-            static ref AND_VAL_RE: Regex =
-                Regex::new("^([0-9]+) AND ([a-z]+) -> ([a-z]+)$").unwrap();
-            static ref OR_RE: Regex = Regex::new("^([a-z]+) OR ([a-z]+) -> ([a-z]+)$").unwrap();
-            static ref LSHIFT_RE: Regex =
-                Regex::new("^([a-z]+) LSHIFT ([0-9]+) -> ([a-z]+)$").unwrap();
-            static ref RSHIFT_RE: Regex =
-                Regex::new("^([a-z]+) RSHIFT ([0-9]+) -> ([a-z]+)$").unwrap();
-            static ref NOT_RE: Regex = Regex::new("^NOT ([a-z]+) -> ([a-z]+)$").unwrap();
-        }
+        let value_wire_re: &Regex = regex!("^([a-z]+) -> ([a-z]+)$");
+        let value_val_re: &Regex = regex!("^([0-9]+) -> ([a-z]+)$");
+        let and_wire_re: &Regex = regex!("^([a-z]+) AND ([a-z]+) -> ([a-z]+)$");
+        let and_val_re: &Regex = regex!("^([0-9]+) AND ([a-z]+) -> ([a-z]+)$");
+        let or_re: &Regex = regex!("^([a-z]+) OR ([a-z]+) -> ([a-z]+)$");
+        let lshift_re: &Regex = regex!("^([a-z]+) LSHIFT ([0-9]+) -> ([a-z]+)$");
+        let rshift_re: &Regex = regex!("^([a-z]+) RSHIFT ([0-9]+) -> ([a-z]+)$");
+        let not_re: &Regex = regex!("^NOT ([a-z]+) -> ([a-z]+)$");
 
-        if let Some(cap) = VALUE_WIRE_RE.captures(s) {
+        if let Some(cap) = value_wire_re.captures(s) {
             return Ok(Gate::ValueWire {
                 a: cap[1].parse().unwrap(),
                 out: cap[2].parse().unwrap(),
             });
         }
 
-        if let Some(cap) = VALUE_VAL_RE.captures(s) {
+        if let Some(cap) = value_val_re.captures(s) {
             return Ok(Gate::ValueVal {
                 a: cap[1].parse().unwrap(),
                 out: cap[2].parse().unwrap(),
             });
         }
 
-        if let Some(cap) = AND_WIRE_RE.captures(s) {
+        if let Some(cap) = and_wire_re.captures(s) {
             return Ok(Gate::AndWire {
                 a: cap[1].parse().unwrap(),
                 b: cap[2].parse().unwrap(),
@@ -74,7 +68,7 @@ impl FromStr for Gate {
             });
         }
 
-        if let Some(cap) = AND_VAL_RE.captures(s) {
+        if let Some(cap) = and_val_re.captures(s) {
             return Ok(Gate::AndVal {
                 a: cap[1].parse().unwrap(),
                 b: cap[2].parse().unwrap(),
@@ -82,7 +76,7 @@ impl FromStr for Gate {
             });
         }
 
-        if let Some(cap) = OR_RE.captures(s) {
+        if let Some(cap) = or_re.captures(s) {
             return Ok(Gate::Or {
                 a: cap[1].parse().unwrap(),
                 b: cap[2].parse().unwrap(),
@@ -90,7 +84,7 @@ impl FromStr for Gate {
             });
         }
 
-        if let Some(cap) = LSHIFT_RE.captures(s) {
+        if let Some(cap) = lshift_re.captures(s) {
             return Ok(Gate::LShift {
                 a: cap[1].parse().unwrap(),
                 b: cap[2].parse().unwrap(),
@@ -98,7 +92,7 @@ impl FromStr for Gate {
             });
         }
 
-        if let Some(cap) = RSHIFT_RE.captures(s) {
+        if let Some(cap) = rshift_re.captures(s) {
             return Ok(Gate::RShift {
                 a: cap[1].parse().unwrap(),
                 b: cap[2].parse().unwrap(),
@@ -106,7 +100,7 @@ impl FromStr for Gate {
             });
         }
 
-        if let Some(cap) = NOT_RE.captures(s) {
+        if let Some(cap) = not_re.captures(s) {
             return Ok(Gate::Not {
                 a: cap[1].parse().unwrap(),
                 out: cap[2].parse().unwrap(),

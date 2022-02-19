@@ -1,6 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
     char,
@@ -9,10 +10,9 @@ use std::{
 
 static INPUT: &str = include_str!("data/q07.data");
 
-lazy_static! {
-    static ref RE: Regex =
-        Regex::new(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.").unwrap();
-}
+static RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.").unwrap()
+});
 
 fn process_data_a(data: &str) -> String {
     let mut dep_graph = HashMap::new();

@@ -6,8 +6,6 @@ pub mod nom_util;
 extern crate clap;
 #[macro_use]
 extern crate derive_more;
-#[macro_use]
-extern crate lazy_static;
 
 use std::ops::Deref;
 
@@ -34,6 +32,14 @@ macro_rules! q_vec {
   ( $( $x:ident ),* ) => {
     q_vec!{$( $x, )*}
   };
+}
+
+#[macro_export]
+macro_rules! regex {
+    ($re:literal $(,)?) => {{
+        static RE: once_cell::sync::OnceCell<regex::Regex> = once_cell::sync::OnceCell::new();
+        RE.get_or_init(|| regex::Regex::new($re).unwrap())
+    }};
 }
 
 // Had a cool macro here from https://play.rust-lang.org/?gist=0cbc09e0fc41016f5f5c240d088a4410&version=stable
@@ -85,7 +91,7 @@ fn select(day: &dyn Day, arg: &str) {
 
 pub fn main(days: &[Box<dyn Day>]) {
     color_backtrace::install();
-    let matches = app_from_crate!("\n")
+    let matches = command!("\n")
         .arg(
             Arg::new("day")
                 .help("Which day(s) to run")

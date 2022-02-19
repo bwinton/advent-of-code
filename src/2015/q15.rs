@@ -20,10 +20,10 @@ impl FromStr for Ingredient {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Ingredient, ()> {
-        lazy_static! {
-          static ref RE: Regex = Regex::new(r"^([A-Za-z]+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)$").unwrap();
-        }
-        let captures = RE.captures(s);
+        let re: &Regex = regex!(
+            r"^([A-Za-z]+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)$"
+        );
+        let captures = re.captures(s);
         match captures {
             Some(cap) => Ok(Ingredient {
                 _name: cap[1].to_string(),

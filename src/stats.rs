@@ -7,7 +7,7 @@ use std::{
     time::{SystemTime, SystemTimeError},
 };
 
-use clap::{app_from_crate, Arg};
+use clap::{command, Arg};
 use crossterm::{
     queue,
     style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
@@ -199,7 +199,7 @@ fn print_year(year: i32, stdout: &mut Stdout) -> Result<(), StatsError> {
 fn main() -> Result<(), StatsError> {
     let mut stdout = stdout();
     color_backtrace::install();
-    let matches = app_from_crate!("\n")
+    let matches = command!("\n")
         .arg(
             Arg::new("year")
                 .help("Which year(s) to run")
@@ -217,14 +217,13 @@ fn main() -> Result<(), StatsError> {
     let args: Vec<&str> = matches.values_of("year").unwrap().collect();
     let args: Vec<i32> = args
         .iter()
-        .map(|&x| {
+        .flat_map(|&x| {
             if x == "*" {
                 2015..=2020
             } else {
                 x.parse().unwrap()..=x.parse().unwrap()
             }
         })
-        .flatten()
         .collect();
     stdout.execute(Print(format!("args: {:?}\n", args)))?;
 

@@ -13,17 +13,14 @@ use std::{
 static INPUT: &str = include_str!("data/q13.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<Vec<String>, i32>) {
-    lazy_static! {
-        static ref SEATING: Regex = Regex::new(
-            r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$"
-        )
-        .unwrap();
-    }
+    let seating: &Regex = regex!(
+        r"^([A-Za-z]+) would (gain|lose) (\d+) happiness units by sitting next to ([A-Za-z]+).$"
+    );
     let mut happiness = HashMap::new();
     let mut people = HashSet::new();
 
     for line in data.lines() {
-        if let Some(cap) = SEATING.captures(line) {
+        if let Some(cap) = seating.captures(line) {
             let mut key = vec![cap[1].to_string(), cap[4].to_string()];
             key.sort();
             for name in key.clone() {

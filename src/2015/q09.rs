@@ -12,13 +12,11 @@ use std::{
 static INPUT: &str = include_str!("data/q09.data");
 
 fn parse(data: &str) -> (HashSet<String>, HashMap<[String; 2], usize>) {
-    lazy_static! {
-        static ref RE: Regex = Regex::new("^([A-Za-z]+) to ([A-Za-z]+) = ([0-9]+)$").unwrap();
-    }
+    let re: &Regex = regex!("^([A-Za-z]+) to ([A-Za-z]+) = ([0-9]+)$");
     let mut cities: HashSet<String> = HashSet::new();
     let mut distances: HashMap<[String; 2], usize> = HashMap::new();
     for line in data.lines() {
-        let cap = RE.captures(line);
+        let cap = re.captures(line);
         match cap {
             None => println!("Unknown format: {}", line),
             Some(x) => {

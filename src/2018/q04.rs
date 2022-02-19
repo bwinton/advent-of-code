@@ -34,16 +34,12 @@ impl FromStr for Record {
 
     fn from_str(s: &str) -> Result<Record, ()> {
         // #1 @ 1,3: 4x4
-        lazy_static! {
-            static ref STARTED_RE: Regex =
-                Regex::new(r"\[(\d+)-(\d+)-(\d+) (\d+):\d+\] Guard #(\d+) begins shift").unwrap();
-            static ref SLEPT_RE: Regex =
-                Regex::new(r"\[\d+-(\d+-\d+) \d+:(\d+)\] falls asleep").unwrap();
-            static ref WOKE_RE: Regex =
-                Regex::new(r"\[\d+-(\d+-\d+) \d+:(\d+)\] wakes up").unwrap();
-        }
+        let started_re: &Regex =
+            regex!(r"\[(\d+)-(\d+)-(\d+) (\d+):\d+\] Guard #(\d+) begins shift");
+        let slept_re: &Regex = regex!(r"\[\d+-(\d+-\d+) \d+:(\d+)\] falls asleep");
+        let woke_re: &Regex = regex!(r"\[\d+-(\d+-\d+) \d+:(\d+)\] wakes up");
 
-        if let Some(cap) = STARTED_RE.captures(s) {
+        if let Some(cap) = started_re.captures(s) {
             let mut date: Date<Utc> = Utc.ymd(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
@@ -61,7 +57,7 @@ impl FromStr for Record {
             });
         }
 
-        if let Some(cap) = SLEPT_RE.captures(s) {
+        if let Some(cap) = slept_re.captures(s) {
             let date = cap[1].to_owned();
             let minute: u32 = cap[2].parse().unwrap();
 
@@ -72,7 +68,7 @@ impl FromStr for Record {
             });
         }
 
-        if let Some(cap) = WOKE_RE.captures(s) {
+        if let Some(cap) = woke_re.captures(s) {
             let date = cap[1].to_owned();
             let minute: u32 = cap[2].parse().unwrap();
 

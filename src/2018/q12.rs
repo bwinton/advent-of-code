@@ -33,11 +33,9 @@ impl FromStr for State {
     type Err = ();
 
     fn from_str(s: &str) -> Result<State, ()> {
-        lazy_static! {
-            static ref RE: Regex = Regex::new(r"initial state: ([#.]+)").unwrap();
-        }
+        let re: &Regex = regex!(r"initial state: ([#.]+)");
 
-        if let Some(cap) = RE.captures(s) {
+        if let Some(cap) = re.captures(s) {
             let mut state = State::default();
             for (i, c) in cap[1].chars().enumerate() {
                 if c == '#' {
@@ -90,13 +88,11 @@ impl State {
 }
 
 fn get_rules(lines: Lines) -> HashSet<Vec<bool>> {
-    lazy_static! {
-        static ref RE: Regex = Regex::new(r"([#.]{5}) => ([#.])").unwrap();
-    }
+    let re: &Regex = regex!(r"([#.]{5}) => ([#.])");
 
     let mut rv = HashSet::new();
     for line in lines {
-        let cap = RE.captures(line).unwrap();
+        let cap = re.captures(line).unwrap();
         if cap[2].starts_with('#') {
             rv.insert(cap[1].chars().map(|x| x == '#').collect());
         }

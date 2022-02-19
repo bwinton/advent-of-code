@@ -28,8 +28,6 @@ mod q25;
 extern crate aoc;
 #[macro_use]
 extern crate itertools;
-#[macro_use]
-extern crate lazy_static;
 
 fn main() {
     let days = q_vec!(

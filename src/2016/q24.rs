@@ -30,13 +30,12 @@ enum Direction {
 
 impl fmt::Debug for Direction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let out;
-        match *self {
-            Direction::Up => out = 'U',
-            Direction::Left => out = 'L',
-            Direction::Down => out = 'D',
-            Direction::Right => out = 'R',
-        }
+        let out = match *self {
+            Direction::Up => 'U',
+            Direction::Left => 'L',
+            Direction::Down => 'D',
+            Direction::Right => 'R',
+        };
         fmt::Debug::fmt(&out, f)
     }
 }
@@ -71,15 +70,13 @@ impl FromStr for Contents {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Contents, ()> {
-        lazy_static! {
-            static ref RE: Regex = Regex::new(r"^([0-9])$").unwrap();
-        }
+        let re: &Regex = regex!(r"^([0-9])$");
 
         match s {
             "#" => Ok(Contents::Wall()),
             "." => Ok(Contents::Empty()),
             _ => {
-                let captures = RE.captures(s);
+                let captures = re.captures(s);
                 match captures {
                     Some(cap) => Ok(Contents::Something(Location {
                         loc: cap[1].parse().unwrap(),

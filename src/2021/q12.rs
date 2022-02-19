@@ -13,7 +13,7 @@ fn process_data_a(data: &str) -> usize {
     let mut rooms: HashMap<&str, HashSet<&str>> = HashMap::new();
     for line in data.lines() {
         // Do something
-        let (start, end) = line.split_once("-").unwrap();
+        let (start, end) = line.split_once('-').unwrap();
         rooms.entry(start).or_default().insert(end);
         rooms.entry(end).or_default().insert(start);
     }
@@ -58,7 +58,7 @@ fn get_rooms(data: &str) -> (Vec<HashSet<usize>>, HashSet<usize>) {
     let mut rooms = vec![HashSet::new(); max_rooms];
     for line in data.lines() {
         // Do something
-        let (start_name, end_name) = line.split_once("-").unwrap();
+        let (start_name, end_name) = line.split_once('-').unwrap();
         let start = room_names
             .iter()
             .position(|&x| x == start_name)

@@ -186,16 +186,14 @@ impl Example {
 }
 
 fn parse_data(data: &str) -> (Vec<Example>, Vec<Instruction>) {
-    lazy_static! {
-        static ref BEFORE_RE: Regex = Regex::new(r"Before: \[(\d), (\d), (\d), (\d)\]").unwrap();
-        static ref AFTER_RE: Regex = Regex::new(r"After:  \[(\d), (\d), (\d), (\d)\]").unwrap();
-    }
+    let before_re: &Regex = regex!(r"Before: \[(\d), (\d), (\d), (\d)\]");
+    let after_re: &Regex = regex!(r"After:  \[(\d), (\d), (\d), (\d)\]");
 
     let mut lines = data.lines();
 
     let mut examples = vec![];
     loop {
-        if let Some(cap) = BEFORE_RE.captures(lines.next().unwrap()) {
+        if let Some(cap) = before_re.captures(lines.next().unwrap()) {
             let before = [
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
@@ -203,7 +201,7 @@ fn parse_data(data: &str) -> (Vec<Example>, Vec<Instruction>) {
                 cap[4].parse().unwrap(),
             ];
             let instruction = lines.next().unwrap().parse().unwrap();
-            if let Some(cap) = AFTER_RE.captures(lines.next().unwrap()) {
+            if let Some(cap) = after_re.captures(lines.next().unwrap()) {
                 let after = [
                     cap[1].parse().unwrap(),
                     cap[2].parse().unwrap(),

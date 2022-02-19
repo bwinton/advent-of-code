@@ -19,10 +19,10 @@ impl FromStr for Reindeer {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Reindeer, ()> {
-        lazy_static! {
-          static ref RE: Regex = Regex::new(r"^([A-Za-z]+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.$").unwrap();
-        }
-        let captures = RE.captures(s);
+        let re: &Regex = regex!(
+            r"^([A-Za-z]+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.$"
+        );
+        let captures = re.captures(s);
         match captures {
             Some(cap) => Ok(Reindeer {
                 name: cap[1].to_string(),

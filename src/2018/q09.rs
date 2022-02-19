@@ -7,11 +7,8 @@ use std::collections::LinkedList;
 static INPUT: &str = "458 players; last marble is worth 72019 points";
 
 fn get_data(data: &str) -> (usize, usize) {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"(\d+) players; last marble is worth (\d+) points").unwrap();
-    }
-    let cap = RE.captures(data).unwrap();
+    let re: &Regex = regex!(r"(\d+) players; last marble is worth (\d+) points");
+    let cap = re.captures(data).unwrap();
     (cap[1].parse().unwrap(), cap[2].parse().unwrap())
 }
 

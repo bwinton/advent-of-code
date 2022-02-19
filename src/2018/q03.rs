@@ -30,10 +30,8 @@ impl FromStr for Square {
 
     fn from_str(s: &str) -> Result<Square, ()> {
         // #1 @ 1,3: 4x4
-        lazy_static! {
-            static ref RE: Regex = Regex::new(r"(#\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
-        }
-        let captures = RE.captures(s);
+        let re: &Regex = regex!(r"(#\d+) @ (\d+),(\d+): (\d+)x(\d+)");
+        let captures = re.captures(s);
 
         match captures {
             Some(cap) => {

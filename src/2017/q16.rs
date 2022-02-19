@@ -19,24 +19,22 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref SPIN_RE: Regex = Regex::new(r"^s(-?\d+)$").unwrap();
-            static ref EXCHANGE_RE: Regex = Regex::new(r"^x(-?[0-9]+)/(-?[0-9]+)$").unwrap();
-            static ref PARTNER_RE: Regex = Regex::new(r"^p([a-z])/([a-z])$").unwrap();
-        }
+        let spin_re: &Regex = regex!(r"^s(-?\d+)$");
+        let exchange_re: &Regex = regex!(r"^x(-?[0-9]+)/(-?[0-9]+)$");
+        let partner_re: &Regex = regex!(r"^p([a-z])/([a-z])$");
 
-        if let Some(cap) = SPIN_RE.captures(s) {
+        if let Some(cap) = spin_re.captures(s) {
             return Ok(Instruction::Spin(cap[1].parse().unwrap()));
         }
 
-        if let Some(cap) = EXCHANGE_RE.captures(s) {
+        if let Some(cap) = exchange_re.captures(s) {
             return Ok(Instruction::Exchange(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
             ));
         }
 
-        if let Some(cap) = PARTNER_RE.captures(s) {
+        if let Some(cap) = partner_re.captures(s) {
             return Ok(Instruction::Partner(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),

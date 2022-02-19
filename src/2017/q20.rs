@@ -19,14 +19,11 @@ impl FromStr for Particle {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Particle, ()> {
-        lazy_static! {
-          static ref RE: Regex = Regex::new(
+        let re: &Regex = regex!(
             r"^p=<(-?\d+),(-?\d+),(-?\d+)>, v=<(-?\d+),(-?\d+),(-?\d+)>, a=<(-?\d+),(-?\d+),(-?\d+)>$"
-          )
-          .unwrap();
-        }
+        );
 
-        if let Some(cap) = RE.captures(s) {
+        if let Some(cap) = re.captures(s) {
             return Ok(Particle {
                 p: (
                     cap[1].parse().unwrap(),

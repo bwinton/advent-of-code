@@ -136,8 +136,7 @@ fn get_rooms(
     let mut others = amphipods
         .iter()
         .enumerate()
-        .map(|(kind, values)| values.iter().map(move |&(x, y)| ((x, y), kind)))
-        .flatten()
+        .flat_map(|(kind, values)| values.iter().map(move |&(x, y)| ((x, y), kind)))
         .collect::<HashMap<_, _>>();
     let (x, y) = amphipods[kind][i];
     others.remove(&(x, y));

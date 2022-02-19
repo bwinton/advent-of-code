@@ -31,13 +31,10 @@ impl FromStr for Node {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Node, ()> {
-        lazy_static! {
-            static ref RE: Regex =
-                Regex::new("/dev/grid/node-x([0-9]+)-y([0-9]+) +([0-9]+)T +([0-9]+)T +([0-9]+)T")
-                    .unwrap();
-        }
+        let re: &Regex =
+            regex!("/dev/grid/node-x([0-9]+)-y([0-9]+) +([0-9]+)T +([0-9]+)T +([0-9]+)T");
 
-        let captures = RE.captures(s);
+        let captures = re.captures(s);
         match captures {
             Some(cap) => Ok(Node {
                 x: cap[1].parse().unwrap(),

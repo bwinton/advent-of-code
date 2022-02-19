@@ -30,15 +30,13 @@ fn is_abba(line: &str) -> bool {
 }
 
 fn is_tls(line: &str) -> bool {
-    lazy_static! {
-        static ref HYPERNET: Regex = Regex::new(r"\[([a-z]+)]").unwrap();
-    }
-    for cap in HYPERNET.captures_iter(line) {
+    let hypernet: &Regex = regex!(r"\[([a-z]+)]");
+    for cap in hypernet.captures_iter(line) {
         if is_abba(&cap[1]) {
             return false;
         }
     }
-    let non_hypernet = HYPERNET.replace_all(line, "|");
+    let non_hypernet = hypernet.replace_all(line, "|");
     is_abba(&non_hypernet)
 }
 
@@ -58,12 +56,10 @@ fn get_babs(line: &str) -> Vec<String> {
 }
 
 fn is_ssl(line: &str) -> bool {
-    lazy_static! {
-        static ref HYPERNET: Regex = Regex::new(r"\[([a-z]+)]").unwrap();
-    }
-    for cap in HYPERNET.captures_iter(line) {
+    let hypernet: &Regex = regex!(r"\[([a-z]+)]");
+    for cap in hypernet.captures_iter(line) {
         let babs = get_babs(&cap[1]);
-        let non_hypernet = HYPERNET.replace_all(line, "|");
+        let non_hypernet = hypernet.replace_all(line, "|");
         for bab in babs {
             if non_hypernet.contains(&bab[..]) {
                 return true;

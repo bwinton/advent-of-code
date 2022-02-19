@@ -3,14 +3,14 @@
 
 use std::collections::HashMap;
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 static INPUT: &str = include_str!("data/q21.data");
 
-lazy_static! {
-    // Player 1 starting position: 5
-    static ref START_RE: Regex = Regex::new("^Player ([1-2]) starting position: ([0-9]+)$").unwrap();
-}
+// Player 1 starting position: 5
+static START_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new("^Player ([1-2]) starting position: ([0-9]+)$").unwrap());
 
 fn get_players(data: &str) -> [(u32, u32); 2] {
     let mut players = [(0u32, 0u32); 2];

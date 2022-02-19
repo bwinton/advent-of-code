@@ -18,10 +18,8 @@ impl FromStr for Operation {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Operation, ()> {
-        lazy_static! {
-            static ref MAIN_RE: Regex = Regex::new(r"^(inc|dec) (-?\d+)?$").unwrap();
-        }
-        let cap = MAIN_RE.captures(s);
+        let main_re: &Regex = regex!(r"^(inc|dec) (-?\d+)?$");
+        let cap = main_re.captures(s);
         match cap {
             None => Err(()),
             Some(x) => {
@@ -79,10 +77,8 @@ impl FromStr for Condition {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Condition, ()> {
-        lazy_static! {
-            static ref MAIN_RE: Regex = Regex::new(r"^([a-z]+) ([!<>=]=?) (-?\d+)$").unwrap();
-        }
-        let cap = MAIN_RE.captures(s);
+        let main_re: &Regex = regex!(r"^([a-z]+) ([!<>=]=?) (-?\d+)$");
+        let cap = main_re.captures(s);
         match cap {
             None => {
                 println!("Unknown Condition {}", s);
@@ -122,11 +118,8 @@ impl FromStr for Instruction {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Instruction, ()> {
-        lazy_static! {
-            static ref MAIN_RE: Regex =
-                Regex::new(r"^([a-z]+) ([a-z]+ -?\d+) if (([a-z]+) ..? -?\d+)$").unwrap();
-        }
-        let cap = MAIN_RE.captures(s);
+        let main_re: &Regex = regex!(r"^([a-z]+) ([a-z]+ -?\d+) if (([a-z]+) ..? -?\d+)$");
+        let cap = main_re.captures(s);
         match cap {
             None => {
                 println!("Unknown Instruction {}", s);
