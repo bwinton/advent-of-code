@@ -70,10 +70,10 @@ impl Member {
             if let Some(completion) = &data["completion_day_level"].as_object().unwrap().get(&day) {
                 let one = completion
                     .get("1")
-                    .map(|x| x["get_star_ts"].as_str().unwrap().parse().unwrap());
+                    .map(|x| x["get_star_ts"].as_i64().unwrap());
                 let two = completion
                     .get("2")
-                    .map(|x| x["get_star_ts"].as_str().unwrap().parse().unwrap());
+                    .map(|x| x["get_star_ts"].as_i64().unwrap());
                 day_level.0 = one;
                 day_level.1 = two;
             }
@@ -182,6 +182,7 @@ fn print_year(year: i32, stdout: &mut Stdout) -> Result<(), StatsError> {
         if !response.status().is_success() {
             return Err(StatsError::YearNotFound { year });
         }
+        // dbg!(&response.text());
         let mut file = File::create(&cache_name)?;
         response.copy_to(&mut file)?;
     }
@@ -209,12 +210,12 @@ fn main() -> Result<(), StatsError> {
 ",
                 )
                 .index(1)
-                .multiple_occurrences(true)
+                .num_args(0..)
                 .default_value("*"),
         )
         .get_matches();
 
-    let args: Vec<&str> = matches.values_of("year").unwrap().collect();
+    let args: Vec<&String> = matches.get_many("year").unwrap().collect();
     let args: Vec<i32> = args
         .iter()
         .flat_map(|&x| {

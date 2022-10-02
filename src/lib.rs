@@ -103,12 +103,12 @@ pub fn main(days: &[Box<dyn Day>]) {
 ",
                 )
                 .index(1)
-                .multiple_values(true)
+                .num_args(0..)
                 .default_value("*"),
         )
         .get_matches();
 
-    let args: Vec<&str> = matches.values_of("day").unwrap().collect();
+    let args: Vec<&String> = matches.get_many("day").unwrap().collect();
 
     for argument in args {
         for day in days {

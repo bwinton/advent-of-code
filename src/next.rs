@@ -6,7 +6,7 @@ use std::{
 };
 
 use chrono::{Datelike, Duration, Local};
-use clap::{command, Arg};
+use clap::{command, Arg, ArgAction};
 use crossterm::{style::Print, ExecutableCommand};
 use custom_error::custom_error;
 use reqwest::{
@@ -204,7 +204,6 @@ fn main() -> Result<(), NextError> {
                 .short('y')
                 .help("Which year to add")
                 .long_help("Specify a year to add.")
-                .takes_value(true)
                 .group("arg"),
         )
         .arg(
@@ -212,7 +211,6 @@ fn main() -> Result<(), NextError> {
                 .short('d')
                 .help("Which day to add")
                 .long_help("Specify a day to add.")
-                .takes_value(true)
                 .group("arg"),
         )
         .arg(
@@ -220,18 +218,18 @@ fn main() -> Result<(), NextError> {
                 .short('i')
                 .help("Get input")
                 .long_help("Get input for today.")
-                .takes_value(false)
+                .action(ArgAction::SetTrue)
                 .group("arg"),
         )
         .get_matches();
 
     let (last_year, last_day) = get_last()?;
 
-    if let Some(day) = matches.value_of("day") {
-        add_day(last_year, day.parse::<u32>()?, &mut stdout)?;
-    } else if let Some(year) = matches.value_of("year") {
-        add_year(year.parse::<u32>()?, &mut stdout)?;
-    } else if matches.occurrences_of("input") > 0 {
+    if let Some(&day) = matches.get_one::<u32>("day") {
+        add_day(last_year, day, &mut stdout)?;
+    } else if let Some(&year) = matches.get_one::<u32>("year") {
+        add_year(year, &mut stdout)?;
+    } else if *matches.get_one("input").unwrap() {
         get_input()?;
     } else {
         add_next(last_year, &last_day, &mut stdout)?;

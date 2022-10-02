@@ -9,9 +9,9 @@ debug = true
 
 [dependencies]
 chrono = "0.4.19"
-clap = { version = "3.1.0", features = ["color", "suggestions", "cargo"] }
+clap = { version = "4.0.7", features = ["color", "suggestions", "cargo"] }
 color-backtrace = "0.5.1"
-crossterm = "0.23.0"
+crossterm = "0.25.0"
 custom_error = "1.9.2"
 derive_more = "0.99.16"
 enumset = "1.0.8"
