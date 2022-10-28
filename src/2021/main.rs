@@ -1,5 +1,3 @@
-#![feature(exact_size_is_empty)]
-
 // modules
 mod q01;
 mod q02;

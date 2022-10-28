@@ -4,7 +4,7 @@ use std::collections::{HashMap, VecDeque};
 use custom_error::custom_error;
 
 custom_error! {
-    #[derive(PartialEq,PartialOrd)]
+    #[derive(PartialEq, Eq, PartialOrd)]
     pub IntcodeError
         ModeNotFound {flag: i128} = "Mode {flag} not understood.",
         OpcodeNotFound {opcode: i128} = "Opcode {opcode} not understood",

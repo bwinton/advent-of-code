@@ -129,7 +129,7 @@ impl Day for Q {
         print!("{}A: ", self.number());
         let mut result = String::from("No path found.");
         let mut next = BinaryHeap::new();
-        next.push(State::new(&String::from(""), 0, 0));
+        next.push(State::new("", 0, 0));
         while !next.is_empty() {
             let state = next.pop().unwrap();
             if state.is_winning() {
@@ -149,7 +149,7 @@ impl Day for Q {
         print!("{}B: ", self.number());
         let mut result = 0;
         let mut next = BinaryHeap::new();
-        next.push(State::new(&String::from(""), 0, 0));
+        next.push(State::new("", 0, 0));
         while !next.is_empty() {
             let state = next.pop().unwrap();
             if state.is_winning() && state.path.len() > result {
