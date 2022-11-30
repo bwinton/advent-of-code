@@ -145,7 +145,10 @@ fn get_input() -> Result<(), NextError> {
     let year = today.year();
     let day = today.day();
     let datapath = format!("src/{}/data/q{:02}.data", year, day);
-    if std::fs::metadata(&datapath)?.len() == 0 {
+    let metadata = std::fs::metadata(&datapath);
+    if metadata.is_err() {
+        println!("Too early to get input for {:?}", datapath);
+    } else if metadata.unwrap().len() == 0 {
         // We're getting the data for today!
         println!("Getting input for {:?}", datapath);
         let mut response = get_url(year, day)?;
