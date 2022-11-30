@@ -9,6 +9,7 @@ use chrono::{Datelike, Duration, Local};
 use clap::{command, Arg, ArgAction};
 use crossterm::{style::Print, ExecutableCommand};
 use custom_error::custom_error;
+use humantime::format_duration;
 use reqwest::{
     blocking::{Client, Response},
     header::COOKIE,
@@ -141,14 +142,12 @@ fn get_url(year: i32, day: u32) -> Result<Response, NextError> {
 }
 
 fn get_input() -> Result<(), NextError> {
-    let today = Local::now();
+    let today = Local::now().naive_local();
     let year = today.year();
     let day = today.day();
     let datapath = format!("src/{}/data/q{:02}.data", year, day);
     let metadata = std::fs::metadata(&datapath);
-    if metadata.is_err() {
-        println!("Too early to get input for {:?}", datapath);
-    } else if metadata.unwrap().len() == 0 {
+    if metadata.map(|m| m.len()).unwrap_or(1) == 0 {
         // We're getting the data for today!
         println!("Getting input for {:?}", datapath);
         let mut response = get_url(year, day)?;
@@ -159,21 +158,27 @@ fn get_input() -> Result<(), NextError> {
         response.copy_to(&mut file)?;
     } else {
         // Let's wait and get the data for tomorrow!
-        let day = day + 1;
+        let tomorrow = today
+            .date()
+            .succ_opt()
+            .ok_or(NextError::YearNotFound { year })?;
+        let day = tomorrow.day();
         let datapath = format!("src/{}/data/q{:02}.data", year, day);
         println!("Getting input for {:?}", datapath);
-        let tonight = today
-            .with_day(day)
-            .ok_or(NextError::YearNotFound { year })?
-            .date()
-            .and_hms(0, 0, 1);
+        let tonight = tomorrow.and_hms_opt(0, 0, 1).unwrap();
         let duration = tonight - today;
-        println!("  Sleeping for {:?} until {}", duration.to_std(), tonight);
-        std::thread::sleep(
+        let std_duration = std::time::Duration::from_secs(
             duration
                 .to_std()
-                .map_err(|_| NextError::DurationError { duration })?,
+                .map_err(|_| NextError::DurationError { duration })?
+                .as_secs(),
         );
+        println!(
+            "  Sleeping for {} until {}",
+            format_duration(std_duration),
+            tonight
+        );
+        std::thread::sleep(std_duration);
         println!("  Waking up and getting the response!");
         let mut response = get_url(year, day)?;
         println!("  {:?}", response.status());

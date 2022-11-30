@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use chrono::{Date, TimeZone, Utc};
+use chrono::NaiveDate;
 use regex::Regex;
 use std::{collections::HashMap, str::FromStr};
 
@@ -40,16 +40,17 @@ impl FromStr for Record {
         let woke_re: &Regex = regex!(r"\[\d+-(\d+-\d+) \d+:(\d+)\] wakes up");
 
         if let Some(cap) = started_re.captures(s) {
-            let mut date: Date<Utc> = Utc.ymd(
+            let mut date = NaiveDate::from_ymd_opt(
                 cap[1].parse().unwrap(),
                 cap[2].parse().unwrap(),
                 cap[3].parse().unwrap(),
-            );
+            )
+            .unwrap();
             let hour: u32 = cap[4].parse().unwrap();
             let guard = cap[5].to_owned();
 
             if hour > 22 {
-                date = date.succ();
+                date = date.succ_opt().unwrap();
             }
             return Ok(Record::Started {
                 date: date.format("%m-%d").to_string(),
