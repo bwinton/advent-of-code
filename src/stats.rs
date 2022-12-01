@@ -7,6 +7,7 @@ use std::{
     time::{SystemTime, SystemTimeError},
 };
 
+use chrono::{Datelike, Local};
 use clap::{command, Arg};
 use crossterm::{
     queue,
@@ -43,7 +44,7 @@ impl AocStats {
             members.push(Member::from_data(member.as_object().unwrap()));
         }
         AocStats {
-            _owner_id: data["owner_id"].as_str().unwrap().to_owned(),
+            _owner_id: data["owner_id"].to_string(),
             members,
             event: data["event"].as_str().unwrap().to_owned(),
         }
@@ -82,14 +83,11 @@ impl Member {
         Member {
             name: data["name"]
                 .as_str()
-                .unwrap_or(&format!(
-                    "Anonymous User ({})",
-                    data["id"].as_str().unwrap()
-                ))
+                .unwrap_or(&format!("Anonymous User ({})", data["id"]))
                 .to_owned(),
             completions,
             _stars: data["stars"].as_i64().unwrap_or(0),
-            _id: data["id"].as_str().unwrap().to_owned(),
+            _id: data["id"].to_string(),
             _global_score: data["global_score"].as_i64().unwrap_or(0),
             local_score: data["local_score"].as_i64().unwrap_or(0),
             max_score: 0,
@@ -216,11 +214,14 @@ fn main() -> Result<(), StatsError> {
         .get_matches();
 
     let args: Vec<&String> = matches.get_many("year").unwrap().collect();
+    let today = Local::now().date_naive();
+    let this_year = today.year();
+
     let args: Vec<i32> = args
         .iter()
         .flat_map(|&x| {
             if x == "*" {
-                2015..=2020
+                2015..=this_year
             } else {
                 x.parse().unwrap()..=x.parse().unwrap()
             }
