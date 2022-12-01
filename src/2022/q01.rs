@@ -1,11 +1,13 @@
 //-----------------------------------------------------
 // Setup.
 
+use std::collections::BinaryHeap;
+
 static INPUT: &str = include_str!("data/q01.data");
 
 fn process_data_a(data: &str) -> usize {
     let mut elf = 0;
-    let mut calories = vec![];
+    let mut calories = BinaryHeap::new();
     for line in data.lines() {
         if line.trim().is_empty() {
             calories.push(elf);
@@ -15,7 +17,7 @@ fn process_data_a(data: &str) -> usize {
         elf += line.parse::<usize>().unwrap();
     }
     calories.push(elf);
-    calories.into_iter().max().unwrap_or_default()
+    calories.pop().unwrap()
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -30,8 +32,6 @@ fn process_data_b(data: &str) -> usize {
         elf += line.parse::<usize>().unwrap();
     }
     calories.push(elf);
-    calories.sort();
-    calories.reverse();
     calories.into_iter().take(3).sum()
 }
 
