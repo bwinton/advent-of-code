@@ -22,7 +22,7 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
     let mut elf = 0;
-    let mut calories = vec![];
+    let mut calories = BinaryHeap::new();
     for line in data.lines() {
         if line.trim().is_empty() {
             calories.push(elf);
@@ -32,7 +32,8 @@ fn process_data_b(data: &str) -> usize {
         elf += line.parse::<usize>().unwrap();
     }
     calories.push(elf);
-    calories.into_iter().take(3).sum()
+    // We need to pop, to let the Heap rearrange itself.
+    calories.pop().unwrap() + calories.pop().unwrap() + calories.pop().unwrap()
 }
 
 //-----------------------------------------------------
