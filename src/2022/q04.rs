@@ -1,15 +1,18 @@
 //-----------------------------------------------------
 // Setup.
 
+use std::ops::RangeInclusive;
+
 static INPUT: &str = include_str!("data/q04.data");
 
-fn get_segment(elves: &mut std::str::Split<char>) -> Vec<usize> {
-    elves
+fn get_segment(elves: &mut std::str::Split<char>) -> RangeInclusive<usize> {
+    let temp = elves
         .next()
         .unwrap()
         .splitn(2, '-')
         .map(|x| x.parse().unwrap())
-        .collect::<Vec<usize>>()
+        .collect::<Vec<usize>>();
+    temp[0]..=temp[1]
 }
 
 fn process_data_a(data: &str) -> usize {
@@ -18,8 +21,9 @@ fn process_data_a(data: &str) -> usize {
         let mut elves = line.split(',');
         let first = get_segment(&mut elves);
         let second = get_segment(&mut elves);
-        if first[0] >= second[0] && first[1] <= second[1]
-            || second[0] >= first[0] && second[1] <= first[1]
+        dbg!(first == second);
+        if first.start() >= second.start() && first.end() <= second.end()
+            || second.start() >= first.start() && second.end() <= first.end()
         {
             rv += 1;
         }
@@ -33,8 +37,8 @@ fn process_data_b(data: &str) -> usize {
         let mut elves = line.split(',');
         let first = get_segment(&mut elves);
         let second = get_segment(&mut elves);
-        if first[0] <= second[0] && first[1] >= second[0]
-            || first[0] >= second[0] && first[0] <= second[1]
+        if first.start() <= second.start() && first.end() >= second.start()
+            || first.start() >= second.start() && first.start() <= second.end()
         {
             rv += 1;
         }
