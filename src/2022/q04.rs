@@ -5,23 +5,22 @@ use std::ops::RangeInclusive;
 
 static INPUT: &str = include_str!("data/q04.data");
 
-fn get_segment(elves: &mut std::str::Split<char>) -> RangeInclusive<usize> {
-    let temp = elves
-        .next()
-        .unwrap()
-        .splitn(2, '-')
-        .map(|x| x.parse().unwrap())
-        .collect::<Vec<usize>>();
-    temp[0]..=temp[1]
+fn get_segment(elves: &str) -> RangeInclusive<usize> {
+    let (start, end) = elves.split_once('-').unwrap();
+    start.parse().unwrap()..=end.parse().unwrap()
+}
+
+fn get_elves(line: &str) -> (RangeInclusive<usize>, RangeInclusive<usize>) {
+    let (first, second) = line.split_once(',').unwrap();
+    let first = get_segment(first);
+    let second = get_segment(second);
+    (first, second)
 }
 
 fn process_data_a(data: &str) -> usize {
     let mut rv = 0;
     for line in data.lines() {
-        let mut elves = line.split(',');
-        let first = get_segment(&mut elves);
-        let second = get_segment(&mut elves);
-        dbg!(first == second);
+        let (first, second) = get_elves(line);
         if first.start() >= second.start() && first.end() <= second.end()
             || second.start() >= first.start() && second.end() <= first.end()
         {
@@ -34,12 +33,8 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     for line in data.lines() {
-        let mut elves = line.split(',');
-        let first = get_segment(&mut elves);
-        let second = get_segment(&mut elves);
-        if first.start() <= second.start() && first.end() >= second.start()
-            || first.start() >= second.start() && first.start() <= second.end()
-        {
+        let (first, second) = get_elves(line);
+        if first.contains(second.start()) || second.contains(first.start()) {
             rv += 1;
         }
     }
