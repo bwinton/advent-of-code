@@ -10,6 +10,9 @@ use nom::{
     IResult,
 };
 
+type Board = Vec<Vec<char>>;
+type Move = (usize, usize, usize);
+
 static INPUT: &str = include_str!("data/q05.data");
 
 fn cell(i: &str) -> IResult<&str, Option<char>> {
@@ -37,7 +40,7 @@ fn line(i: &str) -> IResult<&str, Vec<Option<char>>> {
     Ok((input, board))
 }
 
-fn rule(i: &str) -> IResult<&str, (usize, usize, usize)> {
+fn rule(i: &str) -> IResult<&str, Move> {
     // move 1 from 7 to 4
     let (input, (_, count, _, from, _, to)) = tuple((
         tag("move "),
@@ -50,7 +53,7 @@ fn rule(i: &str) -> IResult<&str, (usize, usize, usize)> {
     Ok((input, (count as usize, from as usize, to as usize)))
 }
 
-fn parser(i: &str) -> IResult<&str, (Vec<Vec<char>>, Vec<(usize, usize, usize)>)> {
+fn parser(i: &str) -> IResult<&str, (Board, Vec<Move>)> {
     let (input, (line_data, rules)) = separated_pair(
         separated_list1(line_ending, line),
         many1(line_ending),
