@@ -91,7 +91,6 @@ fn process_data_a(data: &str) -> String {
 fn process_data_b(data: &str) -> String {
     let mut rv = "".to_owned();
     let (_i, (mut board, rules)) = parser(data).unwrap();
-    dbg!(&board);
     for (count, from, to) in rules {
         let mut values = vec![];
         for _ in 0..count {
@@ -101,7 +100,6 @@ fn process_data_b(data: &str) -> String {
         for value in values {
             board[to - 1].push(value);
         }
-        dbg!(&board);
     }
     for mut col in board {
         rv.push(col.pop().unwrap());
