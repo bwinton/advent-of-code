@@ -80,8 +80,6 @@ fn process_data_b(data: &str) -> String {
         for x in 0..=max_x {
             image.push(grid.contains(&(x, y)));
         }
-        // Add an extra column at the end for the recognizer, until we fix it there.
-        image.push(false);
     }
     recognize_letters(&image)
 }

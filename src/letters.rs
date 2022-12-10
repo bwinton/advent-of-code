@@ -219,14 +219,14 @@ static LETTERS: Lazy<HashMap<Vec<bool>, char>> = Lazy::new(|| {
         false, false, false, false, false],
         'W');
     
-    // letters.insert(vec![
-    //     false, false, false, false, false,
-    //     false, false, false, false, false,
-    //     false, false, false, false, false,
-    //     false, false, false, false, false,
-    //     false, false, false, false, false,
-    //     false, false, false, false, false],
-    //     'X');
+    letters.insert(vec![
+        false, false, false, false, false,
+        false, false, false, false, false,
+        false, false, false, false, false,
+        false, false, false, false, false,
+        false, false, false, false, false,
+        false, false, false, false, false],
+        'X');
     
     letters.insert(vec![
         true, false, false, false, true,
@@ -249,9 +249,8 @@ static LETTERS: Lazy<HashMap<Vec<bool>, char>> = Lazy::new(|| {
 });
 
 pub fn recognize_letters(image: &[bool]) -> String {
-    let image = image.to_vec();
+    let mut image = image.to_vec();
     let column_count = image.len() / 6;
-    let char_count = column_count / 5;
 
     let mut offset = 0;
     'outer: loop {
@@ -263,32 +262,75 @@ pub fn recognize_letters(image: &[bool]) -> String {
         offset += 1;
     }
 
+    // Remove the front offset rows…
+    for row in 0..6 {
+        let last = 5-row;
+        for _ in 0..offset {
+            let prev = image.remove(last * column_count);
+            assert!(!prev);
+        }
+    }
+
+    let column_count = image.len() / 6;
+    let leftovers = column_count % 5;
+
+    if leftovers != 0 {
+        // Check to see if the final column_count % 5 rows are blank.
+        let mut blank = true;
+        'outer: for row in 0..6 {
+            for i in 1..=leftovers {
+                let prev = image[row * column_count + column_count - i];
+                if prev {
+                    blank = false;
+                    break 'outer;
+                }
+            }
+        }
+
+        if blank {
+            // If they are, remove them.
+            for row in 0..6 {
+                let last = 5-row;
+                for i in 1..=leftovers {
+                    let prev = image.remove(last * column_count + column_count - i);
+                    assert!(!prev);
+                }
+            }
+        } else {
+            // Otherwise, add enough blank rows to get to 5.
+            for row in 0..6 {
+                let last = 5-row;
+                for _ in 0..5-leftovers {
+                    image.insert((last + 1) * column_count, false);
+                }
+            }
+        }
+    }
+    let column_count = image.len() / 6;
+
     let mut picture = String::new();
     for (index, &value) in image.iter().enumerate() {
         picture.push(if value { '█' } else { ' ' });
         if (index + 1) % column_count == 0 {
-            picture.push('.');
+            // picture.push('.');
             picture.push('\n');
         }
     }
-
-    if (column_count - offset) % 5 != 0 {
-        // Remove all the blank rows at the end, then add one, and see how that affects it.
-        // dbg!((column_count - offset) % 5);
-        // println!("picture:\n{}", picture);
-    }
+    // println!("\n{}", picture);
 
     // collect the characters…
+    let char_count = column_count / 5;
     let mut rv = vec![];
     for i in 0..char_count {
         let mut letter = vec![];
         for row in 0..6 {
             for column in 0..5 {
-                letter.push(image[offset + row * column_count + column + 5 * i]);
+                letter.push(image[row * column_count + column + 5 * i]);
             }
         }
         if LETTERS.get(&letter).is_none() {
             // We didn't find one of the letters, so return the picture.
+            // println!("Couldn't find the next letter after {:?}", rv);
             return picture;
         }
         rv.push(LETTERS[&letter]);
