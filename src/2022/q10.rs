@@ -1,6 +1,8 @@
 //-----------------------------------------------------
 // Setup.
 
+use aoc::letters::recognize_letters;
+
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -75,7 +77,7 @@ fn process_data_a(data: &str) -> i64 {
 }
 
 fn process_data_b(data: &str) -> String {
-    let mut rv = "".to_string();
+    let mut letters = vec![];
     let mut x = 1;
     let mut cycle = 0;
     let instructions = parser(data).unwrap().1;
@@ -84,19 +86,12 @@ fn process_data_b(data: &str) -> String {
         let time = instruction.length();
         for _ in 0..time {
             let test = cycle % 40;
-            if test == x - 1 || test == x || test == x + 1 {
-                rv.push('#');
-            } else {
-                rv.push('.');
-            }
-            if test % 40 == 39 {
-                rv.push('\n');
-            }
+            letters.push(test == x - 1 || test == x || test == x + 1);
             cycle += 1;
         }
         instruction.execute(&mut x);
     }
-    rv
+    recognize_letters(&letters)
 }
 
 //-----------------------------------------------------
@@ -413,12 +408,12 @@ fn b() {
     "
         )),
         indoc!(
-            "##..##..##..##..##..##..##..##..##..##..
-    ###...###...###...###...###...###...###.
-    ####....####....####....####....####....
-    #####.....#####.....#####.....#####.....
-    ######......######......######......####
-    #######.......#######.......#######.....
+            "██  ██  ██  ██  ██  ██  ██  ██  ██  ██  
+    ███   ███   ███   ███   ███   ███   ███ 
+    ████    ████    ████    ████    ████    
+    █████     █████     █████     █████     
+    ██████      ██████      ██████      ████
+    ███████       ███████       ███████     
     "
         )
     );
