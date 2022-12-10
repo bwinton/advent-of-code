@@ -12,7 +12,6 @@ fn fold(coord: (&str, usize), grid: HashSet<(usize, usize)>) -> HashSet<(usize, 
     let mut rv = HashSet::new();
     let (axis, value) = coord;
     for (mut x, mut y) in grid {
-        // print!("Mapping {},{}", x, y);
         if axis == "x" {
             if x > value {
                 x = value - (x - value);
@@ -20,7 +19,6 @@ fn fold(coord: (&str, usize), grid: HashSet<(usize, usize)>) -> HashSet<(usize, 
         } else if y > value {
             y = value - (y - value);
         }
-        // println!(" to {},{}", x, y);
         rv.insert((x, y));
     }
     rv
@@ -47,9 +45,7 @@ fn process_data_a(data: &str) -> usize {
             folds.push((coord, value));
         }
     }
-    // println!("Grid: {:?}", grid.iter().sorted());
     grid = fold(folds[0], grid);
-    // println!("  => {:?}", grid.iter().sorted());
     grid.len()
 }
 
@@ -74,20 +70,18 @@ fn process_data_b(data: &str) -> String {
             folds.push((coord, value));
         }
     }
-    // println!("Grid: {:?}", grid.iter().sorted());
     for curr in folds {
         grid = fold(curr, grid);
     }
     let max_x = grid.iter().sorted().last().unwrap().0;
     let max_y = grid.iter().sorted_by_key(|x| x.1).last().unwrap().1;
     let mut image = Vec::with_capacity(max_x * max_y);
-    // println!();
     for y in 0..=max_y {
         for x in 0..=max_x {
             image.push(grid.contains(&(x, y)));
-            // print!("{}", if grid.contains(&(x,y)) { '#' } else { '.' });
         }
-        // println!();
+        // Add an extra column at the end for the recognizer, until we fix it there.
+        image.push(false);
     }
     recognize_letters(&image)
 }
@@ -130,31 +124,37 @@ fn a() {
 
 #[test]
 fn b() {
-    // assert_eq!(
-    //     process_data_b(indoc!(
-    //         "6,10
-    // 0,14
-    // 9,10
-    // 0,3
-    // 10,4
-    // 4,11
-    // 6,0
-    // 6,12
-    // 4,1
-    // 0,13
-    // 10,12
-    // 3,4
-    // 3,0
-    // 8,4
-    // 1,10
-    // 2,14
-    // 8,10
-    // 9,0
+    assert_eq!(
+        process_data_b(indoc!(
+            "6,10
+    0,14
+    9,10
+    0,3
+    10,4
+    4,11
+    6,0
+    6,12
+    4,1
+    0,13
+    10,12
+    3,4
+    3,0
+    8,4
+    1,10
+    2,14
+    8,10
+    9,0
 
-    // fold along y=7
-    // fold along x=5
-    // "
-    //     )),
-    //     <Idk, a square or something…>
-    // );
+    fold along y=7
+    fold along x=5
+    "
+        )),
+        indoc!("█████
+        █   
+       █ █  
+        █ █ 
+         █ █
+       ████ 
+       ")
+    );
 }
