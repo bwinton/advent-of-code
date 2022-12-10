@@ -264,7 +264,7 @@ pub fn recognize_letters(image: &[bool]) -> String {
 
     // Remove the front offset rows…
     for row in 0..6 {
-        let last = 5-row;
+        let last = 5 - row;
         for _ in 0..offset {
             let prev = image.remove(last * column_count);
             assert!(!prev);
@@ -290,7 +290,7 @@ pub fn recognize_letters(image: &[bool]) -> String {
         if blank {
             // If they are, remove them.
             for row in 0..6 {
-                let last = 5-row;
+                let last = 5 - row;
                 for i in 1..=leftovers {
                     let prev = image.remove(last * column_count + column_count - i);
                     assert!(!prev);
@@ -299,8 +299,8 @@ pub fn recognize_letters(image: &[bool]) -> String {
         } else {
             // Otherwise, add enough blank rows to get to 5.
             for row in 0..6 {
-                let last = 5-row;
-                for _ in 0..5-leftovers {
+                let last = 5 - row;
+                for _ in 0..5 - leftovers {
                     image.insert((last + 1) * column_count, false);
                 }
             }
