@@ -219,14 +219,14 @@ static LETTERS: Lazy<HashMap<Vec<bool>, char>> = Lazy::new(|| {
         false, false, false, false, false],
         'W');
     
-    letters.insert(vec![
-        false, false, false, false, false,
-        false, false, false, false, false,
-        false, false, false, false, false,
-        false, false, false, false, false,
-        false, false, false, false, false,
-        false, false, false, false, false],
-        'X');
+    // letters.insert(vec![
+    //     false, false, false, false, false,
+    //     false, false, false, false, false,
+    //     false, false, false, false, false,
+    //     false, false, false, false, false,
+    //     false, false, false, false, false,
+    //     false, false, false, false, false],
+    //     'X');
     
     letters.insert(vec![
         true, false, false, false, true,
@@ -249,15 +249,8 @@ static LETTERS: Lazy<HashMap<Vec<bool>, char>> = Lazy::new(|| {
 });
 
 pub fn recognize_letters(image: &[bool]) -> String {
-    let mut image = image.to_vec();
-    let mut column_count = image.len() / 6;
-    for _ in (column_count % 5)..5 {
-        for x in 0..6 {
-            let x = 6 - x;
-            image.insert(x * column_count, false);
-        }
-        column_count = image.len() / 6;
-    }
+    let image = image.to_vec();
+    let column_count = image.len() / 6;
     let char_count = column_count / 5;
 
     let mut offset = 0;
@@ -270,18 +263,34 @@ pub fn recognize_letters(image: &[bool]) -> String {
         offset += 1;
     }
 
+    let mut picture = String::new();
+    for (index, &value) in image.iter().enumerate() {
+        picture.push(if value { '█' } else { ' ' });
+        if (index + 1) % column_count == 0 {
+            picture.push('.');
+            picture.push('\n');
+        }
+    }
+
+    if (column_count - offset) % 5 != 0 {
+        // Remove all the blank rows at the end, then add one, and see how that affects it.
+        // dbg!((column_count - offset) % 5);
+        // println!("picture:\n{}", picture);
+    }
+
     // collect the characters…
     let mut rv = vec![];
     for i in 0..char_count {
         let mut letter = vec![];
         for row in 0..6 {
             for column in 0..5 {
-                // print!("{}", if image[offset + row * column_count + column + 5 * i] { '█' } else { ' ' });
                 letter.push(image[offset + row * column_count + column + 5 * i]);
             }
-            // println!();
         }
-        // println!("  => {:?}", LETTERS[&letter]);
+        if LETTERS.get(&letter).is_none() {
+            // We didn't find one of the letters, so return the picture.
+            return picture;
+        }
         rv.push(LETTERS[&letter]);
     }
     rv.into_iter().collect()
