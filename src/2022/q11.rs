@@ -122,17 +122,24 @@ fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {
     Ok((input, list))
 }
 
-fn process_data_a(data: &str) -> usize {
+fn process_data(data: &str, iterations: i32, extra_worry: bool) -> usize {
     let mut monkeys = parser(data).unwrap().1;
-    for _ in 0..20 {
+    let mut divisor = 1;
+    for monkey in &monkeys {
+        divisor *= monkey.test
+    }
+    for _ in 0..iterations {
         for i in 0..monkeys.len() {
             let mut throws = vec![];
             throws.resize(monkeys.len(), vec![]);
 
             let monkey = &mut monkeys[i];
             for &item in &monkey.items {
-                let item = monkey.operation.execute(item);
-                let item = item / 3;
+                let mut item = monkey.operation.execute(item);
+                if !extra_worry {
+                    item /= 3;
+                }
+                let item = item % divisor;
                 let next = if item % monkey.test == 0 {
                     monkey.true_branch
                 } else {
@@ -156,42 +163,12 @@ fn process_data_a(data: &str) -> usize {
         .product()
 }
 
-fn process_data_b(data: &str) -> usize {
-    let mut monkeys = parser(data).unwrap().1;
-    let mut divisor = 1;
-    for monkey in &monkeys {
-        divisor *= monkey.test
-    }
-    for _ in 0..10_000 {
-        for i in 0..monkeys.len() {
-            let mut throws = vec![];
-            throws.resize(monkeys.len(), vec![]);
+fn process_data_a(data: &str) -> usize {
+    process_data(data, 20, false)
+}
 
-            let monkey = &mut monkeys[i];
-            for &item in &monkey.items {
-                let item = monkey.operation.execute(item);
-                let item = item % divisor;
-                let next = if item % monkey.test == 0 {
-                    monkey.true_branch
-                } else {
-                    monkey.false_branch
-                };
-                throws[next].push(item);
-                monkey.inspected += 1;
-            }
-            monkeys[i].items.clear();
-            for i in 0..throws.len() {
-                monkeys[i].items.extend_from_slice(&throws[i]);
-            }
-        }
-    }
-    monkeys
-        .iter()
-        .map(|m| m.inspected)
-        .sorted()
-        .rev()
-        .take(2)
-        .product()
+fn process_data_b(data: &str) -> usize {
+    process_data(data, 10_000, true)
 }
 
 //-----------------------------------------------------
