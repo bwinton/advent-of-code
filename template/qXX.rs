@@ -26,10 +26,14 @@ q_impl!("X");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(indoc!("")), 0);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(indoc!("")), 0);
 }
