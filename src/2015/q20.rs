@@ -50,6 +50,8 @@ q_impl!("20");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     let mut iter = factors_iter();
     assert_eq!(iter.next().unwrap(), hashset![1]);
     assert_eq!(iter.next().unwrap(), hashset![1, 2]);
@@ -64,5 +66,7 @@ fn a() {
 
 #[test]
 fn b() {
+    // use pretty_assertions::assert_eq;
+
     // assert_eq!(process_data_b(""), 0);
 }

@@ -34,6 +34,8 @@ q_impl!("6");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(indoc!("mjqjpqmgbljsphdztnvjfqwrcgsmlb")), 7);
     assert_eq!(process_data_a(indoc!("bvwbjplbgvbhsrlpgdmjqwftvncz")), 5);
     assert_eq!(process_data_a(indoc!("nppdvjthqldpwncqszvftbrmjlhg")), 6);
@@ -49,6 +51,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(indoc!("mjqjpqmgbljsphdztnvjfqwrcgsmlb")), 19);
     assert_eq!(process_data_b(indoc!("bvwbjplbgvbhsrlpgdmjqwftvncz")), 23);
     assert_eq!(process_data_b(indoc!("nppdvjthqldpwncqszvftbrmjlhg")), 23);

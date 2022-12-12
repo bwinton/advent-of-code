@@ -79,6 +79,8 @@ q_impl!("4");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(check_a(111_111), true);
     assert_eq!(check_a(223_450), false);
     assert_eq!(check_a(123_789), false);
@@ -86,6 +88,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(check_b(112_233), true);
     assert_eq!(check_b(123_444), false);
     assert_eq!(check_b(111_122), true);

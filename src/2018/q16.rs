@@ -299,10 +299,14 @@ q_impl!("16");
 
 #[test]
 fn a() {
+    // use pretty_assertions::assert_eq;
+
     // assert_eq!(process_data_a(""), 0);
 }
 
 #[test]
 fn b() {
+    // use pretty_assertions::assert_eq;
+
     // assert_eq!(process_data_b(""), 0);
 }

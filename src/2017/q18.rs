@@ -385,6 +385,8 @@ impl Day for Q {
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "set a 1
@@ -404,6 +406,8 @@ jgz a -2",
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "snd 1

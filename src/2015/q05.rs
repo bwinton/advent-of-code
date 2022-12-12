@@ -95,6 +95,8 @@ q_impl!("5");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("ugknbfddgicrmopn"), 1);
     assert_eq!(process_data_a("aaa"), 1);
     assert_eq!(process_data_a("jchzalrnumimnmhp"), 0);
@@ -104,6 +106,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("qjhvhtzxzqqjkmpb"), 1);
     assert_eq!(process_data_b("xxyxx"), 1);
     assert_eq!(process_data_b("uurcxstgmygtbstg"), 0);

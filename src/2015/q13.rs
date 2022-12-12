@@ -98,6 +98,8 @@ q_impl!("13");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "Alice would gain 54 happiness units by sitting next to Bob.

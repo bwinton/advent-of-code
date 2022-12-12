@@ -161,6 +161,8 @@ q_impl!("12");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         run_moons_a(
             "<x=-1, y=0, z=2>
@@ -176,6 +178,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "<x=-1, y=0, z=2>

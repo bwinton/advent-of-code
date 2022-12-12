@@ -161,6 +161,8 @@ q_impl!("22");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         deal_cards(
             "deal into new stack

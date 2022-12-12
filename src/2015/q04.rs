@@ -46,12 +46,16 @@ q_impl!("4");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("abcdef"), 609_043);
     assert_eq!(process_data_a("pqrstuv"), 1_048_970);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("abcdef"), 6_742_839);
     assert_eq!(process_data_b("pqrstuv"), 5_714_438);
 }

@@ -88,6 +88,8 @@ impl Day for Q {
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("{}"), 1);
     assert_eq!(process_data_a("{{{}}}"), 6);
     assert_eq!(process_data_a("{{},{}}"), 5);
@@ -100,6 +102,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("<>"), 0);
     assert_eq!(process_data_b("<random characters>"), 17);
     assert_eq!(process_data_b("<<<<>"), 3);

@@ -313,6 +313,8 @@ q_impl!("18");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "#########
@@ -335,6 +337,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "#######

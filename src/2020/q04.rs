@@ -395,6 +395,8 @@ q_impl!("4");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
@@ -418,6 +420,8 @@ iyr:2011 ecl:brn hgt:59in
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "eyr:1972 cid:100

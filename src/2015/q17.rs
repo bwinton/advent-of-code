@@ -55,6 +55,8 @@ q_impl!("17");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a_impl(
             "20
@@ -70,6 +72,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b_impl(
             "20

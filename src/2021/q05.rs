@@ -78,6 +78,8 @@ q_impl!("5");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(indoc!(
             "0,9 -> 5,9
@@ -98,6 +100,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(indoc!(
             "0,9 -> 5,9

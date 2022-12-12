@@ -208,6 +208,8 @@ q_impl!("3");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "R8,U5,L5,D3
@@ -233,6 +235,8 @@ U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "R8,U5,L5,D3

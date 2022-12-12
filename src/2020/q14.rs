@@ -160,6 +160,8 @@ q_impl!("14");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
@@ -174,6 +176,8 @@ mem[8] = 0
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "mask = 000000000000000000000000000000X1001X

@@ -159,6 +159,8 @@ q_impl!("14");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "10 ORE => 10 A
@@ -244,6 +246,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         munge_data_b(
             "157 ORE => 5 NZVS

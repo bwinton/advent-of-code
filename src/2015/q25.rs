@@ -37,6 +37,8 @@ q_impl!("25");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(find_cell(1, 1), 0);
     assert_eq!(find_cell(1, 6), 20);
     assert_eq!(find_cell(6, 1), 15);
@@ -54,5 +56,7 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(""), 0);
 }

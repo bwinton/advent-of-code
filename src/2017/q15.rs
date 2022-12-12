@@ -84,10 +84,14 @@ impl Day for Q {
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(&[65, 8921]), 588);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(&[65, 8921]), 309);
 }

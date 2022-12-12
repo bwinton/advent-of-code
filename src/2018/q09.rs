@@ -90,6 +90,8 @@ q_impl!("9");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a("9 players; last marble is worth 25 points"),
         32

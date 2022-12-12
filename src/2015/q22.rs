@@ -211,6 +211,8 @@ q_impl!("22");
 #[allow(clippy::cognitive_complexity)]
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     // First example.
     let mut state = State::new();
     state.player.hp = 10;
@@ -321,6 +323,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     // First example.
     let mut state = State::new();
     state.player.hp = 1;

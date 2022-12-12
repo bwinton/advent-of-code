@@ -133,6 +133,8 @@ q_impl!("15");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(indoc!(
             "1163751742
@@ -152,6 +154,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(indoc!(
             "1163751742

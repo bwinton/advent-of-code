@@ -81,6 +81,8 @@ q_impl!("12");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "F10
@@ -95,6 +97,8 @@ F11"
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "F10

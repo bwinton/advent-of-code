@@ -109,6 +109,8 @@ q_impl!("21");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(indoc!(
             "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
@@ -122,6 +124,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(indoc!(
             "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)

@@ -141,6 +141,8 @@ impl Day for Q {
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>
@@ -152,6 +154,8 @@ p=<4,0,0>, v=<0,0,0>, a=<-2,0,0>",
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "p=<-6,0,0>, v=<3,0,0>, a=<0,0,0>

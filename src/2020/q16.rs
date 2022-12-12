@@ -217,6 +217,8 @@ q_impl!("16");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "class: 1-3 or 5-7
@@ -239,6 +241,8 @@ nearby tickets:
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "class: 0-1 or 4-19

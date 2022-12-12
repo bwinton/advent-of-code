@@ -329,6 +329,8 @@ q_impl!("23");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     let (_, rooms, amphipods) = parse_data(indoc!(
         "#############
     #...........#
@@ -424,6 +426,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     let (_, rooms, amphipods) = parse_data(indoc!(
         "#############
     #...........#

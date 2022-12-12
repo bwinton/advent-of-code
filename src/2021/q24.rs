@@ -318,6 +318,8 @@ q_impl!("24");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         parser(indoc!(
             "inp x

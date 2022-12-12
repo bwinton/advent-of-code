@@ -219,6 +219,8 @@ c inc -20 if c == 10",
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "b inc 5 if a > 1

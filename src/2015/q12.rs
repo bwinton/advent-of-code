@@ -46,6 +46,8 @@ q_impl!("12");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("[1,2,3]"), 6);
     assert_eq!(process_data_a("{\"a\":2,\"b\":4}"), 6);
     assert_eq!(process_data_a("[[[3]]]"), 3);
@@ -58,6 +60,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("[1,2,3]"), 6);
     assert_eq!(process_data_b("[1,{\"c\":\"red\",\"b\":2},3]"), 4);
     assert_eq!(process_data_b("[1,{\"red\":\"c\",\"b\":2},3]"), 6);

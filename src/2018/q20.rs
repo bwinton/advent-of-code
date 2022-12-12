@@ -133,6 +133,8 @@ q_impl!("20");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("^WNE$"), 3);
     assert_eq!(process_data_a("^ENWWW(NEEE|SSE(EE|N))$"), 10);
     assert_eq!(

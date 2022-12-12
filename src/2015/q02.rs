@@ -39,12 +39,16 @@ q_impl!("2");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("2x3x4"), 58);
     assert_eq!(process_data_a("1x1x10"), 43);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("2x3x4"), 34);
     assert_eq!(process_data_b("1x1x10"), 14);
 }

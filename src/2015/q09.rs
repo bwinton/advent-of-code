@@ -88,6 +88,8 @@ q_impl!("9");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a_impl(
             "London to Dublin = 464
@@ -107,6 +109,8 @@ Dublin to Belfast = 141",
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b_impl(
             "London to Dublin = 464

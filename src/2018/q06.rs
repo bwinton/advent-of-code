@@ -141,6 +141,8 @@ q_impl!("6");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "1, 1
@@ -156,6 +158,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         find_safe_areas(
             "1, 1

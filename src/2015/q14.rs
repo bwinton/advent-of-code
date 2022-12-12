@@ -99,6 +99,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b_impl(
             "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.

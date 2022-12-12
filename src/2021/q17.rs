@@ -110,6 +110,8 @@ q_impl!("17");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(indoc!("target area: x=20..30, y=-10..-5")),
         45
@@ -118,6 +120,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(indoc!("target area: x=20..30, y=-10..-5")),
         112

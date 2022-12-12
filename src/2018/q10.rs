@@ -145,6 +145,8 @@ q_impl!("10");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "position=< 9,  1> velocity=< 0,  2>
@@ -196,6 +198,8 @@ position=<-3,  6> velocity=< 2, -1>"
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "position=< 9,  1> velocity=< 0,  2>

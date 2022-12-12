@@ -68,6 +68,8 @@ q_impl!("16");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         run_fft(&"12345678".chars().collect::<Vec<_>>(), 1),
         "48226158".to_owned()
@@ -88,6 +90,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b("03036732577212944063491565474664"),
         "84462026".to_owned()

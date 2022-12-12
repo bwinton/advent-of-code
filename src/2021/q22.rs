@@ -133,6 +133,8 @@ q_impl!("22");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(indoc!(
             "on x=10..12,y=10..12,z=10..12
@@ -176,6 +178,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(indoc!(
             "on x=-5..47,y=-31..22,z=-19..33

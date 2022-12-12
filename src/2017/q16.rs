@@ -135,10 +135,14 @@ impl Day for Q {
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(5, "s1,x3/4,pe/b"), "baedc");
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(5, "s1,x3/4,pe/b", 2), "ceadb");
 }

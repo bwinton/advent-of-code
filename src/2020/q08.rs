@@ -118,6 +118,8 @@ q_impl!("8");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "nop +0
@@ -136,6 +138,8 @@ acc +6"
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "nop +0

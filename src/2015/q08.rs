@@ -54,6 +54,8 @@ q_impl!("8");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("\"\""), 2);
     assert_eq!(process_data_a("\"abc\""), 2);
     assert_eq!(process_data_a("\"aaa\\\"aaa\""), 3);
@@ -71,6 +73,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("\"\""), 4);
     assert_eq!(process_data_b("\"abc\""), 4);
     assert_eq!(process_data_b("\"aaa\\\"aaa\""), 6);

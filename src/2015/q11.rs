@@ -93,6 +93,8 @@ q_impl!("11");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert!(!is_valid("hijklmmn"));
     assert!(!is_valid("abbceffg"));
     assert!(!is_valid("abbcegjk"));

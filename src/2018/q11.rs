@@ -89,6 +89,8 @@ q_impl!("11");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(get_power(3, 5, 8), 4);
     assert_eq!(get_power(122, 79, 57), -5);
     assert_eq!(get_power(217, 196, 39), 0);
@@ -99,6 +101,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(18), "90,269,16".to_string());
     assert_eq!(process_data_b(42), "232,251,12".to_string());
 }

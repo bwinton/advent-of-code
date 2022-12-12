@@ -105,6 +105,8 @@ q_impl!("5");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(remove_pairs("aA"), "");
     assert_eq!(remove_pairs("abBA"), "");
     assert_eq!(remove_pairs("abAB"), "abAB");
@@ -120,5 +122,7 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("dabAcCaCBAcCcaDA"), 4);
 }

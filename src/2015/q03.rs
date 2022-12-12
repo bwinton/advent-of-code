@@ -72,6 +72,8 @@ q_impl!("3");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(">"), 2);
     assert_eq!(process_data_a("^>v<"), 4);
     assert_eq!(process_data_a("^v^v^v^v^v"), 2);
@@ -79,6 +81,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("^v"), 3);
     assert_eq!(process_data_b("^>v<"), 3);
     assert_eq!(process_data_b("^v^v^v^v^v"), 11);

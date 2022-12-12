@@ -230,12 +230,16 @@ q_impl!("18");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("1 + 2 * 3 + 4 * 5 + 6"), 71);
     assert_eq!(process_data_a("1 + (2 * 3) + (4 * (5 + 6))"), 51);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("1 + (2 * 3) + (4 * (5 + 6))"), 51);
     assert_eq!(process_data_b("1 + 2 * 3 + 4 * 5 + 6"), 231);
 }

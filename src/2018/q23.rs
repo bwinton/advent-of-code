@@ -150,6 +150,8 @@ q_impl!("23");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "pos=<0,0,0>, r=4
@@ -168,6 +170,8 @@ pos=<1,3,1>, r=1"
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "pos=<10,12,12>, r=2

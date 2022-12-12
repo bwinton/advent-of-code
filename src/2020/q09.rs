@@ -68,6 +68,8 @@ q_impl!("9");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         run_a(
             "35
@@ -98,6 +100,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         run_b(
             "35

@@ -259,6 +259,8 @@ q_impl!("16");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(indoc!("8A004A801A8002F478")), 16);
     assert_eq!(process_data_a(indoc!("620080001611562C8802118E34")), 12);
     assert_eq!(process_data_a(indoc!("C0015000016115A2E0802F182340")), 23);
@@ -267,6 +269,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(indoc!("D2FE28")), 2021);
     assert_eq!(process_data_b(indoc!("C200B40A82")), 3);
     assert_eq!(process_data_b(indoc!("04005AC33890")), 54);

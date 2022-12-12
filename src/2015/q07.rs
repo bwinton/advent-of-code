@@ -285,6 +285,8 @@ q_impl!("7");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data(
             "123 -> x

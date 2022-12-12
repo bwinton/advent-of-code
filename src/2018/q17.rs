@@ -209,6 +209,8 @@ q_impl!("17");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "x=495, y=2..7
@@ -239,6 +241,8 @@ y=11, x=508..510
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "x=495, y=2..7

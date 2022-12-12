@@ -233,6 +233,8 @@ q_impl!("4");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "[1518-11-01 00:00] Guard #10 begins shift
@@ -259,6 +261,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "[1518-11-01 00:00] Guard #10 begins shift

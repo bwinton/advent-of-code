@@ -79,10 +79,14 @@ q_impl!("8");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"), 138);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"), 66);
 }

@@ -116,6 +116,8 @@ q_impl!("6");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "turn on 0,0 through 999,999
@@ -128,6 +130,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("turn on 0,0 through 0,0"), 1);
     assert_eq!(process_data_b("toggle 0,0 through 999,999"), 2_000_000);
 }

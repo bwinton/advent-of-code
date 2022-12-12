@@ -32,6 +32,8 @@ q_impl!("1");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a("12"), 2);
     assert_eq!(process_data_a("14"), 2);
     assert_eq!(
@@ -45,6 +47,8 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b("14"), 2);
     assert_eq!(process_data_b("1969"), 966);
     assert_eq!(

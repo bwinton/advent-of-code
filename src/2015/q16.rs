@@ -135,11 +135,15 @@ q_impl!("16");
 
 #[test]
 fn a() {
+    // use pretty_assertions::assert_eq;
+
     // println!("{:?}", aunt_parser("Sue 1: cars: 9, akitas: 3, goldfish: 0"));
     // assert_eq!(1, 0);
 }
 
 #[test]
 fn b() {
+    // use pretty_assertions::assert_eq;
+
     // assert_eq!(process_data_b(""), 0);
 }

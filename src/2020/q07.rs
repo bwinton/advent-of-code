@@ -121,6 +121,8 @@ q_impl!("7");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "light red bags contain 1 bright white bag, 2 muted yellow bags.
@@ -139,6 +141,8 @@ dotted black bags contain no other bags."
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "light red bags contain 1 bright white bag, 2 muted yellow bags.

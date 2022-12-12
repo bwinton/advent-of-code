@@ -116,6 +116,8 @@ q_impl!("7");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "Step C must be finished before step A can begin.
@@ -132,6 +134,8 @@ Step F must be finished before step E can begin."
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         get_timing(
             "Step C must be finished before step A can begin.

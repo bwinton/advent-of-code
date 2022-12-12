@@ -211,6 +211,8 @@ q_impl!("21");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     let mut player = Player {
         cost: 0,
         hp: 8,
@@ -218,10 +220,12 @@ fn a() {
         armor: 5,
         _items: Vec::new(),
     };
-    assert!(!player.wins());
+    assert_eq!(player.wins(), false);
 }
 
 #[test]
 fn b() {
+    // use pretty_assertions::assert_eq;
+
     // assert_eq!(process_data_b(""), 0);
 }

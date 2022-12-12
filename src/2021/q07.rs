@@ -46,10 +46,14 @@ q_impl!("7");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(indoc!("16,1,2,0,4,2,7,1,2,14")), 37);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(indoc!("16,1,2,0,4,2,7,1,2,14")), 168);
 }

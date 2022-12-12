@@ -138,6 +138,8 @@ q_impl!("23");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(run_a("389125467", 10), "92658374".to_string());
     assert_eq!(run_a("389125467", 100), "67384529".to_string());
     assert_eq!(process_data_a("962713854"), "65432978".to_string());

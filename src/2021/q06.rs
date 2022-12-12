@@ -34,10 +34,14 @@ q_impl!("6");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_a(indoc!("3,4,3,1,2")), 5934);
 }
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(indoc!("3,4,3,1,2")), 26_984_457_539);
 }

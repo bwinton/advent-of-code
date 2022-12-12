@@ -187,6 +187,8 @@ Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3",
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_b(
             "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8

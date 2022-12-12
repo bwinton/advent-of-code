@@ -106,6 +106,8 @@ q_impl!("25");
 
 #[test]
 fn a() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(
         process_data_a(
             "0,0,0,0
@@ -168,5 +170,7 @@ fn a() {
 
 #[test]
 fn b() {
+    use pretty_assertions::assert_eq;
+
     assert_eq!(process_data_b(""), 0);
 }
