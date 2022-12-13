@@ -98,33 +98,33 @@ fn get_grid(data: &str) -> (Vec<Vec<u8>>, Location, Location) {
     (grid, start, end)
 }
 
-fn find_shortest_path(start: Location, end: Location, grid: &[Vec<u8>]) -> usize {
+fn find_shortest_path(end: Location, starts: &[Location], grid: &[Vec<u8>]) -> usize {
     let directions: EnumSet<Direction> = EnumSet::all();
     let mut stack: BinaryHeap<State> = BinaryHeap::new();
     let mut next = Some(State {
         moves: 0,
-        location: start,
+        location: end,
     });
     let mut seen = HashSet::new();
-    seen.insert(start);
+    seen.insert(end);
     let mut best = usize::MAX;
     'outer: while next.is_some() {
         let curr = next.unwrap();
         seen.insert(curr.location);
         let cell = grid[curr.location.1][curr.location.0];
         for direction in directions {
-            if let Some(next_location) = direction.next(&curr.location, grid) {
+            if let Some(prev_location) = direction.next(&curr.location, grid) {
                 let next_state = State {
                     moves: curr.moves + 1,
-                    location: next_location,
+                    location: prev_location,
                 };
-                let next_cell = grid[next_location.1][next_location.0];
-                if cell + 1 >= next_cell {
-                    if seen.contains(&next_location) {
+                let prev_cell = grid[prev_location.1][prev_location.0];
+                if prev_cell + 1 >= cell {
+                    if seen.contains(&prev_location) {
                         continue;
                     }
-                    seen.insert(next_location);
-                    if next_location == end {
+                    seen.insert(prev_location);
+                    if starts.contains(&prev_location) {
                         best = curr.moves + 1;
                         break 'outer;
                     }
@@ -141,7 +141,7 @@ fn find_shortest_path(start: Location, end: Location, grid: &[Vec<u8>]) -> usize
 fn process_data_a(data: &str) -> usize {
     let (grid, start, end) = get_grid(data);
 
-    find_shortest_path(start, end, &grid)
+    find_shortest_path(end, &[start], &grid)
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -157,11 +157,7 @@ fn process_data_b(data: &str) -> usize {
     }
 
     // Run this backwards instead…
-    starts
-        .iter()
-        .map(|&start| find_shortest_path(start, end, &grid))
-        .min()
-        .unwrap()
+    find_shortest_path(end, &starts, &grid)
 }
 
 //-----------------------------------------------------
