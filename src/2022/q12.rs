@@ -156,6 +156,7 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
+    // Run this backwards instead…
     starts
         .iter()
         .map(|&start| find_shortest_path(start, end, &grid))
