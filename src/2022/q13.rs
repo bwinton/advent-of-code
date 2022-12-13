@@ -19,24 +19,24 @@ use nom::{
 static INPUT: &str = include_str!("data/q13.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-struct Node {
-    data: Option<u8>,
-    children: Vec<Node>,
+enum Node {
+    Value(u8),
+    List(Vec<Node>),
 }
 
 impl Display for Node {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        if let Some(data) = &self.data {
-            f.write_str(&format!("{}", data))?;
-        } else {
-            f.write_char('[')?;
-            for child in &self.children {
-                f.write_fmt(format_args!("{}", child))?;
-                f.write_char(',')?;
+        match self {
+            Node::Value(data) => f.write_str(&format!("{}", data)),
+            Node::List(children) => {
+                f.write_char('[')?;
+                for child in children {
+                    f.write_fmt(format_args!("{}", child))?;
+                    f.write_char(',')?;
+                }
+                f.write_char(']')
             }
-            f.write_char(']')?;
         }
-        Ok(())
     }
 }
 
@@ -60,17 +60,11 @@ fn compare_lists(first: &[Node], second: &[Node]) -> Ordering {
 
 impl Ord for Node {
     fn cmp(&self, other: &Self) -> Ordering {
-        match (self.data.is_some(), other.data.is_some()) {
-            (true, true) => {
-                // We're both numbers, compare us!
-                self.data.cmp(&other.data)
-            }
-            (true, false) => compare_lists(&[self.clone()], &other.children),
-            (false, true) => compare_lists(&self.children, &[other.clone()]),
-            (false, false) => {
-                // We're both lists! compare us!
-                compare_lists(&self.children, &other.children)
-            }
+        match (self, other) {
+            (Node::Value(a), Node::Value(b)) => a.cmp(b),
+            (Node::Value(_), Node::List(b)) => compare_lists(&[self.clone()], b),
+            (Node::List(a), Node::Value(_)) => compare_lists(a, &[other.clone()]),
+            (Node::List(a), Node::List(b)) => compare_lists(a, b),
         }
     }
 }
@@ -81,16 +75,7 @@ fn array(i: &str) -> IResult<&str, Vec<Node>> {
 }
 
 fn node(i: &str) -> IResult<&str, Node> {
-    let (input, node) = alt((
-        array.map(|a| Node {
-            data: None,
-            children: a,
-        }),
-        complete::u8.map(|v| Node {
-            data: Some(v),
-            children: vec![],
-        }),
-    ))(i)?;
+    let (input, node) = alt((array.map(Node::List), complete::u8.map(Node::Value)))(i)?;
     Ok((input, node))
 }
 
