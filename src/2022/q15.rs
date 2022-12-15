@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::{collections::HashSet, ops::RangeInclusive};
+use std::collections::HashSet;
 
 use nom::{
     bytes::complete::tag,
@@ -10,8 +10,6 @@ use nom::{
     sequence::tuple,
     IResult,
 };
-
-use range_set::RangeSet;
 
 static INPUT: &str = include_str!("data/q15.data");
 
@@ -45,8 +43,12 @@ fn line(i: &str) -> IResult<&str, (Coord, Coord)> {
     Ok((input, (a, b)))
 }
 
-fn parser(i: &str) -> IResult<&str, Vec<(Coord, Coord)>> {
+fn parser(i: &str) -> IResult<&str, Vec<(Coord, i64)>> {
     let (input, list) = separated_list1(line_ending, line)(i)?;
+    let list = list
+        .into_iter()
+        .map(|(a, b)| (a, get_distance(&a, &b)))
+        .collect();
     Ok((input, list))
 }
 
@@ -61,8 +63,7 @@ fn process_data_a(data: &str) -> usize {
 
     let mut covered = HashSet::new();
 
-    for (sensor, beacon) in values.iter() {
-        let distance = (sensor.0 - beacon.0).abs() + (sensor.1 - beacon.1).abs();
+    for (sensor, distance) in values.into_iter() {
         let distance_to_row = (sensor.1 - row).abs();
         if distance_to_row <= distance {
             let remaining = distance - distance_to_row;
@@ -74,38 +75,65 @@ fn process_data_a(data: &str) -> usize {
     covered.len()
 }
 
+fn get_distance(a: &Coord, b: &Coord) -> i64 {
+    (a.0 - b.0).abs() + (a.1 - b.1).abs()
+}
+
+fn test_point(point: Coord, values: &[(Coord, i64)], max: i64) -> Option<Coord> {
+    let mut found = true;
+    if point.0 < 0 || point.0 > max || point.1 < 0 || point.1 > max {
+        return None;
+    }
+    for &(test_sensor, test_distance) in values {
+        if get_distance(&test_sensor, &point) < test_distance {
+            // This isn't the point.
+            found = false;
+            break;
+        }
+    }
+    if found {
+        return Some(point);
+    }
+    None
+}
+
 fn process_data_b(data: &str) -> i64 {
     let values = parser(data).unwrap().1;
 
-    let max: i64 = if values[0].0 .0 == 2 {
+    let max = if values[0].0 .0 == 2 {
         20 // Test data.
     } else {
         4_000_000 // Real data.
     };
 
-    let mut available =
-        vec![RangeSet::<[RangeInclusive<i64>; 1]>::from(0..=max); (max + 1) as usize];
+    let mut x = 0;
+    let mut y = 0;
 
-    for (sensor, beacon) in values.iter() {
-        let distance = (sensor.0 - beacon.0).abs() + (sensor.1 - beacon.1).abs();
-        for row in sensor.1 - distance..=sensor.1 + distance {
-            if row < 0 || row > max {
-                continue;
+    // We know the missing beacon has to be one away from a sensor's range, so only look in those locations.
+    'outer: for &(sensor, distance) in &values {
+        let distance = distance + 1;
+        for i in 0..=distance {
+            let remaining = distance - i;
+            if let Some(value) = test_point((sensor.0 - i, sensor.1 - remaining), &values, max) {
+                (x, y) = value;
+                break 'outer;
             }
-            let distance_to_row = (sensor.1 - row).abs();
-            let remaining = distance - distance_to_row;
-
-            available[row as usize].remove_range((sensor.0 - remaining)..=(sensor.0 + remaining));
+            if let Some(value) = test_point((sensor.0 - i, sensor.1 + remaining), &values, max) {
+                (x, y) = value;
+                break 'outer;
+            }
+            if let Some(value) = test_point((sensor.0 + i, sensor.1 - remaining), &values, max) {
+                (x, y) = value;
+                break 'outer;
+            }
+            if let Some(value) = test_point((sensor.0 + i, sensor.1 + remaining), &values, max) {
+                (x, y) = value;
+                break 'outer;
+            }
         }
     }
 
-    let y = available
-        .iter()
-        .position(|range| !range.is_empty())
-        .unwrap();
-    let x = available[y].iter().next().unwrap();
-
-    x * 4_000_000 + y as i64
+    x * 4_000_000 + y
 }
 
 //-----------------------------------------------------
