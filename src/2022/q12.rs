@@ -156,7 +156,6 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
-    // Run this backwards instead…
     find_shortest_path(end, &starts, &grid)
 }
 
