@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::collections::HashSet;
+use std::ops::RangeInclusive;
 
 use nom::{
     bytes::complete::tag,
@@ -10,12 +10,11 @@ use nom::{
     sequence::tuple,
     IResult,
 };
+use range_set::RangeSet;
 
 static INPUT: &str = include_str!("data/q15.data");
 
 type Coord = (i64, i64);
-
-// Sensor at x=3844106, y=3888618: closest beacon is at x=3225436, y=4052707
 
 fn sensor(i: &str) -> IResult<&str, Coord> {
     let (input, (_, x, _, y, _)) = tuple((
@@ -61,18 +60,17 @@ fn process_data_a(data: &str) -> usize {
         2_000_000 // Real data.
     };
 
-    let mut covered = HashSet::new();
+    // Use a RangeSet to keep track of the points, for speed.
+    let mut covered: RangeSet<[RangeInclusive<i64>; 1]> = RangeSet::new();
 
     for (sensor, distance) in values.into_iter() {
         let distance_to_row = (sensor.1 - row).abs();
         if distance_to_row <= distance {
             let remaining = distance - distance_to_row;
-            for x in (sensor.0 - remaining)..(sensor.0 + remaining) {
-                covered.insert(x);
-            }
+            covered.insert_range((sensor.0 - remaining)..=(sensor.0 + remaining - 1));
         }
     }
-    covered.len()
+    covered.iter().count()
 }
 
 fn get_distance(a: &Coord, b: &Coord) -> i64 {
@@ -85,7 +83,7 @@ fn test_point(point: Coord, values: &[(Coord, i64)], max: i64) -> Option<Coord> 
         return None;
     }
     for &(test_sensor, test_distance) in values {
-        if get_distance(&test_sensor, &point) < test_distance {
+        if get_distance(&test_sensor, &point) <= test_distance {
             // This isn't the point.
             found = false;
             break;
