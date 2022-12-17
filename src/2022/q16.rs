@@ -25,22 +25,13 @@ struct Valve {
     tunnels: Vec<String>,
 }
 
-#[derive(Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
-struct StateA {
-    max_remaining: u32,
-    released_pressure: u32,
-    minute: u32,
-    valve: String,
-    opened: Vec<String>,
-}
-
-#[derive(Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
-struct StateB {
-    released_pressure: u32,
-    minute: u32,
-    max_remaining: u32,
-    valves: [String; 2],
-    opened: Vec<String>,
+#[derive(Clone, Debug)]
+struct State {
+    current: String,
+    visited: Vec<String>,
+    value: u32,
+    remaining_time: i32,
+    total_time: u32,
 }
 
 fn valve(i: &str) -> IResult<&str, Valve> {
@@ -120,60 +111,46 @@ fn path_value(
 }
 
 fn explore(
-    current: &str,
-    visited: Vec<String>,
-    value: u32,
-    remaining_time: i32,
-    total_time: u32,
+    state: State,
     distances: &HashMap<String, HashMap<String, u32>>,
     flow_rates: &HashMap<String, u32>,
     cache: &mut HashMap<(Vec<String>, String), u32>,
 ) -> u32 {
-    let mut key = (visited.clone(), current.to_owned());
+    let mut key = (state.visited.clone(), state.current.to_owned());
     key.0.sort();
 
     if let Some(&cache_hit) = cache.get(&key) {
-        if cache_hit < value {
-            cache.insert(key, value);
+        if cache_hit < state.value {
+            cache.insert(key, state.value);
         } else {
             return cache_hit;
         }
     } else {
-        cache.insert(key, value);
+        cache.insert(key, state.value);
     }
 
-    let mut subpath_values = vec![value];
+    let mut subpath_values = vec![state.value];
 
-    for (valve, distance) in distances[current]
+    for (valve, distance) in distances[&state.current]
         .iter()
         .filter(|&(valve, distance)| {
-            !visited.contains(valve) && remaining_time - (*distance as i32) >= 0
+            !state.visited.contains(valve) && state.remaining_time - (*distance as i32) >= 0
         })
         .sorted_by(|&a, &b| match a.1.cmp(b.1) {
             Ordering::Equal => a.0.cmp(b.0),
             x => x,
         })
     {
-        let subpath_remaining = remaining_time - (*distance as i32);
+        let mut next = state.clone();
+        next.current = valve.to_owned();
+        next.visited.push(valve.clone());
+        next.value = path_value(&next.visited, state.total_time, distances, flow_rates);
+        next.remaining_time = state.remaining_time - (*distance as i32);
 
-        let mut visited = visited.clone();
-        visited.push(valve.clone());
-        let sub_value = path_value(&visited, total_time, distances, flow_rates);
-
-        let subpath = explore(
-            valve,
-            visited,
-            sub_value,
-            subpath_remaining,
-            total_time,
-            distances,
-            flow_rates,
-            cache,
-        );
+        let subpath = explore(next, distances, flow_rates, cache);
         subpath_values.push(subpath);
     }
 
-    // return max(subpath_values)
     subpath_values.into_iter().max().unwrap()
 }
 
@@ -202,17 +179,17 @@ fn process_data_a(data: &str) -> u32 {
 
     let mut cache = HashMap::new();
     explore(
-        "AA",
-        vec!["AA".to_owned()],
-        0,
-        30,
-        30,
+        State {
+            current: "AA".to_owned(),
+            visited: vec!["AA".to_owned()],
+            value: 0,
+            remaining_time: 30,
+            total_time: 30,
+        },
         &distances,
         &flow_rates,
         &mut cache,
     )
-
-    // 1986!
 }
 
 fn best_pair_for(
@@ -255,11 +232,13 @@ fn process_data_b(data: &str) -> u32 {
     // Populate the cache.
     let mut cache = HashMap::new();
     explore(
-        "AA",
-        vec!["AA".to_owned()],
-        0,
-        26,
-        26,
+        State {
+            current: "AA".to_owned(),
+            visited: vec!["AA".to_owned()],
+            value: 0,
+            remaining_time: 26,
+            total_time: 26,
+        },
         &distances,
         &flow_rates,
         &mut cache,
