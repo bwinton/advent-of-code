@@ -127,10 +127,10 @@ fn process_data_b(data: &str) -> usize {
             let (prev_i, prev_len) = seen[&key];
             let period = i - prev_i;
             let delta = board.len() - prev_len;
-            let multiple = (1_000_000_000_000 - i) / period;
-            let remainder = (1_000_000_000_000 - i) % period;
+            let multiple = (999_999_999_999 - i) / period;
+            let remainder = (999_999_999_999 - i) % period;
             if remainder == 0 {
-                rv = board.len() + delta * multiple - 1; // ?!?
+                rv = board.len() + delta * multiple;
                 break;
             }
         }
