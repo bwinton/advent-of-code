@@ -129,7 +129,6 @@ fn process_data_b(data: &str) -> usize {
     // got the initial board. Now run 100 days.
     for _ in 1..=100 {
         board = run(board);
-        // println!("{}: {}", i, board.len());
     }
     board.len()
 }

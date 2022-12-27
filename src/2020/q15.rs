@@ -10,23 +10,17 @@ fn run(data: &str, iterations: usize) -> usize {
     let mut timestamps = HashMap::new();
     let mut gap = 0;
     for i in 0..iterations - 1 {
-        // print!("{}: ", i);
         if i < numbers.len() {
             timestamps.insert(numbers[i], i);
-            // println!("{}", numbers[i]);
-            // println!("  {:?}", timestamps);
             continue;
         }
 
-        // print!("{} => ", gap);
         let next = if let Some(prev) = timestamps.get(&gap) {
             i - prev
         } else {
             0
         };
-        // println!("{}", next);
         timestamps.insert(gap, i);
-        // println!("  {:?}", timestamps);
         gap = next;
     }
     gap

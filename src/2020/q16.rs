@@ -76,7 +76,6 @@ fn process_data_a(data: &str) -> usize {
     }
 
     let mut invalids = vec![];
-    // println!("Rules: {:?}\nMe: {:?}\nNearby: {:?}", rules, my_ticket, nearby);
     for ticket in nearby {
         for field in ticket {
             let mut valid = false;
@@ -88,7 +87,6 @@ fn process_data_a(data: &str) -> usize {
             }
         }
     }
-    // println!("Invalid: {:?}", invalids);
     invalids.iter().sum()
 }
 
@@ -138,7 +136,6 @@ fn process_data_b(data: &str) -> usize {
     }
 
     let mut invalids = vec![];
-    // println!("Rules: {:?}\nMe: {:?}\nNearby: {:?}", rules, my_ticket, nearby);
     for ticket in &nearby {
         for field in ticket {
             let mut valid = false;
@@ -151,7 +148,6 @@ fn process_data_b(data: &str) -> usize {
         }
     }
     let valids: Vec<_> = nearby.iter().filter(|x| !invalids.contains(x)).collect();
-    // println!("Valids: {:?}", &valids);
 
     let mut position_values = vec![];
     for i in 0..my_ticket.len() {
@@ -161,8 +157,6 @@ fn process_data_b(data: &str) -> usize {
         }
         position_values.push(value);
     }
-
-    // println!("{:?}", position_values);
 
     let mut rule_positions: HashMap<String, Vec<usize>> = HashMap::new();
     for rule in rules {
@@ -179,7 +173,6 @@ fn process_data_b(data: &str) -> usize {
             }
         }
     }
-    // println!("{:?}", &rule_positions);
 
     let mut final_positions: HashMap<String, usize> = HashMap::new();
     while !rule_positions.is_empty() {
@@ -200,14 +193,11 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
-    // println!("{:?}", &final_positions);
-
     final_positions
         .iter()
         .filter(|(name, _)| name.starts_with("departure"))
         .map(|(_, &value)| my_ticket[value])
         .product()
-    // 61*89*197*193*157*181
 }
 
 //-----------------------------------------------------

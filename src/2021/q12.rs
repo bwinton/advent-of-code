@@ -18,8 +18,6 @@ fn process_data_a(data: &str) -> usize {
         rooms.entry(end).or_default().insert(start);
     }
 
-    // println!("{:?}", rooms);
-
     let mut paths = 0;
     let mut stack = vec![];
     let mut seen: HashSet<Vec<&str>> = HashSet::new();
@@ -30,7 +28,6 @@ fn process_data_a(data: &str) -> usize {
         for &next in &rooms[curr_room] {
             if next == "end" {
                 // Found one!
-                // println!("{:?}->{}", curr_path.join("->"), next);
                 paths += 1;
                 continue;
             }
@@ -124,7 +121,6 @@ fn get_paths(rooms: Vec<HashSet<usize>>, small_rooms: HashSet<usize>) -> usize {
                     Ordering::Less => {}
                 }
             }
-            // println!("Seen {}", debug.iter().join(","));
             stack.push((next_path, next, found_twice));
         }
     }

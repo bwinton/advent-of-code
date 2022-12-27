@@ -48,19 +48,15 @@ impl Cube {
     }
 
     fn crop(&self, seq: &Cube) -> Option<Cube> {
-        // println!("Crop: {:?}, {:?}", &self, seq);
         let x_start = *self.x.start().max(seq.x.start());
         let x_end = *self.x.end().min(seq.x.end());
         let y_start = *self.y.start().max(seq.y.start());
         let y_end = *self.y.end().min(seq.y.end());
         let z_start = *self.z.start().max(seq.z.start());
         let z_end = *self.z.end().min(seq.z.end());
-        // println!(" {:?}", Cube::new(x_start, x_end, y_start, y_end, z_start, z_end));
         if x_start > x_end || y_start > y_end || z_start > z_end {
-            // println!(" None");
             None
         } else {
-            // println!(" {:?}", Some(Cube::new(x_start, x_end, y_start, y_end, z_start, z_end)));
             Some(Cube::new(x_start, x_end, y_start, y_end, z_start, z_end))
         }
     }

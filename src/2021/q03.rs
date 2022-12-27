@@ -25,7 +25,6 @@ fn process_data_a(data: &str) -> i32 {
         .join("");
     let gamma = i32::from_str_radix(&bits, 2).unwrap();
     let epislon = !gamma & ((1 << bits.len()) - 1);
-    // println!("{}x{} = {}", gamma, epislon, gamma*epislon);
     gamma * epislon
 }
 
@@ -55,7 +54,6 @@ fn process_data_b(data: &str) -> i32 {
         .collect();
     let og_value = get_value(&lines, false);
     let co_value = get_value(&lines, true);
-    // println!("{} x {} = {}", og_value, co_value, og_value * co_value);
     og_value * co_value
 }
 

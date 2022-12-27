@@ -26,10 +26,8 @@ fn process_data_a(data: &str) -> i128 {
                 }
             }
             let output = machine.outputs.pop_front().unwrap();
-            // print!("{}", output);
             affected += output
         }
-        // println!();
     }
     affected
 }

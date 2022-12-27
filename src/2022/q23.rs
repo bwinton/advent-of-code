@@ -170,16 +170,13 @@ fn process_data_a(data: &str) -> i32 {
             }
         }
 
-        // println!("{}: proposed: {:?}", i + 1, proposed);
         for (next, curr) in proposed {
             if curr.len() == 1 {
-                // println!("  Moving {:?} to {:?}", curr[0], next);
                 // done = false;
                 elves.remove(&curr[0]);
                 elves.insert(next);
             }
         }
-        // print_board(&elves);
 
         moves.rotate_left(1);
     }
@@ -226,10 +223,8 @@ fn process_data_b(data: &str) -> usize {
             }
         }
 
-        // println!("{}: proposed: {:?}", i + 1, proposed);
         for (next, curr) in proposed {
             if curr.len() == 1 {
-                // println!("  Moving {:?} to {:?}", curr[0], next);
                 done = false;
                 elves.remove(&curr[0]);
                 elves.insert(next);

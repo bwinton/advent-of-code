@@ -88,12 +88,6 @@ fn process_data_b(data: &str) -> i128 {
 
     buses.sort_by_key(|(_, j)| -*j);
 
-    // let rv = algebraic_solve(&buses);
-    // let temp = algorithmic_solve(&buses);
-    // if temp != rv {
-    // println!("Error. {} != {}.", temp, rv);
-    // }
-    // rv
     algorithmic_solve(&buses)
 }
 

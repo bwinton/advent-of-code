@@ -28,15 +28,12 @@ fn process_data_a(data: &str) -> usize {
             .map(|x| x.to_string())
             .collect();
         for allergen in allergens {
-            // println!("{:?}: Adding {:?} to {:?}", &allergen, ingredients, mapping.get(&allergen));
             let entry = mapping
                 .entry(allergen.clone())
                 .or_insert_with(|| ingredients.clone());
             *entry = entry.intersection(&ingredients).cloned().collect();
-            // println!("{:?}\n", mapping.get(&allergen));
         }
     }
-    // println!("mapping: {:?}", mapping);
     all_ingredients.retain(|ingredient| {
         let mut safe = true;
         for ingredients in mapping.values() {
@@ -73,7 +70,6 @@ fn process_data_b(data: &str) -> String {
             *entry = entry.intersection(&ingredients).cloned().collect();
         }
     }
-    // println!("mapping: {:?}", mapping);
 
     let mut dangerous_ingredients: HashMap<String, String> = HashMap::new();
     while !mapping.is_empty() {
@@ -81,7 +77,6 @@ fn process_data_b(data: &str) -> String {
         for (allergen, ingredients) in &mapping {
             if ingredients.len() == 1 {
                 ingredient = ingredients.iter().next().unwrap().clone();
-                // println!("Removing {}", &ingredient);
                 dangerous_ingredients.insert(ingredient.clone(), allergen.clone());
             }
         }
@@ -91,10 +86,8 @@ fn process_data_b(data: &str) -> String {
             }
         }
         mapping.retain(|_, v| !v.is_empty());
-        // println!("mapping: {:?}", mapping);
     }
 
-    // println!("dangerous: {:?}", dangerous_ingredients);
     let mut rv: Vec<_> = dangerous_ingredients.iter().collect();
     rv.sort_by_key(|(_, v)| *v);
     let rv: Vec<String> = rv.into_iter().map(|(k, _)| k).cloned().collect();

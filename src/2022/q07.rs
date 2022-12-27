@@ -72,7 +72,6 @@ fn get_data(data: &str) -> HashMap<String, u128> {
     directories.insert("".to_owned(), 0);
     let lines = parser(data).unwrap().1;
     for line in lines {
-        // println!("{:?}, {:?}", line, dirstack);
         match line {
             Line::Cd(new_dir) => match new_dir.as_str() {
                 "/" => {

@@ -139,12 +139,10 @@ fn move_one_state(
             }
         }
         Cell::Key(x) => {
-            // println!("Adding key {}", x);
             next.keys.insert(x);
             test_keys.push(x);
             keys.push(x);
             keys.sort_unstable();
-            // println!("  {:?}", next);
             if !seen.contains(&(next.position[0], test_keys)) {
                 seen.insert((next.position[0], keys));
                 states.push(next);

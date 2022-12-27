@@ -117,7 +117,6 @@ impl Tile {
             *row = row.chars().rev().collect();
         }
 
-        // println!("orig: {:?}\nrot90: {:?}", self.data, data);
         Tile {
             name: self.name.clone() + "-rot_90",
             data,
@@ -151,7 +150,6 @@ impl Tile {
             }
         }
 
-        // println!("orig: {:?}\nrot90: {:?}", self.data, data);
         Tile {
             name: self.name.clone() + "-rot_270",
             data,
@@ -211,7 +209,6 @@ fn process_data_a(data: &str) -> usize {
             .insert(tile.name[..4].to_string());
     }
 
-    // println!("{:?}", sides);
     sides.retain(|_, value| value.len() == 1);
     // Build all the chains of length <width>.
     let mut tile_count: HashMap<String, usize> = HashMap::new();
@@ -318,24 +315,12 @@ fn process_data_b(data: &str) -> usize {
         board.push(row);
     }
 
-    // println!("All_Tiles:");
-    // for tile in &all_tiles {
-    //     println!("  {:?}", tile);
-    // }
-    // println!();
-
-    // println!("Starting search…");
     let mut stack = VecDeque::new();
     stack.push_front((board, all_tiles, (0, 0)));
     let mut found: Option<Vec<Vec<String>>> = None;
     while !stack.is_empty() {
         let (board, all_tiles, (x, y)) = stack.pop_front().unwrap();
-        // println!("\n{}:{}", stack.len(), &all_tiles.len());
-        // for row in &board {
-        //     println!("{:?}", row);
-        // }
         if all_tiles.is_empty() {
-            // println!("Found it!!!");
             found = Some(
                 board
                     .iter()
@@ -362,7 +347,6 @@ fn process_data_b(data: &str) -> usize {
                 }
             }
             if fits {
-                // println!("  {} fits!", tile.name);
                 let mut board = board.clone();
                 board[y][x] = Some(tile.name.clone());
                 let mut x = x + 1;
@@ -372,9 +356,7 @@ fn process_data_b(data: &str) -> usize {
                     x = 0;
                 }
                 let mut all_tiles = all_tiles.clone();
-                // print!("{} ->", all_tiles.len());
                 all_tiles.retain(|x| x.name[..4] != tile.name[..4]);
-                // println!("{}", all_tiles.len());
                 stack.push_front((board, all_tiles, (x, y)));
             }
         }
@@ -391,9 +373,7 @@ fn process_data_b(data: &str) -> usize {
                     row.push(String::new());
                 }
             }
-            // println!("Tile: {:?}", tile);
             for (i, line) in tile.data[1..tile_width - 1].iter().enumerate() {
-                // println!("{:?}", line[1..tile_width - 2].to_string());
                 row[i] += &line[1..tile_width - 1];
             }
         }
@@ -403,38 +383,30 @@ fn process_data_b(data: &str) -> usize {
         name: "Full Board".to_string(),
         data: board,
     };
-    // println!("Testing orig");
     if let Some(board) = find_monsters(&board.data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
-    // println!("Testing orig_h");
     if let Some(board) = find_monsters(&board.flip_h().data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
     let board_r90 = board.rot_90();
-    // println!("Testing r90");
     if let Some(board) = find_monsters(&board_r90.data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
-    // println!("Testing r90_h");
     if let Some(board) = find_monsters(&board_r90.flip_h().data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
     let board_r180 = board.rot_180();
-    // println!("Testing r180");
     if let Some(board) = find_monsters(&board_r180.data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
-    // println!("Testing r180_h");
     if let Some(board) = find_monsters(&board_r180.flip_h().data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
     let board_r270 = board.rot_270();
-    // println!("Testing r270");
     if let Some(board) = find_monsters(&board_r270.data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
-    // println!("Testing r270_hh");
     if let Some(board) = find_monsters(&board_r270.flip_h().data) {
         return board.into_iter().flatten().filter(|&c| c == '#').count();
     }
@@ -452,34 +424,11 @@ fn a() {
     let name = "Tile".to_string();
     let data = vec!["123".to_string(), "456".to_string(), "789".to_string()];
     let tile = Tile { name, data };
-    // let tile_h = tile.flip_h();
-    // let tile_v = tile.flip_v();
-    // let tile_r90 = tile.rot_90();
-    // let tile_r90h = tile_r90.flip_h();
-    // let tile_r90v = tile_r90.flip_v();
-    // let tile_r180 = tile.rot_180();
-    // let tile_r180h = tile_r180.flip_h();
-    // let tile_r180v = tile_r180.flip_v();
-    // let tile_r270 = tile.rot_270();
-    // let tile_r270h = tile_r270.flip_h();
-    // let tile_r270v = tile_r270.flip_v();
 
     assert_eq!(tile.top(), "123".to_string());
     assert_eq!(tile.left(), "147".to_string());
     assert_eq!(tile.right(), "369".to_string());
     assert_eq!(tile.bottom(), "789".to_string());
-
-    // println!("{}\n{}", tile.to_string(), tile_h.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_v.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r90.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r90h.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r90v.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r180.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r180h.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r180v.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r270.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r270h.to_string());
-    // println!("{}\n{}", tile.to_string(), tile_r270v.to_string());
 
     assert_eq!(
         process_data_a(indoc!(

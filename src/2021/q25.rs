@@ -91,11 +91,7 @@ fn process_data_a(data: &str) -> usize {
     let (mut easts, mut souths, max_x, max_y) = parse_data(data);
     let mut i = 0;
     loop {
-        // print_board(&easts, &souths, max_x, max_y);
-        // println!("{}, {}, {:?}, {:?}\n", max_x, max_y, &easts, &souths);
-
         let moved = step(&mut easts, &mut souths, max_x, max_y);
-        // println!("{}, {}", i, moved);
         if !moved {
             break;
         }

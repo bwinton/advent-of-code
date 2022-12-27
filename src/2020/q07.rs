@@ -74,21 +74,16 @@ fn parser(i: &str) -> IResult<&str, HashMap<String, Vec<Bag>>> {
 fn process_data_a(data: &str) -> usize {
     let rules = parser(data).unwrap().1;
 
-    // println!("{:?}\n{:?}", rules.len(), rules);
     let mut stack = VecDeque::new();
     stack.push_front("shiny gold".to_string());
     let mut gold_holders = HashSet::new();
     while !stack.is_empty() {
         let curr = stack.pop_back().unwrap();
-        // println!("Processing {}", &curr);
         for (key, values) in &rules.clone() {
             for bag in values {
-                if bag.symbol == curr {
-                    // println!("Found! Adding {} to {:?}", &key, gold_holders);
-                    if !gold_holders.contains(key) {
-                        stack.push_front(key.clone());
-                        gold_holders.insert(key.clone());
-                    }
+                if bag.symbol == curr && !gold_holders.contains(key) {
+                    stack.push_front(key.clone());
+                    gold_holders.insert(key.clone());
                 }
             }
         }
@@ -99,13 +94,11 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     let rules = parser(data).unwrap().1;
 
-    // println!("{:?}\n{:?}", rules.len(), rules);
     let mut stack = VecDeque::new();
     stack.push_front((1, "shiny gold".to_string()));
     let mut rv: usize = 0;
     while !stack.is_empty() {
         let (mult, curr) = stack.pop_back().unwrap();
-        // println!("Processing {:?}, {:?}", (mult, &curr), rules.get(&curr));
         rv += mult;
         for bag in &rules[&curr] {
             stack.push_front((mult * bag.quantity, bag.symbol.clone()));

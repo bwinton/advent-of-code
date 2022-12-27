@@ -35,8 +35,6 @@ fn process_data_a(data: &str) -> i64 {
     let y_min: i64 = captures[3].parse().unwrap();
     let y_max: i64 = captures[4].parse().unwrap();
 
-    // println!("x: {}..{}, y: {}..{}", x_min, x_max, y_min, y_max);
-
     let mut rv = 0;
     'outer: for y_velocity in y_min + 1..=y_max + 1 {
         let n = -y_velocity;
@@ -45,16 +43,13 @@ fn process_data_a(data: &str) -> i64 {
 
         let smallest_x = x_max / steps;
         let largest_x = steps * (steps - 1) / 2 / x_min;
-        // println!("Testing x{}..{}, y{}", smallest_x, largest_x, n);
         for x_velocity in smallest_x..=largest_x {
             let mut curr = (0, 0);
             let mut velocity = (x_velocity, n);
             for _ in 0..=steps {
                 (curr, velocity) = step(curr, velocity);
             }
-            // println!("  {}: p{:?}, v{:?}", x_velocity, curr, velocity);
             if x_min <= curr.0 && curr.0 <= x_max && y_min <= curr.1 && curr.1 <= y_max {
-                // println!("Found!!!!!!! {:?}, {:?}", curr, highest);
                 rv = highest;
                 break 'outer;
             }
@@ -73,8 +68,6 @@ fn process_data_b(data: &str) -> usize {
     let y_min: i64 = captures[3].parse().unwrap();
     let y_max: i64 = captures[4].parse().unwrap();
 
-    // println!("x: {}..{}, y: {}..{}", x_min, x_max, y_min, y_max);
-
     let mut rv = vec![];
     for y_velocity in y_min + 1..=-y_min {
         let n = -y_velocity;
@@ -82,23 +75,18 @@ fn process_data_b(data: &str) -> usize {
         for x_velocity in 0..=x_max {
             let mut curr = (0, 0);
             let mut velocity = (x_velocity, n);
-            // println!("Testing {:?}", velocity);
             loop {
                 (curr, velocity) = step(curr, velocity);
                 if curr.0 > x_max || curr.1 < y_min {
                     break;
                 }
-                // println!("  x - {} <= {} <= {}, y - {} <= {} <= {}", x_min, curr.0, x_max, y_min, curr.1, y_max);
                 if curr.0 >= x_min && curr.1 <= y_max {
-                    // println!("  Found {:?}!!!!!!!", (x_velocity, n));
                     rv.push((x_velocity, n));
                     break;
                 }
             }
         }
     }
-
-    // println!("rv = {:?}", rv);
 
     rv.len()
 }

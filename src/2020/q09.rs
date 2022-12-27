@@ -17,7 +17,6 @@ fn run_a(data: &str, limit: usize) -> usize {
         let curr: usize = line.parse().unwrap();
         let mut found = false;
         for values in previous.iter().combinations(2) {
-            // println!("{} == {} ({}+{})", curr, values[0] + values[1], values[0], values[1]);
             if values[0] + values[1] == curr {
                 found = true;
                 break;
@@ -47,7 +46,6 @@ fn run_b(data: &str, target: usize) -> usize {
             current_sum -= next;
         }
         if current_sum == target {
-            // println!("{:?}", current_values);
             return current_values.iter().min().unwrap() + current_values.iter().max().unwrap();
         }
     }

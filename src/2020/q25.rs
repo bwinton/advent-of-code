@@ -16,7 +16,6 @@ fn process_data_a(data: &str) -> usize {
         value %= 20201227;
         loop_size += 1;
     }
-    // println!("card loop size = {}", loop_size);
 
     value = 1;
     subject_number = door_key;
@@ -24,7 +23,7 @@ fn process_data_a(data: &str) -> usize {
         value *= subject_number;
         value %= 20201227;
     }
-    // println!("Final value = {}", value);
+
     value
 }
 

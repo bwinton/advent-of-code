@@ -235,7 +235,6 @@ fn process_data_a(data: &str) -> u64 {
         let value = u8::from_str_radix(&value.join(""), 16).unwrap();
         bits.push(value);
     }
-    // println!("{:?}", bits);
     let (_, instruction) = parser((&bits, 0)).unwrap();
     instruction.get_versions()
 }
@@ -248,7 +247,6 @@ fn process_data_b(data: &str) -> u64 {
         bits.push(value);
     }
     let (_, result) = parser((&bits, 0)).unwrap();
-    // println!("Got Result = {:?}", result);
     result.evaluate()
 }
 

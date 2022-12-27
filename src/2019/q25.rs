@@ -65,7 +65,6 @@ fn run_machine_interactive(data: Vec<i128>) -> i128 {
         }
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_ok() {
-            // println!("{:?}", &input);
             machine.inputs.extend(input.chars().map(|x| x as i128));
         }
     }
@@ -267,15 +266,11 @@ fn move_one_state(
     command: &str,
     seen: &mut HashSet<(String, Vec<String>)>,
 ) -> Option<RoomState> {
-    println!("\nMoving {}", command);
     let mut next = curr.clone();
     next.steps.push(command.to_owned());
     next.machine
         .inputs
         .extend(command.chars().chain(['\n'].into_iter()).map(|x| x as i128));
-    // if curr.room.name == END_STATE_NAME {
-    //     println!("Move {}: {} -> {:?}, {:?}", curr.steps.len(), curr.room.name, command, curr.keys);
-    // }
     let state = next.machine.run_tape_until(RUN_TAPE_LIMIT);
     let outputs = &mut next.machine.outputs;
     let output: String = outputs.iter().map(|x| *x as u8 as char).rev().collect();
@@ -300,11 +295,6 @@ fn move_one_state(
     if output.is_err() {
         if let Err(_output) = output {
             println!("/nPARSING ERROR:/n {:?}", &_output);
-            // if command != "take giant electromagnet\n" {
-            //     println!("  ERROR: {} -> {}, {:?} {:?}", curr.room.name, command, curr.keys, _output.0.bounds);
-            //     println!("       : {:?}", &_output.0.input);
-            //     println!("       :  {}{}", " ".repeat(_output.0.bounds.start), "^".repeat(_output.0.bounds.len()));
-            // }
             return None;
         }
     }
@@ -319,7 +309,6 @@ fn move_one_state(
             next.keys.insert(item);
         }
         MoveResult::Error(_error) => {
-            // println!("ERROR!!! {}", error);
             return None;
         }
     }
@@ -335,16 +324,12 @@ fn move_one_state(
 fn run_machine(data: Vec<i128>) -> String {
     let mut machine = Intcode::new(data, vec![]);
     let _state = machine.run_tape_until(RUN_TAPE_LIMIT);
-    // println!("Initial state: {:?}", _state);
     let outputs = &mut machine.outputs;
     let output: String = outputs.iter().map(|x| *x as u8 as char).rev().collect();
     outputs.clear();
-    // println!("output: {}", output);
     let output = move_p(&output);
     if output.is_err() {
         if let Err(_output) = output {
-            // println!("  ERROR: {:?}", &output.0.input);
-            // println!("       :  {}{}", " ".repeat(output.0.bounds.start), "^".repeat(output.0.bounds.len()));
             return "-1".to_owned();
         }
     }
@@ -356,27 +341,18 @@ fn run_machine(data: Vec<i128>) -> String {
     let mut seen: HashSet<(String, Vec<String>)> = HashSet::new();
     while !states.is_empty() {
         let curr = states.pop().unwrap();
-        // println!("Got state: {:?}", curr);
         if !curr.code.is_empty() {
             return curr.code;
         }
 
         let mut keys: Vec<_> = curr.keys.clone().into_iter().collect();
         keys.sort();
-        // println!("Got keys: {:?}", keys);
         seen.insert((curr.room.name.clone(), keys));
 
         // Try to pick up anything lying around.
         for item in &curr.room.items {
             let command = format!("take {}", item);
             if let Some(next) = move_one_state(&curr, &command, &mut seen) {
-                println!(
-                    "Move {}: {} from {} to {}\n",
-                    next.steps.len(),
-                    command,
-                    curr.room.name,
-                    next.room.name
-                );
                 states.push(next);
             }
         }
@@ -384,13 +360,6 @@ fn run_machine(data: Vec<i128>) -> String {
         // Otherwise, try to move.
         for command in &curr.room.doors {
             if let Some(next) = move_one_state(&curr, command, &mut seen) {
-                println!(
-                    "Move {}: {} from {} to {}\n",
-                    next.steps.len(),
-                    command,
-                    curr.room.name,
-                    next.room.name
-                );
                 states.push(next);
             }
         }
@@ -429,65 +398,5 @@ fn a() {
 
 #[test]
 fn b() {
-    let result: IResult<&str, &str> = tag("\n\n")("\n\n");
-    println!("{:?}", result);
-    let result = room_name("== Engineering ==");
-    println!("{:?}", result);
-    let result: IResult<&str, &str> = tag("\n")("\n");
-    println!("{:?}", result);
-    let result: IResult<&str, &str> =
-        take_while(is_comment_char)("You see a whiteboard with plans for Springdroid v2.");
-    println!("{:?}", result);
-    let result: IResult<&str, &str> = tag("\n")("\n");
-    println!("{:?}", result);
-    let result = doors("\nDoors here lead:\n- north\n- east\n- west\n");
-    println!("{:?}", result);
-    let result = opt(items)("\nItems here:\n- ornament\n");
-    println!("{:?}", result);
-
-    let result = room(
-        "
-
-== Corridor ==
-The metal walls and the metal floor are slightly different colors. Or are they?
-
-Doors here lead:
-- north
-- east
-- south
-
-Items here:
-- spool of cat6
-",
-    );
-    println!("{:?}", result);
-    if let Err(error) = result {
-        println!("Error: {:?}", error);
-    }
-    let result = move_p(
-        "
-
-
-== Corridor ==
-The metal walls and the metal floor are slightly different colors. Or are they?
-
-Doors here lead:
-- north
-- east
-- south
-
-Items here:
-- spool of cat6
-
-Command?
-",
-    );
-    println!("{:?}", result);
-    if let Err(error) = result {
-        println!("Error: {:?}", error);
-    }
-
-    let result = move_p("\nYou take the ornament.\n\nCommand?\n");
-    println!("{:?}", result);
     // assert!(false);
 }

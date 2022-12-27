@@ -49,20 +49,11 @@ fn step(board: &[Vec<u8>]) -> (usize, Vec<Vec<u8>>) {
             for (j, cell) in line.iter().enumerate() {
                 if cell.0 > 9 && !next2[i][j].1 {
                     increment_neighbours(&mut next2, i as i8, j as i8);
-                    // println!("Found [{}][{}], {:?} == {:?}", i, j, cell, next2[i][j]);
                     found = true;
                 }
             }
         }
-        // println!("\nIn loop… {}", found);
-        // for line in &next {
-        //     println!("  {}", line.iter().map(|x| x.0.to_string()).join(" "));
-        // }
         next = next2;
-        // println!();
-        // for line in &next {
-        //     println!("  {}", line.iter().map(|x| x.0.to_string()).join(" "));
-        // }
     }
 
     for line in next.iter_mut() {
@@ -99,10 +90,6 @@ fn process_data_a(data: &str) -> usize {
 
     for _ in 0..100 {
         let (flashes, next) = step(&board);
-        // println!("\nAfter {} steps, flashes: {}\n", i + 1, flashes);
-        // for line in &next {
-        //     println!("  {}", line.iter().map(|x| x.to_string()).join(" "));
-        // }
         rv += flashes;
         board = next;
     }
@@ -127,15 +114,6 @@ fn process_data_b(data: &str) -> usize {
             found = true;
         }
         i += 1;
-        // if i > 190 {
-        //     println!("\nAfter {} steps, flashes: {}\n", i, flashes);
-        //     for line in &next {
-        //         println!("  {}", line.iter().map(|x| x.to_string()).join(" "));
-        //     }
-        // }
-        // if i > 200 {
-        //     found = true;
-        // }
         board = next;
     }
     i

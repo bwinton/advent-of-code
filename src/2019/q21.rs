@@ -31,10 +31,6 @@ WALK
         }
     }
     let outputs = &mut machine.outputs;
-    // for output in outputs.iter().rev() {
-    //     print!("{}", *output as u8 as char);
-    // }
-    println!("{:?}", outputs);
     outputs[0]
 }
 
@@ -68,10 +64,6 @@ RUN
         }
     }
     let outputs = &mut machine.outputs;
-    for output in outputs.iter().rev() {
-        print!("{}", *output as u8 as char);
-    }
-    // println!("{:?}", outputs);
     outputs[0]
 }
 

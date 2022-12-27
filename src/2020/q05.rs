@@ -32,7 +32,6 @@ fn process_data_b(data: &str) -> usize {
     rv.sort_unstable();
     for (index, &item) in rv.iter().enumerate().skip(1) {
         if item - 1 != rv[index - 1] {
-            // println!("{}, {}", rv[index - 1], item);
             return item - 1;
         }
     }

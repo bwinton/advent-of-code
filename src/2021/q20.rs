@@ -9,7 +9,6 @@ fn parse_algorithm(data: &str) -> [bool; 512] {
     let mut rv = [false; 512];
     let data: Vec<char> = data.chars().collect();
     for (i, &curr) in data.iter().enumerate() {
-        // print!("{}{}, ", i, curr);
         if curr == '#' {
             rv[i] = true
         };
@@ -41,7 +40,6 @@ fn step(board: &[Vec<bool>], algorithm: &[bool; 512], background: bool) -> Vec<V
         let mut new = vec![];
         for (x, _) in row.iter().enumerate() {
             let index = get_index(&(x as i32, y as i32), board, background);
-            // println!("{:?}: index = {}", (x,y), index);
             new.push(algorithm[index]);
         }
         rv.push(new);
@@ -85,7 +83,6 @@ fn process_data_a(data: &str) -> usize {
         if image_flip {
             background = !background;
         }
-        // println!("  board: {}", board.iter().flatten().filter(|&&x| x).count());
     }
     board.iter().flatten().filter(|&&x| x).count()
 
@@ -107,7 +104,6 @@ fn process_data_b(data: &str) -> usize {
         if image_flip {
             background = !background;
         }
-        // println!("  board: {}", board.iter().flatten().filter(|&&x| x).count());
     }
     board.iter().flatten().filter(|&&x| x).count()
 }

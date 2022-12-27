@@ -75,7 +75,6 @@ fn get_score(number: u32, board: &[Vec<(u32, bool)>]) -> u32 {
             }
         }
     }
-    // println!("{}*{} = {}", unmarked, number, number * unmarked);
     number * unmarked
 }
 

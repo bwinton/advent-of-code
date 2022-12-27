@@ -100,7 +100,6 @@ fn process_data_b(data: &str) -> i128 {
             // Derived by experimentation. Max empty_count was 136.
             if empty_count >= 140 {
                 if let Some(nat) = nat {
-                    // println!("Idle detected . Sending {:?} to 0.", nat);
                     machines[0].inputs.push_back(nat.0);
                     machines[0].inputs.push_back(nat.1);
                     if !delivered.insert(nat.1) {

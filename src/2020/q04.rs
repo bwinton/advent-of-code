@@ -110,69 +110,45 @@ impl PassportBuilder {
             && self.pid != None
     }
 
-    fn build(self, debug: bool) -> Option<Passport> {
+    fn build(self) -> Option<Passport> {
         // byr (Birth Year) - four digits; at least 1920 and at most 2002.
         if self.byr == None {
-            if debug {
-                println!("Missing field byr!");
-            }
             return None;
         }
         let byr: Option<usize> = self.byr.unwrap().parse().ok();
         if byr == None {
-            if debug {
-                println!("Field byr not an int!");
-            }
             return None;
         }
         let byr = byr.unwrap();
 
         // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
         if self.iyr == None {
-            if debug {
-                println!("Missing field iyr!");
-            }
             return None;
         }
         let iyr: Option<usize> = self.iyr.unwrap().parse().ok();
         if iyr == None {
-            if debug {
-                println!("Field iyr not an int!");
-            }
             return None;
         }
         let iyr = iyr.unwrap();
 
         // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
         if self.eyr == None {
-            if debug {
-                println!("Missing field eyr!");
-            }
             return None;
         }
         let eyr: Option<usize> = self.eyr.unwrap().parse().ok();
         if eyr == None {
-            if debug {
-                println!("Field eyr not an int!");
-            }
             return None;
         }
         let eyr = eyr.unwrap();
 
         // hgt (Height) - a number followed by either cm or in:
         if self.hgt == None {
-            if debug {
-                println!("Missing field hgt!");
-            }
             return None;
         }
         let temp = &self.hgt.unwrap();
         let hgt = if let Some(captures) = HGT_RE.captures(temp) {
             let value: Option<usize> = captures[1].parse().ok();
             if value == None {
-                if debug {
-                    println!("Field hgt not an int!");
-                }
                 return None;
             }
             let value = value.unwrap();
@@ -181,49 +157,27 @@ impl PassportBuilder {
             match units {
                 "cm" | "in" => (value, units.to_string()),
                 _ => {
-                    if debug {
-                        println!("HGT {} unknown", &temp);
-                    }
                     return None;
                 }
             }
         } else {
-            if debug {
-                println!("HGT {} invalid", &temp);
-            }
             return None;
         };
 
         // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
         if self.hcl == None {
-            if debug {
-                println!("Missing field hcl!");
-            }
             return None;
         }
         let hcl = self.hcl.unwrap();
 
         // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
         if self.ecl == None {
-            if debug {
-                println!("Missing field ecl!");
-            }
             return None;
         }
-        let ecl = EyeColor::from(&self.ecl.clone().unwrap());
-        if ecl.is_none() {
-            if debug {
-                println!("ECL {} invalid", &self.ecl.unwrap());
-            }
-            return None;
-        }
-        let _ecl = ecl.unwrap();
+        let _ecl = EyeColor::from(&self.ecl.clone().unwrap())?;
 
         // pid (Passport ID) - a nine-digit number, including leading zeroes.
         if self.pid == None {
-            if debug {
-                println!("Missing field ecl!");
-            }
             return None;
         }
         let pid = self.pid.unwrap();
@@ -256,28 +210,19 @@ struct Passport {
 }
 
 impl Passport {
-    fn is_valid(&self, debug: bool) -> bool {
+    fn is_valid(&self) -> bool {
         // byr (Birth Year) - four digits; at least 1920 and at most 2002.
         if !(1920..=2002).contains(&self.byr) {
-            if debug {
-                println!("BYR {} out of range 1920-2002", &self.byr);
-            }
             return false;
         }
 
         // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
         if !(2010..=2020).contains(&self.iyr) {
-            if debug {
-                println!("IYR {} out of range 2010-2020", &self.iyr);
-            }
             return false;
         }
 
         // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
         if !(2020..=2030).contains(&self.eyr) {
-            if debug {
-                println!("EYR {} out of range 2020-2030", &self.eyr);
-            }
             return false;
         }
 
@@ -287,17 +232,11 @@ impl Passport {
         match self.hgt.1.as_str() {
             "cm" => {
                 if !(150..=193).contains(&self.hgt.0) {
-                    if debug {
-                        println!("HGT {}cm out of range 150-193", &self.hgt.0);
-                    }
                     return false;
                 }
             }
             "in" => {
                 if !(59..=76).contains(&self.hgt.0) {
-                    if debug {
-                        println!("HGT {}in out of range 59-76", &self.hgt.0);
-                    }
                     return false;
                 }
             }
@@ -308,9 +247,6 @@ impl Passport {
 
         // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
         if !HCL_RE.is_match(&self.hcl) {
-            if debug {
-                println!("HCL {} unknown", &self.hcl);
-            }
             return false;
         }
 
@@ -319,9 +255,6 @@ impl Passport {
 
         // pid (Passport ID) - a nine-digit number, including leading zeroes.
         if !PID_RE.is_match(&self.pid) {
-            if debug {
-                println!("PID {} unknown", &self.pid);
-            }
             return false;
         }
 
@@ -361,9 +294,8 @@ fn process_data_b(data: &str) -> usize {
     let mut curr = PassportBuilder::new();
     for line in data.lines() {
         if line.trim().is_empty() {
-            if let Some(passport) = curr.build(false) {
-                if passport.is_valid(false) {
-                    // println!("Adding {}, of {:?}", rv.len(), &curr);
+            if let Some(passport) = curr.build() {
+                if passport.is_valid() {
                     rv.push(passport);
                 }
             }
@@ -378,9 +310,8 @@ fn process_data_b(data: &str) -> usize {
         }
     }
     // Handle the last one.
-    if let Some(passport) = curr.build(false) {
-        if passport.is_valid(false) {
-            // println!("Adding {}, of {:?}", rv.len(), &curr);
+    if let Some(passport) = curr.build() {
+        if passport.is_valid() {
             rv.push(passport);
         }
     }
@@ -460,9 +391,4 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
         ),
         4
     );
-
-    // println!("{:?}", HCL_RE.find("#a97842"));
-    // println!("{:?}", HCL_RE.is_match("#a97842"));
-    // println!("{:?}", !HCL_RE.is_match("#a97842"));
-    // assert!(false);
 }

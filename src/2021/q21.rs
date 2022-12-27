@@ -37,13 +37,10 @@ fn process_data_a(data: &str) -> u32 {
         ];
         roll_count += 3;
         let turn: u32 = rolls.iter().sum();
-        // println!("{:?}, {}", rolls, turn);
         players[current_player].0 = (players[current_player].0 + turn - 1) % 10 + 1;
         players[current_player].1 += players[current_player].0 as u32;
-        // println!("{}: {:?}", current_player, players[current_player]);
         current_player = (current_player + 1) % 2;
     }
-    // println!("{}: {:?}, {}", current_player, players[current_player], roll_count);
     players[current_player].1 * roll_count
 }
 
@@ -72,7 +69,6 @@ fn process_data_b(data: &str) -> u64 {
         }
         current_player = (current_player + 1) % 2;
         states = next;
-        // println!("wins: {:?}, remaining: {}", wins, states.len());
     }
     *wins.iter().max().unwrap()
 }

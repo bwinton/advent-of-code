@@ -52,22 +52,17 @@ fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
 }
 
 fn deal_cards(data: &str, length: i128, iterations: usize) -> VecDeque<i128> {
-    // println!("{:?}", parser(data));
     let instructions = parser(data).unwrap().1;
-    // println!("instructions: {}", instructions.len());
-    // println!("  {:?}", instructions);
     let mut cards = VecDeque::new();
     for i in 0..length {
         cards.push_back(i);
     }
     for i in 0..iterations {
-        // println!("{}: {}", i, cards[2020]);
         if i > 0 && cards[2020] == 2020 {
             return VecDeque::from(vec![2020]);
         }
 
         for instruction in instructions.clone() {
-            // println!("Instructions: {:?}", instruction);
             match instruction {
                 Instruction::Cut(n) => {
                     let n = if n >= 0 {
@@ -91,7 +86,6 @@ fn deal_cards(data: &str, length: i128, iterations: usize) -> VecDeque<i128> {
                     cards = cards.into_iter().rev().collect();
                 }
             }
-            // println!("Cards: {:?}", cards);
         }
     }
     cards

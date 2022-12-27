@@ -95,8 +95,6 @@ fn process_data_b(data: &str) -> usize {
             }
         }
     }
-    // println!("lows: {:?}", lows);
-    // println!("  {:?}", lows.iter().map(|x| get_basin(x.0, x.1, &map).len()).sorted().rev().take(3).product::<usize>());
     lows.iter()
         .map(|x| get_basin(x.0, x.1, &map).len())
         .sorted()

@@ -167,8 +167,6 @@ fn get_root(monkeys: &mut Vec<Monkey>) -> i64 {
                 }
             }
         }
-
-        // println!("{:?}\n{:?}\n\n", &values, &monkeys);
     }
     values["root"]
 }
@@ -215,7 +213,6 @@ fn process_data_b(data: &str) -> i64 {
         if rv == 0 {
             break;
         }
-        // println!("{}: {}", me, rv);
         me += 1;
     }
     me

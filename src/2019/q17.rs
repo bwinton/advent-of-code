@@ -23,7 +23,6 @@ fn process_data_a(data: &str) -> i32 {
         }
     }
     let outputs = &mut machine.outputs;
-    // println!();
     let mut board = HashMap::new();
     let mut x: i32 = 0;
     let mut y: i32 = 0;
@@ -40,7 +39,6 @@ fn process_data_a(data: &str) -> i32 {
             _ => {}
         };
         x += 1;
-        // print!("{}", cell);
     }
     let mut inter_sum = 0;
     for &(x, y) in board.keys() {
@@ -49,7 +47,6 @@ fn process_data_a(data: &str) -> i32 {
             && board.contains_key(&(x, y - 1))
             && board.contains_key(&(x, y + 1))
         {
-            // println!("Found intersection at {:?}, adding {}", (x,y), x * y);
             inter_sum += x * y;
         }
     }

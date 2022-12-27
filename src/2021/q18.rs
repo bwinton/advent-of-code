@@ -67,7 +67,6 @@ fn reduce(number: &mut Vec<Character>) {
                 let old: Vec<Character> = number
                     .splice(start..=end, [Character::Number(0)].into_iter())
                     .collect();
-                // println!("  Explode {:?} from {:?}/{:?}", &old, &number[..start], &number[start..]);
                 start -= 1;
                 end = start + 2;
                 let first = old[1];
@@ -83,7 +82,6 @@ fn reduce(number: &mut Vec<Character>) {
                     end += 1;
                 }
                 number[end] += second;
-                // println!("  Exploded {:?}\n", &number);
                 done = false;
                 continue 'outer;
             }
@@ -92,7 +90,6 @@ fn reduce(number: &mut Vec<Character>) {
             if let Character::Number(x) = *c {
                 // If any regular number is 10 or greater, the leftmost such regular number splits.
                 if x >= 10 {
-                    // println!("  Splitting {} from {:?}/{:?}", x, &number[..i], &number[i..]);
                     let start = x / 2;
                     let end = (x + 1) / 2;
                     let new = [
@@ -102,7 +99,6 @@ fn reduce(number: &mut Vec<Character>) {
                         Character::Close,
                     ];
                     number.splice(i..=i, new.into_iter());
-                    // println!("  Split {:?}\n", &number);
                     done = false;
                     continue 'outer;
                 }
@@ -131,7 +127,6 @@ fn magnitude(number: &mut Vec<Character>) -> usize {
             let first = magnitude(number);
             let second = magnitude(number);
             let close = number.splice(0..1, vec![].into_iter()).collect::<Vec<_>>()[0];
-            // println!("[, {}, {}, {}", first, second, close);
             if close != Character::Close {
                 panic!("Unmatched brackets!!!");
             }
@@ -148,7 +143,6 @@ fn get_lines(data: &str) -> Vec<Vec<Character>> {
     let mut rv = vec![];
     for line in data.lines() {
         let number = parse(line);
-        // println!("n = {:?}", number);
         rv.push(number);
     }
     rv
@@ -158,7 +152,6 @@ fn add_lines(numbers: &[Vec<Character>]) -> Vec<Character> {
     let mut rv = vec![];
 
     for number in numbers.iter().cloned() {
-        // println!("n = {:?}", number);
         if rv.is_empty() {
             rv = number;
         } else {
@@ -166,9 +159,7 @@ fn add_lines(numbers: &[Vec<Character>]) -> Vec<Character> {
             rv.extend_from_slice(&number);
             rv.push(Character::Close);
         }
-        // println!("r = {:?}", rv);
         reduce(&mut rv);
-        // println!("e = {:?}\n", rv);
     }
     rv
 }
@@ -187,7 +178,6 @@ fn process_data_b(data: &str) -> usize {
         let _temp = rv.clone();
         let test = magnitude(&mut rv);
         if test > max {
-            // println!("New biggest! {}, {:?}", test, _temp);
             max = test;
         }
     }

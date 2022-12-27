@@ -24,7 +24,6 @@ fn process(data: &str, values: &[(usize, usize)]) -> usize {
             pos.0 = (pos.0 + slope.0) % map[0].len();
             pos.1 += slope.1;
         }
-        // println!("{:?}, {}", slope, curr);
         rv *= curr;
     }
     rv

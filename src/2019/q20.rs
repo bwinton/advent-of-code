@@ -210,7 +210,6 @@ fn process_data_a(data: &str) -> usize {
     let mut seen: HashSet<(Position, i32)> = HashSet::new();
 
     while let Some(curr) = states.pop_back() {
-        // println!("{:?}", curr);
         if curr.position == board.end_position {
             return curr.steps;
         }

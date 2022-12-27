@@ -137,7 +137,6 @@ impl<'a> Computer<'a> {
     fn run(&mut self, input: &[i128]) {
         let mut input = input.iter().collect::<Vec<_>>();
         for instruction in self.instructions {
-            print!("{:?}", instruction);
             match *instruction {
                 Instruction::Input(a) => {
                     let &value = input.pop().unwrap();
@@ -194,7 +193,6 @@ impl<'a> Computer<'a> {
                     };
                 }
             }
-            println!(" => {:?}", self.registers);
         }
     }
 
@@ -212,7 +210,6 @@ fn get_digits(curr: i64) -> [i128; 14] {
         rv[i as usize] = (curr / nine.pow(13 - i) + 1) as i128;
         curr %= nine.pow(13 - i);
     }
-    // println!("digits: {:?}, curr: {}", rv, curr);
     rv
 }
 
