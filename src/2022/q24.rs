@@ -294,6 +294,13 @@ fn process_data_b(data: &str) -> usize {
             }
             let next = inc_player(&curr, start, end);
             for next in get_player_moves(&next, &blizzards, start, end, bounds) {
+                if (next.player == end && next.goal == Goal::End) ||
+                (next.player == start && next.goal == Goal::Start) {
+                    // Found the intermediate goal, skip to the next part.
+                    states = vec![next];
+                    continue 'outer;
+                }
+
                 if !seen.contains(&next) {
                     seen.insert(next.clone());
                     next_states.push(next);
@@ -303,8 +310,6 @@ fn process_data_b(data: &str) -> usize {
         states = next_states;
     }
 
-    // 740 is too low.
-    // 859
     rv
 }
 
