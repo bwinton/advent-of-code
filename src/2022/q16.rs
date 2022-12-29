@@ -18,6 +18,8 @@ use nom::{
     IResult,
 };
 
+use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
+
 #[derive(Debug)]
 struct Valve {
     name: String,
@@ -260,8 +262,8 @@ fn process_data_b(data: &str) -> u32 {
     }
 
     let optimal_pairs: HashMap<Vec<String>, Vec<String>> = optimal_path_values
-        .keys()
-        .filter_map(|path| best_pair_for(path, &optimal_path_values))
+        .par_iter()
+        .filter_map(|(path, _)| best_pair_for(path, &optimal_path_values))
         .collect();
 
     optimal_pairs
