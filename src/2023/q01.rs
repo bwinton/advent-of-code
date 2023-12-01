@@ -68,7 +68,6 @@ fn process_data_b(data: &str) -> u32 {
             .next()
             .unwrap();
 
-        // println!("{}: {} - {}", line, first, last);
         rv += first * 10 + last;
     }
     rv
