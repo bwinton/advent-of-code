@@ -21,13 +21,14 @@ use serde_json::{from_reader, Map, Value};
 static ONE_DAY_IN_SECS: u64 = 24 * 60 * 60;
 
 custom_error! { StatsError
+    IOError{source: std::io::Error} = "io error",
     Request{source: reqwest::Error} = "request error",
     // Cache{source: std::io::Error} = "invalid cache file",
     Time{source: SystemTimeError} = "time error",
     JSON{source: serde_json::error::Error} = "json error",
     YearNotFound{year:i32} = "Year {year} not found on server.",
     Session{source: VarError} = "Could not find AOC_SESSION env variable.",
-    CrossTerm{source: crossterm::ErrorKind} = "crossterm error",
+    // CrossTerm{source: crossterm::ErrorKind} = "crossterm error",
 }
 
 #[derive(Debug)]
