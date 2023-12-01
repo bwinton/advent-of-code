@@ -16,6 +16,7 @@ use reqwest::{
 };
 
 custom_error! { NextError
+    IOError{source: std::io::Error} = "io error",
     Request{source: reqwest::Error} = "request error",
     Time{source: SystemTimeError} = "time error",
     JSON{source: serde_json::error::Error} = "json error",
@@ -23,7 +24,7 @@ custom_error! { NextError
     YearNotFound{year:i32} = "Year {year} not found on server.",
     InputNotFound{year:i32, day:u32} = "Input \"https://adventofcode.com/{year}/day/{day}/input\" not found on server.",
     ParseIntError{source: std::num::ParseIntError} = "Couldn't parse int",
-    CrossTerm{source: crossterm::ErrorKind} = "crossterm error",
+    // CrossTerm{source: crossterm::Error} = "crossterm error",
     FromUtf8Error{source: std::string::FromUtf8Error} = "Couldn't read input",
     ModulesNotFound{location: String} = "Modules {location} not found in main",
     Session{source: VarError} = "Could not find AOC_SESSION env variable.",

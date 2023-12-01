@@ -10,14 +10,14 @@ debug = true
 [dependencies]
 chrono = "0.4.23"
 clap = { version = "4.0.29", features = ["color", "suggestions", "cargo"] }
-color-backtrace = "0.5.1"
-crossterm = "0.25.0"
+color-backtrace = "0.6.1"
+crossterm = "0.27.0"
 custom_error = "1.9.2"
 derive_more = "0.99.17"
 enumset = "1.0.12"
 humantime = "2.1.0"
-indoc = "1.0.7"
-itertools = "0.10.5"
+indoc = "2.0.4"
+itertools = "0.12.0"
 maplit = "1.0.2"
 mod_exp = "1.0.1"
 nom = "7.1.1"
@@ -25,7 +25,7 @@ num-integer = "0.1.45"
 num-rational = "0.4.1"
 once_cell = "1.16.0"
 permutohedron = "0.2.4"
-range-set = "0.0.9"
+range-set = "0.0.10"
 rayon = "1.6.0"
 regex = "1.7.0"
 reqwest = { version = "0.11.13", features = ["blocking"] }
@@ -76,6 +76,10 @@ path = "src/2021/main.rs"
 [[bin]]
 name = "2022"
 path = "src/2022/main.rs"
+
+[[bin]]
+name = "2023"
+path = "src/2023/main.rs"
 
 [dev-dependencies]
 pretty_assertions = "1.3.0"
