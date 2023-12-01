@@ -3,6 +3,7 @@ mod q01;
 
 #[macro_use]
 extern crate aoc;
+
 #[allow(unused_imports)]
 #[macro_use]
 extern crate enumset;
@@ -14,7 +15,7 @@ extern crate indoc;
 extern crate itertools;
 
 fn main() {
-    let days = q_vec!( q01, );
+    let days = q_vec!(q01,);
 
     aoc::main(&days)
 }
