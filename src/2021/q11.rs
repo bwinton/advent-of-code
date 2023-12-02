@@ -36,7 +36,7 @@ fn step(board: &[Vec<u8>]) -> (usize, Vec<Vec<u8>>) {
     }
 
     for line in next.iter_mut() {
-        for mut cell in line.iter_mut() {
+        for cell in line.iter_mut() {
             cell.0 += 1;
         }
     }
