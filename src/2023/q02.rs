@@ -1,38 +1,86 @@
 //-----------------------------------------------------
 // Setup.
 
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{self, line_ending},
+    multi::separated_list1,
+    sequence::{separated_pair, tuple},
+    IResult,
+};
+
 static INPUT: &str = include_str!("data/q02.data");
+
+#[derive(Debug)]
+struct Round {
+    red: usize,
+    green: usize,
+    blue: usize,
+}
+
+fn round(i: &str) -> IResult<&str, Round> {
+    // "3 blue, 4 red"
+    let (input, cubes) = separated_list1(
+        tag(", "),
+        separated_pair(
+            complete::u16,
+            tag(" "),
+            alt((tag("red"), tag("green"), tag("blue"))),
+        ),
+    )(i)?;
+
+    let mut round = Round {
+        red: 0,
+        green: 0,
+        blue: 0,
+    };
+    for (number, colour) in cubes {
+        match colour {
+            "red" => round.red = number as usize,
+            "green" => round.green = number as usize,
+            "blue" => round.blue = number as usize,
+            _ => {
+                println!("Unknown colour!!! {:?}", colour)
+            }
+        }
+    }
+
+    Ok((input, round))
+}
+
+fn game(i: &str) -> IResult<&str, (usize, Vec<Round>)> {
+    // "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+    let (input, (_, game, _, rounds)) = tuple((
+        tag("Game "),
+        complete::u16,
+        tag(": "),
+        separated_list1(tag("; "), round),
+    ))(i)?;
+    Ok((input, (game as usize, rounds)))
+}
+
+fn parser(i: &str) -> IResult<&str, Vec<(usize, Vec<Round>)>> {
+    let (input, list) = separated_list1(line_ending, game)(i)?;
+    Ok((input, list))
+}
 
 fn process_data_a(data: &str) -> usize {
     let mut rv = 0;
 
-    for line in data.lines() {
-        let (game, rest) = line.split_once(':').unwrap();
-        let game: usize = game.strip_prefix("Game ").unwrap().parse().unwrap();
+    let (_i, games) = parser(data).unwrap();
+
+    for (game, rounds) in games {
         let mut valid = true;
-        for round in rest.split(';') {
-            for cubes in round.split(',') {
-                let cubes = cubes.trim();
-                let (number, colour) = cubes.split_once(' ').unwrap();
-                let number: usize = number.parse().unwrap();
-                match colour {
-                    "red" => {
-                        if number > 12 {
-                            valid = false
-                        }
-                    }
-                    "green" => {
-                        if number > 13 {
-                            valid = false
-                        }
-                    }
-                    "blue" => {
-                        if number > 14 {
-                            valid = false
-                        }
-                    }
-                    _ => println!("ERROR, unknown colour: {:?}", colour),
-                }
+        for round in rounds {
+            if round.red > 12 {
+                valid = false
+            }
+            if round.green > 13 {
+                valid = false
+            }
+            if round.blue > 14 {
+                valid = false
             }
         }
         if valid {
@@ -44,34 +92,22 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
-    for line in data.lines() {
-        let (_game, rest) = line.split_once(':').unwrap();
+    let (_i, games) = parser(data).unwrap();
+
+    for (_game, rounds) in games {
         let mut red = 0;
         let mut green = 0;
         let mut blue = 0;
-        for round in rest.split(';') {
-            for cubes in round.split(',') {
-                let cubes = cubes.trim();
-                let (number, colour) = cubes.split_once(' ').unwrap();
-                let number: usize = number.parse().unwrap();
-                match colour {
-                    "red" => {
-                        if number > red {
-                            red = number
-                        }
-                    }
-                    "green" => {
-                        if number > green {
-                            green = number
-                        }
-                    }
-                    "blue" => {
-                        if number > blue {
-                            blue = number
-                        }
-                    }
-                    _ => println!("ERROR, unknown colour: {:?}", colour),
-                }
+
+        for round in rounds {
+            if round.red > red {
+                red = round.red
+            }
+            if round.green > green {
+                green = round.green
+            }
+            if round.blue > blue {
+                blue = round.blue
             }
         }
         rv += red * green * blue;
