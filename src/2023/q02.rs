@@ -15,7 +15,6 @@ fn process_data_a(data: &str) -> usize {
                 let cubes = cubes.trim();
                 let (number, colour) = cubes.split_once(' ').unwrap();
                 let number: usize = number.parse().unwrap();
-                // println!("{:?} {:?}", number, colour);
                 match colour {
                     "red" => {
                         if number > 12 {
@@ -46,7 +45,6 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     for line in data.lines() {
-        // Do something
         let (_game, rest) = line.split_once(':').unwrap();
         let mut red = 0;
         let mut green = 0;
@@ -56,7 +54,6 @@ fn process_data_b(data: &str) -> usize {
                 let cubes = cubes.trim();
                 let (number, colour) = cubes.split_once(' ').unwrap();
                 let number: usize = number.parse().unwrap();
-                // println!("{:?} {:?}", number, colour);
                 match colour {
                     "red" => {
                         if number > red {
