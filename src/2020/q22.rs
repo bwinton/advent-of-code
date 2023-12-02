@@ -41,7 +41,7 @@ fn process_data_a(data: &str) -> usize {
     rv
 }
 
-fn play(game: usize, players: [VecDeque<usize>; 2]) -> [VecDeque<usize>; 2] {
+fn play(_game: usize, players: [VecDeque<usize>; 2]) -> [VecDeque<usize>; 2] {
     let mut seen = HashSet::new();
     let mut players = players;
 
@@ -58,7 +58,7 @@ fn play(game: usize, players: [VecDeque<usize>; 2]) -> [VecDeque<usize>; 2] {
                 players[0].iter().take(card_1).cloned().collect(),
                 players[1].iter().take(card_2).cloned().collect(),
             ];
-            let result = play(game + 1, sub_players);
+            let result = play(_game + 1, sub_players);
             if result[0].is_empty() {
                 1
             } else {

@@ -101,57 +101,33 @@ impl PassportBuilder {
     }
 
     fn complete(&self) -> bool {
-        self.byr != None
-            && self.iyr != None
-            && self.eyr != None
-            && self.hgt != None
-            && self.hcl != None
-            && self.ecl != None
-            && self.pid != None
+        self.byr.is_some()
+            && self.iyr.is_some()
+            && self.eyr.is_some()
+            && self.hgt.is_some()
+            && self.hcl.is_some()
+            && self.ecl.is_some()
+            && self.pid.is_some()
     }
 
     fn build(self) -> Option<Passport> {
         // byr (Birth Year) - four digits; at least 1920 and at most 2002.
-        if self.byr == None {
-            return None;
-        }
-        let byr: Option<usize> = self.byr.unwrap().parse().ok();
-        if byr == None {
-            return None;
-        }
-        let byr = byr.unwrap();
+        let byr: Option<usize> = self.byr?.parse().ok();
+        let byr = byr?;
 
         // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
-        if self.iyr == None {
-            return None;
-        }
-        let iyr: Option<usize> = self.iyr.unwrap().parse().ok();
-        if iyr == None {
-            return None;
-        }
-        let iyr = iyr.unwrap();
+        let iyr: Option<usize> = self.iyr?.parse().ok();
+        let iyr = iyr?;
 
         // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
-        if self.eyr == None {
-            return None;
-        }
-        let eyr: Option<usize> = self.eyr.unwrap().parse().ok();
-        if eyr == None {
-            return None;
-        }
-        let eyr = eyr.unwrap();
+        let eyr: Option<usize> = self.eyr?.parse().ok();
+        let eyr = eyr?;
 
         // hgt (Height) - a number followed by either cm or in:
-        if self.hgt == None {
-            return None;
-        }
-        let temp = &self.hgt.unwrap();
+        let temp = &self.hgt?;
         let hgt = if let Some(captures) = HGT_RE.captures(temp) {
             let value: Option<usize> = captures[1].parse().ok();
-            if value == None {
-                return None;
-            }
-            let value = value.unwrap();
+            let value = value?;
 
             let units = &captures[2];
             match units {
@@ -165,22 +141,13 @@ impl PassportBuilder {
         };
 
         // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
-        if self.hcl == None {
-            return None;
-        }
-        let hcl = self.hcl.unwrap();
+        let hcl = self.hcl?;
 
         // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
-        if self.ecl == None {
-            return None;
-        }
-        let _ecl = EyeColor::from(&self.ecl.clone().unwrap())?;
+        let _ecl = EyeColor::from(&self.ecl.clone()?)?;
 
         // pid (Passport ID) - a nine-digit number, including leading zeroes.
-        if self.pid == None {
-            return None;
-        }
-        let pid = self.pid.unwrap();
+        let pid = self.pid?;
 
         let _cid = self.cid;
         // cid (Country ID) - ignored, missing or not.

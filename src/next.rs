@@ -135,7 +135,7 @@ fn add_next(last_year: u32, last_day: &str, stdout: &mut Stdout) -> Result<(), N
 
 fn get_url(year: i32, day: u32) -> Result<Response, NextError> {
     let url = format!("https://adventofcode.com/{}/day/{}/input", year, day);
-    let mut request = Client::new().get(&url);
+    let mut request = Client::new().get(url);
     let session_cookie = format!("session={}", &var("AOC_SESSION")?);
     request = request.header(COOKIE, session_cookie);
     let response = request.send()?;

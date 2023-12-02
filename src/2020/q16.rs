@@ -166,10 +166,7 @@ fn process_data_b(data: &str) -> usize {
                 valid &= rule.validate(*value);
             }
             if valid {
-                rule_positions
-                    .entry(rule.name.clone())
-                    .or_insert_with(Vec::new)
-                    .push(i);
+                rule_positions.entry(rule.name.clone()).or_default().push(i);
             }
         }
     }

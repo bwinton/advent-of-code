@@ -25,7 +25,7 @@ fn factors_iter() -> impl Iterator<Item = HashSet<usize>> {
 fn process_data_a(data: usize) -> usize {
     for (i, factors) in factors_iter().enumerate() {
         let value: usize = factors.iter().sum();
-        if value as usize * 10 >= data {
+        if value * 10 >= data {
             return i + 1;
         }
     }
@@ -36,7 +36,7 @@ fn process_data_b(data: usize) -> usize {
     for (i, factors) in factors_iter().enumerate() {
         let house = i + 1;
         let value: usize = factors.iter().filter(|&elf| house <= *elf * 51).sum();
-        if value as usize * 11 >= data {
+        if value * 11 >= data {
             return house;
         }
     }

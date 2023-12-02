@@ -111,7 +111,7 @@ fn process_data_b(data: &str) -> u128 {
     }
 
     let mut step: u128 = 0;
-    let mut found = vec![0, 0, 0];
+    let mut found = [0, 0, 0];
 
     loop {
         // Apply gravity.

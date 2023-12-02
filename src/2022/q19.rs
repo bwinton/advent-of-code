@@ -248,19 +248,15 @@ fn run_blueprint(blueprint: &Blueprint, time_limit: usize) -> u32 {
             ("obsidian".to_owned(), 0),
             ("geode".to_owned(), 0),
         ]),
-        robots: HashMap::from_iter(
-            [
-                ("ore".to_owned(), 1),
-                ("clay".to_owned(), 0),
-                ("obsidian".to_owned(), 0),
-            ]
-            .into_iter(),
-        ),
+        robots: HashMap::from_iter([
+            ("ore".to_owned(), 1),
+            ("clay".to_owned(), 0),
+            ("obsidian".to_owned(), 0),
+        ]),
     });
 
     // Use a heap of states, not a simulation of minutes…
-    while !states.is_empty() {
-        let state = states.pop().unwrap();
+    while let Some(state) = states.pop() {
         if state.ores["geode"] > max {
             max = state.ores["geode"];
         }

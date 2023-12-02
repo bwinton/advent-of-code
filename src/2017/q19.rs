@@ -56,7 +56,7 @@ impl Packet {
         };
         let mut next = get_cell(next_pos, board);
         // println!("Going from {:?}/{:?} to {:?}/{:?}", self.pos, curr, next_pos, next);
-        if next != Some(Cell::Empty) && next != None {
+        if next != Some(Cell::Empty) && next.is_some() {
             self.pos = next_pos;
             return true;
         }
@@ -69,14 +69,14 @@ impl Packet {
                 next_pos = (self.pos.0, self.pos.1 - 1);
                 next = get_cell(next_pos, board);
                 // println!("  Turning Left {:?}/{:?}", next_pos, next);
-                if next != Some(Cell::Empty) && next != None {
+                if next != Some(Cell::Empty) && next.is_some() {
                     self.pos = next_pos;
                     self.dir = Direction::Left;
                 } else {
                     next_pos = (self.pos.0, self.pos.1 + 1);
                     next = get_cell(next_pos, board);
                     // println!("  Turning Right {:?}/{:?}", next_pos, next);
-                    if next != Some(Cell::Empty) && next != None {
+                    if next != Some(Cell::Empty) && next.is_some() {
                         self.pos = next_pos;
                         self.dir = Direction::Right;
                     }
@@ -86,14 +86,14 @@ impl Packet {
                 next_pos = (self.pos.0 - 1, self.pos.1);
                 next = get_cell(next_pos, board);
                 // println!("  Turning Up {:?}/{:?}", next_pos, next);
-                if next != Some(Cell::Empty) && next != None {
+                if next != Some(Cell::Empty) && next.is_some() {
                     self.pos = next_pos;
                     self.dir = Direction::Up;
                 } else {
                     next_pos = (self.pos.0 + 1, self.pos.1);
                     next = get_cell(next_pos, board);
                     // println!("  Turning Down {:?}/{:?}", next_pos, next);
-                    if next != Some(Cell::Empty) && next != None {
+                    if next != Some(Cell::Empty) && next.is_some() {
                         self.pos = next_pos;
                         self.dir = Direction::Down;
                     }

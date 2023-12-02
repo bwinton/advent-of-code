@@ -58,8 +58,8 @@ fn process_data_b(data: &str) -> usize {
         .map(|line| line.split(',').map(|i| i.parse().unwrap()).collect())
         .collect();
     let mut rv = 0;
-    let mut min = vec![20, 20, 20];
-    let mut max = vec![0, 0, 0];
+    let mut min = [20, 20, 20];
+    let mut max = [0, 0, 0];
     for cube in &cubes {
         for (i, &coord) in cube.iter().enumerate() {
             if coord <= min[i] {
@@ -74,8 +74,7 @@ fn process_data_b(data: &str) -> usize {
     }
     let mut stack = vec![vec![0, 0, 0]];
     let mut seen = HashSet::new();
-    while !stack.is_empty() {
-        let curr = stack.pop().unwrap();
+    while let Some(curr) = stack.pop() {
         if seen.contains(&curr) {
             continue;
         }

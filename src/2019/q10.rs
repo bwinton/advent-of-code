@@ -57,11 +57,11 @@ fn process_data_a(data: &str) -> usize {
         let dest = combo[1];
         angles
             .entry(*source)
-            .or_insert_with(HashSet::new)
+            .or_default()
             .insert(get_angle(*source, *dest));
         angles
             .entry(*dest)
-            .or_insert_with(HashSet::new)
+            .or_default()
             .insert(get_angle(*dest, *source));
     }
     angles.values().map(|x| x.len()).max().unwrap()
@@ -87,11 +87,11 @@ fn process_data_b(data: &str) -> i32 {
         let dest = combo[1];
         angles
             .entry(*source)
-            .or_insert_with(HashSet::new)
+            .or_default()
             .insert(get_angle(*source, *dest));
         angles
             .entry(*dest)
-            .or_insert_with(HashSet::new)
+            .or_default()
             .insert(get_angle(*dest, *source));
     }
     let mut max = angles.iter().next().unwrap();
@@ -109,7 +109,7 @@ fn process_data_b(data: &str) -> i32 {
         }
         angles
             .entry(get_atan(*source, *dest))
-            .or_insert_with(Vec::new)
+            .or_default()
             .push(*dest);
     }
     let mut keys: Vec<_> = angles.keys().collect();

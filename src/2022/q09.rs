@@ -126,7 +126,7 @@ fn parser(i: &str) -> IResult<&str, Vec<Move>> {
 
 fn process_data_a(data: &str) -> usize {
     let moves = parser(data).unwrap().1;
-    let mut segments = vec![(0, 0), (0, 0)];
+    let mut segments = [(0, 0), (0, 0)];
     let mut tail_positions = HashSet::new();
     let last = segments.len() - 1;
     tail_positions.insert(segments[last]);
@@ -145,7 +145,7 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
     let moves = parser(data).unwrap().1;
-    let mut segments = vec![
+    let mut segments = [
         (0, 0),
         (0, 0),
         (0, 0),

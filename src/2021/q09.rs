@@ -26,8 +26,7 @@ fn get_basin(i: usize, j: usize, map: &[Vec<u8>]) -> Vec<(usize, usize)> {
     let mut to_check = vec![(i, j)];
     let mut seen = vec![];
 
-    while !to_check.is_empty() {
-        let (i, j) = to_check.pop().unwrap();
+    while let Some((i, j)) = to_check.pop() {
         seen.push((i, j));
         if i > 0 {
             let i = i - 1;

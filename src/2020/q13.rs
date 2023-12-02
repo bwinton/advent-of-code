@@ -78,7 +78,7 @@ fn process_data_b(data: &str) -> i128 {
         .split(',')
         .enumerate()
         .map(|(i, x)| (i as i128, x.parse().ok()))
-        .filter(|(_, x)| *x != None)
+        .filter(|(_, x)| x.is_some())
         .map(|(i, j)| {
             let j = j.unwrap();
             let i = i % j;

@@ -121,12 +121,12 @@ fn parse(line: &str) -> Vec<Character> {
 }
 
 fn magnitude(number: &mut Vec<Character>) -> usize {
-    let curr = number.splice(0..1, vec![].into_iter()).collect::<Vec<_>>()[0];
+    let curr = number.splice(0..1, vec![]).collect::<Vec<_>>()[0];
     match curr {
         Character::Open => {
             let first = magnitude(number);
             let second = magnitude(number);
-            let close = number.splice(0..1, vec![].into_iter()).collect::<Vec<_>>()[0];
+            let close = number.splice(0..1, vec![]).collect::<Vec<_>>()[0];
             if close != Character::Close {
                 panic!("Unmatched brackets!!!");
             }

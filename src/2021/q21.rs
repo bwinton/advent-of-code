@@ -26,7 +26,7 @@ fn get_players(data: &str) -> [(u32, u32); 2] {
 
 fn process_data_a(data: &str) -> u32 {
     let mut players = get_players(data);
-    let mut die = (1..=100).into_iter().cycle();
+    let mut die = (1..=100).cycle();
     let mut roll_count = 0;
     let mut current_player = 0;
     while players[0].1 < 1000 && players[1].1 < 1000 {
@@ -59,7 +59,7 @@ fn process_data_b(data: &str) -> u64 {
             for (&turn, &turn_count) in &die {
                 let mut players = curr;
                 players[current_player].0 = (players[current_player].0 + turn - 1) % 10 + 1;
-                players[current_player].1 += players[current_player].0 as u32;
+                players[current_player].1 += players[current_player].0;
                 if players[current_player].1 >= 21 {
                     wins[current_player] += count * turn_count;
                     continue;

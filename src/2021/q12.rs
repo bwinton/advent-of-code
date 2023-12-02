@@ -22,8 +22,7 @@ fn process_data_a(data: &str) -> usize {
     let mut stack = vec![];
     let mut seen: HashSet<Vec<&str>> = HashSet::new();
     stack.push(vec!["start"]);
-    while !stack.is_empty() {
-        let curr_path = stack.pop().unwrap();
+    while let Some(curr_path) = stack.pop() {
         let &curr_room = curr_path.last().unwrap();
         for &next in &rooms[curr_room] {
             if next == "end" {
@@ -94,8 +93,7 @@ fn get_paths(rooms: Vec<HashSet<usize>>, small_rooms: HashSet<usize>) -> usize {
     let mut path = Vec::with_capacity(50);
     path.push(START_LOCATION);
     stack.push((path, START_LOCATION, false));
-    while !stack.is_empty() {
-        let (curr_path, curr_room, found_twice) = stack.pop().unwrap();
+    while let Some((curr_path, curr_room, found_twice)) = stack.pop() {
         for &next in &rooms[curr_room] {
             if next == END_LOCATION {
                 // Found one!

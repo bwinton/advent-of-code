@@ -112,7 +112,7 @@ impl Day for Q {
         for line in INPUT.lines() {
             let room: Room = line.parse().unwrap();
             let name = room.decrypt();
-            if name.find("northpole object storage") != None {
+            if name.contains("northpole object storage") {
                 println!("Result = \"{}\" {}", room.decrypt(), room.sector);
                 return;
             }

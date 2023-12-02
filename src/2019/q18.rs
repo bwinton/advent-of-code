@@ -24,8 +24,8 @@ impl Cell {
             '.' => Some(Cell::Open),
             '#' => Some(Cell::Wall),
             '@' => Some(Cell::Entrance),
-            x if ('a'..='z').contains(&x) => Some(Cell::Key(x.to_ascii_uppercase())),
-            x if ('A'..='Z').contains(&x) => Some(Cell::Door(x)),
+            x if x.is_ascii_lowercase() => Some(Cell::Key(x.to_ascii_uppercase())),
+            x if x.is_ascii_uppercase() => Some(Cell::Door(x)),
             _ => None,
         }
     }

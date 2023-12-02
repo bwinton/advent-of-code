@@ -62,7 +62,7 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
         }
     }
     let mut rv = -1;
-    let mut workers = vec![(char::MAX, -1)].repeat(workers);
+    let mut workers = [(char::MAX, -1)].repeat(workers);
 
     while !nodes.is_empty() {
         // step the time, and dec the workers.

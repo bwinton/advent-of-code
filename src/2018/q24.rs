@@ -174,7 +174,7 @@ fn process_data_a(data: &str) -> i32 {
         }
     }
 
-    groups.iter().map(|(_, group)| group.units).sum()
+    groups.values().map(|group| group.units).sum()
 }
 
 fn process_data_b(data: &str) -> i32 {
@@ -238,7 +238,7 @@ fn process_data_b(data: &str) -> i32 {
         }
 
         if !immunes.is_empty() && infections.is_empty() {
-            remaining = groups.iter().map(|(_, group)| group.units).sum();
+            remaining = groups.values().map(|group| group.units).sum();
         }
     }
 

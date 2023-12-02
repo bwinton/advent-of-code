@@ -48,11 +48,7 @@ struct Bridge {
 
 impl PartialOrd for Bridge {
     fn partial_cmp(&self, other: &Bridge) -> Option<Ordering> {
-        let move_cmp = (self.strength).cmp(&other.strength);
-        if move_cmp == Ordering::Equal {
-            return Some(self.pipes.len().cmp(&other.pipes.len()));
-        }
-        Some(move_cmp)
+        Some(self.cmp(other))
     }
 }
 

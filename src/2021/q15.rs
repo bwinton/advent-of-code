@@ -13,11 +13,7 @@ struct State {
 
 impl PartialOrd for State {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        match other.risk.partial_cmp(&self.risk) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
-        }
-        other.path.len().partial_cmp(&self.path.len())
+        Some(self.cmp(other))
     }
 }
 

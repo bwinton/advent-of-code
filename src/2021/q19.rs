@@ -170,7 +170,7 @@ fn scanner(i: &str) -> IResult<&str, Scanner> {
         input,
         Scanner {
             position: None,
-            beacons: HashSet::from_iter(beacons.into_iter()),
+            beacons: HashSet::from_iter(beacons),
         },
     ))
 }

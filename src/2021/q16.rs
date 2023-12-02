@@ -121,7 +121,7 @@ fn operation(i: (&[u8], usize)) -> IResult<(&[u8], usize), Vec<InstructionV2>> {
         input = next;
         // Parse until we get length number of bits…
         let mut subs = vec![];
-        while curr > target as usize {
+        while curr > target {
             let (next, sub) = instruction(input)?;
             curr = next.0.len() * 8 + 8 - next.1;
             subs.push(sub);

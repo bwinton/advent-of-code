@@ -308,7 +308,7 @@ fn process_data_a(data: &str) -> i64 {
     // println!("{:?}", instructions);
     let mut state = State::new('A', instructions, registers);
     let mut value = None;
-    while value == None && (state.pc as usize) < state.instructions.len() {
+    while value.is_none() && (state.pc as usize) < state.instructions.len() {
         let temp = state.execute();
         state = temp.0;
         value = temp.1;

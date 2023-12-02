@@ -13,7 +13,7 @@ fn next_char(c: char) -> char {
     if rv > 'z' {
         rv = 'a';
     }
-    rv as char
+    rv
 }
 
 fn valid_char(c: char) -> bool {
@@ -38,7 +38,7 @@ fn is_valid(password: &str) -> bool {
     let mut found = None;
     for (first, second) in password.chars().tuple_windows() {
         if first == second {
-            if found != None && found != Some(first) {
+            if found.is_some() && found != Some(first) {
                 rule_three = true;
                 break;
             }

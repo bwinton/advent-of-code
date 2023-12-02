@@ -270,7 +270,7 @@ fn move_one_state(
     next.steps.push(command.to_owned());
     next.machine
         .inputs
-        .extend(command.chars().chain(['\n'].into_iter()).map(|x| x as i128));
+        .extend(command.chars().chain(['\n']).map(|x| x as i128));
     let state = next.machine.run_tape_until(RUN_TAPE_LIMIT);
     let outputs = &mut next.machine.outputs;
     let output: String = outputs.iter().map(|x| *x as u8 as char).rev().collect();

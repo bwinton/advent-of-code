@@ -8,8 +8,7 @@ fn process_data_a(data: &str) -> usize {
     for line in data.lines() {
         let line = line
             .replace('F', "0")
-            .replace('B', "1")
-            .replace('R', "1")
+            .replace(['B', 'R'], "1")
             .replace('L', "0");
         let id = usize::from_str_radix(&line, 2).unwrap();
         if id > rv {
@@ -24,8 +23,7 @@ fn process_data_b(data: &str) -> usize {
     for line in data.lines() {
         let line = line
             .replace('F', "0")
-            .replace('B', "1")
-            .replace('R', "1")
+            .replace(['B', 'R'], "1")
             .replace('L', "0");
         rv.push(usize::from_str_radix(&line, 2).unwrap());
     }

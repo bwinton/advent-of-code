@@ -15,8 +15,7 @@ fn process_data_a(data: &str) -> i32 {
     }
     let mut total = 0;
     let mut queue = vec![(&orbits["COM"], 1)];
-    while !queue.is_empty() {
-        let (curr, level) = queue.pop().unwrap();
+    while let Some((curr, level)) = queue.pop() {
         for planet in curr {
             total += level;
             if let Some(next) = orbits.get(planet) {

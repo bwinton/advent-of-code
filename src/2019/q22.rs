@@ -116,7 +116,7 @@ where
                 b *= n;
             }
             Instruction::Cut(n) => {
-                b += n as i128 + length;
+                b += n + length;
             }
             Instruction::NewStack => {
                 a = -a;

@@ -72,7 +72,7 @@ fn process(line: &mut VecDeque<char>) -> usize {
                 }
                 return rv;
             }
-            ch if ('0'..='9').contains(&ch) => {
+            ch if ch.is_ascii_digit() => {
                 number.push(ch);
             }
             _ => {
@@ -191,7 +191,7 @@ fn process_b(line: &mut VecDeque<char>) -> usize {
                 }
                 return eval(stack);
             }
-            ch if ('0'..='9').contains(&ch) => {
+            ch if ch.is_ascii_digit() => {
                 number.push(ch);
             }
             _ => {
