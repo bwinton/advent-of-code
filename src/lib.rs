@@ -1,6 +1,7 @@
 pub mod computer;
 pub mod letters;
 pub mod nom_util;
+pub mod util;
 
 #[macro_use]
 extern crate clap;

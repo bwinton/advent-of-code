@@ -3,6 +3,8 @@
 
 use std::collections::{HashMap, HashSet};
 
+use aoc::util::ring;
+
 static INPUT: &str = include_str!("data/q03.data");
 
 #[derive(Debug, Clone)]
@@ -52,11 +54,9 @@ fn process_data_a(data: &str) -> usize {
     for y in 0..rows {
         for x in 0..cols {
             if let Some(Cell::Symbol(_cell)) = grid.get(&(x, y)) {
-                for i in x - 1..=x + 1 {
-                    for j in y - 1..=y + 1 {
-                        if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
-                            numbers.insert((x, y, cell));
-                        }
+                for (i, j) in ring(x, y, 1) {
+                    if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
+                        numbers.insert((x, y, cell));
                     }
                 }
             }
@@ -76,11 +76,9 @@ fn process_data_b(data: &str) -> usize {
         for x in 0..cols {
             if let Some(Cell::Symbol('*')) = grid.get(&(x, y)) {
                 let mut parts = HashSet::new();
-                for i in x - 1..=x + 1 {
-                    for j in y - 1..=y + 1 {
-                        if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
-                            parts.insert((x, y, cell));
-                        }
+                for (i, j) in ring(x, y, 1) {
+                    if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
+                        parts.insert((x, y, cell));
                     }
                 }
                 if parts.len() == 2 {
