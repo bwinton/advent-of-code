@@ -27,6 +27,45 @@ impl Range {
             None
         }
     }
+
+    fn transform_range(&self, sources: Vec<(u64, u64)>) -> (Vec<(u64, u64)>, Vec<(u64, u64)>) {
+        let mut transformed = vec![];
+        let mut original = vec![];
+        for (start, length) in sources {
+            // println!("  Checking [{},{}] against [{},{}]=>{}", start, length, self.source, self.length, self.dest);
+            // Non-overlapping:
+            if start+length < self.source || self.source+self.length < start {
+                // println!("  Non-overlapping => [{},{}]", start, length);
+                original.push((start, length));
+                continue;
+            }
+
+            // Contained:
+            if self.source <= start && length <= self.length {
+                // println!("  Contained => [{},{}]", self.dest + start - self.source, length);
+                transformed.push((self.dest + start - self.source, length));
+                continue;
+            }
+
+            // Overlapping left:
+            if start <= self.source && self.source <= start + length {
+                // println!("  Overlapping left => [{},{}] [{},{}]", start, self.source - start, self.dest, start + length - self.source);
+                original.push((start, self.source - start));
+                transformed.push((self.dest, start + length - self.source));
+                continue;
+            }
+
+            // Overlapping right:
+            if start <= self.source + self.length && self.source + self.length <= start + length {
+                // println!("  Overlapping right => [{},{}] [{},{}]", self.dest + start - self.source, self.source + self.length - start, self.source + self.length, start + length - self.source - self.length);
+                transformed.push((self.dest + start - self.source, self.source + self.length - start));
+                original.push((self.source + self.length, start + length - self.source - self.length));
+                continue;
+            }
+
+        }
+        (original, transformed)
+    }
 }
 
 fn seeds(i: &str) -> IResult<&str, Vec<u64>> {
@@ -70,21 +109,7 @@ fn parse_map(heading: &str) -> impl FnMut(&str) -> IResult<&str, Vec<Range>> + '
     }
 }
 
-fn parser(
-    i: &str,
-) -> IResult<
-    &str,
-    (
-        Vec<u64>,
-        Vec<Range>,
-        Vec<Range>,
-        Vec<Range>,
-        Vec<Range>,
-        Vec<Range>,
-        Vec<Range>,
-        Vec<Range>,
-    ),
-> {
+fn parser(i: &str) -> IResult<&str, (Vec<u64>, Vec<Vec<Range>>)> {
     let (
         input,
         (
@@ -125,73 +150,32 @@ fn parser(
         input,
         (
             seeds,
-            seed_to_soil,
-            soil_to_fertilizer,
-            fertilizer_to_water,
-            water_to_light,
-            light_to_temperature,
-            temperature_to_humidity,
-            humidity_to_location,
+            vec![
+                seed_to_soil,
+                soil_to_fertilizer,
+                fertilizer_to_water,
+                water_to_light,
+                light_to_temperature,
+                temperature_to_humidity,
+                humidity_to_location,
+            ],
         ),
     ))
 }
 
 fn process_data_a(data: &str) -> u64 {
-    let (
-        seeds,
-        seed_to_soil,
-        soil_to_fertilizer,
-        fertilizer_to_water,
-        water_to_light,
-        light_to_temperature,
-        temperature_to_humidity,
-        humidity_to_location,
-    ) = parser(data).unwrap().1;
+    let (seeds, mappers) = parser(data).unwrap().1;
 
     let mut destinations = vec![];
 
     for seed in seeds {
         let mut next = seed;
-        for range in &seed_to_soil {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &soil_to_fertilizer {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &fertilizer_to_water {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &water_to_light {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &light_to_temperature {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &temperature_to_humidity {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &humidity_to_location {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
+        for mapper in &mappers {
+            for range in mapper {
+                if let Some(n) = range.transform(next) {
+                    next = n;
+                    break;
+                }
             }
         }
         destinations.push(next);
@@ -200,73 +184,31 @@ fn process_data_a(data: &str) -> u64 {
 }
 
 fn process_data_b(data: &str) -> u64 {
-    let (
-        seed_ranges,
-        seed_to_soil,
-        soil_to_fertilizer,
-        fertilizer_to_water,
-        water_to_light,
-        light_to_temperature,
-        temperature_to_humidity,
-        humidity_to_location,
-    ) = parser(data).unwrap().1;
+    let (seed_ranges, mappers) = parser(data).unwrap().1;
 
-    let mut destinations = vec![];
-
-    let mut seeds = vec![];
+    let mut original = vec![];
     for (start, length) in seed_ranges.into_iter().tuples() {
-        for i in start..start + length {
-            seeds.push(i);
-        }
+        // for i in start..start + length {
+        //     original.push(i);
+        // }
+        original.push((start, length));
     }
 
-    for seed in seeds {
-        let mut next = seed;
-        for range in &seed_to_soil {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
+    // println!("original: {:?}\n", original);
+    for mapper in &mappers {
+        let mut next = vec![];
+        for range in mapper {
+            let mut transformed;
+            (original, transformed) = range.transform_range(original);
+            // println!("original: {:?}\nnext: {:?}\ntransformed: {:?}\n", original, next, transformed);
+            next.append(&mut transformed);
         }
-        for range in &soil_to_fertilizer {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &fertilizer_to_water {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &water_to_light {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &light_to_temperature {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &temperature_to_humidity {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        for range in &humidity_to_location {
-            if let Some(n) = range.transform(next) {
-                next = n;
-                break;
-            }
-        }
-        destinations.push(next);
+        original.append(&mut next);
+        // println!("next mapper: {:?}\n", original);
     }
-    destinations.into_iter().min().unwrap()
+
+    // println!("{:?}", original.iter().sorted().next().unwrap().0);
+    original.iter().sorted().next().unwrap().0
 }
 
 //-----------------------------------------------------
