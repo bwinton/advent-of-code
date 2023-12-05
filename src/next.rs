@@ -1,6 +1,6 @@
 use std::{
     env::{var, VarError},
-    fs::{copy, create_dir_all, read, read_dir, File},
+    fs::{copy, create_dir_all, read, read_dir, remove_file, File, OpenOptions},
     io::{stdout, Stdout, Write},
     time::SystemTimeError,
 };
@@ -142,21 +142,65 @@ fn get_url(year: i32, day: u32) -> Result<Response, NextError> {
     Ok(response)
 }
 
+fn get_all_inputs() -> Result<(), NextError> {
+    let today = Local::now().naive_local();
+    let current_year = today.year();
+    let current_day = today.day();
+
+    for year in 2015..current_year {
+        create_dir_all(format!("src/{}/data", year))?;
+        for day in 1..25 {
+            if download_input(year, day)? {
+                std::thread::sleep(std::time::Duration::from_secs(2));
+            }
+        }
+    }
+    let year = current_year;
+    create_dir_all(format!("src/{}/data", year))?;
+    for day in 1..=current_day {
+        if download_input(year, day)? {
+            std::thread::sleep(std::time::Duration::from_secs(2));
+        }
+    }
+    Ok(())
+}
+
+fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
+    let datapath = format!("src/{}/data/q{:02}.data", year, day);
+    let file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&datapath);
+    Ok(if let Ok(mut file) = file {
+        println!("Getting input for {:?}", datapath);
+        let response = get_url(year, day);
+        if response.is_err() {
+            let rm = remove_file(&datapath);
+            rm?;
+        }
+        let mut response = response?;
+        if !response.status().is_success() {
+            let rm = remove_file(&datapath);
+            dbg!(&rm);
+            rm?;
+        }
+        response.copy_to(&mut file)?;
+        true
+    } else {
+        println!("Already have {:?}", datapath);
+        false
+    })
+}
+
 fn get_input() -> Result<(), NextError> {
     let today = Local::now().naive_local();
     let year = today.year();
     let day = today.day();
     let datapath = format!("src/{}/data/q{:02}.data", year, day);
-    let metadata = std::fs::metadata(&datapath);
+    let metadata = std::fs::metadata(datapath);
     if metadata.map(|m| m.len()).unwrap_or(1) == 0 {
         // We're getting the data for today!
-        println!("Getting input for {:?}", datapath);
-        let mut response = get_url(year, day)?;
-        if !response.status().is_success() {
-            return Err(NextError::InputNotFound { year, day });
-        }
-        let mut file = File::create(&datapath)?;
-        response.copy_to(&mut file)?;
+        download_input(year, day)?;
     } else {
         // Let's wait and get the data for tomorrow!
         let tomorrow = today
@@ -230,6 +274,14 @@ fn main() -> Result<(), NextError> {
                 .action(ArgAction::SetTrue)
                 .group("arg"),
         )
+        .arg(
+            Arg::new("all_inputs")
+                .short('a')
+                .help("Get all inputs")
+                .long_help("Get all the missing input.")
+                .action(ArgAction::SetTrue)
+                .group("arg"),
+        )
         .get_matches();
 
     let (last_year, last_day) = get_last()?;
@@ -240,6 +292,8 @@ fn main() -> Result<(), NextError> {
         add_year(year, &mut stdout)?;
     } else if *matches.get_one("input").unwrap() {
         get_input()?;
+    } else if *matches.get_one("all_inputs").unwrap() {
+        get_all_inputs()?;
     } else {
         add_next(last_year, &last_day, &mut stdout)?;
     }
