@@ -19,6 +19,9 @@ struct Range {
     length: u64,
 }
 
+type Source = (u64, u64);
+type Sources = Vec<Source>;
+
 impl Range {
     fn transform(&self, source: u64) -> Option<u64> {
         if source >= self.source && source <= self.source + self.length {
@@ -28,13 +31,13 @@ impl Range {
         }
     }
 
-    fn transform_range(&self, sources: Vec<(u64, u64)>) -> (Vec<(u64, u64)>, Vec<(u64, u64)>) {
+    fn transform_range(&self, sources: Sources) -> (Sources, Sources) {
         let mut transformed = vec![];
         let mut original = vec![];
         for (start, length) in sources {
             // println!("  Checking [{},{}] against [{},{}]=>{}", start, length, self.source, self.length, self.dest);
             // Non-overlapping:
-            if start+length < self.source || self.source+self.length < start {
+            if start + length < self.source || self.source + self.length < start {
                 // println!("  Non-overlapping => [{},{}]", start, length);
                 original.push((start, length));
                 continue;
@@ -58,11 +61,16 @@ impl Range {
             // Overlapping right:
             if start <= self.source + self.length && self.source + self.length <= start + length {
                 // println!("  Overlapping right => [{},{}] [{},{}]", self.dest + start - self.source, self.source + self.length - start, self.source + self.length, start + length - self.source - self.length);
-                transformed.push((self.dest + start - self.source, self.source + self.length - start));
-                original.push((self.source + self.length, start + length - self.source - self.length));
+                transformed.push((
+                    self.dest + start - self.source,
+                    self.source + self.length - start,
+                ));
+                original.push((
+                    self.source + self.length,
+                    start + length - self.source - self.length,
+                ));
                 continue;
             }
-
         }
         (original, transformed)
     }
