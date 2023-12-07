@@ -1,6 +1,6 @@
 use std::{
     env::{var, VarError},
-    fs::{copy, create_dir_all, read, read_dir, remove_file, File, OpenOptions},
+    fs::{self, copy, create_dir_all, read, read_dir, remove_file, File, OpenOptions},
     io::{stdout, Stdout, Write},
     time::SystemTimeError,
 };
@@ -167,6 +167,11 @@ fn get_all_inputs() -> Result<(), NextError> {
 
 fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
     let datapath = format!("src/{}/data/q{:02}.data", year, day);
+    let metadata = std::fs::metadata(&datapath);
+    if metadata.map(|m| m.len()).unwrap_or(1) == 0 {
+        // If the file is empty, delete it so that we can re-download it!
+        fs::remove_file(&datapath)?;
+    }
     let file = OpenOptions::new()
         .write(true)
         .create_new(true)
