@@ -32,11 +32,8 @@ fn process_data_a(data: &str) -> usize {
         let mut wins = 0;
         for i in 0..=time / 2 {
             if i * (time - i) > target {
-                if i != time - i {
-                    wins += 2;
-                } else {
-                    wins += 1;
-                }
+                wins = time + 1 - (i * 2);
+                break;
             }
         }
         rv *= wins;
@@ -67,11 +64,8 @@ fn process_data_b(data: &str) -> usize {
     let mut wins = 0;
     for i in 0..=time / 2 {
         if i * (time - i) > target {
-            if i != time - i {
-                wins += 2;
-            } else {
-                wins += 1;
-            }
+            wins = time + 1 - (i * 2);
+            break;
         }
     }
     wins
