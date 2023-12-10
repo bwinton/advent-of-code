@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use aoc::util::ring;
+use aoc::util::{ring, Point2};
 
 static INPUT: &str = include_str!("data/q03.data");
 
@@ -14,7 +14,7 @@ enum Cell {
     Number(usize, usize, usize),
 }
 
-fn parse_data(data: &str) -> (usize, usize, HashMap<(usize, usize), Cell>) {
+fn parse_data(data: &str) -> (usize, usize, HashMap<Point2, Cell>) {
     let rows = data.lines().count();
     let cols = data.lines().next().unwrap().chars().count();
     let mut grid = HashMap::new();
@@ -54,7 +54,7 @@ fn process_data_a(data: &str) -> usize {
     for y in 0..rows {
         for x in 0..cols {
             if let Some(Cell::Symbol(_cell)) = grid.get(&(x, y)) {
-                for (i, j) in ring(x, y, 1) {
+                for (i, j) in ring((x, y), 1) {
                     if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
                         numbers.insert((x, y, cell));
                     }
@@ -76,7 +76,7 @@ fn process_data_b(data: &str) -> usize {
         for x in 0..cols {
             if let Some(Cell::Symbol('*')) = grid.get(&(x, y)) {
                 let mut parts = HashSet::new();
-                for (i, j) in ring(x, y, 1) {
+                for (i, j) in ring((x, y), 1) {
                     if let Some(Cell::Number(x, y, cell)) = grid.get(&(i, j)) {
                         parts.insert((x, y, cell));
                     }
