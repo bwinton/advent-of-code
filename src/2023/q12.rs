@@ -1,6 +1,10 @@
 //-----------------------------------------------------
 // Setup.
 
+use rayon::{
+    iter::ParallelIterator,
+    str::{self, ParallelString},
+};
 use std::collections::{HashMap, VecDeque};
 
 static INPUT: &str = include_str!("data/q12.data");
@@ -114,31 +118,31 @@ fn get_combinations(
 }
 
 fn process_data_a(data: &str) -> usize {
-    let mut rv = 0;
-    for line in data.lines() {
-        let (input, values) = parse(line);
-        rv += get_combinations(&input, &values, &mut HashMap::new());
-    }
-    rv
+    data.par_lines()
+        .map(|line| {
+            let (input, values) = parse(line);
+            get_combinations(&input, &values, &mut HashMap::new())
+        })
+        .sum()
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rv = 0;
-    for line in data.lines() {
-        let (input, values) = parse(line);
+    data.par_lines()
+        .map(|line| {
+            let (input, values) = parse(line);
 
-        let mut input: Vec<_> = input.into();
-        input.push(Condition::Unknown);
-        input = input.repeat(5);
-        input.pop();
-        let input: VecDeque<_> = input.into();
+            let mut input: Vec<_> = input.into();
+            input.push(Condition::Unknown);
+            input = input.repeat(5);
+            input.pop();
+            let input: VecDeque<_> = input.into();
 
-        let mut values: Vec<_> = values.into();
-        values = values.repeat(5);
-        let values: VecDeque<_> = values.into();
-        rv += get_combinations(&input, &values, &mut HashMap::new());
-    }
-    rv
+            let mut values: Vec<_> = values.into();
+            values = values.repeat(5);
+            let values: VecDeque<_> = values.into();
+            get_combinations(&input, &values, &mut HashMap::new())
+        })
+        .sum()
 }
 
 //-----------------------------------------------------
