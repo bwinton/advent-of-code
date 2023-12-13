@@ -16,6 +16,12 @@ enum Condition {
     Unknown,
 }
 
+#[derive(Clone, Hash, PartialEq, Eq)]
+struct State {
+    input: VecDeque<Condition>,
+    values: VecDeque<usize>,
+}
+
 #[allow(dead_code)]
 fn print_line(line: &VecDeque<Condition>) -> String {
     let mut rv = String::new();
@@ -35,7 +41,7 @@ fn print_line(line: &VecDeque<Condition>) -> String {
     rv
 }
 
-fn parse(line: &str) -> (VecDeque<Condition>, VecDeque<usize>) {
+fn parse(line: &str) -> State {
     let (input, values) = line.split_once(' ').unwrap();
     let input: VecDeque<Condition> = input
         .chars()
@@ -49,36 +55,32 @@ fn parse(line: &str) -> (VecDeque<Condition>, VecDeque<usize>) {
         })
         .collect();
     let values = values.split(',').map(|v| v.parse().unwrap()).collect();
-    (input, values)
+    State { input, values }
 }
 
-fn get_combinations(
-    base_input: &VecDeque<Condition>,
-    base_values: &VecDeque<usize>,
-    seen: &mut HashMap<(VecDeque<Condition>, VecDeque<usize>), usize>,
-) -> usize {
-    if let Some(rv) = seen.get(&(base_input.clone(), base_values.clone())) {
+fn get_combinations(base: &State, seen: &mut HashMap<State, usize>) -> usize {
+    if let Some(rv) = seen.get(base) {
         return *rv;
     }
-    let mut input = base_input.clone();
-    let mut values = base_values.clone();
+    let mut input = base.input.clone();
+    let mut values = base.values.clone();
 
     let next = input.pop_front();
     if next.is_none() {
         let rv = if values.is_empty() { 1 } else { 0 };
-        seen.insert((base_input.clone(), base_values.clone()), rv);
+        seen.insert(base.to_owned(), rv);
         return rv;
     }
     let next = next.unwrap();
     let rv = match next {
         Condition::Operational => {
-            let rv = get_combinations(&input, &values, seen);
-            seen.insert((base_input.clone(), base_values.clone()), rv);
+            let rv = get_combinations(&State { input, values }, seen);
+            seen.insert(base.to_owned(), rv);
             rv
         }
         Condition::Damaged => {
             if values.is_empty() || (input.len() < values[0] - 1) {
-                seen.insert((base_input.clone(), base_values.clone()), 0);
+                seen.insert(base.to_owned(), 0);
                 0
             } else {
                 let check = input
@@ -93,24 +95,25 @@ fn get_combinations(
                         input[0] = Condition::Operational;
                     }
                     values.pop_front();
-                    let rv = get_combinations(&input, &values, seen);
-                    seen.insert((base_input.clone(), base_values.clone()), rv);
+                    let rv = get_combinations(&State { input, values }, seen);
+                    seen.insert(base.to_owned(), rv);
                     rv
                 } else {
-                    seen.insert((base_input.clone(), base_values.clone()), 0);
+                    seen.insert(base.to_owned(), 0);
                     0
                 }
             }
         }
         Condition::Unknown => {
-            input.push_front(Condition::Operational);
-            let count: usize = get_combinations(&input, &values, seen);
+            let mut state = State { input, values };
+            state.input.push_front(Condition::Operational);
+            let count: usize = get_combinations(&state, seen);
             let mut rv = count;
 
-            input[0] = Condition::Damaged;
-            let count: usize = get_combinations(&input, &values, seen);
+            state.input[0] = Condition::Damaged;
+            let count: usize = get_combinations(&state, seen);
             rv += count;
-            seen.insert((base_input.clone(), base_values.clone()), rv);
+            seen.insert(base.to_owned(), rv);
             rv
         }
     };
@@ -120,8 +123,9 @@ fn get_combinations(
 fn process_data_a(data: &str) -> usize {
     data.par_lines()
         .map(|line| {
-            let (input, values) = parse(line);
-            get_combinations(&input, &values, &mut HashMap::new())
+            let state = parse(line);
+            // 230 derived experimentally.
+            get_combinations(&state, &mut HashMap::with_capacity(230))
         })
         .sum()
 }
@@ -129,18 +133,19 @@ fn process_data_a(data: &str) -> usize {
 fn process_data_b(data: &str) -> usize {
     data.par_lines()
         .map(|line| {
-            let (input, values) = parse(line);
+            let state = parse(line);
 
-            let mut input: Vec<_> = input.into();
+            let mut input: Vec<_> = state.input.into();
             input.push(Condition::Unknown);
             input = input.repeat(5);
             input.pop();
             let input: VecDeque<_> = input.into();
 
-            let mut values: Vec<_> = values.into();
+            let mut values: Vec<_> = state.values.into();
             values = values.repeat(5);
             let values: VecDeque<_> = values.into();
-            get_combinations(&input, &values, &mut HashMap::new())
+            // 4440 derived experimentally.
+            get_combinations(&State { input, values }, &mut HashMap::with_capacity(4440))
         })
         .sum()
 }
