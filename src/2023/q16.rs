@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use aoc::util::Point2;
+use aoc::util::Direction;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 static INPUT: &str = include_str!("data/q16.data");
@@ -14,30 +14,6 @@ enum Cell {
     MirrorLeft,
     SplitterHorizontal,
     SplitterVertical,
-}
-
-#[derive(Debug, Hash, Copy, Clone, PartialEq, Eq)]
-enum Direction {
-    North,
-    East,
-    South,
-    West,
-}
-
-impl Direction {
-    fn move_pos(&self, curr: Point2, max: Point2) -> Option<Point2> {
-        let (try_x, try_y) = match self {
-            Direction::North => (curr.0 as i32, curr.1 as i32 - 1),
-            Direction::East => (curr.0 as i32 + 1, curr.1 as i32),
-            Direction::South => (curr.0 as i32, curr.1 as i32 + 1),
-            Direction::West => (curr.0 as i32 - 1, curr.1 as i32),
-        };
-        if try_x >= 0 && try_y >= 0 && try_x < max.0 as i32 && try_y < max.0 as i32 {
-            Some((try_x as usize, try_y as usize))
-        } else {
-            None
-        }
-    }
 }
 
 fn parse(data: &str) -> (HashMap<(usize, usize), Cell>, (usize, usize)) {
