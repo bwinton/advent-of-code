@@ -21,56 +21,15 @@ fn parse(data: &str) -> Vec<Vec<i32>> {
 
 fn process_data_a(data: &str) -> usize {
     let board = parse(data);
-    let start = (0usize, 0usize);
-    let max = (board.len(), board[board.len() - 1].len());
-    let target = (max.0 - 1, max.1 - 1);
-    let mut curr = BinaryHeap::new();
-    let mut seen = HashMap::new();
-    curr.push((0i32, start, Direction::East, 0, vec![(start, 0)]));
-    loop {
-        let next = curr.pop();
-        if next.is_none() {
-            break;
-        }
-        let (loss, cell, direction, blocks, path) = next.unwrap();
-
-        if seen.contains_key(&(cell, direction, blocks)) {
-            let value: &mut i32 = seen.get_mut(&(cell, direction, blocks)).unwrap();
-            if -loss >= -*value {
-                continue;
-            }
-            *value = loss;
-        }
-        seen.insert((cell, direction, blocks), loss);
-
-        // Figure out where we can go from here…
-        for proposed in Direction::all() {
-            if proposed.opposite(&direction) {
-                continue;
-            }
-            if let Some(new) = proposed.move_pos(cell, max) {
-                let new_blocks = if proposed == direction {
-                    if blocks == 3 {
-                        continue;
-                    }
-                    blocks + 1
-                } else {
-                    1
-                };
-                if new == target {
-                    return -(loss - board[new.1][new.0]) as usize;
-                }
-                let mut path = path.clone();
-                path.push((new, new_blocks));
-                curr.push((loss - board[new.1][new.0], new, proposed, new_blocks, path));
-            }
-        }
-    }
-    0
+    find_path(&board, 0, 3)
 }
 
 fn process_data_b(data: &str) -> usize {
     let board = parse(data);
+    find_path(&board, 4, 10)
+}
+
+fn find_path(board: &[Vec<i32>], min_run: i32, max_run: i32) -> usize {
     let start = (0usize, 0usize);
     let max = (board[0].len(), board.len());
     let target = (max.0 - 1, max.1 - 1);
@@ -101,17 +60,17 @@ fn process_data_b(data: &str) -> usize {
             }
             if let Some(new) = proposed.move_pos(cell, max) {
                 let new_blocks = if proposed == direction {
-                    if blocks == 10 {
+                    if blocks == max_run {
                         continue;
                     }
                     blocks + 1
                 } else {
                     1
                 };
-                if proposed != direction && blocks < 4 {
+                if proposed != direction && blocks < min_run {
                     continue;
                 }
-                if new == target && new_blocks >= 4 {
+                if new == target && new_blocks >= min_run {
                     return -(loss - board[new.1][new.0]) as usize;
                 }
                 let mut path = path.clone();
