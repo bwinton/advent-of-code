@@ -1,13 +1,13 @@
-pub type Point2 = (usize, usize);
-pub type Point3 = (usize, usize, usize);
+pub type Point2 = (i64, i64);
+pub type Point3 = (i64, i64, i64);
 
 /// Calculate the indices around x and y to the specified depth, handling (0,0), and return them in a vec.
 /// Note: includes (x,y)
-pub fn ring(point: Point2, depth: usize) -> Vec<Point2> {
+pub fn ring(point: Point2, depth: usize, min: Point2, max: Point2) -> Vec<Point2> {
     let (x, y) = point;
     let mut rv = vec![];
-    for i in x.saturating_sub(depth)..=x + depth {
-        for j in y.saturating_sub(depth)..=y + depth {
+    for i in (x - depth as i64).max(min.0)..=(x + depth as i64).min(max.0) {
+        for j in (y - depth as i64).max(min.1)..=(y + depth as i64).min(max.1) {
             rv.push((i, j));
         }
     }
@@ -23,15 +23,24 @@ pub enum Direction {
 }
 
 impl Direction {
-    pub fn move_pos(&self, curr: Point2, max: Point2) -> Option<Point2> {
+    pub fn move_pos(
+        &self,
+        curr: Point2,
+        multiplier: i64,
+        min: Option<Point2>,
+        max: Option<Point2>,
+    ) -> Option<Point2> {
         let (try_x, try_y) = match self {
-            Direction::North => (curr.0 as i32, curr.1 as i32 - 1),
-            Direction::East => (curr.0 as i32 + 1, curr.1 as i32),
-            Direction::South => (curr.0 as i32, curr.1 as i32 + 1),
-            Direction::West => (curr.0 as i32 - 1, curr.1 as i32),
+            Direction::North => (curr.0 as i64, curr.1 as i64 - multiplier),
+            Direction::East => (curr.0 as i64 + multiplier, curr.1 as i64),
+            Direction::South => (curr.0 as i64, curr.1 as i64 + multiplier),
+            Direction::West => (curr.0 as i64 - multiplier, curr.1 as i64),
         };
-        if try_x >= 0 && try_y >= 0 && try_x < max.0 as i32 && try_y < max.1 as i32 {
-            Some((try_x as usize, try_y as usize))
+
+        if (min.is_none() || try_x >= min.unwrap().0 as i64 && try_y >= min.unwrap().1 as i64)
+            && (max.is_none() || try_x < max.unwrap().0 as i64 && try_y < max.unwrap().1 as i64)
+        {
+            Some((try_x, try_y))
         } else {
             None
         }

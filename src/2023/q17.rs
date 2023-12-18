@@ -30,8 +30,8 @@ fn process_data_b(data: &str) -> usize {
 }
 
 fn find_path(board: &[Vec<i32>], min_run: i32, max_run: i32) -> usize {
-    let start = (0usize, 0usize);
-    let max = (board[0].len(), board.len());
+    let start = (0, 0);
+    let max = (board[0].len() as i64, board.len() as i64);
     let target = (max.0 - 1, max.1 - 1);
     let mut curr = BinaryHeap::new();
     let mut seen = HashMap::new();
@@ -58,7 +58,7 @@ fn find_path(board: &[Vec<i32>], min_run: i32, max_run: i32) -> usize {
             if proposed.opposite(&direction) {
                 continue;
             }
-            if let Some(new) = proposed.move_pos(cell, max) {
+            if let Some(new) = proposed.move_pos(cell, 1, Some((0, 0)), Some(max)) {
                 let new_blocks = if proposed == direction {
                     if blocks == max_run {
                         continue;
@@ -71,11 +71,17 @@ fn find_path(board: &[Vec<i32>], min_run: i32, max_run: i32) -> usize {
                     continue;
                 }
                 if new == target && new_blocks >= min_run {
-                    return -(loss - board[new.1][new.0]) as usize;
+                    return -(loss - board[new.1 as usize][new.0 as usize]) as usize;
                 }
                 let mut path = path.clone();
                 path.push((new, new_blocks));
-                curr.push((loss - board[new.1][new.0], new, proposed, new_blocks, path));
+                curr.push((
+                    loss - board[new.1 as usize][new.0 as usize],
+                    new,
+                    proposed,
+                    new_blocks,
+                    path,
+                ));
             }
         }
     }

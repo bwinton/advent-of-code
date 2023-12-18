@@ -36,13 +36,13 @@ fn parse(data: &str) -> (HashMap<Point2, Rock>, Point2) {
 
     for (y, line) in data.lines().enumerate() {
         for (x, cell) in line.chars().enumerate() {
-            max_x = max_x.max(x);
+            max_x = max_x.max(x as i64);
             match cell {
                 '#' => {
-                    map.insert((x, y), Rock::Cube);
+                    map.insert((x as i64, y as i64), Rock::Cube);
                 }
                 'O' => {
-                    map.insert((x, y), Rock::Rounded);
+                    map.insert((x as i64, y as i64), Rock::Rounded);
                 }
                 '.' => {}
                 _ => {
@@ -50,38 +50,33 @@ fn parse(data: &str) -> (HashMap<Point2, Rock>, Point2) {
                 }
             }
         }
-        max_y = max_y.max(y);
+        max_y = max_y.max(y as i64);
     }
 
     (map, (max_x, max_y))
 }
 
-fn move_rock(
-    map: &mut HashMap<(usize, usize), Rock>,
-    curr: Point2,
-    max: Point2,
-    direction: (i32, i32),
-) {
+fn move_rock(map: &mut HashMap<(i64, i64), Rock>, curr: Point2, max: Point2, direction: Point2) {
     if let Some(Rock::Rounded) = map.get(&curr) {
-        let mut new = (curr.0 as i32, curr.1 as i32);
+        let mut new = (curr.0 as i64, curr.1 as i64);
         // Move this as far as as possible.
         loop {
             new.0 += direction.0;
             new.1 += direction.1;
-            if new.0 < 0 || new.1 < 0 || new.0 > max.0 as i32 || new.1 > max.1 as i32 {
+            if new.0 < 0 || new.1 < 0 || new.0 > max.0 as i64 || new.1 > max.1 as i64 {
                 map.remove(&curr);
                 new.0 -= direction.0;
                 new.1 -= direction.1;
-                map.insert((new.0 as usize, new.1 as usize), Rock::Rounded);
+                map.insert((new.0, new.1), Rock::Rounded);
                 break;
             }
 
-            if map.get(&(new.0 as usize, new.1 as usize)).is_some() {
+            if map.get(&(new.0, new.1)).is_some() {
                 // hit a rock;
                 map.remove(&curr);
                 new.0 -= direction.0;
                 new.1 -= direction.1;
-                map.insert((new.0 as usize, new.1 as usize), Rock::Rounded);
+                map.insert((new.0, new.1), Rock::Rounded);
                 break;
             }
         }
@@ -102,7 +97,7 @@ fn process_data_a(data: &str) -> usize {
         }
     }
 
-    rv
+    rv as usize
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -147,7 +142,7 @@ fn process_data_b(data: &str) -> usize {
             }
         }
     }
-    rv
+    rv as usize
 }
 
 //-----------------------------------------------------

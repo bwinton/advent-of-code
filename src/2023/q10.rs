@@ -22,6 +22,8 @@ fn parse_data(data: &str) -> (HashMap<Point2, (Direction, Direction)>, Point2) {
     let mut start = None;
     for (y, line) in data.lines().enumerate() {
         for (x, cell) in line.chars().enumerate() {
+            let x = x as i64;
+            let y = y as i64;
             match cell {
                 // a vertical pipe connecting north and south.
                 '|' => {

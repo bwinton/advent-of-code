@@ -21,7 +21,7 @@ fn parse(data: &str) -> Vec<HashMap<Point2, ()>> {
         }
         for (x, char) in line.chars().enumerate() {
             if char == '#' {
-                curr.insert((x, y), ());
+                curr.insert((x as i64, y), ());
             }
         }
         y += 1;
@@ -35,9 +35,9 @@ fn parse(data: &str) -> Vec<HashMap<Point2, ()>> {
 
 fn check_horizontal(
     pattern: &HashMap<Point2, ()>,
-    bounds: (usize, usize, usize, usize),
+    bounds: (i64, i64, i64, i64),
     errors: usize,
-    candidate: usize,
+    candidate: i64,
 ) -> bool {
     let (min_x, min_y, max_x, max_y) = bounds;
     let delta = (candidate - min_y).min(max_y - (candidate + 1));
@@ -60,9 +60,9 @@ fn check_horizontal(
 
 fn check_vertical(
     pattern: &HashMap<Point2, ()>,
-    bounds: (usize, usize, usize, usize),
+    bounds: (i64, i64, i64, i64),
     errors: usize,
-    candidate: usize,
+    candidate: i64,
 ) -> bool {
     let (min_x, min_y, max_x, max_y) = bounds;
     let delta = (candidate - min_x).min(max_x - (candidate + 1));
@@ -85,9 +85,9 @@ fn check_vertical(
 
 fn find_reflection(
     pattern: HashMap<Point2, ()>,
-    bounds: (usize, usize, usize, usize),
+    bounds: (i64, i64, i64, i64),
     errors: usize,
-) -> (Option<usize>, Option<usize>) {
+) -> (Option<i64>, Option<i64>) {
     let mut h = None;
     let mut v = None;
     let (min_x, min_y, max_x, max_y) = bounds;
@@ -124,7 +124,7 @@ fn process_data_a(data: &str) -> usize {
             rv += v;
         }
     }
-    rv
+    rv as usize
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -143,7 +143,7 @@ fn process_data_b(data: &str) -> usize {
             rv += v;
         }
     }
-    rv
+    rv as usize
 }
 
 //-----------------------------------------------------
