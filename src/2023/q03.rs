@@ -39,7 +39,7 @@ fn parse_data(data: &str) -> (i64, i64, HashMap<Point2, Cell>) {
         }
         if let Some(temp) = curr {
             // We've hit the end of the line with a number, so store it in all the positions!
-            for i in temp.0..cols as i64 {
+            for i in temp.0..cols {
                 grid.insert((i, y as i64), Cell::Number(temp.0, y as i64, temp.1));
             }
         }

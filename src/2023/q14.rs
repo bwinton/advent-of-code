@@ -58,12 +58,12 @@ fn parse(data: &str) -> (HashMap<Point2, Rock>, Point2) {
 
 fn move_rock(map: &mut HashMap<(i64, i64), Rock>, curr: Point2, max: Point2, direction: Point2) {
     if let Some(Rock::Rounded) = map.get(&curr) {
-        let mut new = (curr.0 as i64, curr.1 as i64);
+        let mut new = (curr.0, curr.1);
         // Move this as far as as possible.
         loop {
             new.0 += direction.0;
             new.1 += direction.1;
-            if new.0 < 0 || new.1 < 0 || new.0 > max.0 as i64 || new.1 > max.1 as i64 {
+            if new.0 < 0 || new.1 < 0 || new.0 > max.0 || new.1 > max.1 {
                 map.remove(&curr);
                 new.0 -= direction.0;
                 new.1 -= direction.1;
