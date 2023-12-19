@@ -86,6 +86,7 @@ fn move_rock(map: &mut HashMap<(i64, i64), Rock>, curr: Point2, max: Point2, dir
 fn process_data_a(data: &str) -> usize {
     let mut rv = 0;
     let (mut map, max) = parse(data);
+    // We shouldn't move the rocks, we should count them. 🤔
     for y in 0..=max.1 {
         for x in 0..=max.0 {
             move_rock(&mut map, (x, y), max, (0, -1));
@@ -108,6 +109,7 @@ fn process_data_b(data: &str) -> usize {
     for cycle in 0..=CYCLE_COUNT {
         let key = map.keys().cloned().collect::<Vec<_>>();
         if let Some((i, cycle_sum)) = seen.get(&key) {
+            // We should break when we hit the loop, and get the nth next value.
             if (CYCLE_COUNT - cycle) % (cycle - i) == 0 {
                 rv = *cycle_sum;
                 break;
