@@ -149,7 +149,7 @@ fn get_all_inputs() -> Result<(), NextError> {
 
     for year in 2015..current_year {
         create_dir_all(format!("src/{}/data", year))?;
-        for day in 1..25 {
+        for day in 1..=25 {
             if download_input(year, day)? {
                 std::thread::sleep(std::time::Duration::from_secs(2));
             }

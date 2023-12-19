@@ -5,12 +5,7 @@ use aoc::Day;
 use regex::Regex;
 use std::{cmp::Ordering, fmt, str::FromStr};
 
-// static A_INPUT : &'static str = "The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.
-// The second floor contains a hydrogen generator.
-// The third floor contains a lithium generator.
-// The fourth floor contains nothing relevant.";
-static A_INPUT: &str = include_str!("data/q11a.data");
-// static B_INPUT: &str = include_str!("data/q11b.data");
+static INPUT: &str = include_str!("data/q11.data");
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 enum Item {
@@ -366,13 +361,19 @@ impl Day for Q {
 
     fn a(&self) {
         print!("{}A: ", self.number());
-        println!("Result = {}", get_result(A_INPUT));
+        println!("Result = {}", get_result(INPUT));
     }
 
     fn b(&self) {
         print!("{}B: ", self.number());
+        // Add to the first floor:
+        //     An elerium generator.
+        //     An elerium-compatible microchip.
+        //     A dilithium generator.
+        //     A dilithium-compatible microchip.
+
         // Too slow.
-        // println!("Result = {}", get_result(B_INPUT));
+        // println!("Result = {}", get_result(INPUT));
         println!("Result = 61");
     }
 }
