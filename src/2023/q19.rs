@@ -29,9 +29,7 @@ enum Rule<'a> {
 impl<'a> Rule<'a> {
     fn matches(&self, rating: &Rating) -> bool {
         let rv = match self {
-            Rule::Default { destination: _ } => {
-                true
-            }
+            Rule::Default { destination: _ } => true,
             Rule::Condition {
                 variable,
                 op,
