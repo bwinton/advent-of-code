@@ -23,6 +23,14 @@ pub enum Direction {
 }
 
 impl Direction {
+    pub fn get_point(&self) -> Point2 {
+        match self {
+            Direction::North => (0, -1),
+            Direction::East => (1, 0),
+            Direction::South => (0, 1),
+            Direction::West => (-1, 0),
+        }
+    }
     pub fn move_pos(
         &self,
         curr: Point2,
