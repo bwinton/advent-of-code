@@ -63,7 +63,7 @@ fn get_combinations<'a>(
         return *rv;
     }
 
-    let next = base_input.get(0);
+    let next = base_input.first();
     if next.is_none() {
         let rv = if values.is_empty() { 1 } else { 0 };
         seen.insert((base_input, values), rv);

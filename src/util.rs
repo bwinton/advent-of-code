@@ -14,6 +14,10 @@ pub fn ring(point: Point2, depth: usize, min: Point2, max: Point2) -> Vec<Point2
     rv
 }
 
+pub fn point_to_index(point: Point2, width: i64) -> usize {
+    (point.1 * width + point.0) as usize
+}
+
 #[derive(Debug, Hash, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Direction {
     North,

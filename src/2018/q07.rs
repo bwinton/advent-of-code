@@ -85,7 +85,7 @@ fn get_timing(data: &str, workers: usize, delay: i32) -> i32 {
             nodes.remove(&worker.0);
         }
 
-        for (_i, worker) in workers.iter_mut().enumerate() {
+        for worker in workers.iter_mut() {
             if worker.1 <= 0 {
                 let mut current = char::MAX;
                 for node in &nodes {
