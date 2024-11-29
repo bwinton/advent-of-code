@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use crypto::{digest::Digest, md5::Md5};
+use md5::{Digest, Md5};
 
 static INPUT: &str = "bgvyzdsv";
 
@@ -10,11 +10,10 @@ fn process_data(data: &str, zeroes: usize) -> i32 {
     let input = data.as_bytes();
 
     for i in 0..i32::MAX {
-        hasher.input(input);
-        hasher.input(i.to_string().as_bytes());
+        hasher.update(input);
+        hasher.update(i.to_string().as_bytes());
 
-        let mut output = [0; 16]; // An MD5 is 16 bytes
-        hasher.result(&mut output);
+        let output = hasher.finalize_reset();
         let mut first = 0;
         for value in output.iter().take(zeroes / 2) {
             first += i32::from(*value);
@@ -25,7 +24,6 @@ fn process_data(data: &str, zeroes: usize) -> i32 {
         if first == 0 {
             return i;
         }
-        hasher.reset();
     }
     -1
 }

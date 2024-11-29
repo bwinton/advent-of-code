@@ -2,7 +2,8 @@
 // Setup.
 
 use aoc::Day;
-use crypto::{digest::Digest, md5::Md5};
+use md5::{Digest, Md5};
+
 use regex::Regex;
 use std::{cmp::Ordering, collections::HashMap, mem};
 
@@ -52,11 +53,6 @@ impl Quintuple {
 }
 
 type Quintuples = HashMap<String, Quintuple>;
-
-pub fn to_hex_string(bytes: &[u8; 16]) -> String {
-    let strs: Vec<String> = bytes.iter().map(|b| format!("{:02x}", b)).collect();
-    strs.join("")
-}
 
 pub fn get_triple(input: &str) -> Option<String> {
     let re: &Regex = regex!(
@@ -140,13 +136,9 @@ impl Day for Q {
         let mut i: usize = 0;
         while !is_winning(&keys) {
             // while i < 818 {
-            hasher.input(INPUT.as_bytes());
-            hasher.input(i.to_string().as_bytes());
-            let mut output = [0; 16]; // An MD5 is 16 bytes
-            hasher.result(&mut output);
-            hasher.reset();
-            // to_hex_string(&output);
-            let out_string = to_hex_string(&output);
+            hasher.update(INPUT.as_bytes());
+            hasher.update(i.to_string().as_bytes());
+            let out_string = hex::encode(hasher.finalize_reset());
             match get_triple(&out_string) {
                 None => {}
                 Some(triple) => {
@@ -157,10 +149,6 @@ impl Day for Q {
             remove_keys(i, &mut keys, &mut quintuples);
             get_quintuple(&out_string, &mut keys, &mut quintuples, i);
             i += 1;
-        }
-        println!("Keys:");
-        for key in &keys[0..64] {
-            println!(" {:?}", key);
         }
         println!("Result = {:?}", keys[63]);
     }
@@ -176,11 +164,8 @@ impl Day for Q {
         while !is_winning(&keys) {
             let mut out_string = INPUT.to_string() + &i.to_string();
             for _ in 0..2017 {
-                hasher.input(out_string.as_bytes());
-                let mut output = [0; 16]; // An MD5 is 16 bytes
-                hasher.result(&mut output);
-                hasher.reset();
-                out_string = to_hex_string(&output);
+                hasher.update(out_string.as_bytes());
+                out_string = hex::encode(hasher.finalize_reset());
             }
             match get_triple(&out_string) {
                 None => {}
@@ -192,10 +177,6 @@ impl Day for Q {
             remove_keys(i, &mut keys, &mut quintuples);
             get_quintuple(&out_string, &mut keys, &mut quintuples, i);
             i += 1;
-        }
-        println!("Keys:");
-        for key in &keys[0..64] {
-            println!(" {:?}", key);
         }
         println!("Result = {:?}", keys[63]);
     }

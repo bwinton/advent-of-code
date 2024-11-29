@@ -2,7 +2,7 @@
 // Setup.
 
 use aoc::Day;
-use crypto::{digest::Digest, md5::Md5};
+use md5::{Digest, Md5};
 
 //-----------------------------------------------------
 // Questions.
@@ -24,11 +24,10 @@ impl Day for Q {
         let mut len = 0;
 
         for i in 0..u64::MAX {
-            hasher.input(input);
-            hasher.input(i.to_string().as_bytes());
+            hasher.update(input);
+            hasher.update(i.to_string().as_bytes());
 
-            let mut output = [0; 16]; // An MD5 is 16 bytes
-            hasher.result(&mut output);
+            let output = hasher.finalize_reset();
             let first_five =
                 i32::from(output[0]) + i32::from(output[1]) + i32::from(output[2] >> 4);
             if first_five == 0 {
@@ -38,8 +37,8 @@ impl Day for Q {
             if len == 8 {
                 break;
             }
-            hasher.reset();
         }
+        println!();
     }
 
     fn b(&self) {
@@ -54,17 +53,15 @@ impl Day for Q {
         let mut len = 0;
 
         for i in 0..u64::MAX {
-            hasher.input(input);
-            hasher.input(i.to_string().as_bytes());
+            hasher.update(input);
+            hasher.update(i.to_string().as_bytes());
 
-            let mut output = [0; 16]; // An MD5 is 16 bytes
-            hasher.result(&mut output);
+            let output = hasher.finalize_reset();
             let first_five =
                 i32::from(output[0]) + i32::from(output[1]) + i32::from(output[2] >> 4);
             if first_five == 0 {
                 let index = output[2] as usize;
                 if index > 7 {
-                    hasher.reset();
                     continue;
                 }
                 if password[index] == 0xff {
@@ -75,7 +72,6 @@ impl Day for Q {
             if len == 8 {
                 break;
             }
-            hasher.reset();
         }
 
         for value in &password {

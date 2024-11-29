@@ -2,7 +2,7 @@
 // Setup.
 
 use aoc::Day;
-use crypto::{digest::Digest, md5::Md5};
+use md5::{Digest, Md5};
 use std::{cmp::Ordering, collections::BinaryHeap};
 
 // static INPUT : &'static str = "hijkl";
@@ -51,11 +51,9 @@ impl State {
     pub fn new(path: &str, x: usize, y: usize) -> State {
         // println!("{:?}", path);
         let mut hasher = Md5::new();
-        hasher.input(INPUT.as_bytes());
-        hasher.input(path.as_bytes());
-        let mut output = [0; 16]; // An MD5 is 16 bytes
-        hasher.result(&mut output);
-        hasher.reset();
+        hasher.update(INPUT.as_bytes());
+        hasher.update(path.as_bytes());
+        let output = hasher.finalize_reset();
         let mut open_doors = Vec::new();
         if output[0] >> 4 > 10 && y > 0 {
             open_doors.push(Direction::Up);
