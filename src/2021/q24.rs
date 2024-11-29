@@ -4,13 +4,13 @@
 use std::collections::HashMap;
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{anychar, i128, line_ending, space1},
     combinator::complete,
     multi::many1,
     sequence::{terminated, tuple},
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q24.data");

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use nom::{bytes::complete::tag, character::complete::u64, sequence::tuple, IResult};
+use nom::{IResult, bytes::complete::tag, character::complete::u64, sequence::tuple};
 
 //-----------------------------------------------------
 // Setup.

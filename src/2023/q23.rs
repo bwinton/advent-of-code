@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use aoc::util::{point_to_index, Direction, Point2};
+use aoc::util::{Direction, Point2, point_to_index};
 
 static INPUT: &str = include_str!("data/q23.data");
 

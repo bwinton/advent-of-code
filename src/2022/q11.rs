@@ -3,13 +3,13 @@
 
 use itertools::Itertools;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     combinator::map,
     multi::separated_list1,
     sequence::{delimited, preceded, tuple},
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q11.data");
@@ -104,17 +104,14 @@ fn monkey(i: &str) -> IResult<&str, Monkey> {
         header,
         tuple((items, operation, test, true_branch, false_branch)),
     )(i)?;
-    Ok((
-        input,
-        Monkey {
-            items,
-            operation,
-            test,
-            true_branch,
-            false_branch,
-            inspected: 0,
-        },
-    ))
+    Ok((input, Monkey {
+        items,
+        operation,
+        test,
+        true_branch,
+        false_branch,
+        inspected: 0,
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {

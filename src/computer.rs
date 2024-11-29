@@ -5,12 +5,12 @@ use std::{
 };
 
 use nom::{
+    Err::Failure,
+    IResult,
     bytes::complete::tag,
     character::complete::i64,
     error::{Error, ErrorKind},
     sequence::tuple,
-    Err::Failure,
-    IResult,
 };
 
 use crate::nom_util::single_letter;

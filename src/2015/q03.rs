@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::collections::{hash_map::Entry, HashMap};
+use std::collections::{HashMap, hash_map::Entry};
 
 static INPUT: &str = include_str!("data/q03.data");
 

@@ -4,12 +4,12 @@
 use std::collections::HashMap;
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, digit1},
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q15.data");

@@ -8,12 +8,12 @@ use std::{
 
 use itertools::Itertools;
 use nom::{
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::{separated_list0, separated_list1},
     sequence::{delimited, terminated, tuple},
-    IResult, Parser,
 };
 
 static INPUT: &str = include_str!("data/q13.data");

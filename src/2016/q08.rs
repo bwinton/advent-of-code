@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::{letters::recognize_letters, Day};
+use aoc::{Day, letters::recognize_letters};
 
 use regex::Regex;
 use std::fmt;

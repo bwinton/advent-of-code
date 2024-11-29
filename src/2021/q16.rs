@@ -4,11 +4,11 @@
 use itertools::Itertools;
 
 use nom::{
+    Err, IResult,
     bits::complete::{tag, take},
     branch::alt,
-    error::{make_error, ErrorKind},
+    error::{ErrorKind, make_error},
     sequence::tuple,
-    Err, IResult,
 };
 
 static INPUT: &str = include_str!("data/q16.data");
@@ -215,13 +215,10 @@ fn instruction(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
             equal_to,
         )),
     ))(i)?;
-    Ok((
-        input,
-        InstructionV2 {
-            version,
-            instruction_type: result,
-        },
-    ))
+    Ok((input, InstructionV2 {
+        version,
+        instruction_type: result,
+    }))
 }
 
 fn parser(input: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {

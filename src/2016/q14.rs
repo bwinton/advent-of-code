@@ -59,7 +59,9 @@ pub fn to_hex_string(bytes: &[u8; 16]) -> String {
 }
 
 pub fn get_triple(input: &str) -> Option<String> {
-    let re: &Regex = regex!("(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}");
+    let re: &Regex = regex!(
+        "(0){3}|(1){3}|(2){3}|(3){3}|(4){3}|(5){3}|(6){3}|(7){3}|(8){3}|(9){3}|(a){3}|(b){3}|(c){3}|(d){3}|(e){3}|(f){3}"
+    );
     re.captures(input)
         .map(|key| key[0].chars().next().unwrap().to_string())
 }

@@ -4,11 +4,11 @@
 use std::collections::HashMap;
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending},
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 
@@ -197,13 +197,10 @@ fn recipe(i: &str) -> IResult<&str, Recipe> {
         tag("."),
     ))(i)?;
 
-    Ok((
-        input,
-        Recipe {
-            product: name.to_owned(),
-            ingredients,
-        },
-    ))
+    Ok((input, Recipe {
+        product: name.to_owned(),
+        ingredients,
+    }))
 }
 
 // Blueprint 1: Each ore robot costs 2 ore. Each clay robot costs 2 ore. Each obsidian robot costs 2 ore and 20 clay. Each geode robot costs 2 ore and 14 obsidian.
@@ -222,14 +219,11 @@ fn blueprint(i: &str) -> IResult<&str, Blueprint> {
             *entry = *cost.max(entry);
         }
     }
-    Ok((
-        input,
-        Blueprint {
-            id,
-            recipes,
-            max_costs,
-        },
-    ))
+    Ok((input, Blueprint {
+        id,
+        recipes,
+        max_costs,
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Blueprint>> {

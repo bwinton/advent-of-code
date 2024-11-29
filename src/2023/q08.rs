@@ -6,12 +6,12 @@ static INPUT: &str = include_str!("data/q08.data");
 use std::collections::HashMap;
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alphanumeric1, line_ending},
     multi::{many1, separated_list1},
     sequence::tuple,
-    IResult,
 };
 use num_integer::lcm;
 

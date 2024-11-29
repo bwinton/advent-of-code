@@ -4,12 +4,12 @@
 use aoc::letters::recognize_letters;
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::separated_list1,
     sequence::preceded,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q10.data");

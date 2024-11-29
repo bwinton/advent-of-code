@@ -144,11 +144,7 @@ impl State {
 
         rv.player.hp -= 1.max(rv.boss.damage - rv.player.armor);
 
-        if rv.player.hp <= 0 {
-            None
-        } else {
-            Some(rv)
-        }
+        if rv.player.hp <= 0 { None } else { Some(rv) }
     }
 
     fn apply_effects(&mut self) {

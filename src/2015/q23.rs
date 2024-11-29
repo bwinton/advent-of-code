@@ -2,7 +2,7 @@
 // Setup.
 
 use aoc::computer::{
-    parse_instructions, Half, Increment, InstructionResult, Jump, JumpEven, JumpOne, Triple, CPU,
+    CPU, Half, Increment, InstructionResult, Jump, JumpEven, JumpOne, Triple, parse_instructions,
 };
 
 static INPUT: &str = include_str!("data/q23.data");

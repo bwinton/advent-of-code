@@ -2,7 +2,7 @@
 // Setup.
 
 use itertools::Itertools;
-use nom::{bytes::complete::tag, character::complete::i32, multi::many1, sequence::tuple, IResult};
+use nom::{IResult, bytes::complete::tag, character::complete::i32, multi::many1, sequence::tuple};
 use num_integer::lcm;
 
 static INPUT: &str = include_str!("data/q12.data");
@@ -56,13 +56,10 @@ fn moon(i: &str) -> IResult<&str, Moon> {
         i32,
         tag(">\n"),
     ))(i)?;
-    Ok((
-        input,
-        Moon {
-            position: (x as i128, y as i128, z as i128),
-            velocity: (0, 0, 0),
-        },
-    ))
+    Ok((input, Moon {
+        position: (x as i128, y as i128, z as i128),
+        velocity: (0, 0, 0),
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Moon>> {

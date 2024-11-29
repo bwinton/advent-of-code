@@ -10,13 +10,13 @@ use std::{
 };
 
 use nom::{
+    AsChar, IResult,
     branch::permutation,
     bytes::complete::{tag, take_while},
     character::complete::{digit1, line_ending},
     combinator::{eof, opt},
     multi::many0,
     sequence::{terminated, tuple},
-    AsChar, IResult,
 };
 
 use crate::intcode::{Intcode, IntcodeError, State};
@@ -159,14 +159,11 @@ fn room(i: &str) -> IResult<&str, Room> {
         opt(items),
     ))(i)?;
 
-    Ok((
-        input,
-        Room {
-            name: name.to_owned(),
-            doors,
-            items: items.unwrap_or_default(),
-        },
-    ))
+    Ok((input, Room {
+        name: name.to_owned(),
+        doors,
+        items: items.unwrap_or_default(),
+    }))
 }
 
 fn take(i: &str) -> IResult<&str, &str> {
@@ -209,7 +206,9 @@ fn move_p(i: &str) -> IResult<&str, MoveResult> {
 
 fn win(i: &str) -> IResult<&str, &str> {
     let (input, (_, code, _)) = tuple((
-        tag("\n\n\n== Pressure-Sensitive Floor ==\nAnalyzing...\n\nDoors here lead:\n- east\n\nA loud, robotic voice says \"Analysis complete! You may proceed.\" and you enter the cockpit.\nSanta notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.\n\"Oh, hello! You should be able to get in by typing "),
+        tag(
+            "\n\n\n== Pressure-Sensitive Floor ==\nAnalyzing...\n\nDoors here lead:\n- east\n\nA loud, robotic voice says \"Analysis complete! You may proceed.\" and you enter the cockpit.\nSanta notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.\n\"Oh, hello! You should be able to get in by typing ",
+        ),
         digit1,
         tag(" on the keypad at the main airlock.\"\n"),
     ))(i)?;

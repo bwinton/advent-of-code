@@ -2,12 +2,12 @@
 // Setup.
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, digit1, line_ending},
     multi::{many1, separated_list1},
     sequence::{delimited, separated_pair, tuple},
-    IResult,
 };
 
 type Board = Vec<Vec<char>>;

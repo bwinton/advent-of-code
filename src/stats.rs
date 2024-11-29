@@ -1,22 +1,21 @@
 use std::{
     cmp::Ordering,
-    env::{var, VarError},
-    fs::{remove_file, File},
-    io::{stdout, Stdout, Write},
+    env::{VarError, var},
+    fs::{File, remove_file},
+    io::{Stdout, Write, stdout},
     path::Path,
     time::{SystemTime, SystemTimeError},
 };
 
 use chrono::{Datelike, Local};
-use clap::{command, Arg};
+use clap::{Arg, command};
 use crossterm::{
-    queue,
+    ExecutableCommand, QueueableCommand, queue,
     style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor},
-    ExecutableCommand, QueueableCommand,
 };
 use custom_error::custom_error;
 
-use serde_json::{from_reader, Map, Value};
+use serde_json::{Map, Value, from_reader};
 
 static ONE_DAY_IN_SECS: u64 = 24 * 60 * 60;
 

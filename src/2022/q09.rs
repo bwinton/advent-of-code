@@ -4,11 +4,11 @@
 use std::collections::HashSet;
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{self, line_ending, one_of},
     multi::separated_list1,
     sequence::separated_pair,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q09.data");
@@ -110,13 +110,10 @@ impl Move {
 
 fn moove(i: &str) -> IResult<&str, Move> {
     let (input, (dir, distance)) = separated_pair(one_of("LRUD"), tag(" "), complete::u32)(i)?;
-    Ok((
-        input,
-        Move {
-            dir: String::from(dir),
-            distance,
-        },
-    ))
+    Ok((input, Move {
+        dir: String::from(dir),
+        distance,
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Move>> {

@@ -4,11 +4,11 @@
 use std::ops::RangeInclusive;
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 use range_set::RangeSet;
 
@@ -54,7 +54,7 @@ fn parser(i: &str) -> IResult<&str, Vec<(Coord, i64)>> {
 fn process_data_a(data: &str) -> usize {
     let values = parser(data).unwrap().1;
 
-    let row = if values[0].0 .0 == 2 {
+    let row = if values[0].0.0 == 2 {
         10 // Test data.
     } else {
         2_000_000 // Real data.
@@ -98,7 +98,7 @@ fn test_point(point: Coord, values: &[(Coord, i64)], max: i64) -> Option<Coord> 
 fn process_data_b(data: &str) -> i64 {
     let values = parser(data).unwrap().1;
 
-    let max = if values[0].0 .0 == 2 {
+    let max = if values[0].0.0 == 2 {
         20 // Test data.
     } else {
         4_000_000 // Real data.

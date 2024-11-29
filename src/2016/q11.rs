@@ -135,30 +135,31 @@ impl FromStr for Floor {
                 microchips: 0,
             },
         };
-        match re.captures(s) { Some(cap) => {
-            match &cap[1] {
-                "first" => rv.number = 1,
-                "second" => rv.number = 2,
-                "third" => rv.number = 3,
-                "fourth" => rv.number = 4,
-                _ => return Err(()),
-            }
-            let items = &cap[2];
-            let item_re: Regex =
-                Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
-            for item_captures in item_re.captures_iter(items) {
-                let item_opt: Result<Item, ()> = item_captures[0].parse();
-                match item_opt {
-                    Err(()) => {}
-                    Ok(item) => {
-                        rv.add_item(item);
+        match re.captures(s) {
+            Some(cap) => {
+                match &cap[1] {
+                    "first" => rv.number = 1,
+                    "second" => rv.number = 2,
+                    "third" => rv.number = 3,
+                    "fourth" => rv.number = 4,
+                    _ => return Err(()),
+                }
+                let items = &cap[2];
+                let item_re: Regex =
+                    Regex::new(r"an? [a-z]*(:?-compatible microchip| generator)").unwrap();
+                for item_captures in item_re.captures_iter(items) {
+                    let item_opt: Result<Item, ()> = item_captures[0].parse();
+                    match item_opt {
+                        Err(()) => {}
+                        Ok(item) => {
+                            rv.add_item(item);
+                        }
                     }
                 }
+                Ok(rv)
             }
-            Ok(rv)
-        } _ => {
-            Err(())
-        }}
+            _ => Err(()),
+        }
     }
 }
 

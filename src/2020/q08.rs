@@ -2,6 +2,8 @@
 // Setup.
 
 use nom::{
+    Err::Failure,
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{i64, line_ending},
@@ -9,8 +11,6 @@ use nom::{
     error::{Error, ErrorKind},
     multi::separated_list0,
     sequence::{terminated, tuple},
-    Err::Failure,
-    IResult,
 };
 use std::collections::HashSet;
 

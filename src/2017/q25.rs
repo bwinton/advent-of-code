@@ -3,12 +3,12 @@
 
 use aoc::Day;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, line_ending, u64},
     multi::many1,
     sequence::tuple,
-    IResult,
 };
 
 use std::{
@@ -105,42 +105,33 @@ fn action_next(i: &str) -> IResult<&str, char> {
 fn action(i: &str) -> IResult<&str, Action> {
     let (input, (test, write, direction, next)) =
         tuple((action_test, action_write, action_move, action_next))(i)?;
-    Ok((
-        input,
-        Action {
-            test,
-            write,
-            direction,
-            next,
-        },
-    ))
+    Ok((input, Action {
+        test,
+        write,
+        direction,
+        next,
+    }))
 }
 
 fn state(i: &str) -> IResult<&str, State> {
     let (input, (_, name, actions)) = tuple((line_ending, state_name, many1(action)))(i)?;
-    Ok((
-        input,
-        State {
-            name,
-            actions: actions.iter().cloned().map(|x| (x.test, x)).collect(),
-        },
-    ))
+    Ok((input, State {
+        name,
+        actions: actions.iter().cloned().map(|x| (x.test, x)).collect(),
+    }))
 }
 
 fn machine(i: &str) -> IResult<&str, Machine> {
     let (input, (state, checksum, states)) =
         tuple((machine_name, machine_checksum, many1(state)))(i)?;
-    Ok((
-        input,
-        Machine {
-            tape: HashSet::new(),
-            position: 0,
-            state,
-            checksum,
-            steps: 0,
-            states: states.iter().cloned().map(|x| (x.name, x)).collect(),
-        },
-    ))
+    Ok((input, Machine {
+        tape: HashSet::new(),
+        position: 0,
+        state,
+        checksum,
+        steps: 0,
+        states: states.iter().cloned().map(|x| (x.name, x)).collect(),
+    }))
 }
 
 fn process_data_a(data: &str) -> usize {

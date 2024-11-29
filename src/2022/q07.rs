@@ -5,13 +5,13 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending, one_of},
     combinator::map,
     multi::{many1, separated_list1},
     sequence::{preceded, separated_pair},
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q07.data");

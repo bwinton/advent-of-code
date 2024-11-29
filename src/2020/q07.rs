@@ -4,13 +4,13 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use nom::{
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, i32, line_ending},
     combinator::{eof, opt},
     multi::{separated_list0, separated_list1},
     sequence::{terminated, tuple},
-    IResult, Parser,
 };
 
 static INPUT: &str = include_str!("data/q07.data");
@@ -28,13 +28,10 @@ fn bag(i: &str) -> IResult<&str, Bag> {
 
     let name = format!("{}{}{}", mod1, space, mod2);
 
-    Ok((
-        input,
-        Bag {
-            quantity: 1,
-            symbol: name,
-        },
-    ))
+    Ok((input, Bag {
+        quantity: 1,
+        symbol: name,
+    }))
 }
 
 fn multi_bag(i: &str) -> IResult<&str, Bag> {

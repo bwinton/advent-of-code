@@ -5,12 +5,12 @@ use std::collections::{HashMap, VecDeque};
 use std::hash::Hash;
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{alpha1, newline, one_of},
     combinator::opt,
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 use num_integer::lcm;
 
@@ -92,15 +92,12 @@ fn gate(i: &str) -> IResult<&str, Gate> {
         }
     };
     let inputs = vec![];
-    Ok((
-        input,
-        Gate {
-            name,
-            gate_type,
-            inputs,
-            outputs,
-        },
-    ))
+    Ok((input, Gate {
+        name,
+        gate_type,
+        inputs,
+        outputs,
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, HashMap<&str, Gate>> {

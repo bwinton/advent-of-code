@@ -70,11 +70,7 @@ fn check_b(
             }
         }
     }
-    if curr {
-        sum == 2 || sum == 3
-    } else {
-        sum == 3
-    }
+    if curr { sum == 2 || sum == 3 } else { sum == 3 }
 }
 
 fn run_b(world: &HashSet<(isize, isize, isize, isize)>) -> HashSet<(isize, isize, isize, isize)> {

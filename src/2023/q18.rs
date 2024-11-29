@@ -3,12 +3,12 @@
 
 use aoc::util::Direction;
 use nom::{
+    AsChar, IResult,
     branch::alt,
     bytes::complete::{tag, take_while_m_n},
     character::complete::{newline, space1, u32},
     multi::separated_list1,
     sequence::tuple,
-    AsChar, IResult,
 };
 
 static INPUT: &str = include_str!("data/q18.data");

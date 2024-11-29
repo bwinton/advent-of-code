@@ -18,20 +18,23 @@ struct Instruction {
 }
 impl Instruction {
     fn parse(line: &str, mask: &str) -> Self {
-        match INSTRUCTION_RE.captures(line) { Some(captures) => {
-            let addresses = vec![captures[1].parse().unwrap()];
-            let mut value = captures[2].parse().unwrap();
-            for (i, character) in mask.chars().rev().enumerate() {
-                match character {
-                    '0' => value &= !(1 << i),
-                    '1' => value |= 1 << i,
-                    _ => {}
+        match INSTRUCTION_RE.captures(line) {
+            Some(captures) => {
+                let addresses = vec![captures[1].parse().unwrap()];
+                let mut value = captures[2].parse().unwrap();
+                for (i, character) in mask.chars().rev().enumerate() {
+                    match character {
+                        '0' => value &= !(1 << i),
+                        '1' => value |= 1 << i,
+                        _ => {}
+                    }
                 }
+                Instruction { addresses, value }
             }
-            Instruction { addresses, value }
-        } _ => {
-            panic!("Invalid line: {}", line);
-        }}
+            _ => {
+                panic!("Invalid line: {}", line);
+            }
+        }
     }
 
     fn get_mask(variants: &[usize], i: usize) -> usize {
@@ -46,31 +49,34 @@ impl Instruction {
     }
 
     fn parse_b(line: &str, mask: &str) -> Self {
-        match INSTRUCTION_RE.captures(line) { Some(captures) => {
-            let mut base_address: usize = captures[1].parse().unwrap();
-            let mut variants = vec![];
-            let value = captures[2].parse().unwrap();
-            for (i, character) in mask.chars().rev().enumerate() {
-                match character {
-                    '1' => base_address |= 1 << i,
-                    'X' => {
-                        base_address &= !(1 << i);
-                        variants.push(i);
+        match INSTRUCTION_RE.captures(line) {
+            Some(captures) => {
+                let mut base_address: usize = captures[1].parse().unwrap();
+                let mut variants = vec![];
+                let value = captures[2].parse().unwrap();
+                for (i, character) in mask.chars().rev().enumerate() {
+                    match character {
+                        '1' => base_address |= 1 << i,
+                        'X' => {
+                            base_address &= !(1 << i);
+                            variants.push(i);
+                        }
+                        _ => {}
                     }
-                    _ => {}
                 }
+                let mut addresses = vec![];
+                let len: usize = 1 << variants.len();
+                for i in 0..len {
+                    let mask = Instruction::get_mask(&variants, i);
+                    let address = base_address | mask;
+                    addresses.push(address)
+                }
+                Instruction { addresses, value }
             }
-            let mut addresses = vec![];
-            let len: usize = 1 << variants.len();
-            for i in 0..len {
-                let mask = Instruction::get_mask(&variants, i);
-                let address = base_address | mask;
-                addresses.push(address)
+            _ => {
+                panic!("Invalid line: {}", line);
             }
-            Instruction { addresses, value }
-        } _ => {
-            panic!("Invalid line: {}", line);
-        }}
+        }
     }
 }
 

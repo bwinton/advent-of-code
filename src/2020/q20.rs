@@ -248,11 +248,7 @@ fn find_monsters(board: &[String]) -> Option<Vec<Vec<char>>> {
             }
         }
     }
-    if count == 0 {
-        None
-    } else {
-        Some(board)
-    }
+    if count == 0 { None } else { Some(board) }
 }
 
 fn process_data_b(data: &str) -> usize {

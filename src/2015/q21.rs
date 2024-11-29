@@ -3,12 +3,12 @@
 
 use itertools::Itertools;
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{alpha1, digit1, i32, line_ending, space1},
     combinator::{eof, opt},
     multi::{many1, separated_list0},
     sequence::{terminated, tuple},
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q21.data");
@@ -101,15 +101,12 @@ fn header(i: &str) -> IResult<&str, &str> {
 fn item(i: &str) -> IResult<&str, Item> {
     let (input, (name, _, cost, _, damage, _, armor, _)) =
         tuple((name, space1, i32, space1, i32, space1, i32, opt(tag("\n"))))(i)?;
-    Ok((
-        input,
-        Item {
-            name,
-            cost,
-            damage,
-            armor,
-        },
-    ))
+    Ok((input, Item {
+        name,
+        cost,
+        damage,
+        armor,
+    }))
 }
 
 fn group(i: &str) -> IResult<&str, Group> {
@@ -128,13 +125,10 @@ fn group(i: &str) -> IResult<&str, Group> {
     if name == "Rings" {
         all_items.insert(0, empty_item);
     }
-    Ok((
-        input,
-        Group {
-            _name: name.to_string(),
-            items: all_items,
-        },
-    ))
+    Ok((input, Group {
+        _name: name.to_string(),
+        items: all_items,
+    }))
 }
 
 fn store(i: &str) -> IResult<&str, Vec<Group>> {

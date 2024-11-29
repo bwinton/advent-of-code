@@ -5,12 +5,12 @@ use std::collections::VecDeque;
 
 use mod_exp::mod_exp;
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{i32, line_ending},
     multi::separated_list0,
     sequence::tuple,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q22.data");

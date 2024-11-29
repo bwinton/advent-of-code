@@ -173,61 +173,65 @@ fn process_data_b(data: &str) -> usize {
 
     rules.insert(
         "8",
-        Value::Choice(
-            vec!["42".to_string()],
-            vec!["42".to_string(), "801".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string()], vec![
+            "42".to_string(),
+            "801".to_string(),
+        ]),
     );
     rules.insert(
         "801",
-        Value::Choice(
-            vec!["42".to_string()],
-            vec!["42".to_string(), "802".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string()], vec![
+            "42".to_string(),
+            "802".to_string(),
+        ]),
     );
     rules.insert(
         "802",
-        Value::Choice(
-            vec!["42".to_string()],
-            vec!["42".to_string(), "803".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string()], vec![
+            "42".to_string(),
+            "803".to_string(),
+        ]),
     );
     rules.insert(
         "803",
-        Value::Choice(
-            vec!["42".to_string()],
-            vec!["42".to_string(), "804".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string()], vec![
+            "42".to_string(),
+            "804".to_string(),
+        ]),
     );
     rules.insert("804", Value::Order(vec!["42".to_string()]));
 
     rules.insert(
         "11",
-        Value::Choice(
-            vec!["42".to_string(), "31".to_string()],
-            vec!["42".to_string(), "1101".to_string(), "31".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string(), "31".to_string()], vec![
+            "42".to_string(),
+            "1101".to_string(),
+            "31".to_string(),
+        ]),
     );
     rules.insert(
         "1101",
-        Value::Choice(
-            vec!["42".to_string(), "31".to_string()],
-            vec!["42".to_string(), "1102".to_string(), "31".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string(), "31".to_string()], vec![
+            "42".to_string(),
+            "1102".to_string(),
+            "31".to_string(),
+        ]),
     );
     rules.insert(
         "1102",
-        Value::Choice(
-            vec!["42".to_string(), "31".to_string()],
-            vec!["42".to_string(), "1103".to_string(), "31".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string(), "31".to_string()], vec![
+            "42".to_string(),
+            "1103".to_string(),
+            "31".to_string(),
+        ]),
     );
     rules.insert(
         "1103",
-        Value::Choice(
-            vec!["42".to_string(), "31".to_string()],
-            vec!["42".to_string(), "1104".to_string(), "31".to_string()],
-        ),
+        Value::Choice(vec!["42".to_string(), "31".to_string()], vec![
+            "42".to_string(),
+            "1104".to_string(),
+            "31".to_string(),
+        ]),
     );
     rules.insert(
         "1104",

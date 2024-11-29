@@ -1,13 +1,13 @@
 use std::{
-    env::{var, VarError},
-    fs::{self, copy, create_dir_all, read, read_dir, remove_file, File, OpenOptions},
-    io::{stdout, Stdout, Write},
+    env::{VarError, var},
+    fs::{self, File, OpenOptions, copy, create_dir_all, read, read_dir, remove_file},
+    io::{Stdout, Write, stdout},
     time::SystemTimeError,
 };
 
 use chrono::{Datelike, Duration, Local};
-use clap::{command, Arg, ArgAction};
-use crossterm::{style::Print, ExecutableCommand};
+use clap::{Arg, ArgAction, command};
+use crossterm::{ExecutableCommand, style::Print};
 use custom_error::custom_error;
 use humantime::format_duration;
 use reqwest::{
@@ -176,25 +176,28 @@ fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
         .write(true)
         .create_new(true)
         .open(&datapath);
-    Ok(match file { Ok(mut file) => {
-        println!("Getting input for {:?}", datapath);
-        let response = get_url(year, day);
-        if response.is_err() {
-            let rm = remove_file(&datapath);
-            rm?;
+    Ok(match file {
+        Ok(mut file) => {
+            println!("Getting input for {:?}", datapath);
+            let response = get_url(year, day);
+            if response.is_err() {
+                let rm = remove_file(&datapath);
+                rm?;
+            }
+            let mut response = response?;
+            if !response.status().is_success() {
+                let rm = remove_file(&datapath);
+                dbg!(&rm);
+                rm?;
+            }
+            response.copy_to(&mut file)?;
+            true
         }
-        let mut response = response?;
-        if !response.status().is_success() {
-            let rm = remove_file(&datapath);
-            dbg!(&rm);
-            rm?;
+        _ => {
+            println!("Already have {:?}", datapath);
+            false
         }
-        response.copy_to(&mut file)?;
-        true
-    } _ => {
-        println!("Already have {:?}", datapath);
-        false
-    }})
+    })
 }
 
 fn get_input() -> Result<(), NextError> {
@@ -291,17 +294,25 @@ fn main() -> Result<(), NextError> {
 
     let (last_year, last_day) = get_last()?;
 
-    match matches.get_one::<u32>("day") { Some(&day) => {
-        add_day(last_year, day, &mut stdout)?;
-    } _ => { match matches.get_one::<u32>("year") { Some(&year) => {
-        add_year(year, &mut stdout)?;
-    } _ => if *matches.get_one("input").unwrap() {
-        get_input()?;
-    } else if *matches.get_one("all_inputs").unwrap() {
-        get_all_inputs()?;
-    } else {
-        add_next(last_year, &last_day, &mut stdout)?;
-    }}}}
+    match matches.get_one::<u32>("day") {
+        Some(&day) => {
+            add_day(last_year, day, &mut stdout)?;
+        }
+        _ => match matches.get_one::<u32>("year") {
+            Some(&year) => {
+                add_year(year, &mut stdout)?;
+            }
+            _ => {
+                if *matches.get_one("input").unwrap() {
+                    get_input()?;
+                } else if *matches.get_one("all_inputs").unwrap() {
+                    get_all_inputs()?;
+                } else {
+                    add_next(last_year, &last_day, &mut stdout)?;
+                }
+            }
+        },
+    }
 
     stdout.flush()?;
     Ok(())

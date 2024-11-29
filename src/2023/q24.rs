@@ -5,11 +5,11 @@ use aoc::util::Point3;
 
 use itertools::Itertools;
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{i64, newline},
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q24.data");

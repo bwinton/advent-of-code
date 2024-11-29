@@ -4,11 +4,11 @@
 use std::{collections::HashMap, str};
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{alpha1, u64},
     multi::separated_list0,
     sequence::tuple,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q16.data");
@@ -59,13 +59,10 @@ fn feature(i: &str) -> IResult<&str, (String, u32)> {
 
 fn aunt(i: &str) -> IResult<&str, AuntSue> {
     let (input, (name, features)) = tuple((aunt_name, separated_list0(tag(", "), feature)))(i)?;
-    Ok((
-        input,
-        AuntSue {
-            name: Some(name),
-            features: features.iter().cloned().collect(),
-        },
-    ))
+    Ok((input, AuntSue {
+        name: Some(name),
+        features: features.iter().cloned().collect(),
+    }))
 }
 
 fn process_data_a(data: &str) -> u32 {

@@ -28,13 +28,14 @@ impl FromStr for Value {
             number: -1,
             bot: -1,
         };
-        match re.captures(s) { Some(x) => {
-            rv.number = x[1].parse().unwrap();
-            rv.bot = x[2].parse().unwrap();
-            Ok(rv)
-        } _ => {
-            Err(())
-        }}
+        match re.captures(s) {
+            Some(x) => {
+                rv.number = x[1].parse().unwrap();
+                rv.bot = x[2].parse().unwrap();
+                Ok(rv)
+            }
+            _ => Err(()),
+        }
     }
 }
 
@@ -181,11 +182,7 @@ impl FromStr for Bot {
             }
         }
 
-        if rv.number == -1 {
-            Err(())
-        } else {
-            Ok(rv)
-        }
+        if rv.number == -1 { Err(()) } else { Ok(rv) }
     }
 }
 

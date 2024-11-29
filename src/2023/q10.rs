@@ -100,7 +100,7 @@ fn process_data_a(data: &str) -> usize {
         moves += 1;
         match curr.1 {
             Direction::North => {
-                curr.0 .1 -= 1;
+                curr.0.1 -= 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::South {
                     directions.1
@@ -109,7 +109,7 @@ fn process_data_a(data: &str) -> usize {
                 };
             }
             Direction::East => {
-                curr.0 .0 += 1;
+                curr.0.0 += 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::West {
                     directions.1
@@ -118,7 +118,7 @@ fn process_data_a(data: &str) -> usize {
                 };
             }
             Direction::South => {
-                curr.0 .1 += 1;
+                curr.0.1 += 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::North {
                     directions.1
@@ -127,7 +127,7 @@ fn process_data_a(data: &str) -> usize {
                 };
             }
             Direction::West => {
-                curr.0 .0 -= 1;
+                curr.0.0 -= 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::East {
                     directions.1
@@ -153,7 +153,7 @@ fn process_data_b(data: &str) -> usize {
         tiles.insert(curr.0, map.get(&curr.0).unwrap());
         match curr.1 {
             Direction::North => {
-                curr.0 .1 -= 1;
+                curr.0.1 -= 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::South {
                     directions.1
@@ -162,7 +162,7 @@ fn process_data_b(data: &str) -> usize {
                 };
             }
             Direction::East => {
-                curr.0 .0 += 1;
+                curr.0.0 += 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::West {
                     directions.1
@@ -171,7 +171,7 @@ fn process_data_b(data: &str) -> usize {
                 };
             }
             Direction::South => {
-                curr.0 .1 += 1;
+                curr.0.1 += 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::North {
                     directions.1
@@ -180,7 +180,7 @@ fn process_data_b(data: &str) -> usize {
                 };
             }
             Direction::West => {
-                curr.0 .0 -= 1;
+                curr.0.0 -= 1;
                 let directions = map.get(&curr.0).unwrap();
                 curr.1 = if directions.0 == Direction::East {
                     directions.1
@@ -195,10 +195,10 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
-    let min_x = tiles.iter().map(|t| t.0 .0).min().unwrap();
-    let min_y = tiles.iter().map(|t| t.0 .1).min().unwrap();
-    let max_x = tiles.iter().map(|t| t.0 .0).max().unwrap();
-    let max_y = tiles.iter().map(|t| t.0 .1).max().unwrap();
+    let min_x = tiles.iter().map(|t| t.0.0).min().unwrap();
+    let min_y = tiles.iter().map(|t| t.0.1).min().unwrap();
+    let max_x = tiles.iter().map(|t| t.0.0).max().unwrap();
+    let max_y = tiles.iter().map(|t| t.0.1).max().unwrap();
 
     let mut rv = 0;
 

@@ -5,12 +5,12 @@ use std::{
 
 use itertools::Itertools;
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{i32, line_ending, u8},
     combinator::complete,
     multi::separated_list1,
     sequence::tuple,
-    IResult,
 };
 
 //-----------------------------------------------------
@@ -166,13 +166,10 @@ fn scanner(i: &str) -> IResult<&str, Scanner> {
         separated_list1(line_ending, position),
         line_ending,
     ))(i)?;
-    Ok((
-        input,
-        Scanner {
-            position: None,
-            beacons: HashSet::from_iter(beacons),
-        },
-    ))
+    Ok((input, Scanner {
+        position: None,
+        beacons: HashSet::from_iter(beacons),
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, VecDeque<Scanner>> {

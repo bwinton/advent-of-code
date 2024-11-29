@@ -59,11 +59,7 @@ fn play(_game: usize, players: [VecDeque<usize>; 2]) -> [VecDeque<usize>; 2] {
                 players[1].iter().take(card_2).cloned().collect(),
             ];
             let result = play(_game + 1, sub_players);
-            if result[0].is_empty() {
-                1
-            } else {
-                0
-            }
+            if result[0].is_empty() { 1 } else { 0 }
         } else if card_1 > card_2 {
             0
         } else {

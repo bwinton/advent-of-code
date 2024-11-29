@@ -4,11 +4,11 @@
 use std::{collections::HashMap, iter, ops::RangeInclusive};
 
 use nom::{
+    IResult,
     branch::alt,
     character::complete::{self, line_ending},
     multi::many1,
     sequence::{separated_pair, terminated},
-    IResult,
 };
 
 use once_cell::sync::Lazy;

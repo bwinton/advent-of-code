@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use aoc::util::{ring, Point2};
+use aoc::util::{Point2, ring};
 
 static INPUT: &str = include_str!("data/q03.data");
 

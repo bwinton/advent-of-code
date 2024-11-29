@@ -165,16 +165,13 @@ q_impl!("15");
 #[test]
 fn a() {
     let test: Vec<Vec<i32>> = hundred_iter(2).take(5).collect();
-    assert_eq!(
-        test,
-        vec![
-            vec![0, 100],
-            vec![1, 99],
-            vec![2, 98],
-            vec![3, 97],
-            vec![4, 96]
-        ]
-    );
+    assert_eq!(test, vec![
+        vec![0, 100],
+        vec![1, 99],
+        vec![2, 98],
+        vec![3, 97],
+        vec![4, 96]
+    ]);
 
     assert_eq!(
         process_data_a(

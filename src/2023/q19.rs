@@ -4,12 +4,12 @@
 use std::collections::HashMap;
 
 use nom::{
+    IResult,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, newline, one_of, u32},
     multi::{many1, separated_list1},
     sequence::tuple,
-    IResult,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -96,15 +96,12 @@ fn condition(i: &str) -> IResult<&str, Rule> {
     // a<2006:qkq OR rfg
     let (input, (variable, op, value, _, destination)) =
         tuple((alpha1, one_of("<>"), u32, tag(":"), alpha1))(i)?;
-    Ok((
-        input,
-        Rule::Condition {
-            variable,
-            op,
-            value,
-            destination,
-        },
-    ))
+    Ok((input, Rule::Condition {
+        variable,
+        op,
+        value,
+        destination,
+    }))
 }
 
 fn default(i: &str) -> IResult<&str, Rule> {
@@ -167,15 +164,12 @@ fn process_data_a(data: &str) -> usize {
 
 fn process_data_b(data: &str) -> usize {
     let (workflows, _) = parser(data).unwrap().1;
-    let mut states = vec![(
-        "in",
-        hashmap! {
-            "x" => (1u64, 4000u64),
-            "m" => (1, 4000),
-            "a" => (1, 4000),
-            "s" => (1, 4000),
-        },
-    )];
+    let mut states = vec![("in", hashmap! {
+        "x" => (1u64, 4000u64),
+        "m" => (1, 4000),
+        "a" => (1, 4000),
+        "s" => (1, 4000),
+    })];
     let mut accepts = vec![];
     while let Some((curr, mut state)) = states.pop() {
         // let (curr, mut state) = states.pop().unwrap();
