@@ -34,7 +34,6 @@ extern crate enumset;
 #[allow(unused_imports)]
 #[macro_use]
 extern crate indoc;
-#[macro_use]
 extern crate itertools;
 #[macro_use]
 extern crate maplit;

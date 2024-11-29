@@ -3,7 +3,6 @@
 
 use aoc::Day;
 use crypto::{digest::Digest, md5::Md5};
-use std::u64::MAX;
 
 //-----------------------------------------------------
 // Questions.
@@ -24,7 +23,7 @@ impl Day for Q {
         let input = b"abbhdwsy";
         let mut len = 0;
 
-        for i in 0..MAX {
+        for i in 0..u64::MAX {
             hasher.input(input);
             hasher.input(i.to_string().as_bytes());
 
@@ -54,7 +53,7 @@ impl Day for Q {
         let mut password = [0xff_u8; 8];
         let mut len = 0;
 
-        for i in 0..MAX {
+        for i in 0..u64::MAX {
             hasher.input(input);
             hasher.input(i.to_string().as_bytes());
 

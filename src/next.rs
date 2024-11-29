@@ -176,7 +176,7 @@ fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
         .write(true)
         .create_new(true)
         .open(&datapath);
-    Ok(if let Ok(mut file) = file {
+    Ok(match file { Ok(mut file) => {
         println!("Getting input for {:?}", datapath);
         let response = get_url(year, day);
         if response.is_err() {
@@ -191,10 +191,10 @@ fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
         }
         response.copy_to(&mut file)?;
         true
-    } else {
+    } _ => {
         println!("Already have {:?}", datapath);
         false
-    })
+    }})
 }
 
 fn get_input() -> Result<(), NextError> {
@@ -291,17 +291,17 @@ fn main() -> Result<(), NextError> {
 
     let (last_year, last_day) = get_last()?;
 
-    if let Some(&day) = matches.get_one::<u32>("day") {
+    match matches.get_one::<u32>("day") { Some(&day) => {
         add_day(last_year, day, &mut stdout)?;
-    } else if let Some(&year) = matches.get_one::<u32>("year") {
+    } _ => { match matches.get_one::<u32>("year") { Some(&year) => {
         add_year(year, &mut stdout)?;
-    } else if *matches.get_one("input").unwrap() {
+    } _ => if *matches.get_one("input").unwrap() {
         get_input()?;
     } else if *matches.get_one("all_inputs").unwrap() {
         get_all_inputs()?;
     } else {
         add_next(last_year, &last_day, &mut stdout)?;
-    }
+    }}}}
 
     stdout.flush()?;
     Ok(())

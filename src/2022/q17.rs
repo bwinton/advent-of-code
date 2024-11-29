@@ -20,7 +20,7 @@ static ROCKS: Lazy<[Vec<(i32, i32)>; 5]> = Lazy::new(|| {
 fn move_rock(
     rock: &mut [(i32, i32)],
     board: &VecDeque<[bool; 7]>,
-    moves: &Vec<char>,
+    moves: &[char],
     move_index: &mut usize,
 ) -> bool {
     let curr_move = moves[*move_index % moves.len()];

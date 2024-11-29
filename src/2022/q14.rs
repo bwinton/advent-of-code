@@ -56,8 +56,8 @@ fn get_grid(paths: Vec<Vec<Coord>>, offset: Coord, max: Coord) -> Vec<Vec<bool>>
     }
     for path in paths {
         for (start, end) in path.iter().tuple_windows() {
-            let (mut start_x, mut start_y) = start;
-            let (mut end_x, mut end_y) = end;
+            let &(mut start_x, mut start_y) = start;
+            let &(mut end_x, mut end_y) = end;
             if start_x > end_x {
                 (start_x, end_x) = (end_x, start_x);
             }

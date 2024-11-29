@@ -26,7 +26,7 @@ enum Rule<'a> {
         destination: &'a str,
     },
 }
-impl<'a> Rule<'a> {
+impl Rule<'_> {
     fn matches(&self, rating: &Rating) -> bool {
         let rv = match self {
             Rule::Default { destination: _ } => true,
@@ -72,7 +72,7 @@ struct Workflow<'a> {
 struct Rating<'a> {
     values: HashMap<&'a str, u32>,
 }
-impl<'a> Rating<'a> {
+impl Rating<'_> {
     fn accepted(&self, workflows: &HashMap<&str, Workflow>) -> bool {
         let mut curr = "in";
         while curr != "R" && curr != "A" {

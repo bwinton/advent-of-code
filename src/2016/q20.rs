@@ -2,7 +2,7 @@
 // Setup.
 
 use aoc::Day;
-use std::{ops::Range, u32};
+use std::ops::Range;
 
 // static INPUT : &'static str = "5-8
 // 0-2

@@ -23,7 +23,7 @@ pub type InstructionResult<'a> = IResult<&'a str, Rc<dyn Instruction>>;
 pub type InstructionsResult<'a> = IResult<&'a str, Vec<Rc<dyn Instruction>>>;
 
 #[derive(Debug, Display)]
-#[display(fmt = "hlf {}", register)]
+#[display("hlf {}", register)]
 pub struct Half {
     register: char,
 }
@@ -40,7 +40,7 @@ impl Instruction for Half {
 }
 
 #[derive(Debug, Display)]
-#[display(fmt = "tpl {}", register)]
+#[display("tpl {}", register)]
 pub struct Triple {
     register: char,
 }
@@ -57,7 +57,7 @@ impl Instruction for Triple {
 }
 
 #[derive(Debug, Display)]
-#[display(fmt = "inc {}", register)]
+#[display("inc {}", register)]
 pub struct Increment {
     register: char,
 }
@@ -74,7 +74,7 @@ impl Instruction for Increment {
 }
 
 #[derive(Debug, Display)]
-#[display(fmt = "jmp {}", offset)]
+#[display("jmp {}", offset)]
 pub struct Jump {
     offset: i64,
 }
@@ -91,7 +91,7 @@ impl Instruction for Jump {
 }
 
 #[derive(Debug, Display)]
-#[display(fmt = "jie {} {}", register, offset)]
+#[display("jie {} {}", register, offset)]
 pub struct JumpEven {
     register: char,
     offset: i64,
@@ -114,7 +114,7 @@ impl Instruction for JumpEven {
 }
 
 #[derive(Debug, Display)]
-#[display(fmt = "jio {} {}", register, offset)]
+#[display("jio {} {}", register, offset)]
 pub struct JumpOne {
     register: char,
     offset: i64,

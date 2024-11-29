@@ -24,7 +24,7 @@ enum GateType<'a> {
     // false = low, true = high!
     Conjunction(HashMap<&'a str, bool>),
 }
-impl<'a> Hash for GateType<'a> {
+impl Hash for GateType<'_> {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         core::mem::discriminant(self).hash(state);
         match self {
@@ -36,7 +36,7 @@ impl<'a> Hash for GateType<'a> {
                 }
             }
         }
-        state.finish();
+        let _ = state.finish();
     }
 }
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]

@@ -6,7 +6,6 @@ use permutohedron::Heap;
 use regex::Regex;
 use std::{
     collections::{HashMap, HashSet},
-    i32,
     string::ToString,
 };
 

@@ -22,8 +22,8 @@ struct State {
 impl Default for State {
     fn default() -> Self {
         State {
-            min: i32::max_value(),
-            max: i32::min_value(),
+            min: i32::MAX,
+            max: i32::MIN,
             cells: HashSet::new(),
         }
     }

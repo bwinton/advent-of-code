@@ -105,7 +105,7 @@ fn process_data_a(data: &str) -> usize {
             cubes.push(cube)
         }
     }
-    return cubes.iter().map(|c| c.volume()).sum();
+    cubes.iter().map(|c| c.volume()).sum()
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -119,7 +119,7 @@ fn process_data_b(data: &str) -> usize {
             cubes.push(cube)
         }
     }
-    return cubes.iter().map(|c| c.volume()).sum();
+    cubes.iter().map(|c| c.volume()).sum()
 }
 
 //-----------------------------------------------------

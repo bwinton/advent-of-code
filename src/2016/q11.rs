@@ -135,7 +135,7 @@ impl FromStr for Floor {
                 microchips: 0,
             },
         };
-        if let Some(cap) = re.captures(s) {
+        match re.captures(s) { Some(cap) => {
             match &cap[1] {
                 "first" => rv.number = 1,
                 "second" => rv.number = 2,
@@ -156,9 +156,9 @@ impl FromStr for Floor {
                 }
             }
             Ok(rv)
-        } else {
+        } _ => {
             Err(())
-        }
+        }}
     }
 }
 

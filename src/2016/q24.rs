@@ -10,7 +10,6 @@ use std::{
     fmt,
     hash::{Hash, Hasher},
     str::FromStr,
-    usize::MAX,
 };
 
 // static INPUT : &'static str = "###########
@@ -226,7 +225,7 @@ fn find_shortest_path(start: &Location, target: &Location, board: &[Vec<Contents
         //   println!("Gone through {} states. Current len: {}", &seen.len(), &state.moves.len());
         // }
     }
-    std::usize::MAX
+    usize::MAX
 }
 
 fn get_permutations(input: &[Location]) -> Vec<Vec<Location>> {
@@ -276,7 +275,7 @@ impl Day for Q {
 
     fn a(&self) {
         print!("{}A: ", self.number());
-        let mut result = MAX;
+        let mut result = usize::MAX;
         let mut locations = Vec::new();
         let board = get_board(INPUT, &mut locations);
         let mut distances = HashMap::new();
@@ -311,7 +310,7 @@ impl Day for Q {
 
     fn b(&self) {
         print!("{}B: ", self.number());
-        let mut result = MAX;
+        let mut result = usize::MAX;
         let mut locations = Vec::new();
         let board = get_board(INPUT, &mut locations);
         let mut distances = HashMap::new();

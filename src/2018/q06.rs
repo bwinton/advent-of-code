@@ -44,8 +44,8 @@ fn process_data_a(data: &str) -> i32 {
         point.id = id as i32;
         points.insert(point.id, point);
     }
-    let mut min_x = i32::max_value();
-    let mut min_y = i32::max_value();
+    let mut min_x = i32::MAX;
+    let mut min_y = i32::MAX;
     let mut max_x = 0;
     let mut max_y = 0;
 
@@ -93,8 +93,8 @@ fn find_safe_areas(data: &str, max_distance: i32) -> i32 {
         point.id = id as i32;
         points.insert(point.id, point);
     }
-    let mut min_x = i32::max_value();
-    let mut min_y = i32::max_value();
+    let mut min_x = i32::MAX;
+    let mut min_y = i32::MAX;
     let mut max_x = 0;
     let mut max_y = 0;
 

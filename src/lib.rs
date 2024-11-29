@@ -48,7 +48,7 @@ macro_rules! regex {
 
 #[macro_export]
 macro_rules! q_impl {
-    ($e:expr) => {
+    ($e:expr_2021) => {
         use aoc::Day;
 
         pub struct Q;

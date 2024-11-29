@@ -18,7 +18,7 @@ struct Instruction {
 }
 impl Instruction {
     fn parse(line: &str, mask: &str) -> Self {
-        if let Some(captures) = INSTRUCTION_RE.captures(line) {
+        match INSTRUCTION_RE.captures(line) { Some(captures) => {
             let addresses = vec![captures[1].parse().unwrap()];
             let mut value = captures[2].parse().unwrap();
             for (i, character) in mask.chars().rev().enumerate() {
@@ -29,9 +29,9 @@ impl Instruction {
                 }
             }
             Instruction { addresses, value }
-        } else {
+        } _ => {
             panic!("Invalid line: {}", line);
-        }
+        }}
     }
 
     fn get_mask(variants: &[usize], i: usize) -> usize {
@@ -46,7 +46,7 @@ impl Instruction {
     }
 
     fn parse_b(line: &str, mask: &str) -> Self {
-        if let Some(captures) = INSTRUCTION_RE.captures(line) {
+        match INSTRUCTION_RE.captures(line) { Some(captures) => {
             let mut base_address: usize = captures[1].parse().unwrap();
             let mut variants = vec![];
             let value = captures[2].parse().unwrap();
@@ -68,9 +68,9 @@ impl Instruction {
                 addresses.push(address)
             }
             Instruction { addresses, value }
-        } else {
+        } _ => {
             panic!("Invalid line: {}", line);
-        }
+        }}
     }
 }
 

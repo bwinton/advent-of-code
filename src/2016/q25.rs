@@ -7,7 +7,6 @@ use regex::Regex;
 use std::{
     collections::HashSet,
     hash::{Hash, Hasher},
-    i32::MAX,
     str::FromStr,
 };
 
@@ -316,8 +315,8 @@ impl Day for Q {
             instructions.push(instruction);
         }
 
-        let mut result = MAX;
-        for a in 0..MAX {
+        let mut result = i32::MAX;
+        for a in 0..i32::MAX {
             print!("Running {}: ", a);
             let mut state = State::new([a, 0, 0, 0], instructions.clone());
             let mut seen = HashSet::new();

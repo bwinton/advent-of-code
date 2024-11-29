@@ -125,7 +125,7 @@ impl PassportBuilder {
 
         // hgt (Height) - a number followed by either cm or in:
         let temp = &self.hgt?;
-        let hgt = if let Some(captures) = HGT_RE.captures(temp) {
+        let hgt = match HGT_RE.captures(temp) { Some(captures) => {
             let value: Option<usize> = captures[1].parse().ok();
             let value = value?;
 
@@ -136,9 +136,9 @@ impl PassportBuilder {
                     return None;
                 }
             }
-        } else {
+        } _ => {
             return None;
-        };
+        }};
 
         // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
         let hcl = self.hcl?;

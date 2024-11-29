@@ -3,7 +3,7 @@
 
 use aoc::Day;
 use regex::Regex;
-use std::{cmp::Ordering, fmt, str::FromStr};
+use std::str::FromStr;
 
 // Filesystem              Size  Used  Avail  Use%
 // static INPUT : &'static str = "/dev/grid/node-x0-y0   10T    8T     2T   80%
@@ -46,57 +46,6 @@ impl FromStr for Node {
             }),
             _ => Err(()),
         }
-    }
-}
-
-#[derive(Clone)]
-struct State {
-    moves: usize,
-    nodes: Vec<Node>,
-}
-
-impl Ord for State {
-    fn cmp(&self, other: &State) -> Ordering {
-        other.moves.cmp(&self.moves)
-    }
-}
-
-impl PartialOrd for State {
-    fn partial_cmp(&self, other: &State) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialEq for State {
-    fn eq(&self, other: &State) -> bool {
-        let mut rv = self.nodes.len() == other.nodes.len();
-        if rv {
-            for i in 0..self.nodes.len() {
-                rv &= self.nodes[i] == other.nodes[i];
-            }
-        }
-        rv
-    }
-}
-
-impl Eq for State {}
-
-impl fmt::Debug for State {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "State({}):", self.moves).unwrap();
-        for node in &self.nodes {
-            if node.y == 0 {
-                writeln!(f).unwrap();
-            }
-            write!(f, "{}/{}", node.used, node.avail).unwrap();
-            if node.goal {
-                write!(f, "G").unwrap();
-            } else {
-                write!(f, " ").unwrap();
-            }
-            write!(f, "  ").unwrap();
-        }
-        writeln!(f)
     }
 }
 

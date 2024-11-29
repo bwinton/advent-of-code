@@ -8,8 +8,6 @@ use std::collections::HashMap;
 // ████ █  █ █         █    █    █ ██ █  █         █ █ █  █            █  █ ███      ███   ██       █  █                  █   █  
 // █  █ █  █ █  █      █    █    █  █ █  █      █  █ █ █  █            █  █ █        █ █     █      █  █                  █  █   
 // █  █ ███   ██       ████ █     ███ █  █       ██  █  █ ████          ██  █        █  █ ███        ██                   █  ████
-
-#[rustfmt::skip]
 static LETTERS: Lazy<HashMap<Vec<bool>, char>> = Lazy::new(|| {
     let mut letters = HashMap::new();
     letters.insert(vec![

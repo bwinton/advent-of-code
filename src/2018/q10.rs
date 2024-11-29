@@ -54,13 +54,13 @@ fn process_data_a(data: &str) -> String {
         let point: Point = line.parse().unwrap();
         points.push(point);
     }
-    let mut smallest = i64::max_value();
+    let mut smallest = i64::MAX;
     loop {
         for point in &mut points {
             point.step();
         }
-        let mut min_x = i32::max_value();
-        let mut min_y = i32::max_value();
+        let mut min_x = i32::MAX;
+        let mut min_y = i32::MAX;
         let mut max_x = 0;
         let mut max_y = 0;
         // figure out if we're close enough…
@@ -73,8 +73,8 @@ fn process_data_a(data: &str) -> String {
         let area = i64::from(max_x - min_x) * i64::from(max_y - min_y);
         if smallest < area {
             // Step back one, and print the board!
-            let mut min_x = i32::max_value();
-            let mut min_y = i32::max_value();
+            let mut min_x = i32::MAX;
+            let mut min_y = i32::MAX;
             let mut max_x = 0;
             let mut max_y = 0;
             for point in &mut points {
@@ -111,15 +111,15 @@ fn process_data_b(data: &str) -> i32 {
         let point: Point = line.parse().unwrap();
         points.push(point);
     }
-    let mut smallest = i64::max_value();
+    let mut smallest = i64::MAX;
     let mut index = 0;
     loop {
         index += 1;
         for point in &mut points {
             point.step();
         }
-        let mut min_x = i32::max_value();
-        let mut min_y = i32::max_value();
+        let mut min_x = i32::MAX;
+        let mut min_y = i32::MAX;
         let mut max_x = 0;
         let mut max_y = 0;
         // figure out if we're close enough…

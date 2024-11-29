@@ -87,7 +87,7 @@ fn process_data_b(data: &str) -> usize {
             let curr: String = data.chars().filter(|x| !remove.contains(x)).collect();
             if curr.len() == data.len() {
                 // Didn't find any characters, so no need to continue.
-                usize::max_value()
+                usize::MAX
             } else {
                 remove_pairs(&curr).len()
             }

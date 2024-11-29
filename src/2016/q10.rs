@@ -28,13 +28,13 @@ impl FromStr for Value {
             number: -1,
             bot: -1,
         };
-        if let Some(x) = re.captures(s) {
+        match re.captures(s) { Some(x) => {
             rv.number = x[1].parse().unwrap();
             rv.bot = x[2].parse().unwrap();
             Ok(rv)
-        } else {
+        } _ => {
             Err(())
-        }
+        }}
     }
 }
 
