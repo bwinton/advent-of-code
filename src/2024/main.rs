@@ -12,7 +12,7 @@ extern crate indoc;
 extern crate itertools;
 
 fn main() {
-    let days = q_vec!(q01,);
+    let days = q_vec!(q01);
 
     aoc::main(&days)
 }

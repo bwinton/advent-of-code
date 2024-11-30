@@ -152,8 +152,8 @@ fn get_answer_b(hailstones: &[Hailstone]) -> i64 {
 
     let a_slope = (a.velocity.1 - velocity.1) as f64 / (a.velocity.0 - velocity.0) as f64;
     let b_slope = (b.velocity.1 - velocity.1) as f64 / (b.velocity.0 - velocity.0) as f64;
-    let ca = a.position.1  as f64- (a_slope * a.position.0 as f64);
-    let cb = b.position.1  as f64- (b_slope * b.position.0 as f64);
+    let ca = a.position.1 as f64 - (a_slope * a.position.0 as f64);
+    let cb = b.position.1 as f64 - (b_slope * b.position.0 as f64);
     let x_pos = ((cb - ca) / (a_slope - b_slope)) as i64;
     let y_pos = (a_slope * x_pos as f64 + ca) as i64;
     let time = (x_pos - a.position.0) / (a.velocity.0 - velocity.0);
