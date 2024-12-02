@@ -186,9 +186,9 @@ fn download_input(year: i32, day: u32) -> Result<bool, NextError> {
             }
             let mut response = response?;
             if !response.status().is_success() {
-                let rm = remove_file(&datapath);
-                dbg!(&rm);
-                rm?;
+                // let rm = remove_file(&datapath);
+                // rm?;
+                return Err(NextError::InputNotFound { year, day });
             }
             response.copy_to(&mut file)?;
             true
@@ -234,7 +234,6 @@ fn get_input() -> Result<(), NextError> {
         std::thread::sleep(std_duration);
         println!("  Waking up and getting the response!");
         let mut response = get_url(year, day)?;
-        println!("  {:?}", response.status());
         if !response.status().is_success() {
             // try again in 5 seconds…
             println!("  Trying again in {:?}!", Duration::seconds(5).to_std());
@@ -245,7 +244,6 @@ fn get_input() -> Result<(), NextError> {
             );
             println!("  Waking up and getting the response!");
             response = get_url(year, day)?;
-            println!("  {:?}", response.status());
             if !response.status().is_success() {
                 return Err(NextError::InputNotFound { year, day });
             }

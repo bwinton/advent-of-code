@@ -409,7 +409,8 @@
                 }
             },
             "args": ["-i"],
-            "cwd": "${workspaceFolder}"
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceRoot}/target/debug/next"
         },
         {
             "type": "lldb",
