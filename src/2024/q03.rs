@@ -10,8 +10,7 @@ fn process_data_a(data: &str) -> i32 {
     let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
     for line in data.lines() {
         for c in re.captures_iter(line) {
-            let (full, [first, second]) = c.extract();
-            println!("match: {:?}, {}, {}", full, first, second);
+            let (_full, [first, second]) = c.extract();
             let first: i32 = first.parse().unwrap();
             let second: i32 = second.parse().unwrap();
             rv += first * second;
@@ -27,7 +26,6 @@ fn process_data_b(data: &str) -> i32 {
     for line in data.lines() {
         for c in re.captures_iter(line) {
             let full = c.get(0).unwrap().as_str();
-            println!("match: {}, {}", full, &full[0..4]);
             match &full[0..4] {
                 "do()" => add = true,
                 "don'" => add = false,
