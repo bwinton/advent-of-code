@@ -3,15 +3,15 @@
 
 use std::collections::HashSet;
 
-use aoc::util::Direction;
+use aoc::util::{Direction, Point2};
 
 static INPUT: &str = include_str!("data/q06.data");
 
 type State = (
-    HashSet<(i64, i64)>,
-    Option<(i64, i64)>,
-    Option<(i64, i64)>,
-    (i64, i64),
+    HashSet<Point2>,
+    Option<Point2>,
+    Option<Point2>,
+    Point2,
     Direction,
 );
 
@@ -45,14 +45,14 @@ fn get_data(data: &str) -> State {
 }
 
 fn walk_path(
-    mut curr: (i64, i64),
+    mut curr: Point2,
     mut direction: Direction,
-    origin: Option<(i64, i64)>,
-    bounds: Option<(i64, i64)>,
-    obstructions: &HashSet<(i64, i64)>,
-) -> HashSet<(i64, i64)> {
-    let mut guard_path = HashSet::new();
-    guard_path.insert(curr);
+    origin: Option<Point2>,
+    bounds: Option<Point2>,
+    obstructions: &HashSet<Point2>,
+) -> Vec<(Point2, Direction)> {
+    let mut guard_path = Vec::new();
+    guard_path.push((curr, direction));
 
     while let Some(next) = direction.move_pos(curr, 1, origin, bounds) {
         // If there is something directly in front of you, turn right 90 degrees.
@@ -60,7 +60,7 @@ fn walk_path(
             direction = direction.turn_right();
         } else {
             curr = next;
-            guard_path.insert(curr);
+            guard_path.push((curr, direction));
         }
     }
     guard_path
@@ -68,15 +68,16 @@ fn walk_path(
 
 fn find_loop(
     mut direction: Direction,
-    mut curr: (i64, i64),
-    origin: Option<(i64, i64)>,
-    bounds: Option<(i64, i64)>,
-    obstructions: &HashSet<(i64, i64)>,
-    mut guard_path: HashSet<((i64, i64), Direction)>,
+    mut curr: Point2,
+    origin: Option<Point2>,
+    bounds: Option<Point2>,
+    obstructions: &HashSet<Point2>,
+    mut guard_path: Vec<(Point2, Direction)>,
 ) -> bool {
+    let mut seen: HashSet<(Point2, Direction)> = HashSet::from_iter(guard_path.clone());
     while let Some(next) = direction.move_pos(curr, 1, origin, bounds) {
         // If we've seen this before, we're in a loop!
-        if guard_path.contains(&(next, direction)) {
+        if seen.contains(&(next, direction)) {
             return true;
         }
         // If there is something directly in front of you, turn right 90 degrees.
@@ -84,7 +85,8 @@ fn find_loop(
             direction = direction.turn_right();
         } else {
             curr = next;
-            guard_path.insert((curr, direction));
+            guard_path.push((curr, direction));
+            seen.insert((curr, direction));
         }
     }
 
@@ -94,7 +96,8 @@ fn find_loop(
 fn process_data_a(data: &str) -> usize {
     let (obstructions, origin, bounds, curr, direction) = get_data(data);
     let guard_path = walk_path(curr, direction, origin, bounds, &obstructions);
-    guard_path.len()
+    let unique: HashSet<Point2> = HashSet::from_iter(guard_path.iter().map(|(p, _)| *p));
+    unique.len()
 }
 
 fn process_data_b(data: &str) -> usize {
@@ -102,18 +105,22 @@ fn process_data_b(data: &str) -> usize {
 
     let potentials = walk_path(curr, direction, origin, bounds, &obstructions);
     let mut valid = HashSet::new();
-    for potential in potentials {
-        let mut guard_path = HashSet::new();
-        guard_path.insert((curr, direction));
+    let mut seen = HashSet::new();
+    seen.insert(curr);
+    for (i, &potential) in potentials.iter().enumerate() {
+        if seen.contains(&potential.0) || potential.0 == curr {
+            continue;
+        }
+        let guard_path = Vec::from_iter(potentials.clone().into_iter().take(i));
+        seen.insert(potential.0);
+        let (curr, direction) = guard_path[guard_path.len() - 1];
 
         let mut obstructions = obstructions.clone();
-        obstructions.insert(potential);
+        obstructions.insert(potential.0);
         if find_loop(direction, curr, origin, bounds, &obstructions, guard_path) {
             valid.insert(potential);
         }
     }
-
-    // println!("valid: {:?}", valid);
     valid.len()
 }
 
