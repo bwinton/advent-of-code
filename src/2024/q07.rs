@@ -12,7 +12,7 @@ enum Operators {
     Concatenation,
 }
 
-fn run_calculation(ops: &[&Operators], values: &[i64], extended: bool) -> i64 {
+fn run_calculation(ops: &[&Operators], values: &[i64], max: i64, extended: bool) -> i64 {
     let mut rv = values[0];
 
     for (i, value) in values[1..].iter().enumerate() {
@@ -26,9 +26,21 @@ fn run_calculation(ops: &[&Operators], values: &[i64], extended: bool) -> i64 {
             }
             Operators::Concatenation => {
                 if extended {
-                    rv = format!("{}{}", rv, value).parse().unwrap();
+                    if *value < 10 {
+                        rv *= 10;
+                    } else if *value < 100 {
+                        rv *= 100;
+                    } else if *value < 1000 {
+                        rv *= 1000;
+                    } else {
+                        rv *= 10_i64.pow(value.ilog10() + 1);
+                    }
+                    rv += value;
                 }
             }
+        }
+        if rv > max {
+            return rv;
         }
     }
     rv
@@ -47,7 +59,7 @@ fn process_data_a(data: &str) -> i64 {
             .map(|_| [Operators::Plus, Operators::Times].iter())
             .multi_cartesian_product()
         {
-            if run_calculation(&ops, &values, false) == first {
+            if run_calculation(&ops, &values, first, false) == first {
                 rv += first;
                 break;
             }
@@ -69,7 +81,7 @@ fn process_data_b(data: &str) -> i64 {
             .map(|_| [Operators::Plus, Operators::Times, Operators::Concatenation].iter())
             .multi_cartesian_product()
         {
-            if run_calculation(&ops, &values, true) == first {
+            if run_calculation(&ops, &values, first, true) == first {
                 rv += first;
                 break;
             }
