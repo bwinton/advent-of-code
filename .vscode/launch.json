@@ -390,7 +390,7 @@
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": ["7"],
             "cwd": "${workspaceFolder}"
         },
         {
