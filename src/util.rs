@@ -18,6 +18,10 @@ pub fn point_to_index(point: Point2, width: i64) -> usize {
     (point.1 * width + point.0) as usize
 }
 
+pub fn in_bounds(test: Point2, bounds: Point2) -> bool {
+    0 <= test.0 && test.0 < bounds.0 && 0 <= test.1 && test.1 < bounds.1
+}
+
 #[derive(Debug, Hash, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Direction {
     North,
