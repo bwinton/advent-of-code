@@ -74,10 +74,13 @@ fn find_loop(
     obstructions: &HashSet<Point2>,
     mut guard_path: Vec<(Point2, Direction)>,
 ) -> bool {
-    let mut seen: HashSet<(Point2, Direction)> = HashSet::from_iter(guard_path.clone());
+    let mut seen = vec![vec![[false; 4]; bounds.unwrap().0 as usize]; bounds.unwrap().1 as usize];
+    for &((x, y), dir) in &guard_path {
+        seen[y as usize][x as usize][dir as usize] = true;
+    }
     while let Some(next) = direction.move_pos(curr, 1, origin, bounds) {
         // If we've seen this before, we're in a loop!
-        if seen.contains(&(next, direction)) {
+        if seen[next.1 as usize][next.0 as usize][direction as usize] {
             return true;
         }
         // If there is something directly in front of you, turn right 90 degrees.
@@ -86,7 +89,7 @@ fn find_loop(
         } else {
             curr = next;
             guard_path.push((curr, direction));
-            seen.insert((curr, direction));
+            seen[next.1 as usize][next.0 as usize][direction as usize] = true;
         }
     }
 
