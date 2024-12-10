@@ -12,7 +12,7 @@ enum Operators {
     Concatenation,
 }
 
-fn run_calculation(ops: &[&Operators], values: &[i64], max: i64, extended: bool) -> i64 {
+fn run_calculation(ops: &[&Operators], values: &[i64], max: i64) -> bool {
     let mut rv = values[0];
 
     for (i, value) in values[1..].iter().enumerate() {
@@ -25,69 +25,53 @@ fn run_calculation(ops: &[&Operators], values: &[i64], max: i64, extended: bool)
                 rv *= value;
             }
             Operators::Concatenation => {
-                if extended {
-                    if *value < 10 {
-                        rv *= 10;
-                    } else if *value < 100 {
-                        rv *= 100;
-                    } else if *value < 1000 {
-                        rv *= 1000;
-                    } else {
-                        rv *= 10_i64.pow(value.ilog10() + 1);
-                    }
-                    rv += value;
+                let mut mult = 1;
+                while mult <= *value {
+                    mult *= 10;
                 }
+                rv *= mult;
+                rv += value;
             }
         }
         if rv > max {
-            return rv;
+            break;
+        }
+    }
+    rv == max
+}
+
+fn process_data(data: &str, extended: bool) -> i64 {
+    let mut rv = 0;
+    let mut operators = vec![Operators::Plus, Operators::Times];
+    if extended {
+        operators.push(Operators::Concatenation);
+    }
+    for line in data.lines() {
+        let (first, rest) = line.split_once(": ").unwrap();
+        let first: i64 = first.parse().unwrap();
+        let values: Vec<i64> = rest
+            .split_whitespace()
+            .map(|v| v.parse().unwrap())
+            .collect();
+        for ops in (0..values.len() - 1)
+            .map(|_| operators.iter())
+            .multi_cartesian_product()
+        {
+            if run_calculation(&ops, &values, first) {
+                rv += first;
+                break;
+            }
         }
     }
     rv
 }
 
 fn process_data_a(data: &str) -> i64 {
-    let mut rv = 0;
-    for line in data.lines() {
-        let (first, rest) = line.split_once(": ").unwrap();
-        let first: i64 = first.parse().unwrap();
-        let values: Vec<i64> = rest
-            .split_whitespace()
-            .map(|v| v.parse().unwrap())
-            .collect();
-        for ops in (0..values.len() - 1)
-            .map(|_| [Operators::Plus, Operators::Times].iter())
-            .multi_cartesian_product()
-        {
-            if run_calculation(&ops, &values, first, false) == first {
-                rv += first;
-                break;
-            }
-        }
-    }
-    rv
+    process_data(data, false)
 }
 
 fn process_data_b(data: &str) -> i64 {
-    let mut rv = 0;
-    for line in data.lines() {
-        let (first, rest) = line.split_once(": ").unwrap();
-        let first: i64 = first.parse().unwrap();
-        let values: Vec<i64> = rest
-            .split_whitespace()
-            .map(|v| v.parse().unwrap())
-            .collect();
-        for ops in (0..values.len() - 1)
-            .map(|_| [Operators::Plus, Operators::Times, Operators::Concatenation].iter())
-            .multi_cartesian_product()
-        {
-            if run_calculation(&ops, &values, first, true) == first {
-                rv += first;
-                break;
-            }
-        }
-    }
-    rv
+    process_data(data, true)
 }
 
 //-----------------------------------------------------
