@@ -32,9 +32,9 @@ fn find_trails(trailhead: Point2, map: &[Vec<u8>]) -> usize {
     let mut stack = vec![];
     let origin = Some((0, 0));
     let bounds = Some((map[0].len() as i64, map.len() as i64));
-    stack.push(vec![(trailhead, 0)]);
-    while let Some(path) = stack.pop() {
-        let (curr, curr_value) = path[path.len() - 1];
+    stack.push(trailhead);
+    while let Some(curr) = stack.pop() {
+        let curr_value = map[curr.1 as usize][curr.0 as usize];
         if curr_value == 9 {
             rv.insert(curr);
             continue;
@@ -43,9 +43,7 @@ fn find_trails(trailhead: Point2, map: &[Vec<u8>]) -> usize {
             if let Some(next) = dir.move_pos(curr, 1, origin, bounds) {
                 let next_value = map[next.1 as usize][next.0 as usize];
                 if next_value == curr_value + 1 {
-                    let mut path = path.clone();
-                    path.push((next, next_value));
-                    stack.push(path);
+                    stack.push(next);
                 }
             }
         }
@@ -53,14 +51,14 @@ fn find_trails(trailhead: Point2, map: &[Vec<u8>]) -> usize {
     rv.len()
 }
 
-fn find_trails2(trailhead: Point2, map: &[Vec<u8>]) -> usize {
+fn find_rating(trailhead: Point2, map: &[Vec<u8>]) -> usize {
     let mut rv = 0;
     let mut stack = vec![];
     let origin = Some((0, 0));
     let bounds = Some((map[0].len() as i64, map.len() as i64));
-    stack.push(vec![(trailhead, 0)]);
-    while let Some(path) = stack.pop() {
-        let (curr, curr_value) = path[path.len() - 1];
+    stack.push(trailhead);
+    while let Some(curr) = stack.pop() {
+        let curr_value = map[curr.1 as usize][curr.0 as usize];
         if curr_value == 9 {
             rv += 1;
             continue;
@@ -69,9 +67,7 @@ fn find_trails2(trailhead: Point2, map: &[Vec<u8>]) -> usize {
             if let Some(next) = dir.move_pos(curr, 1, origin, bounds) {
                 let next_value = map[next.1 as usize][next.0 as usize];
                 if next_value == curr_value + 1 {
-                    let mut path = path.clone();
-                    path.push((next, next_value));
-                    stack.push(path);
+                    stack.push(next);
                 }
             }
         }
@@ -93,7 +89,7 @@ fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     let (map, trailheads) = parse(data);
     for trailhead in trailheads {
-        rv += find_trails2(trailhead, &map);
+        rv += find_rating(trailhead, &map);
     }
 
     rv
