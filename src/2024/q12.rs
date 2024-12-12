@@ -1,22 +1,27 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::{collections::HashSet, fmt::Display};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+};
 
 use aoc::util::{Direction, Point2};
+use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q12.data");
 
 #[derive(Clone, Debug)]
 struct Region {
     plant: char,
-    plots: HashSet<Point2>
+    plots: HashSet<Point2>,
 }
+
 impl Region {
     fn area(&self) -> usize {
         self.plots.len()
     }
-    
+
     fn perimeter(&self) -> usize {
         let mut rv = 0;
         for cell in &self.plots {
@@ -32,9 +37,41 @@ impl Region {
         }
         rv
     }
-    
+
     fn sides(&self) -> usize {
-        0
+        Direction::all()
+            .into_iter()
+            .map(|direction| self.find_sides(direction))
+            .sum()
+    }
+
+    fn find_sides(&self, direction: Direction) -> usize {
+        let mut rv = 0;
+        let mut sides: HashMap<i64, Vec<i64>> = HashMap::new();
+        for cell in &self.plots {
+            let (parallel, cross) = match direction {
+                Direction::North | Direction::South => (cell.1, cell.0),
+                Direction::East | Direction::West => (cell.0, cell.1),
+            };
+
+            if let Some(next) = direction.move_pos(*cell, 1, None, None) {
+                if !self.plots.contains(&next) {
+                    sides.entry(parallel).or_default().push(cross);
+                }
+            } else {
+                sides.entry(parallel).or_default().push(cross);
+            }
+        }
+        for side in sides.values_mut() {
+            side.sort();
+            rv += 1;
+            for (a, b) in side.iter().tuple_windows() {
+                if *a + 1 != *b {
+                    rv += 1;
+                }
+            }
+        }
+        rv
     }
 }
 
@@ -46,7 +83,7 @@ impl Display for Region {
     }
 }
 
-fn add_region (map: &[Vec<(char, bool)>], curr: Point2) -> Region {
+fn add_region(map: &[Vec<(char, bool)>], curr: Point2) -> Region {
     let bounds = (map[0].len() as i64, map.len() as i64);
     let plant = map[curr.1 as usize][curr.0 as usize].0;
     let mut plots = HashSet::new();
@@ -63,8 +100,7 @@ fn add_region (map: &[Vec<(char, bool)>], curr: Point2) -> Region {
             }
         }
     }
-    let rv = Region{ plant, plots };
-    rv
+    Region { plant, plots }
 }
 
 fn parse(data: &str) -> Vec<Region> {
@@ -106,7 +142,7 @@ fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     let regions = parse(data);
     for region in regions {
-        println!("Region {}", region);
+        // println!("Region {}", region);
         rv += region.area() * region.sides();
     }
     rv
@@ -121,22 +157,34 @@ q_impl!("12");
 fn a() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_a(indoc!(
+            "
     AAAA
     BBCD
     BBCC
     EEEC
-    ")), 140);
+    "
+        )),
+        140
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_a(indoc!(
+            "
     OOOOO
     OXOXO
     OOOOO
     OXOXO
     OOOOO
-    ")), 772);
+    "
+        )),
+        772
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_a(indoc!(
+            "
     RRRRIICCFF
     RRRRIICCCF
     VVRRRCCFFF
@@ -147,46 +195,71 @@ fn a() {
     MIIIIIJJEE
     MIIISIJEEE
     MMMISSJEEE
-    ")), 1930);
+    "
+        )),
+        1930
+    );
 }
 
 #[test]
 fn b() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(process_data_b(indoc!("
+    assert_eq!(
+        process_data_b(indoc!(
+            "
     AAAA
     BBCD
     BBCC
     EEEC
-    ")), 80);
+    "
+        )),
+        80
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_b(indoc!(
+            "
     OOOOO
     OXOXO
     OOOOO
     OXOXO
     OOOOO
-    ")), 436);
+    "
+        )),
+        436
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_b(indoc!(
+            "
     EEEEE
     EXXXX
     EEEEE
     EXXXX
     EEEEE
-    ")), 236);
+    "
+        )),
+        236
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_b(indoc!(
+            "
     AAAAAA
     AAABBA
     AAABBA
     ABBAAA
     ABBAAA
     AAAAAA
-    ")), 368);
+    "
+        )),
+        368
+    );
 
-    assert_eq!(process_data_a(indoc!("
+    assert_eq!(
+        process_data_b(indoc!(
+            "
     RRRRIICCFF
     RRRRIICCCF
     VVRRRCCFFF
@@ -197,6 +270,8 @@ fn b() {
     MIIIIIJJEE
     MIIISIJEEE
     MMMISSJEEE
-    ")), 1206);
-
+    "
+        )),
+        1206
+    );
 }
