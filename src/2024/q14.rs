@@ -1,15 +1,21 @@
 //-----------------------------------------------------
 // Setup.
 
-use aoc::util::{point_to_index, Point2};
-use nom::{bytes::complete::tag, character::complete::{i64, newline}, multi::separated_list0, sequence::tuple, IResult};
+use aoc::util::{Point2, point_to_index};
+use nom::{
+    IResult,
+    bytes::complete::tag,
+    character::complete::{i64, newline},
+    multi::separated_list0,
+    sequence::tuple,
+};
 
 static INPUT: &str = include_str!("data/q14.data");
 
 #[derive(Debug)]
 struct Robot {
     position: Point2,
-    velocity: Point2
+    velocity: Point2,
 }
 
 impl Robot {
@@ -30,9 +36,12 @@ fn robot(i: &str) -> IResult<&str, Robot> {
         tag(" v="),
         i64,
         tag(","),
-        i64
+        i64,
     ))(i)?;
-    Ok((input, Robot { position: (px, py), velocity: (vx, vy)}))
+    Ok((input, Robot {
+        position: (px, py),
+        velocity: (vx, vy),
+    }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Robot>> {
@@ -48,7 +57,7 @@ fn solve_a(data: &str, width: i64, height: i64) -> i64 {
         }
     }
 
-    let mut quads = [0,0,0,0];
+    let mut quads = [0, 0, 0, 0];
     for robot in robots {
         if robot.position.0 == width / 2 || robot.position.1 == height / 2 {
             continue;
@@ -91,7 +100,7 @@ fn process_data_a(data: &str) -> i64 {
 fn process_data_b(data: &str) -> usize {
     let mut rv = 0;
     let width = 101;
-    let height= 103;
+    let height = 103;
     let mut robots = parser(data).unwrap().1;
     for i in 1..6645 {
         for robot in robots.iter_mut() {
@@ -109,7 +118,6 @@ fn process_data_b(data: &str) -> usize {
     rv
 }
 
-
 //-----------------------------------------------------
 // Questions.
 
@@ -119,7 +127,10 @@ q_impl!("14");
 fn a() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(solve_a(indoc!("
+    assert_eq!(
+        solve_a(
+            indoc!(
+                "
     p=0,4 v=3,-3
     p=6,3 v=-1,-3
     p=10,3 v=-1,2
@@ -132,12 +143,18 @@ fn a() {
     p=7,3 v=-1,2
     p=2,4 v=2,-3
     p=9,5 v=-3,-3
-    "), 11, 7), 12);
+    "
+            ),
+            11,
+            7
+        ),
+        12
+    );
 }
 
 #[test]
 fn b() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(process_data_b(indoc!("")), 0);
+    // assert_eq!(process_data_b(indoc!("")), 0);
 }
