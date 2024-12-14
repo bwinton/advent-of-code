@@ -9,6 +9,7 @@ use itertools::Itertools;
 static INPUT: &str = include_str!("data/q08.data");
 
 fn process_data_a(data: &str) -> usize {
+    let origin = (0, 0);
     let bounds = (
         data.lines().next().unwrap().chars().count() as i64,
         data.lines().count() as i64,
@@ -30,10 +31,10 @@ fn process_data_a(data: &str) -> usize {
             let one: (i64, i64) = (a.0 + diff_x, a.1 + diff_y);
             let two = (b.0 - diff_x, b.1 - diff_y);
 
-            if in_bounds(one, bounds) {
+            if in_bounds(one, origin, bounds) {
                 antinodes.insert(one);
             }
-            if in_bounds(two, bounds) {
+            if in_bounds(two, origin, bounds) {
                 antinodes.insert(two);
             }
         }
@@ -42,6 +43,7 @@ fn process_data_a(data: &str) -> usize {
 }
 
 fn process_data_b(data: &str) -> usize {
+    let origin = (0, 0);
     let bounds = (
         data.lines().next().unwrap().chars().count() as i64,
         data.lines().count() as i64,
@@ -62,13 +64,13 @@ fn process_data_b(data: &str) -> usize {
             let diff_y = a.1 - b.1;
 
             let mut next = a;
-            while in_bounds(next, bounds) {
+            while in_bounds(next, origin, bounds) {
                 antinodes.insert(next);
                 next = (next.0 + diff_x, next.1 + diff_y);
             }
 
             next = a;
-            while in_bounds(next, bounds) {
+            while in_bounds(next, origin, bounds) {
                 antinodes.insert(next);
                 next = (next.0 - diff_x, next.1 - diff_y);
             }
