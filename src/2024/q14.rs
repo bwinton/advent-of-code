@@ -89,7 +89,7 @@ fn print_robots(i: usize, robots: &[Robot], width: i64, height: i64) {
     imgbuf.save(name).unwrap();
 }
 
-fn tree(robots: &[Robot], width: i64, height: i64) -> bool {
+fn tree(_robots: &[Robot], _width: i64, _height: i64) -> bool {
     false
 }
 
@@ -154,7 +154,7 @@ fn a() {
 
 #[test]
 fn b() {
-    use pretty_assertions::assert_eq;
+    // use pretty_assertions::assert_eq;
 
     // assert_eq!(process_data_b(indoc!("")), 0);
 }
