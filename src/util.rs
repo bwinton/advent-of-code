@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 pub type Point2 = (i64, i64);
 pub type Point3 = (i64, i64, i64);
 
@@ -86,6 +88,26 @@ impl Direction {
             Direction::East => Direction::South,
             Direction::South => Direction::West,
             Direction::West => Direction::North,
+        }
+    }
+
+    pub fn turn_left(&self) -> Self {
+        match self {
+            Direction::North => Direction::West,
+            Direction::East => Direction::North,
+            Direction::South => Direction::East,
+            Direction::West => Direction::South,
+        }
+    }
+}
+
+impl Display for Direction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Direction::North => f.write_str("North"),
+            Direction::East => f.write_str("East"),
+            Direction::South => f.write_str("South"),
+            Direction::West => f.write_str("West"),
         }
     }
 }
