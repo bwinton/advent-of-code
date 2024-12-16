@@ -106,7 +106,6 @@ fn process_data_b(data: &str) -> usize {
     let mut min_score = None;
     let mut path = HashSet::new();
     path.insert(start);
-    let mut best_path = path.clone();
     let mut heap = BinaryHeap::new();
     let curr = State {
         score: 0,
@@ -129,18 +128,16 @@ fn process_data_b(data: &str) -> usize {
         }
         if curr == end {
             min_score = Some(score);
-            println!("Adding {} {:?}", score, path);
-            best_path = &best_path | &path;
+            seen.entry((curr, direction)).or_default().1.extend(path);
+            // println!("Adding {} {:?}", score, path);
             continue;
         }
         if seen.contains_key(&(curr, direction)) {
-            let (prev_score, prev_path) = seen.get(&(curr, direction)).unwrap();
+            let (prev_score, prev_path) = seen.get_mut(&(curr, direction)).unwrap();
             if score == *prev_score {
-                let path = &path | prev_path;
-                seen.insert((curr, direction), (score, path));
-            } else {
-                continue;
+                prev_path.extend(path);
             }
+            continue;
         } else {
             seen.insert((curr, direction), (score, path.clone()));
         }
@@ -160,6 +157,10 @@ fn process_data_b(data: &str) -> usize {
         });
         if let Some(next) = direction.move_pos(curr, 1, min, max) {
             if seen.contains_key(&(next, direction)) {
+                let (prev_score, prev_path) = seen.get_mut(&(curr, direction)).unwrap();
+                if score + 1 == *prev_score {
+                    prev_path.extend(path);
+                }
                 continue;
             }
             if map[next.1 as usize][next.0 as usize] == Cell::Empty {
@@ -174,8 +175,16 @@ fn process_data_b(data: &str) -> usize {
             }
         }
     }
-    println!("Final: {:?}", best_path);
-    best_path.len()
+    // println!("Final: {:?}", best_path);
+    let mut rv = 0;
+    for direction in Direction::all() {
+        println!("({:?}, {}): {:?}", end, direction, seen.get(&(end, direction)));
+        if let Some(path) = seen.get(&(end, direction)) {
+            println!("  {}", path.1.len());
+            rv += path.1.len();
+        }
+    }
+    rv
 }
 
 //-----------------------------------------------------
