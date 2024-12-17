@@ -4,3 +4,6 @@ Cargo.lock
 flamegraph.svg
 stats.*.json
 **/q*.data
+
+.aoc_tiles/*
+!.aoc_tiles/tiles/
