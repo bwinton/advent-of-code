@@ -2,7 +2,13 @@
 // Setup.
 
 use itertools::Itertools;
-use nom::{bytes::complete::tag, character::complete::{i64, newline, one_of}, multi::{many1, separated_list1}, sequence::{preceded, tuple}, IResult};
+use nom::{
+    IResult,
+    bytes::complete::tag,
+    character::complete::{i64, newline, one_of},
+    multi::{many1, separated_list1},
+    sequence::{preceded, tuple},
+};
 
 static INPUT: &str = include_str!("data/q17.data");
 
@@ -29,15 +35,17 @@ impl Instruction {
             5 => Instruction::Out(arg),
             6 => Instruction::Bdv(arg),
             7 => Instruction::Cdv(arg),
-            _ => {panic!("Unknown instruction! {}, {}", op, arg)}
+            _ => {
+                panic!("Unknown instruction! {}, {}", op, arg)
+            }
         }
     }
 
     fn get_value(&self, arg: i64, registers: &[i64]) -> i64 {
         match arg {
-            0..=3 => arg, 
+            0..=3 => arg,
             4..=6 => registers[(arg - 4) as usize],
-            _ => panic!("Invalid arg {}", arg)
+            _ => panic!("Invalid arg {}", arg),
         }
     }
 
@@ -45,31 +53,31 @@ impl Instruction {
         match self {
             Instruction::Adv(arg) => {
                 registers[0] >>= self.get_value(*arg, registers);
-            },
+            }
             Instruction::Bxl(arg) => {
                 registers[1] ^= *arg;
-            },
+            }
             Instruction::Bst(arg) => {
                 registers[1] = self.get_value(*arg, registers) % 8;
-            },
+            }
             Instruction::Jnz(arg) => {
                 if registers[0] != 0 {
                     *ip = *arg as usize;
                     return;
                 }
-            },
+            }
             Instruction::Bxc(_arg) => {
                 registers[1] ^= registers[2];
-            },
+            }
             Instruction::Out(arg) => {
                 out.push(self.get_value(*arg, registers) % 8);
-            },
+            }
             Instruction::Bdv(arg) => {
                 registers[1] = registers[0] >> self.get_value(*arg, registers);
-            },
+            }
             Instruction::Cdv(arg) => {
                 registers[2] = registers[0] >> self.get_value(*arg, registers);
-            },
+            }
         }
         *ip += 2;
     }
@@ -77,13 +85,8 @@ impl Instruction {
 
 fn register(i: &str) -> IResult<&str, i64> {
     // Register A: 62769524
-    let (input, (_,_,_,register,_)) = tuple((
-        tag("Register "),
-        one_of("ABC"),
-        tag(": "),
-        i64,
-        newline
-    ))(i)?;
+    let (input, (_, _, _, register, _)) =
+        tuple((tag("Register "), one_of("ABC"), tag(": "), i64, newline))(i)?;
     Ok((input, register))
 }
 
@@ -102,7 +105,6 @@ fn parser(i: &str) -> IResult<&str, (Vec<i64>, Vec<i64>)> {
     Ok((input, (registers, program)))
 }
 
-
 fn process_data_a(data: &str) -> String {
     let mut rv: Vec<i64> = vec![];
     let (mut registers, program) = parser(data).unwrap().1;
@@ -117,27 +119,27 @@ fn process_data_a(data: &str) -> String {
 fn process_data_b(data: &str) -> i64 {
     let (registers, program) = parser(data).unwrap().1;
     let mut i = 0;
-    loop {
-        println!("{}…", i);
-        let mut output: Vec<i64> = vec![];
-        let mut registers = registers.clone();
-        registers[0] = i;
-        let mut ip = 0;
-        while ip < program.len() {
-            let instruction = Instruction::new(program[ip], program[ip + 1]);
-            // println!("Running: {:?}", instruction);
-            instruction.run(&mut ip, &mut registers, &mut output);
+    // find each correct digit starting from the end.
+    'outer: for digit in 0..program.len() {
+        for x in 0.. {
+            // Reset the computer.
+            let mut output: Vec<i64> = vec![];
+            let mut registers = registers.clone();
+            registers[0] = x + i * 8;
+            let mut ip = 0;
+            // Run the computer.
+            while ip < program.len() {
+                let instruction = Instruction::new(program[ip], program[ip + 1]);
+                instruction.run(&mut ip, &mut registers, &mut output);
+            }
+            // If we've found it, move our number up one (in octal), and add the amount we found.
+            if output[..] == program[program.len() - digit - 1..] {
+                i *= 8;
+                i += x;
+                continue 'outer;
+            }
         }
-        if output == program {
-            break;
-        }
-        // if i == 117440 {
-        //     println!("Failed!\n  o: {:?}\n  p: {:?}", output, program);
-        //     break;
-        // }
-        i += 1;
     }
-    // println!("r: {:?}, p: {:?}", registers, program);
     i
 }
 
@@ -150,24 +152,34 @@ q_impl!("17");
 fn a() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(process_data_a(indoc!("
-    Register A: 729
-    Register B: 0
-    Register C: 0
+    assert_eq!(
+        process_data_a(indoc!(
+            "
+            Register A: 729
+            Register B: 0
+            Register C: 0
 
-    Program: 0,1,5,4,3,0
-    ")), "4,6,3,5,6,3,5,2,1,0");
+            Program: 0,1,5,4,3,0
+            "
+        )),
+        "4,6,3,5,6,3,5,2,1,0"
+    );
 }
 
 #[test]
 fn b() {
     use pretty_assertions::assert_eq;
 
-    assert_eq!(process_data_b(indoc!("
-    Register A: 2024
-    Register B: 0
-    Register C: 0
+    assert_eq!(
+        process_data_b(indoc!(
+            "
+            Register A: 2024
+            Register B: 0
+            Register C: 0
 
-    Program: 0,3,5,4,3,0
-    ")), 117440);
+            Program: 0,3,5,4,3,0
+            "
+        )),
+        117440
+    );
 }

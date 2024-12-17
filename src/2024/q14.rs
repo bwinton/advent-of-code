@@ -112,7 +112,7 @@ fn process_data_b(data: &str) -> usize {
             if tree(&robots, width, height) {
                 // println!("Found it!");
                 break;
-            }    
+            }
         }
     }
     rv

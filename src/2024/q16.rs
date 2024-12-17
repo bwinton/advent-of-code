@@ -132,16 +132,15 @@ fn process_data_b(data: &str) -> usize {
             // println!("Adding {} {:?}", score, path);
             continue;
         }
-        if seen.contains_key(&(curr, direction)) {
+        if let std::collections::hash_map::Entry::Vacant(e) = seen.entry((curr, direction)) {
+            e.insert((score, path.clone()));
+        } else {
             let (prev_score, prev_path) = seen.get_mut(&(curr, direction)).unwrap();
             if score == *prev_score {
                 prev_path.extend(path);
             }
             continue;
-        } else {
-            seen.insert((curr, direction), (score, path.clone()));
         }
-
         // Otherwise, we can step or turn.
         heap.push(State {
             score: score + 1000,
@@ -178,7 +177,12 @@ fn process_data_b(data: &str) -> usize {
     // println!("Final: {:?}", best_path);
     let mut rv = 0;
     for direction in Direction::all() {
-        println!("({:?}, {}): {:?}", end, direction, seen.get(&(end, direction)));
+        println!(
+            "({:?}, {}): {:?}",
+            end,
+            direction,
+            seen.get(&(end, direction))
+        );
         if let Some(path) = seen.get(&(end, direction)) {
             println!("  {}", path.1.len());
             rv += path.1.len();
