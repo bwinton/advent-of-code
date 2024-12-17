@@ -177,14 +177,14 @@ fn process_data_b(data: &str) -> usize {
     // println!("Final: {:?}", best_path);
     let mut rv = 0;
     for direction in Direction::all() {
-        println!(
-            "({:?}, {}): {:?}",
-            end,
-            direction,
-            seen.get(&(end, direction))
-        );
+        // println!(
+        //     "({:?}, {}): {:?}",
+        //     end,
+        //     direction,
+        //     seen.get(&(end, direction))
+        // );
         if let Some(path) = seen.get(&(end, direction)) {
-            println!("  {}", path.1.len());
+            // println!("  {}", path.1.len());
             rv += path.1.len();
         }
     }
