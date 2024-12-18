@@ -1,82 +1,79 @@
 //-----------------------------------------------------
 // Setup.
 
-use core::pat;
-use std::{cmp::Reverse, collections::{BinaryHeap, HashMap, HashSet}};
+use std::{
+    cmp::Reverse,
+    collections::{BinaryHeap, HashSet},
+};
 
 use aoc::util::{Direction, Point2};
+use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q18.data");
 
-fn parse_data(data: &str, range: usize) -> Vec<Vec<(bool, usize)>> {
-    let mut rv = vec![vec![(false, 0); range]; range];
-    for (i, line) in data.lines().enumerate() {
+fn parse_data(data: &str) -> Vec<Point2> {
+    let mut rv = vec![];
+    for line in data.lines() {
         let (x, y) = line.split_once(",").unwrap();
-        let x = x.parse::<usize>().unwrap();
-        let y = y.parse::<usize>().unwrap();
-        rv[y][x] = (true, i);
+        let x = x.parse::<i64>().unwrap();
+        let y = y.parse::<i64>().unwrap();
+        rv.push((x, y));
     }
     rv
 }
 
-fn find_path(map: &[Vec<(bool, usize)>], steps: usize, falling: bool) -> Vec<Vec<Point2>> {
+fn get_map(rocks: &[Point2], range: usize) -> Vec<Vec<bool>> {
+    let mut rv = vec![vec![false; range]; range];
+    for &(x, y) in rocks {
+        rv[y as usize][x as usize] = true;
+    }
+    rv
+}
+
+fn find_path(map: &[Vec<bool>]) -> Option<usize> {
     let origin = (0, 0);
     let bounds = (map[0].len() as i64, map.len() as i64);
     let end = (bounds.0 - 1, bounds.1 - 1);
     let mut heap = BinaryHeap::new();
-    heap.push((Reverse(0), origin, vec![]));
-    let mut seen: HashMap<(i64, i64), Vec<Vec<Point2>>> = HashMap::new();
-    while let Some((score, curr, mut path)) = heap.pop() {
-        println!("{}, {:?}", score.0, curr);
+    heap.push((Reverse(0), origin));
+    let mut seen = HashSet::new();
+    while let Some((score, curr)) = heap.pop() {
         if curr == end {
-            return path;
+            return Some(score.0);
         }
-        path.push(curr);
-        if let Some(paths) = seen.get_mut(&curr) {
-            println!("  Seen it.");
-            paths.push(path.clone());
+        if seen.contains(&curr) {
             continue;
-        } else {
-            seen.insert(curr, vec![path.clone()]);
         }
-        // seen.insert(curr, path.clone());
+        seen.insert(curr);
         for direction in Direction::all() {
             if let Some(next) = direction.move_pos(curr, 1, Some(origin), Some(bounds)) {
-                print!("  {:?} / {:?} => ", next, map[next.1 as usize][next.0 as usize]);
-                match map[next.1 as usize][next.0 as usize] {
-                    (false, _) => {
-                        println!("pushing.");
-                        heap.push((Reverse(score.0 + 1), next, path.clone()));
-                    }
-                    (true, t) if t >= steps && (!falling || t > score.0) => {
-                        println!("pushing.");
-                        heap.push((Reverse(score.0 + 1), next, path.clone()));
-                    }
-                    _ => {
-                        println!("skipping.");
-                        // Can't go here, so skip it.   
-                    }
+                if !map[next.1 as usize][next.0 as usize] {
+                    heap.push((Reverse(score.0 + 1), next));
                 }
             }
         }
     }
-    panic!("No path found…");
+    None
 }
 
+fn find_rock(rocks: &[Point2], range: usize) -> Point2 {
+    let rv = (0..rocks.len()).collect_vec().partition_point(|&time| {
+        let map = get_map(&rocks[..time], range);
+        find_path(&map).is_some()
+    }) - 1;
+    rocks[rv]
+}
 
 fn process_data_a(data: &str) -> usize {
-    let map = parse_data(data, 71);
-    println!("map: {:?}", map);
-    let path = find_path(&map, 1024, false);
-    path.len()
+    let rocks = parse_data(data);
+    let map = get_map(&rocks[..1024], 71);
+    find_path(&map).unwrap()
 }
 
-fn process_data_b(data: &str) -> usize {
-    let rv = 0;
-    for _line in data.lines() {
-        // Do something
-    }
-    rv
+fn process_data_b(data: &str) -> String {
+    let rocks = parse_data(data);
+    let rv = find_rock(&rocks, 71);
+    format!("{},{}", rv.0, rv.1)
 }
 
 //-----------------------------------------------------
@@ -88,72 +85,71 @@ q_impl!("18");
 fn a() {
     use pretty_assertions::assert_eq;
 
-    let map = parse_data(indoc!("
-    5,4
-    4,2
-    4,5
-    3,0
-    2,1
-    6,3
-    2,4
-    1,5
-    0,6
-    3,3
-    2,6
-    5,1
-    1,2
-    5,5
-    2,5
-    6,5
-    1,4
-    0,4
-    6,4
-    1,1
-    6,1
-    1,0
-    0,5
-    1,6
-    2,0
-    "), 7);
-    assert_eq!(find_path(&map, 12, false).len(), 22);
+    let rocks = parse_data(indoc!(
+        "
+        5,4
+        4,2
+        4,5
+        3,0
+        2,1
+        6,3
+        2,4
+        1,5
+        0,6
+        3,3
+        2,6
+        5,1
+        1,2
+        5,5
+        2,5
+        6,5
+        1,4
+        0,4
+        6,4
+        1,1
+        6,1
+        1,0
+        0,5
+        1,6
+        2,0
+        "
+    ));
+    let map = get_map(&rocks[..12], 7);
+    assert_eq!(find_path(&map).unwrap(), 22);
 }
 
 #[test]
 fn b() {
     use pretty_assertions::assert_eq;
 
-    let map = parse_data(indoc!("
-    5,4
-    4,2
-    4,5
-    3,0
-    2,1
-    6,3
-    2,4
-    1,5
-    0,6
-    3,3
-    2,6
-    5,1
-    1,2
-    5,5
-    2,5
-    6,5
-    1,4
-    0,4
-    6,4
-    1,1
-    6,1
-    1,0
-    0,5
-    1,6
-    2,0
-    "), 7);
-    let path = find_path(&map, 12, true);
-    let mut min = 900;
-    for (x,y ) in path {
-        let cell = map[y as usize][x as usize];
-        println!("{:?} => {:?}", (x, y), cell);
-    }
-    // assert_eq!(path.len(), 22);
+    let rocks = parse_data(indoc!(
+        "
+        5,4
+        4,2
+        4,5
+        3,0
+        2,1
+        6,3
+        2,4
+        1,5
+        0,6
+        3,3
+        2,6
+        5,1
+        1,2
+        5,5
+        2,5
+        6,5
+        1,4
+        0,4
+        6,4
+        1,1
+        6,1
+        1,0
+        0,5
+        1,6
+        2,0
+        "
+    ));
+    assert_eq!(find_rock(&rocks, 7), (6, 1));
 }
