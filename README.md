@@ -759,3 +759,8 @@
   <img src=".aoc_tiles/tiles/2015/25.png" width="161px">
 </a>
 <!-- AOC TILES END -->
+
+## Timings
+
+timings from `echo "" > timings.out;for i in {1..19}
+  hyperfine -N --warmup 10 "./target/release/2024 $i" >> timings.out`
