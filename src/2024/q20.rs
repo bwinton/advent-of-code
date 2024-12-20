@@ -4,7 +4,6 @@
 use std::{cmp::Ordering, collections::HashMap};
 
 use aoc::util::{Direction, Point2, in_bounds};
-use itertools::Itertools;
 
 static INPUT: &str = include_str!("data/q20.data");
 
@@ -14,9 +13,7 @@ enum Cell {
     Empty,
 }
 
-type Data = (Vec<Vec<Cell>>, HashMap<(Point2, Point2), usize>);
-
-fn parse_data(data: &str) -> Data {
+fn parse_data(data: &str) -> (Vec<Vec<Cell>>, HashMap<Point2, i64>) {
     let mut map = vec![];
     let mut start = None;
     let mut end = None;
@@ -58,28 +55,16 @@ fn parse_data(data: &str) -> Data {
         }
     }
     path.push(end);
-    let mut distances = HashMap::new();
-    for &cell in &path {
-        distances.insert((cell, cell), 0);
-    }
-    for (start, end) in path.iter().enumerate().tuple_combinations() {
-        let distance = end.0 - start.0;
-        let (start, end) = if start.1.cmp(end.1) == Ordering::Less {
-            (*end.1, *start.1)
-        } else {
-            (*start.1, *end.1)
-        };
-        distances.insert((start, end), distance);
-    }
+    let path = path
+        .iter()
+        .enumerate()
+        .map(|(x, &y)| (y, x as i64))
+        .collect();
 
-    (map, distances)
+    (map, path)
 }
 
-fn find_cheats(
-    map: &[Vec<Cell>],
-    distances: &HashMap<(Point2, Point2), usize>,
-    size: i64,
-) -> HashMap<usize, usize> {
+fn find_cheats(map: &[Vec<Cell>], path: &HashMap<Point2, i64>, size: i64) -> HashMap<usize, usize> {
     let origin = (0, 0);
     let bounds = (map[0].len() as i64, map.len() as i64);
     let mut rv: HashMap<usize, usize> = HashMap::new();
@@ -90,14 +75,14 @@ fn find_cheats(
                 for delta_y in -size..=size {
                     for delta_x in -size + delta_y.abs()..=size - delta_y.abs() {
                         let end = (start_x + delta_x, start_y + delta_y);
-                        if start.cmp(&end) == Ordering::Less {
+                        if start.cmp(&end) != Ordering::Less {
                             continue;
                         }
                         if in_bounds(end, origin, bounds)
                             && map[end.1 as usize][end.0 as usize] == Cell::Empty
                         {
-                            let distance = distances[&(start, end)];
-                            let saved = distance as i64 - (delta_x.abs() + delta_y.abs());
+                            let distance = (path[&start] - path[&end]).abs();
+                            let saved = distance - (delta_x.abs() + delta_y.abs());
                             if saved > 0 {
                                 *rv.entry(saved as usize).or_default() += 1;
                             }
@@ -112,15 +97,15 @@ fn find_cheats(
 
 fn process_data(data: &str, size: i64) -> usize {
     let mut rv = 0;
-    let (map, distances) = parse_data(data);
+    let (map, path) = parse_data(data);
 
-    // let cheats = find_cheats(&map, &distances, size);
-    // for len in cheats.keys() {
-    //     if *len < 100 {
-    //         continue;
-    //     }
-    //     rv += cheats[len];
-    // }
+    let cheats = find_cheats(&map, &path, size);
+    for len in cheats.keys() {
+        if *len < 100 {
+            continue;
+        }
+        rv += cheats[len];
+    }
     rv
 }
 
