@@ -1,8 +1,9 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::{collections::HashMap, sync::OnceLock};
+use std::collections::{HashMap, VecDeque};
 
+use aoc::util::Point2;
 use itertools::Itertools;
 
 #[derive(Debug, Hash, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -11,12 +12,10 @@ pub enum Move {
     East,
     South,
     West,
-    Activate
+    Activate,
 }
 
 static INPUT: &str = include_str!("data/q21.data");
-static CELL: OnceLock<HashMap<(Option<usize>, Option<usize>), Vec<Move>>> = OnceLock::new();
-static META_CELL: OnceLock<HashMap<(Move, Move), Vec<Move>>> = OnceLock::new(); 
 
 fn parse(data: &str) -> Vec<(Vec<usize>, usize)> {
     let mut codes = vec![];
@@ -40,290 +39,154 @@ fn parse(data: &str) -> Vec<(Vec<usize>, usize)> {
     codes
 }
 
-fn get_moves() -> &'static HashMap<(Option<usize>, Option<usize>), Vec<Move>> {
-    let moves = CELL.get_or_init(|| {
-        HashMap::from([
-            ((None, None), vec![]),
-            ((None, Some(0)), vec![Move::West]),
-            ((None, Some(1)), vec![Move::North, Move::West, Move::West]),
-            ((None, Some(2)), vec![Move::West, Move::North]),
-            ((None, Some(3)), vec![Move::North]),
-            ((None, Some(4)), vec![Move::North, Move::North, Move::West, Move::West]),
-            ((None, Some(5)), vec![Move::West, Move::North, Move::North]),
-            ((None, Some(6)), vec![Move::North, Move::North]),
-            ((None, Some(7)), vec![Move::North, Move::North, Move::North, Move::West, Move::West]),
-            ((None, Some(8)), vec![Move::West, Move::North, Move::North, Move::North]),
-            ((None, Some(9)), vec![Move::North, Move::North, Move::North]),
-
-            ((Some(0), None), vec![Move::East]),
-            ((Some(0), Some(0)), vec![]),
-            ((Some(0), Some(1)), vec![Move::North, Move::West]),
-            ((Some(0), Some(2)), vec![Move::North]),
-            ((Some(0), Some(3)), vec![Move::North, Move::East]),
-            ((Some(0), Some(4)), vec![Move::North, Move::North, Move::West]),
-            ((Some(0), Some(5)), vec![Move::North, Move::North]),
-            ((Some(0), Some(6)), vec![Move::North, Move::North, Move::East]),
-            ((Some(0), Some(7)), vec![Move::North, Move::North, Move::North, Move::West]),
-            ((Some(0), Some(8)), vec![Move::North, Move::North, Move::North]),
-            ((Some(0), Some(9)), vec![Move::North, Move::North, Move::North, Move::East]),
-
-            ((Some(1), None), vec![Move::East, Move::East, Move::South]),
-            ((Some(1), Some(0)), vec![Move::East, Move::South]),
-            ((Some(1), Some(1)), vec![]),
-            ((Some(1), Some(2)), vec![Move::East]),
-            ((Some(1), Some(3)), vec![Move::East, Move::East]),
-            ((Some(1), Some(4)), vec![Move::North]),
-            ((Some(1), Some(5)), vec![Move::North, Move::East]),
-            ((Some(1), Some(6)), vec![Move::North, Move::East, Move::East]),
-            ((Some(1), Some(7)), vec![Move::North, Move::North]),
-            ((Some(1), Some(8)), vec![Move::North, Move::North, Move::East]),
-            ((Some(1), Some(9)), vec![Move::North, Move::North, Move::East, Move::East]),
-
-            ((Some(2), None), vec![Move::South, Move::East]),
-            ((Some(2), Some(0)), vec![Move::South]),
-            ((Some(2), Some(1)), vec![Move::West]),
-            ((Some(2), Some(2)), vec![]),
-            ((Some(2), Some(3)), vec![Move::East]),
-            ((Some(2), Some(4)), vec![Move::West, Move::North]),
-            ((Some(2), Some(5)), vec![Move::North]),
-            ((Some(2), Some(6)), vec![Move::North, Move::East]),
-            ((Some(2), Some(7)), vec![Move::West, Move::North, Move::North]),
-            ((Some(2), Some(8)), vec![Move::North, Move::North]),
-            ((Some(2), Some(9)), vec![Move::North, Move::North, Move::East]),
-
-            ((Some(3), None), vec![Move::South]),
-            ((Some(3), Some(0)), vec![Move::West, Move::South]),
-            ((Some(3), Some(1)), vec![Move::West, Move::West]),
-            ((Some(3), Some(2)), vec![Move::West]),
-            ((Some(3), Some(3)), vec![]),
-            ((Some(3), Some(4)), vec![Move::West, Move::West, Move::North]),
-            ((Some(3), Some(5)), vec![Move::West, Move::North]),
-            ((Some(3), Some(6)), vec![Move::North]),
-            ((Some(3), Some(7)), vec![Move::West, Move::West, Move::North, Move::North]),
-            ((Some(3), Some(8)), vec![Move::West, Move::North, Move::North]),
-            ((Some(3), Some(9)), vec![Move::North, Move::North]),
-
-            ((Some(4), None), vec![Move::East, Move::East, Move::South, Move::South]),
-            ((Some(4), Some(0)), vec![Move::East, Move::South, Move::South]),
-            ((Some(4), Some(1)), vec![Move::South]),
-            ((Some(4), Some(2)), vec![Move::South, Move::East]),
-            ((Some(4), Some(3)), vec![Move::South, Move::East, Move::East]),
-            ((Some(4), Some(4)), vec![]),
-            ((Some(4), Some(5)), vec![Move::East]),
-            ((Some(4), Some(6)), vec![Move::East, Move::East]),
-            ((Some(4), Some(7)), vec![Move::North]),
-            ((Some(4), Some(8)), vec![Move::North, Move::East]),
-            ((Some(4), Some(9)), vec![Move::North, Move::East, Move::East]),
-
-            ((Some(5), None), vec![Move::South, Move::South, Move::East]),
-            ((Some(5), Some(0)), vec![Move::South, Move::South]),
-            ((Some(5), Some(1)), vec![Move::West, Move::South]),
-            ((Some(5), Some(2)), vec![Move::South]),
-            ((Some(5), Some(3)), vec![Move::South, Move::East]),
-            ((Some(5), Some(4)), vec![Move::West]),
-            ((Some(5), Some(5)), vec![]),
-            ((Some(5), Some(6)), vec![Move::East]),
-            ((Some(5), Some(7)), vec![Move::West, Move::North]),
-            ((Some(5), Some(8)), vec![Move::North]),
-            ((Some(5), Some(9)), vec![Move::North, Move::East]),
-
-            ((Some(6), None), vec![Move::South, Move::South]),
-            ((Some(6), Some(0)), vec![Move::West, Move::South, Move::South]),
-            ((Some(6), Some(1)), vec![Move::West, Move::West, Move::South]),
-            ((Some(6), Some(2)), vec![Move::West, Move::South]),
-            ((Some(6), Some(3)), vec![Move::South]),
-            ((Some(6), Some(4)), vec![Move::West, Move::West]),
-            ((Some(6), Some(5)), vec![Move::West]),
-            ((Some(6), Some(6)), vec![]),
-            ((Some(6), Some(7)), vec![Move::West, Move::West, Move::North]),
-            ((Some(6), Some(8)), vec![Move::West, Move::North]),
-            ((Some(6), Some(9)), vec![Move::North]),
-
-            ((Some(7), None), vec![Move::East, Move::East, Move::South, Move::South, Move::South]),
-            ((Some(7), Some(0)), vec![Move::East, Move::South, Move::South, Move::South]),
-            ((Some(7), Some(1)), vec![Move::South, Move::South]),
-            ((Some(7), Some(2)), vec![Move::South, Move::South, Move::East]),
-            ((Some(7), Some(3)), vec![Move::South, Move::South, Move::East, Move::East]),
-            ((Some(7), Some(4)), vec![Move::South]),
-            ((Some(7), Some(5)), vec![Move::South, Move::East]),
-            ((Some(7), Some(6)), vec![Move::South, Move::East, Move::East]),
-            ((Some(7), Some(7)), vec![]),
-            ((Some(7), Some(8)), vec![Move::East]),
-            ((Some(7), Some(9)), vec![Move::East, Move::East]),
-
-            ((Some(8), None), vec![Move::South, Move::South, Move::South, Move::East]),
-            ((Some(8), Some(0)), vec![Move::South, Move::South, Move::South]),
-            ((Some(8), Some(1)), vec![Move::West, Move::South, Move::South]),
-            ((Some(8), Some(2)), vec![Move::South, Move::South]),
-            ((Some(8), Some(3)), vec![Move::South, Move::South, Move::East]),
-            ((Some(8), Some(4)), vec![Move::West, Move::South]),
-            ((Some(8), Some(5)), vec![Move::South]),
-            ((Some(8), Some(6)), vec![Move::South, Move::East]),
-            ((Some(8), Some(7)), vec![Move::West]),
-            ((Some(8), Some(8)), vec![]),
-            ((Some(8), Some(9)), vec![Move::East]),
-
-            ((Some(9), None), vec![Move::South, Move::South, Move::South]),
-            ((Some(9), Some(0)), vec![Move::West, Move::South, Move::South, Move::South]),
-            ((Some(9), Some(1)), vec![Move::West, Move::West, Move::South, Move::South]),
-            ((Some(9), Some(2)), vec![Move::West, Move::South, Move::South]),
-            ((Some(9), Some(3)), vec![Move::South, Move::South]),
-            ((Some(9), Some(4)), vec![Move::West, Move::West, Move::South]),
-            ((Some(9), Some(5)), vec![Move::West, Move::South]),
-            ((Some(9), Some(6)), vec![Move::South]),
-            ((Some(9), Some(7)), vec![Move::West, Move::West]),
-            ((Some(9), Some(8)), vec![Move::West]),
-            ((Some(9), Some(9)), vec![]),
-        ])
-    });
-    moves
-}
-
-fn get_meta_moves() -> &'static HashMap<(Move, Move), Vec<Move>> {
-    let meta_moves = META_CELL.get_or_init(|| {
-        HashMap::from([
-            ((Move::Activate, Move::Activate), vec![]),
-            ((Move::Activate, Move::North), vec![Move::West]),
-            ((Move::Activate, Move::East), vec![Move::South]),
-            ((Move::Activate, Move::South), vec![Move::West, Move::South]),
-            ((Move::Activate, Move::West), vec![Move::South, Move::West, Move::West]),
-
-            ((Move::North, Move::Activate), vec![Move::East]),
-            ((Move::North, Move::North), vec![]),
-            ((Move::North, Move::East), vec![Move::South, Move::East]),
-            ((Move::North, Move::South), vec![Move::South]),
-            ((Move::North, Move::West), vec![Move::South, Move::West]),
-
-            ((Move::East, Move::Activate), vec![Move::North]),
-            ((Move::East, Move::North), vec![Move::West, Move::North]),
-            ((Move::East, Move::East), vec![]),
-            ((Move::East, Move::South), vec![Move::West]),
-            ((Move::East, Move::West), vec![Move::West, Move::West]),
-
-            ((Move::South, Move::Activate), vec![Move::North, Move::East]),
-            ((Move::South, Move::North), vec![Move::North]),
-            ((Move::South, Move::East), vec![Move::East]),
-            ((Move::South, Move::South), vec![]),
-            ((Move::South, Move::West), vec![Move::West]),
-
-            ((Move::West, Move::Activate), vec![Move::East, Move::East, Move::North]),
-            ((Move::West, Move::North), vec![Move::East, Move::North]),
-            ((Move::West, Move::East), vec![Move::East, Move::East]),
-            ((Move::West, Move::South), vec![Move::East]),
-            ((Move::West, Move::West), vec![]),
-
-            ])
-        });
-    meta_moves
-}
-
-fn get_path(code: Vec<usize>) -> Vec<Move> {
-    let moves = get_moves();
-
-    let mut rv= vec![];
-    // println!("{:?}", code);
-    let mut curr = None;
-    for number in code {
-        let path = &moves[&(curr, Some(number))];
-        // println!("{:?} -> {:?}: {:?}", curr, Some(number), path);
-        rv.extend(path);
-        rv.push(Move::Activate);
-        curr = Some(number);
+fn get_point(a: usize) -> Point2 {
+    match a {
+        0 => (1, 3),
+        10 => (2, 3), // Activate
+        1 => (0, 2),
+        2 => (1, 2),
+        3 => (2, 2),
+        4 => (0, 1),
+        5 => (1, 1),
+        6 => (2, 1),
+        7 => (0, 0),
+        8 => (1, 0),
+        9 => (2, 0),
+        _ => panic!("Unknown point {}!", a),
     }
-    let path = &moves[&(curr, None)];
-    // println!("{:?} -> None: {:?}", curr, path);
-    rv.extend(path);
-    rv.push(Move::Activate);
-    // println!("rv: {:?}", rv);
+}
+
+fn get_meta_point(a: Move) -> Point2 {
+    match a {
+        Move::North => (1, 0),
+        Move::Activate => (2, 0),
+        Move::West => (0, 1),
+        Move::South => (1, 1),
+        Move::East => (2, 1),
+    }
+}
+
+fn get_paths(a: Point2, b: Point2, base: bool) -> Vec<Vec<Move>> {
+    let gap = if base { (0, 3) } else { (0, 0) };
+    let mut rv = vec![];
+    let mut queue = VecDeque::new();
+    queue.push_back((a, vec![]));
+    while let Some(((x, y), mut path)) = queue.pop_front() {
+        if (x, y) == b {
+            path.push(Move::Activate);
+            rv.push(path);
+            continue;
+        }
+        if b.1 < y && !(gap.0 == x && gap.1 < y && gap.1 >= b.1) {
+            let mut new_path = path.clone();
+            new_path.extend([Move::North].repeat((y - b.1) as usize));
+            queue.push_back(((x, b.1), new_path));
+        }
+        if b.0 < x && !(gap.1 == y && gap.0 < x && gap.0 >= b.0) {
+            let mut new_path = path.clone();
+            new_path.extend([Move::West].repeat((x - b.0) as usize));
+            queue.push_back(((b.0, y), new_path));
+        }
+        if b.0 > x && !(gap.1 == y && gap.0 > x && gap.0 <= b.0) {
+            let mut new_path = path.clone();
+            new_path.extend([Move::East].repeat((b.0 - x) as usize));
+            queue.push_back(((b.0, y), new_path));
+        }
+        if b.1 > y && !(gap.0 == x && gap.1 > y && gap.1 <= b.1) {
+            let mut new_path = path.clone();
+            new_path.extend([Move::South].repeat((b.1 - y) as usize));
+            queue.push_back(((x, b.1), new_path));
+        }
+    }
     rv
 }
 
-
-fn get_meta_path(start: Move, moves: Vec<Move>) -> Vec<Move> {
-    let meta_moves = get_meta_moves();
-    
-    let mut rv= vec![];
-    // println!("  moves: {:?}", moves);
-    let mut curr = start;
-    for next in moves {
-        let path = &meta_moves[&(curr, next)];
-        // println!("  move: {:?} -> {:?}: {:?}", curr, next, path);
-        rv.extend(path);
-        rv.push(Move::Activate);
-        curr = next;
+fn get_path_len(
+    moves: Vec<usize>,
+    max_depth: usize,
+    cache: &mut HashMap<(usize, Vec<usize>), usize>,
+    meta_cache: &mut HashMap<(usize, Vec<Move>), usize>,
+) -> usize {
+    if let Some(&cached) = cache.get(&(0, moves.clone())) {
+        return cached;
     }
-    // println!("  rv: {:?}", rv);
-    rv    
+    let mut path = moves.clone();
+    path.insert(0, 10); // Activate
+    path.push(10); // Activate
+    let rv = path
+        .iter()
+        .tuple_windows()
+        .map(|(&a, &b)| {
+            let start = get_point(a);
+            let end = get_point(b);
+            get_paths(start, end, true)
+                .into_iter()
+                .map(|path| get_meta_path_len(path, 1, max_depth, meta_cache))
+                .min()
+                .unwrap()
+        })
+        .sum();
+
+    cache.insert((0, moves), rv);
+    rv
 }
 
-fn get_meta_path_len(prev: Move, curr: Move, level: usize, cache: &mut HashMap<(Move, Move, usize), usize>) -> usize {
-        let mut rv= 0;
+fn get_meta_path_len(
+    moves: Vec<Move>,
+    depth: usize,
+    max_depth: usize,
+    cache: &mut HashMap<(usize, Vec<Move>), usize>,
+) -> usize {
+    if let Some(&cached) = cache.get(&(depth, moves.clone())) {
+        return cached;
+    }
 
-        println!("{}{:?} -> {:?}", "  ".repeat(2-level), prev, curr);
-
-        if level == 0 {
-            let meta_moves = get_meta_moves();
-            println!("{}:Base case {}: {:?}!", "  ".repeat(2-level), meta_moves[&(prev, curr)].len() + 1, meta_moves[&(prev, curr)]);
-            return meta_moves[&(prev, curr)].len() + 1;
-        }
-
-        rv += if let Some(&len) = cache.get(&(prev, curr, level)) {
-            println!("{}:Found {}!", "  ".repeat(2-level), len);
-            len
-        } else {
-            let meta_path = get_meta_path(vec![prev, prev, curr]);
-            println!("{}:Calculating {:?}!", "  ".repeat(2-level), meta_path);
-            let mut len = 0;
-            for (prev, curr) in meta_path.into_iter().tuple_windows() {
-                let curr_len = get_meta_path_len(prev, curr, level - 1, cache);
-                len += curr_len;
+    let mut path = moves.clone();
+    path.insert(0, Move::Activate);
+    let rv = path
+        .iter()
+        .tuple_windows()
+        .map(|(&a, &b)| {
+            let start = get_meta_point(a);
+            let end = get_meta_point(b);
+            let paths = get_paths(start, end, false);
+            if depth == max_depth {
+                paths.iter().map(|v| v.len()).min().unwrap()
+            } else {
+                paths
+                    .into_iter()
+                    .map(|path| get_meta_path_len(path, depth + 1, max_depth, cache))
+                    .min()
+                    .unwrap()
             }
-            cache.insert((prev, curr, level), len);
-            println!("{}:Calculated {}!", "  ".repeat(2-level), len);
-            len
-        };
-        // println!("  move: {:?} -> {:?}: {:?}", prev, curr, path);
-        // println!("  rv: {:?}", rv);
-        rv    
+        })
+        .sum();
+
+    cache.insert((depth, moves), rv);
+    rv
+}
+
+fn process(codes: &[(Vec<usize>, usize)], depth: usize) -> usize {
+    let mut cache = HashMap::new();
+    let mut meta_cache = HashMap::new();
+    let mut rv = 0;
+    for (code, mult) in codes {
+        let mut len = 0;
+        let curr_len = get_path_len(code.clone(), depth, &mut cache, &mut meta_cache);
+        len += curr_len;
+        rv += len * mult;
+    }
+    rv
 }
 
 fn process_data_a(data: &str) -> usize {
-    let mut rv = 0;
     let codes = parse(data);
-    let mut cache = HashMap::new();
-    for (code, mult) in codes {
-        println!("code: {}{}{}", code[0], code[1], code[2]);
-        let path = get_path(code);
-        println!("path: {:?}", path);
-        let mut len = 0;
-        for (prev, curr) in path.into_iter().tuple_windows() {
-            let curr_len = get_meta_path_len(prev, curr, 1, &mut cache);
-            len += curr_len;
-        }
-        println!("  len: {}", len);
-        rv += len * mult;
-    }
-    rv
+    process(&codes, 2)
 }
 
 fn process_data_b(data: &str) -> usize {
-    let mut rv = 0;
     let codes = parse(data);
-    let mut cache = HashMap::new();
-    for (code, mult) in codes {
-        println!("code: {}{}{}", code[0], code[1], code[2]);
-        let path = get_path(code);
-        let mut len = 0;
-        for (prev, curr) in path.into_iter().tuple_windows() {
-            let curr_len = get_meta_path_len(prev, curr, 2, &mut cache);
-            len += curr_len;
-        }
-        println!("  len: {}", len);
-        rv += len * mult;
-    }
-    rv
-    // 3,231,481,965,789,453,889 is too high.
-    // 9,684,970,575,674,898,655
+    process(&codes, 25)
 }
 
 //-----------------------------------------------------
@@ -336,22 +199,43 @@ fn a() {
     use pretty_assertions::assert_eq;
 
     assert_eq!(process_data_a("029A"), 68 * 29);
-//     assert_eq!(process_data_a("980A"), 60 * 980);
-//     assert_eq!(process_data_a("179A"), 68 * 179);
-//     assert_eq!(process_data_a("456A"), 64 * 456);
-//     assert_eq!(process_data_a("379A"), 64 * 379);
+    assert_eq!(process_data_a("980A"), 60 * 980);
+    assert_eq!(process_data_a("179A"), 68 * 179);
+    assert_eq!(process_data_a("456A"), 64 * 456);
+    assert_eq!(process_data_a("379A"), 64 * 379);
 
-//     assert_eq!(process_data_a(indoc!("
-//         029A
-//         980A
-//         179A
-//         456A
-//         379A")), 126_384);
+    assert_eq!(
+        process_data_a(indoc!(
+            "
+            029A
+            980A
+            179A
+            456A
+            379A"
+        )),
+        126_384
+    );
 }
 
 #[test]
 fn b() {
-    // use pretty_assertions::assert_eq;
+    use pretty_assertions::assert_eq;
 
-    // assert_eq!(process_data_b(indoc!("")), 0);
+    assert_eq!(process_data_b("029A"), 82_050_061_710 * 29);
+    assert_eq!(process_data_b("980A"), 72_242_026_390 * 980);
+    assert_eq!(process_data_b("179A"), 81_251_039_228 * 179);
+    assert_eq!(process_data_b("456A"), 80_786_362_258 * 456);
+    assert_eq!(process_data_b("379A"), 77_985_628_636 * 379);
+
+    assert_eq!(
+        process_data_b(indoc!(
+            "
+            029A
+            980A
+            179A
+            456A
+            379A"
+        )),
+        154_115_708_116_294
+    );
 }
