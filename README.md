@@ -762,5 +762,5 @@
 
 ## Timings
 
-timings from `echo "" > timings.out;for i in {1..22}
+timings from `echo "" > timings.out;for i in {1..23}
   hyperfine -N --warmup 10 "./target/release/2024 $i" >> timings.out`
