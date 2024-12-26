@@ -755,9 +755,6 @@
 <a href="src/2015/q24.rs">
   <img src=".aoc_tiles/tiles/2015/24.png" width="161px">
 </a>
-<a href="src/2015/q25.rs">
-  <img src=".aoc_tiles/tiles/2015/25.png" width="161px">
-</a>
 <!-- AOC TILES END -->
 
 ## Timings
