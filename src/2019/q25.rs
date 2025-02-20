@@ -159,11 +159,14 @@ fn room(i: &str) -> IResult<&str, Room> {
         opt(items),
     ))(i)?;
 
-    Ok((input, Room {
-        name: name.to_owned(),
-        doors,
-        items: items.unwrap_or_default(),
-    }))
+    Ok((
+        input,
+        Room {
+            name: name.to_owned(),
+            doors,
+            items: items.unwrap_or_default(),
+        },
+    ))
 }
 
 fn take(i: &str) -> IResult<&str, &str> {

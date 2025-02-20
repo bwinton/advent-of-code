@@ -91,7 +91,7 @@ fn reduce(number: &mut Vec<Character>) {
                 // If any regular number is 10 or greater, the leftmost such regular number splits.
                 if x >= 10 {
                     let start = x / 2;
-                    let end = (x + 1) / 2;
+                    let end = x.div_ceil(2);
                     let new = [
                         Character::Open,
                         Character::Number(start),

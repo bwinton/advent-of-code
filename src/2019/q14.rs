@@ -21,10 +21,13 @@ struct Element<'a> {
 
 fn element(i: &str) -> IResult<&str, Element> {
     let (input, (quantity, _, symbol)) = tuple((u64, tag(" "), alpha1))(i)?;
-    Ok((input, Element {
-        quantity: quantity as usize,
-        symbol,
-    }))
+    Ok((
+        input,
+        Element {
+            quantity: quantity as usize,
+            symbol,
+        },
+    ))
 }
 
 fn rule(i: &str) -> IResult<&str, (Element, Vec<Element>)> {

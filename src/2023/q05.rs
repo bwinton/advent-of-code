@@ -95,11 +95,14 @@ fn range(i: &str) -> IResult<&str, Range> {
         tag(" "),
         complete::u64,
     ))(i)?;
-    Ok((input, Range {
-        source,
-        dest,
-        length,
-    }))
+    Ok((
+        input,
+        Range {
+            source,
+            dest,
+            length,
+        },
+    ))
 }
 
 fn parse_map(heading: &str) -> impl FnMut(&str) -> IResult<&str, Vec<Range>> + '_ {
@@ -153,15 +156,18 @@ fn parser(i: &str) -> IResult<&str, (Vec<u64>, Vec<Vec<Range>>)> {
     ))(i)?;
     Ok((
         input,
-        (seeds, vec![
-            seed_to_soil,
-            soil_to_fertilizer,
-            fertilizer_to_water,
-            water_to_light,
-            light_to_temperature,
-            temperature_to_humidity,
-            humidity_to_location,
-        ]),
+        (
+            seeds,
+            vec![
+                seed_to_soil,
+                soil_to_fertilizer,
+                fertilizer_to_water,
+                water_to_light,
+                light_to_temperature,
+                temperature_to_humidity,
+                humidity_to_location,
+            ],
+        ),
     ))
 }
 

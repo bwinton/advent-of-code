@@ -56,10 +56,13 @@ fn moon(i: &str) -> IResult<&str, Moon> {
         i32,
         tag(">\n"),
     ))(i)?;
-    Ok((input, Moon {
-        position: (x as i128, y as i128, z as i128),
-        velocity: (0, 0, 0),
-    }))
+    Ok((
+        input,
+        Moon {
+            position: (x as i128, y as i128, z as i128),
+            velocity: (0, 0, 0),
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Moon>> {

@@ -73,8 +73,8 @@ fn process_data_b(data: &str) -> String {
     for curr in folds {
         grid = fold(curr, grid);
     }
-    let max_x = grid.iter().sorted().last().unwrap().0;
-    let max_y = grid.iter().sorted_by_key(|x| x.1).last().unwrap().1;
+    let max_x = grid.iter().sorted().next_back().unwrap().0;
+    let max_y = grid.iter().sorted_by_key(|x| x.1).next_back().unwrap().1;
     let mut image = Vec::with_capacity(max_x * max_y);
     for y in 0..=max_y {
         for x in 0..=max_x {

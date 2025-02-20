@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // Setup.
 
-use std::{collections::HashMap, iter, ops::RangeInclusive};
+use std::{collections::HashMap, iter::repeat_n, ops::RangeInclusive};
 
 use nom::{
     IResult,
@@ -397,7 +397,7 @@ fn map(i: &str) -> IResult<&str, Vec<Vec<Cell>>> {
     for line in lines.iter_mut() {
         let line_len = line.len();
         if line_len < max_length {
-            line.extend(iter::repeat(Cell::OutOfBounds).take(max_length - line_len));
+            line.extend(repeat_n(Cell::OutOfBounds, max_length - line_len));
         }
     }
     Ok((input, lines))

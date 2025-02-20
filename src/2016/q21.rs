@@ -123,7 +123,7 @@ impl Instruction {
                     new_index = 8;
                 }
                 let mut index = if new_index % 2 == 1 {
-                    (new_index + 1) / 2
+                    new_index.div_ceil(2)
                 } else {
                     5 + new_index / 2
                 };

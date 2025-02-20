@@ -28,10 +28,13 @@ fn bag(i: &str) -> IResult<&str, Bag> {
 
     let name = format!("{}{}{}", mod1, space, mod2);
 
-    Ok((input, Bag {
-        quantity: 1,
-        symbol: name,
-    }))
+    Ok((
+        input,
+        Bag {
+            quantity: 1,
+            symbol: name,
+        },
+    ))
 }
 
 fn multi_bag(i: &str) -> IResult<&str, Bag> {

@@ -38,10 +38,13 @@ fn robot(i: &str) -> IResult<&str, Robot> {
         tag(","),
         i64,
     ))(i)?;
-    Ok((input, Robot {
-        position: (px, py),
-        velocity: (vx, vy),
-    }))
+    Ok((
+        input,
+        Robot {
+            position: (px, py),
+            velocity: (vx, vy),
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Robot>> {

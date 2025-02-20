@@ -133,10 +133,13 @@ fn operation(i: &str) -> IResult<&str, Operation> {
 // root: pppw + sjmn
 fn monkey(i: &str) -> IResult<&str, Monkey> {
     let (input, (name, _, op)) = tuple((alpha1, tag(": "), operation))(i)?;
-    Ok((input, Monkey {
-        name: name.to_owned(),
-        operation: op,
-    }))
+    Ok((
+        input,
+        Monkey {
+            name: name.to_owned(),
+            operation: op,
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {

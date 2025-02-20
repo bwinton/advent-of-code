@@ -34,10 +34,13 @@ impl Rule {
 
 fn rule(i: &str) -> IResult<&str, Rule> {
     let (input, (source, _, dest, _)) = tuple((alpha1, tag(" => "), alpha1, line_ending))(i)?;
-    Ok((input, Rule {
-        source: Regex::new(source).unwrap(),
-        dest: dest.to_string(),
-    }))
+    Ok((
+        input,
+        Rule {
+            source: Regex::new(source).unwrap(),
+            dest: dest.to_string(),
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<Rule>, String)> {

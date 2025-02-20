@@ -1,4 +1,4 @@
-use std::iter;
+use std::iter::repeat_n;
 
 //-----------------------------------------------------
 // Setup.
@@ -54,14 +54,14 @@ fn parse_board(data: &str) -> ([bool; 512], Vec<Vec<bool>>) {
     lines.next();
     let mut board = vec![];
     for line in lines {
-        let mut row = iter::repeat(false).take(100).collect::<Vec<_>>();
+        let mut row = repeat_n(false, 100).collect::<Vec<_>>();
         row.extend(line.chars().map(|c| c == '#').collect::<Vec<_>>());
-        row.extend(iter::repeat(false).take(100));
+        row.extend(repeat_n(false, 100));
         board.push(row);
     }
 
     let len = board[0].len();
-    let full_row = iter::repeat(false).take(len).collect::<Vec<_>>();
+    let full_row = repeat_n(false, len).collect::<Vec<_>>();
     let mut top = vec![];
     for _ in 0..100 {
         top.push(full_row.clone());

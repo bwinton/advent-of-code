@@ -166,10 +166,13 @@ fn scanner(i: &str) -> IResult<&str, Scanner> {
         separated_list1(line_ending, position),
         line_ending,
     ))(i)?;
-    Ok((input, Scanner {
-        position: None,
-        beacons: HashSet::from_iter(beacons),
-    }))
+    Ok((
+        input,
+        Scanner {
+            position: None,
+            beacons: HashSet::from_iter(beacons),
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, VecDeque<Scanner>> {

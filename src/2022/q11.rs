@@ -104,14 +104,17 @@ fn monkey(i: &str) -> IResult<&str, Monkey> {
         header,
         tuple((items, operation, test, true_branch, false_branch)),
     )(i)?;
-    Ok((input, Monkey {
-        items,
-        operation,
-        test,
-        true_branch,
-        false_branch,
-        inspected: 0,
-    }))
+    Ok((
+        input,
+        Monkey {
+            items,
+            operation,
+            test,
+            true_branch,
+            false_branch,
+            inspected: 0,
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {

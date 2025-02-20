@@ -215,10 +215,13 @@ fn instruction(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
             equal_to,
         )),
     ))(i)?;
-    Ok((input, InstructionV2 {
-        version,
-        instruction_type: result,
-    }))
+    Ok((
+        input,
+        InstructionV2 {
+            version,
+            instruction_type: result,
+        },
+    ))
 }
 
 fn parser(input: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {

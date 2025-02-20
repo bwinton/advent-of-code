@@ -92,12 +92,15 @@ fn gate(i: &str) -> IResult<&str, Gate> {
         }
     };
     let inputs = vec![];
-    Ok((input, Gate {
-        name,
-        gate_type,
-        inputs,
-        outputs,
-    }))
+    Ok((
+        input,
+        Gate {
+            name,
+            gate_type,
+            inputs,
+            outputs,
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, HashMap<&str, Gate>> {

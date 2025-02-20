@@ -50,11 +50,14 @@ fn valve(i: &str) -> IResult<&str, Valve> {
             separated_list1(tag(", "), alpha1),
         )),
     )(i)?;
-    Ok((input, Valve {
-        name: name.to_owned(),
-        flow_rate,
-        tunnels: tunnels.iter().map(|&s| s.to_owned()).collect(),
-    }))
+    Ok((
+        input,
+        Valve {
+            name: name.to_owned(),
+            flow_rate,
+            tunnels: tunnels.iter().map(|&s| s.to_owned()).collect(),
+        },
+    ))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Valve>> {

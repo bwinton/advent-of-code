@@ -96,9 +96,10 @@ fn b() {
             .join("",),
         "4007ff"
     );
-    assert_eq!(get_input("1,2,3"), vec![
-        49, 44, 50, 44, 51, 17, 31, 73, 47, 23
-    ]);
+    assert_eq!(
+        get_input("1,2,3"),
+        vec![49, 44, 50, 44, 51, 17, 31, 73, 47, 23]
+    );
     assert_eq!(
         densify(&process_data(256, &get_input(""), 64)),
         "a2582a3a0e66e6e86e3812dcb672a272"

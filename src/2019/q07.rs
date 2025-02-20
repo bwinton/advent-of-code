@@ -10,25 +10,25 @@ static INPUT: &str = include_str!("data/q07.data");
 fn run_amps(ints: &[i128], permutation: Vec<i128>) -> Result<i128, IntcodeError> {
     let mut first = Intcode::new(ints.to_owned(), vec![permutation[0], 0]);
     first.run_tape()?;
-    let mut second = Intcode::new(ints.to_owned(), vec![
-        permutation[1],
-        first.outputs.pop_back().unwrap(),
-    ]);
+    let mut second = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[1], first.outputs.pop_back().unwrap()],
+    );
     second.run_tape()?;
-    let mut third = Intcode::new(ints.to_owned(), vec![
-        permutation[2],
-        second.outputs.pop_back().unwrap(),
-    ]);
+    let mut third = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[2], second.outputs.pop_back().unwrap()],
+    );
     third.run_tape()?;
-    let mut fourth = Intcode::new(ints.to_owned(), vec![
-        permutation[3],
-        third.outputs.pop_back().unwrap(),
-    ]);
+    let mut fourth = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[3], third.outputs.pop_back().unwrap()],
+    );
     fourth.run_tape()?;
-    let mut fifth = Intcode::new(ints.to_owned(), vec![
-        permutation[4],
-        fourth.outputs.pop_back().unwrap(),
-    ]);
+    let mut fifth = Intcode::new(
+        ints.to_owned(),
+        vec![permutation[4], fourth.outputs.pop_back().unwrap()],
+    );
     fifth.run_tape()?;
     fifth.outputs.pop_back().ok_or(IntcodeError::MissingValue)
 }

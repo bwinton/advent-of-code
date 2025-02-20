@@ -59,10 +59,13 @@ fn feature(i: &str) -> IResult<&str, (String, u32)> {
 
 fn aunt(i: &str) -> IResult<&str, AuntSue> {
     let (input, (name, features)) = tuple((aunt_name, separated_list0(tag(", "), feature)))(i)?;
-    Ok((input, AuntSue {
-        name: Some(name),
-        features: features.iter().cloned().collect(),
-    }))
+    Ok((
+        input,
+        AuntSue {
+            name: Some(name),
+            features: features.iter().cloned().collect(),
+        },
+    ))
 }
 
 fn process_data_a(data: &str) -> u32 {

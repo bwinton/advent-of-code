@@ -43,7 +43,7 @@ fn get_last() -> Result<(u32, String), NextError> {
 
     let last_year = entries
         .into_iter()
-        .last()
+        .next_back()
         .ok_or(NextError::YearsNotFound {})?;
 
     let mut entries = read_dir(format!("src/{}", last_year))?
@@ -60,7 +60,7 @@ fn get_last() -> Result<(u32, String), NextError> {
     entries.sort();
     let last_day = entries
         .into_iter()
-        .last()
+        .next_back()
         .ok_or(NextError::YearsNotFound {})?;
     Ok((last_year, last_day))
 }
