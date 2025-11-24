@@ -87,5 +87,9 @@ path = "src/2023/main.rs"
 name = "2024"
 path = "src/2024/main.rs"
 
+[[bin]]
+name = "2025"
+path = "src/2025/main.rs"
+
 [dev-dependencies]
 pretty_assertions = "1.4.1"
