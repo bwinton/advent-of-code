@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending, one_of},
@@ -25,7 +25,7 @@ enum Line {
 }
 
 fn ls(i: &str) -> IResult<&str, Line> {
-    let (input, command) = map(tag("$ ls"), |_| Line::Ls)(i)?;
+    let (input, command) = map(tag("$ ls"), |_| Line::Ls).parse(i)?;
     Ok((input, command))
 }
 
@@ -33,14 +33,16 @@ fn cd(i: &str) -> IResult<&str, Line> {
     let (input, command) = map(
         preceded(tag("$ cd "), many1(one_of("abcdefghijklmnopqrstuvwxyz./"))),
         |name| Line::Cd(name.iter().cloned().collect()),
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, command))
 }
 
 fn dir(i: &str) -> IResult<&str, Line> {
     let (input, command) = map(preceded(tag("dir "), alpha1), |name: &str| {
         Line::Dir(name.to_owned())
-    })(i)?;
+    })
+    .parse(i)?;
     Ok((input, command))
 }
 
@@ -52,17 +54,18 @@ fn size(i: &str) -> IResult<&str, Line> {
             many1(one_of("abcdefghijklmnopqrstuvwxyz.")),
         ),
         |(size, name)| Line::File(size, name.iter().cloned().collect()),
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, command))
 }
 
 fn output(i: &str) -> IResult<&str, Line> {
-    let (input, command) = alt((ls, cd, dir, size))(i)?;
+    let (input, command) = alt((ls, cd, dir, size)).parse(i)?;
     Ok((input, command))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Line>> {
-    let (input, list) = separated_list1(line_ending, output)(i)?;
+    let (input, list) = separated_list1(line_ending, output).parse(i)?;
     Ok((input, list))
 }
 

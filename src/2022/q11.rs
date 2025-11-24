@@ -3,13 +3,13 @@
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     combinator::map,
     multi::separated_list1,
-    sequence::{delimited, preceded, tuple},
+    sequence::{delimited, preceded},
 };
 
 static INPUT: &str = include_str!("data/q11.data");
@@ -40,11 +40,7 @@ struct Monkey {
 }
 
 fn header(i: &str) -> IResult<&str, ()> {
-    let (input, _i) = delimited(
-        tag("Monkey "),
-        complete::u32,
-        tuple((tag(":"), line_ending)),
-    )(i)?;
+    let (input, _i) = delimited(tag("Monkey "), complete::u32, (tag(":"), line_ending)).parse(i)?;
     Ok((input, ()))
 }
 
@@ -53,7 +49,8 @@ fn items(i: &str) -> IResult<&str, Vec<u64>> {
         tag("  Starting items: "),
         separated_list1(tag(", "), complete::u64),
         line_ending,
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, values))
 }
 
@@ -61,12 +58,13 @@ fn operation(i: &str) -> IResult<&str, Operation> {
     let (input, (op, value)) = delimited(
         tag("  Operation: new = old "),
         alt((
-            tuple((tag("* "), complete::u64)),
-            tuple((tag("+ "), complete::u64)),
+            (tag("* "), complete::u64),
+            (tag("+ "), complete::u64),
             map(tag("* old"), |_| ("* old", 0)),
         )),
         line_ending,
-    )(i)?;
+    )
+    .parse(i)?;
     let op = match op {
         "+ " => Operation::Plus(value),
         "* " => Operation::Times(value),
@@ -77,7 +75,8 @@ fn operation(i: &str) -> IResult<&str, Operation> {
 }
 
 fn test(i: &str) -> IResult<&str, u64> {
-    let (input, value) = delimited(tag("  Test: divisible by "), complete::u64, line_ending)(i)?;
+    let (input, value) =
+        delimited(tag("  Test: divisible by "), complete::u64, line_ending).parse(i)?;
     Ok((input, value))
 }
 
@@ -86,7 +85,8 @@ fn true_branch(i: &str) -> IResult<&str, usize> {
         tag("    If true: throw to monkey "),
         complete::u64,
         line_ending,
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, value as usize))
 }
 
@@ -95,15 +95,14 @@ fn false_branch(i: &str) -> IResult<&str, usize> {
         tag("    If false: throw to monkey "),
         complete::u64,
         line_ending,
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, value as usize))
 }
 
 fn monkey(i: &str) -> IResult<&str, Monkey> {
-    let (input, (items, operation, test, true_branch, false_branch)) = preceded(
-        header,
-        tuple((items, operation, test, true_branch, false_branch)),
-    )(i)?;
+    let (input, (items, operation, test, true_branch, false_branch)) =
+        preceded(header, (items, operation, test, true_branch, false_branch)).parse(i)?;
     Ok((
         input,
         Monkey {
@@ -118,7 +117,7 @@ fn monkey(i: &str) -> IResult<&str, Monkey> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {
-    let (input, list) = separated_list1(line_ending, monkey)(i)?;
+    let (input, list) = separated_list1(line_ending, monkey).parse(i)?;
     Ok((input, list))
 }
 

@@ -10,13 +10,13 @@ use std::{
 };
 
 use nom::{
-    AsChar, IResult,
+    AsChar, IResult, Parser,
     branch::permutation,
     bytes::complete::{tag, take_while},
     character::complete::{digit1, line_ending},
     combinator::{eof, opt},
     multi::many0,
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 
 use crate::intcode::{Intcode, IntcodeError, State};
@@ -100,21 +100,22 @@ fn is_name_char(c: char) -> bool {
 
 // == Hull Breach ==
 fn room_name(i: &str) -> IResult<&str, &str> {
-    let (input, (_, title, _)) = tuple((tag("=="), take_while(is_name_char), tag("==")))(i)?;
+    let (input, (_, title, _)) = (tag("=="), take_while(is_name_char), tag("==")).parse(i)?;
     Ok((input, title.trim()))
 }
 
 // Doors here lead:\n- north\n- east\n- south\n
 fn doors(i: &str) -> IResult<&str, Vec<String>> {
-    let (input, (_, (north, east, south, west))) = tuple((
+    let (input, (_, (north, east, south, west))) = (
         tag("\nDoors here lead:\n"),
         permutation((
-            opt(tuple((tag("- "), tag("north"), line_ending))),
-            opt(tuple((tag("- "), tag("east"), line_ending))),
-            opt(tuple((tag("- "), tag("south"), line_ending))),
-            opt(tuple((tag("- "), tag("west"), line_ending))),
+            opt((tag("- "), tag("north"), line_ending)),
+            opt((tag("- "), tag("east"), line_ending)),
+            opt((tag("- "), tag("south"), line_ending)),
+            opt((tag("- "), tag("west"), line_ending)),
         )),
-    ))(i)?;
+    )
+        .parse(i)?;
 
     let mut rv = vec![];
 
@@ -131,10 +132,11 @@ fn is_item_char(c: char) -> bool {
 
 // Items here:\n- spool of cat6\n
 fn items(i: &str) -> IResult<&str, Vec<String>> {
-    let (input, (_, items)) = tuple((
+    let (input, (_, items)) = (
         tag("\nItems here:\n"),
-        many0(tuple((tag("- "), take_while(is_item_char), tag("\n")))),
-    ))(i)?;
+        many0((tag("- "), take_while(is_item_char), tag("\n"))),
+    )
+        .parse(i)?;
 
     let mut rv = vec![];
     for item in items {
@@ -149,7 +151,7 @@ fn is_comment_char(c: char) -> bool {
 }
 
 fn room(i: &str) -> IResult<&str, Room> {
-    let (input, (_, name, _, _comment, _, doors, items)) = tuple((
+    let (input, (_, name, _, _comment, _, doors, items)) = (
         tag("\n\n"),
         room_name,
         line_ending,
@@ -157,7 +159,8 @@ fn room(i: &str) -> IResult<&str, Room> {
         line_ending,
         doors,
         opt(items),
-    ))(i)?;
+    )
+        .parse(i)?;
 
     Ok((
         input,
@@ -171,7 +174,7 @@ fn room(i: &str) -> IResult<&str, Room> {
 
 fn take(i: &str) -> IResult<&str, &str> {
     let (input, (_, item, _)) =
-        tuple((tag("You take the "), take_while(is_item_char), tag(".\n")))(i)?;
+        (tag("You take the "), take_while(is_item_char), tag(".\n")).parse(i)?;
 
     Ok((input, item))
 }
@@ -184,15 +187,16 @@ fn electromagnet(i: &str) -> IResult<&str, &str> {
 
 fn move_p(i: &str) -> IResult<&str, MoveResult> {
     let (input, (_, room, item, electromagnet, _)) = terminated(
-        tuple((
+        (
             opt(line_ending),
             opt(room),
             opt(take),
             opt(electromagnet),
             tag("\nCommand?\n"),
-        )),
+        ),
         eof,
-    )(i)?;
+    )
+    .parse(i)?;
 
     let rv = if let Some(room) = room {
         MoveResult::Room(room)
@@ -208,13 +212,13 @@ fn move_p(i: &str) -> IResult<&str, MoveResult> {
 }
 
 fn win(i: &str) -> IResult<&str, &str> {
-    let (input, (_, code, _)) = tuple((
+    let (input, (_, code, _)) = (
         tag(
             "\n\n\n== Pressure-Sensitive Floor ==\nAnalyzing...\n\nDoors here lead:\n- east\n\nA loud, robotic voice says \"Analysis complete! You may proceed.\" and you enter the cockpit.\nSanta notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.\n\"Oh, hello! You should be able to get in by typing ",
         ),
         digit1,
         tag(" on the keypad at the main airlock.\"\n"),
-    ))(i)?;
+    ).parse(i)?;
 
     Ok((input, code))
 }

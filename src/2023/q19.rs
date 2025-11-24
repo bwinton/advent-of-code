@@ -4,12 +4,11 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, newline, one_of, u32},
     multi::{many1, separated_list1},
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -95,7 +94,7 @@ impl Rating<'_> {
 fn condition(i: &str) -> IResult<&str, Rule> {
     // a<2006:qkq OR rfg
     let (input, (variable, op, value, _, destination)) =
-        tuple((alpha1, one_of("<>"), u32, tag(":"), alpha1))(i)?;
+        (alpha1, one_of("<>"), u32, tag(":"), alpha1).parse(i)?;
     Ok((
         input,
         Rule::Condition {
@@ -115,19 +114,20 @@ fn default(i: &str) -> IResult<&str, Rule> {
 
 fn workflow(i: &str) -> IResult<&str, Workflow> {
     // px{a<2006:qkq,m>2090:A,rfg}
-    let (input, (name, _, rules, _, _)) = tuple((
+    let (input, (name, _, rules, _, _)) = (
         alpha1,
         tag("{"),
         separated_list1(tag(","), alt((condition, default))),
         tag("}"),
         newline,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, Workflow { name, rules }))
 }
 
 fn rating(i: &str) -> IResult<&str, Rating> {
     // {x=1102,m=1249,a=1825,s=2027}
-    let (input, (_, x, _, m, _, a, _, s, _, _)) = tuple((
+    let (input, (_, x, _, m, _, a, _, s, _, _)) = (
         tag("{x="),
         u32,
         tag(",m="),
@@ -138,7 +138,8 @@ fn rating(i: &str) -> IResult<&str, Rating> {
         u32,
         tag("}"),
         newline,
-    ))(i)?;
+    )
+        .parse(i)?;
     let values = hashmap! {
         "x" => x,
         "m" => m,
@@ -149,7 +150,7 @@ fn rating(i: &str) -> IResult<&str, Rating> {
 }
 
 fn parser(i: &str) -> IResult<&str, (HashMap<&str, Workflow>, Vec<Rating>)> {
-    let (input, (workflows, _, ratings)) = tuple((many1(workflow), newline, many1(rating)))(i)?;
+    let (input, (workflows, _, ratings)) = (many1(workflow), newline, many1(rating)).parse(i)?;
     let workflows = HashMap::from_iter(workflows.into_iter().map(|item| (item.name, item)));
     Ok((input, (workflows, ratings)))
 }

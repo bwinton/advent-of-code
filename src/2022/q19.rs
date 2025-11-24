@@ -4,11 +4,10 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending},
     multi::separated_list1,
-    sequence::tuple,
 };
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 
@@ -182,20 +181,21 @@ impl State {
 
 // 2 ore
 fn ingredient(i: &str) -> IResult<&str, (String, u32)> {
-    let (input, (size, _, name)) = tuple((complete::u32, tag(" "), alpha1))(i)?;
+    let (input, (size, _, name)) = (complete::u32, tag(" "), alpha1).parse(i)?;
 
     Ok((input, (name.to_owned(), size)))
 }
 
 // Each obsidian robot costs 2 ore and 20 clay.
 fn recipe(i: &str) -> IResult<&str, Recipe> {
-    let (input, (_, name, _, ingredients, _)) = tuple((
+    let (input, (_, name, _, ingredients, _)) = (
         tag("Each "),
         alpha1,
         tag(" robot costs "),
         separated_list1(tag(" and "), ingredient),
         tag("."),
-    ))(i)?;
+    )
+        .parse(i)?;
 
     Ok((
         input,
@@ -208,12 +208,13 @@ fn recipe(i: &str) -> IResult<&str, Recipe> {
 
 // Blueprint 1: Each ore robot costs 2 ore. Each clay robot costs 2 ore. Each obsidian robot costs 2 ore and 20 clay. Each geode robot costs 2 ore and 14 obsidian.
 fn blueprint(i: &str) -> IResult<&str, Blueprint> {
-    let (input, (_, id, _, recipes)) = tuple((
+    let (input, (_, id, _, recipes)) = (
         tag("Blueprint "),
         complete::u32,
         tag(": "),
         separated_list1(tag(" "), recipe),
-    ))(i)?;
+    )
+        .parse(i)?;
     let recipes = HashMap::from_iter(recipes.into_iter().map(|r| (r.product.clone(), r)));
     let mut max_costs = HashMap::new();
     for costs in recipes.values() {
@@ -233,7 +234,7 @@ fn blueprint(i: &str) -> IResult<&str, Blueprint> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Blueprint>> {
-    let (input, list) = separated_list1(line_ending, blueprint)(i)?;
+    let (input, list) = separated_list1(line_ending, blueprint).parse(i)?;
     Ok((input, list))
 }
 

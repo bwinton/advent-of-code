@@ -3,11 +3,10 @@
 
 use aoc::util::Point2;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{alpha1, i64, newline},
     multi::separated_list0,
-    sequence::tuple,
 };
 use num_rational::Ratio;
 
@@ -22,7 +21,7 @@ static INPUT: &str = include_str!("data/q13.data");
 
 fn button(i: &str) -> IResult<&str, Point2> {
     // Button A: X+44, Y+17\n
-    let (input, (_, _, _, x, _, y, _)) = tuple((
+    let (input, (_, _, _, x, _, y, _)) = (
         tag("Button "),
         alpha1,
         tag(": X+"),
@@ -30,23 +29,24 @@ fn button(i: &str) -> IResult<&str, Point2> {
         tag(", Y+"),
         i64,
         newline,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (x, y)))
 }
 
 fn prize(i: &str) -> IResult<&str, Point2> {
     // Prize: X=11320, Y=11922\n
-    let (input, (_, x, _, y, _)) = tuple((tag("Prize: X="), i64, tag(", Y="), i64, newline))(i)?;
+    let (input, (_, x, _, y, _)) = (tag("Prize: X="), i64, tag(", Y="), i64, newline).parse(i)?;
     Ok((input, (x, y)))
 }
 
 fn machine(i: &str) -> IResult<&str, Machine> {
-    let (input, (a, b, prize)) = tuple((button, button, prize))(i)?;
+    let (input, (a, b, prize)) = (button, button, prize).parse(i)?;
     Ok((input, Machine { a, b, prize }))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Machine>> {
-    let (input, machines) = separated_list0(newline, machine)(i)?;
+    let (input, machines) = separated_list0(newline, machine).parse(i)?;
     Ok((input, machines))
 }
 

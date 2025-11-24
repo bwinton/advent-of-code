@@ -13,7 +13,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::{separated_list0, separated_list1},
-    sequence::{delimited, terminated, tuple},
+    sequence::{delimited, terminated},
 };
 
 static INPUT: &str = include_str!("data/q13.data");
@@ -70,22 +70,23 @@ impl Ord for Node {
 }
 
 fn array(i: &str) -> IResult<&str, Vec<Node>> {
-    let (input, node) = delimited(tag("["), separated_list0(tag(","), node), tag("]"))(i)?;
+    let (input, node) = delimited(tag("["), separated_list0(tag(","), node), tag("]")).parse(i)?;
     Ok((input, node))
 }
 
 fn node(i: &str) -> IResult<&str, Node> {
-    let (input, node) = alt((array.map(Node::List), complete::u8.map(Node::Value)))(i)?;
+    let (input, node) = alt((array.map(Node::List), complete::u8.map(Node::Value))).parse(i)?;
     Ok((input, node))
 }
 
 fn lines(i: &str) -> IResult<&str, (Node, Node)> {
-    let (input, (a, b)) = tuple((terminated(node, line_ending), terminated(node, line_ending)))(i)?;
+    let (input, (a, b)) =
+        (terminated(node, line_ending), terminated(node, line_ending)).parse(i)?;
     Ok((input, (a, b)))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<(Node, Node)>> {
-    let (input, list) = separated_list1(line_ending, lines)(i)?;
+    let (input, list) = separated_list1(line_ending, lines).parse(i)?;
     Ok((input, list))
 }
 

@@ -4,12 +4,11 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending},
     multi::separated_list1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q21.data");
@@ -109,11 +108,12 @@ fn number(i: &str) -> IResult<&str, Operation> {
 }
 
 fn calculation(i: &str) -> IResult<&str, Operation> {
-    let (input, (a, op, b)) = tuple((
+    let (input, (a, op, b)) = (
         alpha1,
         alt((tag(" + "), tag(" - "), tag(" * "), tag(" / "))),
         alpha1,
-    ))(i)?;
+    )
+        .parse(i)?;
     let (a, b) = (Value::Monkey(a.to_owned()), Value::Monkey(b.to_owned()));
     let op = match op {
         " + " => Operation::Plus(a, b),
@@ -126,13 +126,13 @@ fn calculation(i: &str) -> IResult<&str, Operation> {
 }
 
 fn operation(i: &str) -> IResult<&str, Operation> {
-    let (input, op) = alt((number, calculation))(i)?;
+    let (input, op) = alt((number, calculation)).parse(i)?;
     Ok((input, op))
 }
 
 // root: pppw + sjmn
 fn monkey(i: &str) -> IResult<&str, Monkey> {
-    let (input, (name, _, op)) = tuple((alpha1, tag(": "), operation))(i)?;
+    let (input, (name, _, op)) = (alpha1, tag(": "), operation).parse(i)?;
     Ok((
         input,
         Monkey {
@@ -143,7 +143,7 @@ fn monkey(i: &str) -> IResult<&str, Monkey> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Monkey>> {
-    let (input, list) = separated_list1(line_ending, monkey)(i)?;
+    let (input, list) = separated_list1(line_ending, monkey).parse(i)?;
     Ok((input, list))
 }
 

@@ -4,11 +4,10 @@
 use std::{fmt::Debug, rc::Rc, str::Lines};
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{space1, u64},
     multi::many_m_n,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q19.data");
@@ -18,7 +17,7 @@ trait Instruction: Debug {
 }
 
 fn three_numbers(i: &str) -> IResult<&str, (usize, usize, usize)> {
-    let (input, result) = many_m_n(3, 3, tuple((space1, u64)))(i)?;
+    let (input, result) = many_m_n(3, 3, (space1, u64)).parse(i)?;
     Ok((
         input,
         (
@@ -63,7 +62,7 @@ impl Instruction for AddI {
 }
 impl AddI {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("addi"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("addi"), three_numbers).parse(i)?;
         Ok((
             input,
             Rc::new(AddI {
@@ -88,7 +87,7 @@ impl Instruction for AddR {
 }
 impl AddR {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("addr"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("addr"), three_numbers).parse(i)?;
         Ok((input, Rc::new(AddR { a, b, dest })))
     }
 }
@@ -110,7 +109,7 @@ impl Instruction for EqRR {
 }
 impl EqRR {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("eqrr"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("eqrr"), three_numbers).parse(i)?;
         Ok((input, Rc::new(EqRR { a, b, dest })))
     }
 }
@@ -132,7 +131,7 @@ impl Instruction for GtRR {
 }
 impl GtRR {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("gtrr"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("gtrr"), three_numbers).parse(i)?;
         Ok((input, Rc::new(GtRR { a, b, dest })))
     }
 }
@@ -150,7 +149,7 @@ impl Instruction for MulI {
 }
 impl MulI {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("muli"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("muli"), three_numbers).parse(i)?;
         Ok((
             input,
             Rc::new(MulI {
@@ -175,7 +174,7 @@ impl Instruction for MulR {
 }
 impl MulR {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (a, b, dest))) = tuple((tag("mulr"), three_numbers))(i)?;
+        let (input, (_, (a, b, dest))) = (tag("mulr"), three_numbers).parse(i)?;
         Ok((input, Rc::new(MulR { a, b, dest })))
     }
 }
@@ -193,7 +192,7 @@ impl Instruction for SetI {
 }
 impl SetI {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (value, ignored, dest))) = tuple((tag("seti"), three_numbers))(i)?;
+        let (input, (_, (value, ignored, dest))) = (tag("seti"), three_numbers).parse(i)?;
         Ok((
             input,
             Rc::new(SetI {
@@ -218,7 +217,7 @@ impl Instruction for SetR {
 }
 impl SetR {
     fn parser(i: &str) -> IResult<&str, Rc<dyn Instruction>> {
-        let (input, (_, (source, ignored, dest))) = tuple((tag("setr"), three_numbers))(i)?;
+        let (input, (_, (source, ignored, dest))) = (tag("setr"), three_numbers).parse(i)?;
         Ok((
             input,
             Rc::new(SetR {

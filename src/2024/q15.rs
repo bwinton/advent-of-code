@@ -5,10 +5,10 @@ use std::collections::BTreeSet;
 
 use aoc::util::{Direction, Point2};
 use nom::{
-    IResult,
+    IResult, Parser,
     character::complete::{newline, one_of},
     multi::{many0, many1},
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 
 static INPUT: &str = include_str!("data/q15.data");
@@ -24,7 +24,7 @@ enum Object {
 }
 
 fn map(i: &str) -> IResult<&str, Vec<Vec<Object>>> {
-    let (input, map) = many0(terminated(many1(one_of("#O[].@")), newline))(i)?;
+    let (input, map) = many0(terminated(many1(one_of("#O[].@")), newline)).parse(i)?;
     let map = map
         .into_iter()
         .map(|row| {
@@ -45,7 +45,7 @@ fn map(i: &str) -> IResult<&str, Vec<Vec<Object>>> {
 }
 
 fn moves(i: &str) -> IResult<&str, Vec<Direction>> {
-    let (input, moves) = many0(one_of("^>v<\n"))(i)?;
+    let (input, moves) = many0(one_of("^>v<\n")).parse(i)?;
     let moves = moves
         .into_iter()
         .filter_map(|c| match c {
@@ -61,7 +61,7 @@ fn moves(i: &str) -> IResult<&str, Vec<Direction>> {
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<Vec<Object>>, Vec<Direction>)> {
-    let (input, (map, _, moves)) = tuple((map, newline, moves))(i)?;
+    let (input, (map, _, moves)) = (map, newline, moves).parse(i)?;
     Ok((input, (map, moves)))
 }
 

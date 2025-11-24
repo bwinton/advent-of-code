@@ -3,11 +3,11 @@
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{i64, newline, one_of},
     multi::{many1, separated_list1},
-    sequence::{preceded, tuple},
+    sequence::preceded,
 };
 
 static INPUT: &str = include_str!("data/q17.data");
@@ -86,22 +86,22 @@ impl Instruction {
 fn register(i: &str) -> IResult<&str, i64> {
     // Register A: 62769524
     let (input, (_, _, _, register, _)) =
-        tuple((tag("Register "), one_of("ABC"), tag(": "), i64, newline))(i)?;
+        (tag("Register "), one_of("ABC"), tag(": "), i64, newline).parse(i)?;
     Ok((input, register))
 }
 
 fn registers(i: &str) -> IResult<&str, Vec<i64>> {
-    let (input, registers) = many1(register)(i)?;
+    let (input, registers) = many1(register).parse(i)?;
     Ok((input, registers))
 }
 
 fn program(i: &str) -> IResult<&str, Vec<i64>> {
-    let (input, program) = preceded(tag("Program: "), separated_list1(tag(","), i64))(i)?;
+    let (input, program) = preceded(tag("Program: "), separated_list1(tag(","), i64)).parse(i)?;
     Ok((input, program))
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<i64>, Vec<i64>)> {
-    let (input, (registers, _, program)) = tuple((registers, newline, program))(i)?;
+    let (input, (registers, _, program)) = (registers, newline, program).parse(i)?;
     Ok((input, (registers, program)))
 }
 

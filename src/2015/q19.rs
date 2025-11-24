@@ -4,11 +4,10 @@
 use std::collections::HashSet;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{alpha1, line_ending},
     multi::many1,
-    sequence::tuple,
 };
 use regex::Regex;
 
@@ -33,7 +32,7 @@ impl Rule {
 }
 
 fn rule(i: &str) -> IResult<&str, Rule> {
-    let (input, (source, _, dest, _)) = tuple((alpha1, tag(" => "), alpha1, line_ending))(i)?;
+    let (input, (source, _, dest, _)) = (alpha1, tag(" => "), alpha1, line_ending).parse(i)?;
     Ok((
         input,
         Rule {
@@ -44,7 +43,7 @@ fn rule(i: &str) -> IResult<&str, Rule> {
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<Rule>, String)> {
-    let (input, (rules, _, start)) = tuple((many1(rule), line_ending, alpha1))(i)?;
+    let (input, (rules, _, start)) = (many1(rule), line_ending, alpha1).parse(i)?;
     Ok((input, (rules, start.to_string())))
 }
 

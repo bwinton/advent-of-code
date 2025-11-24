@@ -3,14 +3,14 @@
 
 use nom::{
     Err::Failure,
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{i64, line_ending},
     combinator::eof,
     error::{Error, ErrorKind},
     multi::separated_list0,
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 use std::collections::HashSet;
 
@@ -41,12 +41,12 @@ impl<'a> State<'a> {
 }
 
 fn code(i: &str) -> IResult<&str, &str> {
-    let (input, result) = alt((tag("acc"), tag("jmp"), tag("nop")))(i)?;
+    let (input, result) = alt((tag("acc"), tag("jmp"), tag("nop"))).parse(i)?;
     Ok((input, result))
 }
 
 fn instruction(i: &str) -> IResult<&str, Instruction> {
-    let (input, (inst, _, value)) = tuple((code, tag(" "), i64))(i)?;
+    let (input, (inst, _, value)) = (code, tag(" "), i64).parse(i)?;
 
     let result = match inst {
         "acc" => Instruction::Acc(value),
@@ -58,7 +58,8 @@ fn instruction(i: &str) -> IResult<&str, Instruction> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
-    let (input, instructions) = terminated(separated_list0(line_ending, instruction), eof)(i)?;
+    let (input, instructions) =
+        terminated(separated_list0(line_ending, instruction), eof).parse(i)?;
     Ok((input, instructions))
 }
 

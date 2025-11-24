@@ -4,11 +4,10 @@
 use std::ops::RangeInclusive;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::separated_list1,
-    sequence::tuple,
 };
 use range_set::RangeSet;
 
@@ -17,33 +16,35 @@ static INPUT: &str = include_str!("data/q15.data");
 type Coord = (i64, i64);
 
 fn sensor(i: &str) -> IResult<&str, Coord> {
-    let (input, (_, x, _, y, _)) = tuple((
+    let (input, (_, x, _, y, _)) = (
         tag("Sensor at x="),
         complete::i64,
         tag(", y="),
         complete::i64,
         tag(": "),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (x, y)))
 }
 
 fn beacon(i: &str) -> IResult<&str, Coord> {
-    let (input, (_, x, _, y)) = tuple((
+    let (input, (_, x, _, y)) = (
         tag("closest beacon is at x="),
         complete::i64,
         tag(", y="),
         complete::i64,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (x, y)))
 }
 
 fn line(i: &str) -> IResult<&str, (Coord, Coord)> {
-    let (input, (a, b)) = tuple((sensor, beacon))(i)?;
+    let (input, (a, b)) = (sensor, beacon).parse(i)?;
     Ok((input, (a, b)))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<(Coord, i64)>> {
-    let (input, list) = separated_list1(line_ending, line)(i)?;
+    let (input, list) = separated_list1(line_ending, line).parse(i)?;
     let list = list
         .into_iter()
         .map(|(a, b)| (a, get_distance(&a, &b)))

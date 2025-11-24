@@ -5,12 +5,11 @@ use std::collections::{HashMap, VecDeque};
 use std::hash::Hash;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{alpha1, newline, one_of},
     combinator::opt,
     multi::separated_list1,
-    sequence::tuple,
 };
 use num_integer::lcm;
 
@@ -77,12 +76,13 @@ impl<'a> Gate<'a> {
 
 fn gate(i: &str) -> IResult<&str, Gate> {
     // broadcaster -> a, b, c
-    let (input, (gate_type, name, _, outputs)) = tuple((
+    let (input, (gate_type, name, _, outputs)) = (
         opt(one_of("&%")),
         alpha1,
         tag(" -> "),
         separated_list1(tag(", "), alpha1),
-    ))(i)?;
+    )
+        .parse(i)?;
     let gate_type = match gate_type.unwrap_or(' ') {
         ' ' => GateType::Normal,
         '%' => GateType::FlipFlop(false),
@@ -104,7 +104,7 @@ fn gate(i: &str) -> IResult<&str, Gate> {
 }
 
 fn parser(i: &str) -> IResult<&str, HashMap<&str, Gate>> {
-    let (input, gates) = separated_list1(newline, gate)(i)?;
+    let (input, gates) = separated_list1(newline, gate).parse(i)?;
     let mut gates = HashMap::from_iter(gates.into_iter().map(|gate| (gate.name, gate)));
     for (key, gate) in gates.clone() {
         for output in gate.outputs {

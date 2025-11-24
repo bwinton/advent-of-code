@@ -2,7 +2,7 @@
 // Setup.
 
 use itertools::Itertools;
-use nom::{IResult, bytes::complete::tag, character::complete::i32, multi::many1, sequence::tuple};
+use nom::{IResult, Parser, bytes::complete::tag, character::complete::i32, multi::many1};
 use num_integer::lcm;
 
 static INPUT: &str = include_str!("data/q12.data");
@@ -47,7 +47,7 @@ impl Moon {
 }
 
 fn moon(i: &str) -> IResult<&str, Moon> {
-    let (input, (_, x, _, y, _, z, _)) = tuple((
+    let (input, (_, x, _, y, _, z, _)) = (
         tag("<x="),
         i32,
         tag(", y="),
@@ -55,7 +55,8 @@ fn moon(i: &str) -> IResult<&str, Moon> {
         tag(", z="),
         i32,
         tag(">\n"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         Moon {
@@ -66,7 +67,7 @@ fn moon(i: &str) -> IResult<&str, Moon> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Moon>> {
-    let (input, result) = many1(moon)(i)?;
+    let (input, result) = many1(moon).parse(i)?;
     Ok((input, result))
 }
 

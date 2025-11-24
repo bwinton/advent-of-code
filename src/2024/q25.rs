@@ -3,7 +3,7 @@
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     character::complete::{newline, one_of},
     multi::{many1, separated_list1},
     sequence::terminated,
@@ -14,13 +14,13 @@ static INPUT: &str = include_str!("data/q25.data");
 type Items = Vec<Vec<usize>>;
 
 fn line(i: &str) -> IResult<&str, Vec<char>> {
-    let (input, line) = terminated(many1(one_of("#.")), newline)(i)?;
+    let (input, line) = terminated(many1(one_of("#.")), newline).parse(i)?;
     // Massage the result.
     Ok((input, line))
 }
 
 fn item(i: &str) -> IResult<&str, (bool, Vec<usize>)> {
-    let (input, item) = many1(line)(i)?;
+    let (input, item) = many1(line).parse(i)?;
     // Massage the result.
     let is_key = item[0][0] == '.';
     let height = item.len();
@@ -40,7 +40,7 @@ fn item(i: &str) -> IResult<&str, (bool, Vec<usize>)> {
 }
 
 fn parser(i: &str) -> IResult<&str, (Items, Items)> {
-    let (input, stuff) = separated_list1(newline, item)(i)?;
+    let (input, stuff) = separated_list1(newline, item).parse(i)?;
     let mut locks = vec![];
     let mut keys = vec![];
     for (key, thing) in stuff {

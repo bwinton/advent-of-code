@@ -10,7 +10,7 @@ use nom::{
     character::complete::{alpha1, i32, line_ending},
     combinator::{eof, opt},
     multi::{separated_list0, separated_list1},
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 
 static INPUT: &str = include_str!("data/q07.data");
@@ -24,7 +24,7 @@ struct Bag {
 // shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
 fn bag(i: &str) -> IResult<&str, Bag> {
     let (input, (mod1, space, mod2, _, _)) =
-        tuple((alpha1, tag(" "), alpha1, tag(" bag"), opt(tag("s"))))(i)?;
+        (alpha1, tag(" "), alpha1, tag(" bag"), opt(tag("s"))).parse(i)?;
 
     let name = format!("{}{}{}", mod1, space, mod2);
 
@@ -38,14 +38,14 @@ fn bag(i: &str) -> IResult<&str, Bag> {
 }
 
 fn multi_bag(i: &str) -> IResult<&str, Bag> {
-    let (input, (quantity, _, mut bag)) = tuple((i32, tag(" "), bag))(i)?;
+    let (input, (quantity, _, mut bag)) = (i32, tag(" "), bag).parse(i)?;
     bag.quantity = quantity as usize;
     Ok((input, bag))
 }
 
 fn rule(i: &str) -> IResult<&str, (Bag, Vec<Bag>)> {
     // faded maroon bags contain no other bags.
-    let (input, (source, _, dests, _)) = tuple((
+    let (input, (source, _, dests, _)) = (
         bag,
         tag(" contain "),
         alt((
@@ -53,13 +53,14 @@ fn rule(i: &str) -> IResult<&str, (Bag, Vec<Bag>)> {
             separated_list1(tag(", "), multi_bag),
         )),
         tag("."),
-    ))(i)?;
+    )
+        .parse(i)?;
 
     Ok((input, (source, dests)))
 }
 
 fn parser(i: &str) -> IResult<&str, HashMap<String, Vec<Bag>>> {
-    let (input, rules) = terminated(separated_list0(line_ending, rule), eof)(i)?;
+    let (input, rules) = terminated(separated_list0(line_ending, rule), eof).parse(i)?;
 
     let mut rv = HashMap::new();
     for (key, value) in rules {

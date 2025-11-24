@@ -3,11 +3,10 @@
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{self, line_ending, newline},
     multi::separated_list1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q05.data");
@@ -78,23 +77,25 @@ impl Range {
 
 fn seeds(i: &str) -> IResult<&str, Vec<u64>> {
     // seeds: 79 14 55 13
-    let (input, (_, list, _)) = tuple((
+    let (input, (_, list, _)) = (
         tag("seeds: "),
         separated_list1(tag(" "), complete::u64),
         line_ending,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, list))
 }
 
 fn range(i: &str) -> IResult<&str, Range> {
     // 50 98 2
-    let (input, (dest, _, source, _, length)) = tuple((
+    let (input, (dest, _, source, _, length)) = (
         complete::u64,
         tag(" "),
         complete::u64,
         tag(" "),
         complete::u64,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         Range {
@@ -107,12 +108,13 @@ fn range(i: &str) -> IResult<&str, Range> {
 
 fn parse_map(heading: &str) -> impl FnMut(&str) -> IResult<&str, Vec<Range>> + '_ {
     move |i: &str| {
-        let (input, (_, _, list, _)) = tuple((
+        let (input, (_, _, list, _)) = (
             tag(heading),
             tag(" map:\n"),
             separated_list1(newline, range),
             line_ending,
-        ))(i)?;
+        )
+            .parse(i)?;
         Ok((input, list))
     }
 }
@@ -137,7 +139,7 @@ fn parser(i: &str) -> IResult<&str, (Vec<u64>, Vec<Vec<Range>>)> {
             _,
             humidity_to_location,
         ),
-    ) = tuple((
+    ) = (
         seeds,
         line_ending,
         parse_map("seed-to-soil"),
@@ -153,7 +155,8 @@ fn parser(i: &str) -> IResult<&str, (Vec<u64>, Vec<Vec<Range>>)> {
         parse_map("temperature-to-humidity"),
         line_ending,
         parse_map("humidity-to-location"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         (

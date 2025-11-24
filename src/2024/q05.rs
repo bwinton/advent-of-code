@@ -2,11 +2,10 @@
 // Setup.
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{newline, u32},
     multi::{many1, separated_list1},
-    sequence::tuple,
 };
 
 type Orderings = Vec<(u32, u32)>;
@@ -15,27 +14,27 @@ type Updates = Vec<Vec<u32>>;
 static INPUT: &str = include_str!("data/q05.data");
 
 fn page_ordering(i: &str) -> IResult<&str, (u32, u32)> {
-    let (input, (first, _, second, _)) = tuple((u32, tag("|"), u32, newline))(i)?;
+    let (input, (first, _, second, _)) = (u32, tag("|"), u32, newline).parse(i)?;
     Ok((input, (first, second)))
 }
 
 fn page_orderings(i: &str) -> IResult<&str, Orderings> {
-    let (input, data) = many1(page_ordering)(i)?;
+    let (input, data) = many1(page_ordering).parse(i)?;
     Ok((input, data))
 }
 
 fn update(i: &str) -> IResult<&str, Vec<u32>> {
-    let (input, (data, _)) = tuple((separated_list1(tag(","), u32), newline))(i)?;
+    let (input, (data, _)) = (separated_list1(tag(","), u32), newline).parse(i)?;
     Ok((input, data))
 }
 
 fn updates(i: &str) -> IResult<&str, Updates> {
-    let (input, data) = many1(update)(i)?;
+    let (input, data) = many1(update).parse(i)?;
     Ok((input, data))
 }
 
 fn parser(i: &str) -> IResult<&str, (Orderings, Updates)> {
-    let (input, (order, _, updates)) = tuple((page_orderings, newline, updates))(i)?;
+    let (input, (order, _, updates)) = (page_orderings, newline, updates).parse(i)?;
     Ok((input, (order, updates)))
 }
 

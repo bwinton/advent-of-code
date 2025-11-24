@@ -6,11 +6,10 @@ use std::{
 
 use nom::{
     Err::Failure,
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::i64,
     error::{Error, ErrorKind},
-    sequence::tuple,
 };
 
 use crate::nom_util::single_letter;
@@ -29,7 +28,7 @@ pub struct Half {
 }
 impl Half {
     pub fn build(i: &str) -> InstructionResult {
-        let (input, (_, register)) = tuple((tag("hlf "), single_letter))(i)?;
+        let (input, (_, register)) = (tag("hlf "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
 }
@@ -46,7 +45,7 @@ pub struct Triple {
 }
 impl Triple {
     pub fn build(i: &str) -> InstructionResult {
-        let (input, (_, register)) = tuple((tag("tpl "), single_letter))(i)?;
+        let (input, (_, register)) = (tag("tpl "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
 }
@@ -63,7 +62,7 @@ pub struct Increment {
 }
 impl Increment {
     pub fn build(i: &str) -> InstructionResult {
-        let (input, (_, register)) = tuple((tag("inc "), single_letter))(i)?;
+        let (input, (_, register)) = (tag("inc "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
 }
@@ -80,7 +79,7 @@ pub struct Jump {
 }
 impl Jump {
     pub fn build(i: &str) -> InstructionResult {
-        let (input, (_, offset)) = tuple((tag("jmp "), i64))(i)?;
+        let (input, (_, offset)) = (tag("jmp "), i64).parse(i)?;
         Ok((input, Rc::new(Self { offset })))
     }
 }
@@ -99,7 +98,7 @@ pub struct JumpEven {
 impl JumpEven {
     pub fn build(i: &str) -> InstructionResult {
         let (input, (_, register, _, offset)) =
-            tuple((tag("jie "), single_letter, tag(", "), i64))(i)?;
+            (tag("jie "), single_letter, tag(", "), i64).parse(i)?;
         Ok((input, Rc::new(Self { register, offset })))
     }
 }
@@ -122,7 +121,7 @@ pub struct JumpOne {
 impl JumpOne {
     pub fn build(i: &str) -> InstructionResult {
         let (input, (_, register, _, offset)) =
-            tuple((tag("jio "), single_letter, tag(", "), i64))(i)?;
+            (tag("jio "), single_letter, tag(", "), i64).parse(i)?;
         Ok((input, Rc::new(Self { register, offset })))
     }
 }

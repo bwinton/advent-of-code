@@ -4,11 +4,10 @@
 use std::collections::{HashMap, VecDeque};
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{alpha1, line_ending, u64},
     multi::{many1, separated_list1},
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q14.data");
@@ -20,7 +19,7 @@ struct Element<'a> {
 }
 
 fn element(i: &str) -> IResult<&str, Element> {
-    let (input, (quantity, _, symbol)) = tuple((u64, tag(" "), alpha1))(i)?;
+    let (input, (quantity, _, symbol)) = (u64, tag(" "), alpha1).parse(i)?;
     Ok((
         input,
         Element {
@@ -31,17 +30,18 @@ fn element(i: &str) -> IResult<&str, Element> {
 }
 
 fn rule(i: &str) -> IResult<&str, (Element, Vec<Element>)> {
-    let (input, (sources, _, dest, _)) = tuple((
+    let (input, (sources, _, dest, _)) = (
         separated_list1(tag(", "), element),
         tag(" => "),
         element,
         line_ending,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (dest, sources)))
 }
 
 fn parser(i: &str) -> IResult<&str, HashMap<&str, (usize, Vec<Element>)>> {
-    let (input, rules) = many1(rule)(i)?;
+    let (input, rules) = many1(rule).parse(i)?;
     let mut rv = HashMap::new();
     for (key, value) in rules {
         if let Some(previous) = rv.insert(key.symbol, (key.quantity, value)) {

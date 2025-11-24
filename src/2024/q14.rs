@@ -3,11 +3,10 @@
 
 use aoc::util::{Point2, point_to_index};
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{i64, newline},
     multi::separated_list0,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q14.data");
@@ -27,7 +26,7 @@ impl Robot {
     }
 }
 fn robot(i: &str) -> IResult<&str, Robot> {
-    let (input, (_, px, _, py, _, vx, _, vy)) = tuple((
+    let (input, (_, px, _, py, _, vx, _, vy)) = (
         // p=0,4 v=3,-3
         tag("p="),
         i64,
@@ -37,7 +36,8 @@ fn robot(i: &str) -> IResult<&str, Robot> {
         i64,
         tag(","),
         i64,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         Robot {
@@ -48,7 +48,7 @@ fn robot(i: &str) -> IResult<&str, Robot> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Robot>> {
-    let (input, robots) = separated_list0(newline, robot)(i)?;
+    let (input, robots) = separated_list0(newline, robot).parse(i)?;
     Ok((input, robots))
 }
 

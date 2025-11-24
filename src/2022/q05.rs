@@ -2,12 +2,12 @@
 // Setup.
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, digit1, line_ending},
     multi::{many1, separated_list1},
-    sequence::{delimited, separated_pair, tuple},
+    sequence::{delimited, separated_pair},
 };
 
 type Board = Vec<Vec<char>>;
@@ -20,7 +20,8 @@ fn cell(i: &str) -> IResult<&str, Option<char>> {
         delimited(tag("["), alpha1, tag("]")),
         tag("   "),
         delimited(tag(" "), digit1, tag(" ")),
-    ))(i)?;
+    ))
+    .parse(i)?;
     let board = match board {
         "   " => None,
         board if board.chars().next().unwrap().is_ascii_digit() => None,
@@ -36,20 +37,21 @@ fn cell(i: &str) -> IResult<&str, Option<char>> {
 }
 
 fn line(i: &str) -> IResult<&str, Vec<Option<char>>> {
-    let (input, board) = separated_list1(tag(" "), cell)(i)?;
+    let (input, board) = separated_list1(tag(" "), cell).parse(i)?;
     Ok((input, board))
 }
 
 fn rule(i: &str) -> IResult<&str, Move> {
     // move 1 from 7 to 4
-    let (input, (_, count, _, from, _, to)) = tuple((
+    let (input, (_, count, _, from, _, to)) = (
         tag("move "),
         complete::u16,
         tag(" from "),
         complete::u16,
         tag(" to "),
         complete::u16,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (count as usize, from as usize, to as usize)))
 }
 
@@ -58,7 +60,8 @@ fn parser(i: &str) -> IResult<&str, (Board, Vec<Move>)> {
         separated_list1(line_ending, line),
         many1(line_ending),
         separated_list1(line_ending, rule),
-    )(i)?;
+    )
+    .parse(i)?;
     let mut board = vec![];
     for _ in 0..line_data[0].len() {
         board.push(vec![]);

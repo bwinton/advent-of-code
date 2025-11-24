@@ -6,19 +6,18 @@ static INPUT: &str = include_str!("data/q08.data");
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alphanumeric1, line_ending},
     multi::{many1, separated_list1},
-    sequence::tuple,
 };
 use num_integer::lcm;
 
 type Paths<'a> = HashMap<&'a str, (&'a str, &'a str)>;
 
 fn directions(i: &str) -> IResult<&str, Vec<char>> {
-    let (input, directions) = many1(alt((tag("L"), tag("R"))))(i)?;
+    let (input, directions) = many1(alt((tag("L"), tag("R")))).parse(i)?;
     Ok((
         input,
         directions
@@ -31,24 +30,25 @@ fn directions(i: &str) -> IResult<&str, Vec<char>> {
 fn path(i: &str) -> IResult<&str, (&str, (&str, &str))> {
     // AAA = (BBB, CCC)
 
-    let (input, (key, _, left, _, right, _)) = tuple((
+    let (input, (key, _, left, _, right, _)) = (
         alphanumeric1,
         tag(" = ("),
         alphanumeric1,
         tag(", "),
         alphanumeric1,
         tag(")"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (key, (left, right))))
 }
 
 fn paths(i: &str) -> IResult<&str, HashMap<&str, (&str, &str)>> {
-    let (input, paths) = separated_list1(line_ending, path)(i)?;
+    let (input, paths) = separated_list1(line_ending, path).parse(i)?;
     Ok((input, HashMap::from_iter(paths)))
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<char>, Paths)> {
-    let (input, (directions, _, paths)) = tuple((directions, many1(line_ending), paths))(i)?;
+    let (input, (directions, _, paths)) = (directions, many1(line_ending), paths).parse(i)?;
     Ok((input, (directions, paths)))
 }
 

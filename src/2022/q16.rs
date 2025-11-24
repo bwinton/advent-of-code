@@ -10,12 +10,12 @@ use std::{
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, alpha1, line_ending},
     multi::separated_list1,
-    sequence::{preceded, tuple},
+    sequence::preceded,
 };
 
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
@@ -39,7 +39,7 @@ struct State {
 fn valve(i: &str) -> IResult<&str, Valve> {
     let (input, (name, _, flow_rate, _, tunnels)) = preceded(
         tag("Valve "),
-        tuple((
+        (
             alpha1,
             tag(" has flow rate="),
             complete::u32,
@@ -48,8 +48,9 @@ fn valve(i: &str) -> IResult<&str, Valve> {
                 tag("; tunnel leads to valve "),
             )),
             separated_list1(tag(", "), alpha1),
-        )),
-    )(i)?;
+        ),
+    )
+    .parse(i)?;
     Ok((
         input,
         Valve {
@@ -61,7 +62,7 @@ fn valve(i: &str) -> IResult<&str, Valve> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Valve>> {
-    let (input, list) = separated_list1(line_ending, valve)(i)?;
+    let (input, list) = separated_list1(line_ending, valve).parse(i)?;
     Ok((input, list))
 }
 

@@ -5,12 +5,11 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alphanumeric1, newline},
     multi::many1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q24.data");
@@ -27,26 +26,27 @@ enum Connection<'a> {
 fn gate(i: &str) -> IResult<&str, (&str, bool)> {
     // x00: 1
     let (input, (gate, _, value, _)) =
-        tuple((alphanumeric1, tag(": "), alt((tag("0"), tag("1"))), newline))(i)?;
+        (alphanumeric1, tag(": "), alt((tag("0"), tag("1"))), newline).parse(i)?;
     Ok((input, (gate, value == "1")))
 }
 
 fn gates(i: &str) -> IResult<&str, Initial> {
-    let (input, gates) = many1(gate)(i)?;
+    let (input, gates) = many1(gate).parse(i)?;
     Ok((input, gates.into_iter().collect()))
 }
 
 fn connection(i: &str) -> IResult<&str, (&str, Connection)> {
     // x00 AND y00 -> z00
 
-    let (input, (a, op, b, _, c, _)) = tuple((
+    let (input, (a, op, b, _, c, _)) = (
         alphanumeric1,
         alt((tag(" AND "), tag(" OR "), tag(" XOR "))),
         alphanumeric1,
         tag(" -> "),
         alphanumeric1,
         newline,
-    ))(i)?;
+    )
+        .parse(i)?;
     let (a, b) = if a < b { (a, b) } else { (b, a) };
     let connection = match op {
         " AND " => Connection::And(a, b),
@@ -58,12 +58,12 @@ fn connection(i: &str) -> IResult<&str, (&str, Connection)> {
 }
 
 fn connections(i: &str) -> IResult<&str, HashMap<&str, Connection>> {
-    let (input, connections) = many1(connection)(i)?;
+    let (input, connections) = many1(connection).parse(i)?;
     Ok((input, connections.into_iter().collect()))
 }
 
 fn parser(i: &str) -> IResult<&str, (Initial, HashMap<&str, Connection>)> {
-    let (input, (initial, _, connections)) = tuple((gates, newline, connections))(i)?;
+    let (input, (initial, _, connections)) = (gates, newline, connections).parse(i)?;
     Ok((input, (initial, connections)))
 }
 

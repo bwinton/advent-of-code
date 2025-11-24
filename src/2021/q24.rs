@@ -4,13 +4,13 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{anychar, i128, line_ending, space1},
     combinator::complete,
     multi::many1,
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 
 static INPUT: &str = include_str!("data/q24.data");
@@ -31,57 +31,57 @@ enum Instruction {
 }
 
 fn inp(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, result)) = tuple((tag("inp "), anychar))(i)?;
+    let (input, (_, result)) = (tag("inp "), anychar).parse(i)?;
     Ok((input, Instruction::Input(result)))
 }
 
 fn add_literal(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("add "), anychar, space1, i128))(i)?;
+    let (input, (_, a, _, b)) = (tag("add "), anychar, space1, i128).parse(i)?;
     Ok((input, Instruction::AddLiteral(a, b)))
 }
 
 fn add_register(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("add "), anychar, space1, anychar))(i)?;
+    let (input, (_, a, _, b)) = (tag("add "), anychar, space1, anychar).parse(i)?;
     Ok((input, Instruction::AddRegister(a, b)))
 }
 
 fn mul_literal(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("mul "), anychar, space1, i128))(i)?;
+    let (input, (_, a, _, b)) = (tag("mul "), anychar, space1, i128).parse(i)?;
     Ok((input, Instruction::MulLiteral(a, b)))
 }
 
 fn mul_register(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("mul "), anychar, space1, anychar))(i)?;
+    let (input, (_, a, _, b)) = (tag("mul "), anychar, space1, anychar).parse(i)?;
     Ok((input, Instruction::MulRegister(a, b)))
 }
 
 fn div_literal(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("div "), anychar, space1, i128))(i)?;
+    let (input, (_, a, _, b)) = (tag("div "), anychar, space1, i128).parse(i)?;
     Ok((input, Instruction::DivLiteral(a, b)))
 }
 
 fn div_register(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("div "), anychar, space1, anychar))(i)?;
+    let (input, (_, a, _, b)) = (tag("div "), anychar, space1, anychar).parse(i)?;
     Ok((input, Instruction::DivRegister(a, b)))
 }
 
 fn mod_literal(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("mod "), anychar, space1, i128))(i)?;
+    let (input, (_, a, _, b)) = (tag("mod "), anychar, space1, i128).parse(i)?;
     Ok((input, Instruction::ModLiteral(a, b)))
 }
 
 fn mod_register(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("mod "), anychar, space1, anychar))(i)?;
+    let (input, (_, a, _, b)) = (tag("mod "), anychar, space1, anychar).parse(i)?;
     Ok((input, Instruction::ModRegister(a, b)))
 }
 
 fn eql_literal(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("eql "), anychar, space1, i128))(i)?;
+    let (input, (_, a, _, b)) = (tag("eql "), anychar, space1, i128).parse(i)?;
     Ok((input, Instruction::EqlLiteral(a, b)))
 }
 
 fn eql_register(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, a, _, b)) = tuple((tag("eql "), anychar, space1, anychar))(i)?;
+    let (input, (_, a, _, b)) = (tag("eql "), anychar, space1, anychar).parse(i)?;
     Ok((input, Instruction::EqlRegister(a, b)))
 }
 
@@ -101,11 +101,12 @@ fn instruction(i: &str) -> IResult<&str, Instruction> {
             eql_register,
         )),
         line_ending,
-    )(i)
+    )
+    .parse(i)
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
-    complete(many1(instruction))(i)
+    complete(many1(instruction)).parse(i)
 }
 
 #[allow(dead_code)]

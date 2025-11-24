@@ -3,12 +3,11 @@
 
 use aoc::Day;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, line_ending, u64},
     multi::many1,
-    sequence::tuple,
 };
 
 use std::{
@@ -60,51 +59,54 @@ impl Machine {
 }
 
 fn machine_name(i: &str) -> IResult<&str, char> {
-    let (input, (_, state, _)) = tuple((tag("Begin in state "), alpha1, tag(".\n")))(i)?;
+    let (input, (_, state, _)) = (tag("Begin in state "), alpha1, tag(".\n")).parse(i)?;
     Ok((input, state.chars().next().unwrap()))
 }
 
 fn machine_checksum(i: &str) -> IResult<&str, usize> {
-    let (input, (_, number, _)) = tuple((
+    let (input, (_, number, _)) = (
         tag("Perform a diagnostic checksum after "),
         u64,
         tag(" steps.\n"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, number as usize))
 }
 
 fn state_name(i: &str) -> IResult<&str, char> {
-    let (input, (_, state, _)) = tuple((tag("In state "), alpha1, tag(":\n")))(i)?;
+    let (input, (_, state, _)) = (tag("In state "), alpha1, tag(":\n")).parse(i)?;
     Ok((input, state.chars().next().unwrap()))
 }
 
 fn action_test(i: &str) -> IResult<&str, bool> {
-    let (input, (_, number, _)) = tuple((tag("  If the current value is "), u64, tag(":\n")))(i)?;
+    let (input, (_, number, _)) = (tag("  If the current value is "), u64, tag(":\n")).parse(i)?;
     Ok((input, number == 1))
 }
 
 fn action_write(i: &str) -> IResult<&str, bool> {
-    let (input, (_, number, _)) = tuple((tag("    - Write the value "), u64, tag(".\n")))(i)?;
+    let (input, (_, number, _)) = (tag("    - Write the value "), u64, tag(".\n")).parse(i)?;
     Ok((input, number == 1))
 }
 
 fn action_move(i: &str) -> IResult<&str, i32> {
-    let (input, (_, found, _)) = tuple((
+    let (input, (_, found, _)) = (
         tag("    - Move one slot to the "),
         alt((tag("left"), tag("right"))),
         tag(".\n"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, if found == "left" { -1 } else { 1 }))
 }
 
 fn action_next(i: &str) -> IResult<&str, char> {
-    let (input, (_, state, _)) = tuple((tag("    - Continue with state "), alpha1, tag(".\n")))(i)?;
+    let (input, (_, state, _)) =
+        (tag("    - Continue with state "), alpha1, tag(".\n")).parse(i)?;
     Ok((input, state.chars().next().unwrap()))
 }
 
 fn action(i: &str) -> IResult<&str, Action> {
     let (input, (test, write, direction, next)) =
-        tuple((action_test, action_write, action_move, action_next))(i)?;
+        (action_test, action_write, action_move, action_next).parse(i)?;
     Ok((
         input,
         Action {
@@ -117,7 +119,7 @@ fn action(i: &str) -> IResult<&str, Action> {
 }
 
 fn state(i: &str) -> IResult<&str, State> {
-    let (input, (_, name, actions)) = tuple((line_ending, state_name, many1(action)))(i)?;
+    let (input, (_, name, actions)) = (line_ending, state_name, many1(action)).parse(i)?;
     Ok((
         input,
         State {
@@ -129,7 +131,7 @@ fn state(i: &str) -> IResult<&str, State> {
 
 fn machine(i: &str) -> IResult<&str, Machine> {
     let (input, (state, checksum, states)) =
-        tuple((machine_name, machine_checksum, many1(state)))(i)?;
+        (machine_name, machine_checksum, many1(state)).parse(i)?;
     Ok((
         input,
         Machine {

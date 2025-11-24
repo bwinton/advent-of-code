@@ -4,12 +4,11 @@
 use std::collections::HashMap;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{alpha1, digit1},
     multi::separated_list1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q15.data");
@@ -35,17 +34,17 @@ enum Operation {
 }
 
 fn minus(i: &str) -> IResult<&str, Operation> {
-    let (input, _name) = tag("-")(i)?;
+    let (input, _name) = tag("-").parse(i)?;
     Ok((input, Operation::Minus))
 }
 
 fn equal(i: &str) -> IResult<&str, Operation> {
-    let (input, (_name, digits)) = tuple((tag("="), digit1))(i)?;
+    let (input, (_name, digits)) = (tag("="), digit1).parse(i)?;
     Ok((input, Operation::Equal(digits.parse().unwrap())))
 }
 
 fn instruction(i: &str) -> IResult<&str, (&str, usize, Operation)> {
-    let (input, (name, operation)) = tuple((alpha1, alt((minus, equal))))(i)?;
+    let (input, (name, operation)) = (alpha1, alt((minus, equal))).parse(i)?;
     let mut curr = 0;
     for c in name.chars() {
         if c == '=' || c == '-' {
@@ -60,7 +59,7 @@ fn instruction(i: &str) -> IResult<&str, (&str, usize, Operation)> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<(&str, usize, Operation)>> {
-    let (input, instructions) = separated_list1(tag(","), instruction)(i)?;
+    let (input, instructions) = separated_list1(tag(","), instruction).parse(i)?;
     Ok((input, instructions))
 }
 

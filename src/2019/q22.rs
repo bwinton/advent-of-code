@@ -5,12 +5,11 @@ use std::collections::VecDeque;
 
 use mod_exp::mod_exp;
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{i32, line_ending},
     multi::separated_list0,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q22.data");
@@ -27,12 +26,12 @@ enum Instruction {
 // deal into new stack
 
 fn cut(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, offset)) = tuple((tag("cut "), i32))(i)?;
+    let (input, (_, offset)) = (tag("cut "), i32).parse(i)?;
     Ok((input, Instruction::Cut(offset as i128)))
 }
 
 fn deal_with(i: &str) -> IResult<&str, Instruction> {
-    let (input, (_, offset)) = tuple((tag("deal with increment "), i32))(i)?;
+    let (input, (_, offset)) = (tag("deal with increment "), i32).parse(i)?;
     Ok((input, Instruction::Deal(offset as usize)))
 }
 
@@ -42,12 +41,12 @@ fn new_stack(i: &str) -> IResult<&str, Instruction> {
 }
 
 fn instruction(i: &str) -> IResult<&str, Instruction> {
-    let (input, result) = alt((cut, deal_with, new_stack))(i)?;
+    let (input, result) = alt((cut, deal_with, new_stack)).parse(i)?;
     Ok((input, result))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
-    let (input, instructions) = separated_list0(line_ending, instruction)(i)?;
+    let (input, instructions) = separated_list0(line_ending, instruction).parse(i)?;
     Ok((input, instructions))
 }
 

@@ -4,7 +4,7 @@
 use std::collections::HashSet;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{self, line_ending, one_of},
     multi::separated_list1,
@@ -109,7 +109,8 @@ impl Move {
 }
 
 fn moove(i: &str) -> IResult<&str, Move> {
-    let (input, (dir, distance)) = separated_pair(one_of("LRUD"), tag(" "), complete::u32)(i)?;
+    let (input, (dir, distance)) =
+        separated_pair(one_of("LRUD"), tag(" "), complete::u32).parse(i)?;
     Ok((
         input,
         Move {
@@ -120,7 +121,7 @@ fn moove(i: &str) -> IResult<&str, Move> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Move>> {
-    let (input, list) = separated_list1(line_ending, moove)(i)?;
+    let (input, list) = separated_list1(line_ending, moove).parse(i)?;
     Ok((input, list))
 }
 

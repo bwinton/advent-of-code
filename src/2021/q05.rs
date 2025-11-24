@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use nom::{IResult, bytes::complete::tag, character::complete::u64, sequence::tuple};
+use nom::{IResult, Parser, bytes::complete::tag, character::complete::u64};
 
 //-----------------------------------------------------
 // Setup.
@@ -9,7 +9,7 @@ static INPUT: &str = include_str!("data/q05.data");
 
 fn parse(i: &str) -> IResult<&str, (u64, u64, u64, u64)> {
     let (input, (mut x1, _, mut y1, _, mut x2, _, mut y2)) =
-        tuple((u64, tag(","), u64, tag(" -> "), u64, tag(","), u64))(i)?;
+        (u64, tag(","), u64, tag(" -> "), u64, tag(","), u64).parse(i)?;
     let mut temp = [(x1, y1), (x2, y2)];
     temp.sort_unstable();
     [(x1, y1), (x2, y2)] = temp;

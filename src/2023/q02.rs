@@ -2,12 +2,12 @@
 // Setup.
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
     multi::separated_list1,
-    sequence::{separated_pair, tuple},
+    sequence::separated_pair,
 };
 
 static INPUT: &str = include_str!("data/q02.data");
@@ -28,7 +28,8 @@ fn round(i: &str) -> IResult<&str, Round> {
             tag(" "),
             alt((tag("red"), tag("green"), tag("blue"))),
         ),
-    )(i)?;
+    )
+    .parse(i)?;
 
     let mut round = Round {
         red: 0,
@@ -51,17 +52,18 @@ fn round(i: &str) -> IResult<&str, Round> {
 
 fn game(i: &str) -> IResult<&str, (usize, Vec<Round>)> {
     // "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-    let (input, (_, game, _, rounds)) = tuple((
+    let (input, (_, game, _, rounds)) = (
         tag("Game "),
         complete::u16,
         tag(": "),
         separated_list1(tag("; "), round),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, (game as usize, rounds)))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<(usize, Vec<Round>)>> {
-    let (input, list) = separated_list1(line_ending, game)(i)?;
+    let (input, list) = separated_list1(line_ending, game).parse(i)?;
     Ok((input, list))
 }
 

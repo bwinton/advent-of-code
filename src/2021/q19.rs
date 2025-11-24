@@ -5,12 +5,11 @@ use std::{
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{i32, line_ending, u8},
     combinator::complete,
     multi::separated_list1,
-    sequence::tuple,
 };
 
 //-----------------------------------------------------
@@ -154,18 +153,19 @@ impl Scanner {
 
 fn position(i: &str) -> IResult<&str, Position> {
     // 3,3,-4
-    let (input, (a, _, b, _, c)) = tuple((i32, tag(","), i32, tag(","), i32))(i)?;
+    let (input, (a, _, b, _, c)) = (i32, tag(","), i32, tag(","), i32).parse(i)?;
     Ok((input, (a, b, c).into()))
 }
 
 fn scanner(i: &str) -> IResult<&str, Scanner> {
-    let (input, (_, _id, _, beacons, _)) = tuple((
+    let (input, (_, _id, _, beacons, _)) = (
         tag("--- scanner "),
         u8,
         tag(" ---\n"),
         separated_list1(line_ending, position),
         line_ending,
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         Scanner {
@@ -176,7 +176,7 @@ fn scanner(i: &str) -> IResult<&str, Scanner> {
 }
 
 fn parser(i: &str) -> IResult<&str, VecDeque<Scanner>> {
-    let (input, scanners) = complete(separated_list1(line_ending, scanner))(i)?;
+    let (input, scanners) = complete(separated_list1(line_ending, scanner)).parse(i)?;
     Ok((input, VecDeque::from(scanners)))
 }
 

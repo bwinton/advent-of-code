@@ -4,11 +4,10 @@
 use itertools::Itertools;
 
 use nom::{
-    Err, IResult,
+    Err, IResult, Parser,
     bits::complete::{tag, take},
     branch::alt,
     error::{ErrorKind, make_error},
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q16.data");
@@ -142,22 +141,22 @@ fn operation(i: (&[u8], usize)) -> IResult<(&[u8], usize), Vec<InstructionV2>> {
 }
 
 fn sum(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(0, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(0, 3usize), operation).parse(i)?;
     Ok((input, InstructionType::Sum(result)))
 }
 
 fn product(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(1, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(1, 3usize), operation).parse(i)?;
     Ok((input, InstructionType::Product(result)))
 }
 
 fn minimum(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(2, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(2, 3usize), operation).parse(i)?;
     Ok((input, InstructionType::Minimum(result)))
 }
 
 fn maximum(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(3, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(3, 3usize), operation).parse(i)?;
     Ok((input, InstructionType::Maximum(result)))
 }
 
@@ -178,7 +177,7 @@ fn literal(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
 }
 
 fn greater_than(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(5, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(5, 3usize), operation).parse(i)?;
     if result.len() != 2 {
         return Err(Err::Error(make_error(input, ErrorKind::Fail)));
     }
@@ -186,7 +185,7 @@ fn greater_than(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
 }
 
 fn less_than(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(6, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(6, 3usize), operation).parse(i)?;
     if result.len() != 2 {
         return Err(Err::Error(make_error(input, ErrorKind::Fail)));
     }
@@ -194,7 +193,7 @@ fn less_than(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
 }
 
 fn equal_to(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
-    let (input, (_, result)) = tuple((tag(7, 3usize), operation))(i)?;
+    let (input, (_, result)) = (tag(7, 3usize), operation).parse(i)?;
     if result.len() != 2 {
         return Err(Err::Error(make_error(input, ErrorKind::Fail)));
     }
@@ -202,7 +201,7 @@ fn equal_to(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionType> {
 }
 
 fn instruction(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
-    let (input, (version, result)) = tuple((
+    let (input, (version, result)) = (
         version,
         alt((
             sum,
@@ -214,7 +213,8 @@ fn instruction(i: (&[u8], usize)) -> IResult<(&[u8], usize), InstructionV2> {
             less_than,
             equal_to,
         )),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((
         input,
         InstructionV2 {

@@ -4,7 +4,7 @@
 use aoc::letters::recognize_letters;
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     bytes::complete::tag,
     character::complete::{self, line_ending},
@@ -44,17 +44,17 @@ fn noop(i: &str) -> IResult<&str, Instruction> {
 }
 
 fn addx(i: &str) -> IResult<&str, Instruction> {
-    let (input, value) = preceded(tag("addx "), complete::i64)(i)?;
+    let (input, value) = preceded(tag("addx "), complete::i64).parse(i)?;
     Ok((input, Instruction::AddX(value)))
 }
 
 fn instruction(i: &str) -> IResult<&str, Instruction> {
-    let (input, rv) = alt((noop, addx))(i)?;
+    let (input, rv) = alt((noop, addx)).parse(i)?;
     Ok((input, rv))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Instruction>> {
-    let (input, list) = separated_list1(line_ending, instruction)(i)?;
+    let (input, list) = separated_list1(line_ending, instruction).parse(i)?;
     Ok((input, list))
 }
 

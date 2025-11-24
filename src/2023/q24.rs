@@ -7,11 +7,10 @@ use aoc::util::Point3;
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{i64, newline},
     multi::separated_list1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q24.data");
@@ -24,7 +23,7 @@ struct Hailstone {
 
 fn hailstone(i: &str) -> IResult<&str, Hailstone> {
     // 19, 13, 30 @ -2,  1, -2
-    let (input, (px, _, py, _, pz, _, vx, _, vy, _, vz)) = tuple((
+    let (input, (px, _, py, _, pz, _, vx, _, vy, _, vz)) = (
         i64,
         tag(", "),
         i64,
@@ -36,7 +35,8 @@ fn hailstone(i: &str) -> IResult<&str, Hailstone> {
         i64,
         tag(", "),
         i64,
-    ))(i)?;
+    )
+        .parse(i)?;
     let hailstone = Hailstone {
         position: (px, py, pz),
         velocity: (vx, vy, vz),
@@ -45,7 +45,7 @@ fn hailstone(i: &str) -> IResult<&str, Hailstone> {
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<Hailstone>> {
-    let (input, gates) = separated_list1(newline, hailstone)(i)?;
+    let (input, gates) = separated_list1(newline, hailstone).parse(i)?;
     Ok((input, gates))
 }
 

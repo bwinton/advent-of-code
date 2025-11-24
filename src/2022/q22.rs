@@ -4,7 +4,7 @@
 use std::{collections::HashMap, iter::repeat_n, ops::RangeInclusive};
 
 use nom::{
-    IResult,
+    IResult, Parser,
     branch::alt,
     character::complete::{self, line_ending},
     multi::many1,
@@ -378,7 +378,8 @@ fn map_line(i: &str) -> IResult<&str, Vec<Cell>> {
         complete::char(' '),
         complete::char('.'),
         complete::char('#'),
-    )))(i)?;
+    )))
+    .parse(i)?;
     let rv = line
         .iter()
         .map(|c| match c {
@@ -392,7 +393,7 @@ fn map_line(i: &str) -> IResult<&str, Vec<Cell>> {
 }
 
 fn map(i: &str) -> IResult<&str, Vec<Vec<Cell>>> {
-    let (input, mut lines) = many1(terminated(map_line, line_ending))(i)?;
+    let (input, mut lines) = many1(terminated(map_line, line_ending)).parse(i)?;
     let max_length = lines.iter().map(|l| l.len()).max().unwrap();
     for line in lines.iter_mut() {
         let line_len = line.len();
@@ -409,7 +410,7 @@ fn forward(i: &str) -> IResult<&str, Move> {
 }
 
 fn turn(i: &str) -> IResult<&str, Move> {
-    let (input, value) = alt((complete::char('L'), complete::char('R')))(i)?;
+    let (input, value) = alt((complete::char('L'), complete::char('R'))).parse(i)?;
     let rv = match value {
         'L' => Move::Left,
         'R' => Move::Right,
@@ -419,12 +420,12 @@ fn turn(i: &str) -> IResult<&str, Move> {
 }
 
 fn moves(i: &str) -> IResult<&str, Vec<Move>> {
-    let (input, line) = many1(alt((forward, turn)))(i)?;
+    let (input, line) = many1(alt((forward, turn))).parse(i)?;
     Ok((input, line))
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<Vec<Cell>>, Vec<Move>)> {
-    let (input, (map, moves)) = separated_pair(map, line_ending, moves)(i)?;
+    let (input, (map, moves)) = separated_pair(map, line_ending, moves).parse(i)?;
     Ok((input, (map, moves)))
 }
 

@@ -3,12 +3,12 @@
 
 use itertools::Itertools;
 use nom::{
-    IResult,
+    IResult, Parser,
     bytes::complete::tag,
     character::complete::{alpha1, digit1, i32, line_ending, space1},
     combinator::{eof, opt},
     multi::{many1, separated_list0},
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 
 static INPUT: &str = include_str!("data/q21.data");
@@ -75,17 +75,17 @@ impl Player {
 }
 
 fn modifier(i: &str) -> IResult<&str, String> {
-    let (input, (first, number)) = tuple((tag(" +"), digit1))(i)?;
+    let (input, (first, number)) = (tag(" +"), digit1).parse(i)?;
     Ok((input, first.to_owned() + number))
 }
 
 fn name(i: &str) -> IResult<&str, String> {
-    let (input, (first, number)) = tuple((alpha1, opt(modifier)))(i)?;
+    let (input, (first, number)) = (alpha1, opt(modifier)).parse(i)?;
     Ok((input, first.to_owned() + &number.unwrap_or_default()))
 }
 
 fn header(i: &str) -> IResult<&str, &str> {
-    let (input, (name, ..)) = tuple((
+    let (input, (name, ..)) = (
         alpha1,
         tag(":"),
         space1,
@@ -94,13 +94,14 @@ fn header(i: &str) -> IResult<&str, &str> {
         tag("Damage"),
         space1,
         tag("Armor\n"),
-    ))(i)?;
+    )
+        .parse(i)?;
     Ok((input, name))
 }
 
 fn item(i: &str) -> IResult<&str, Item> {
     let (input, (name, _, cost, _, damage, _, armor, _)) =
-        tuple((name, space1, i32, space1, i32, space1, i32, opt(tag("\n"))))(i)?;
+        (name, space1, i32, space1, i32, space1, i32, opt(tag("\n"))).parse(i)?;
     Ok((
         input,
         Item {
@@ -113,7 +114,7 @@ fn item(i: &str) -> IResult<&str, Item> {
 }
 
 fn group(i: &str) -> IResult<&str, Group> {
-    let (input, (name, items)) = tuple((header, many1(item)))(i)?;
+    let (input, (name, items)) = (header, many1(item)).parse(i)?;
 
     let empty_item = Item {
         name: "None".to_owned(),
@@ -138,7 +139,7 @@ fn group(i: &str) -> IResult<&str, Group> {
 }
 
 fn store(i: &str) -> IResult<&str, Vec<Group>> {
-    let (input, groups) = terminated(separated_list0(line_ending, group), eof)(i)?;
+    let (input, groups) = terminated(separated_list0(line_ending, group), eof).parse(i)?;
     Ok((input, groups))
 }
 

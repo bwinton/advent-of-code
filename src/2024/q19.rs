@@ -6,7 +6,7 @@ use nom::{
     bytes::complete::tag,
     character::complete::{alpha1, newline},
     multi::separated_list1,
-    sequence::{terminated, tuple},
+    sequence::terminated,
 };
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashMap;
@@ -14,7 +14,8 @@ use std::collections::HashMap;
 static INPUT: &str = include_str!("data/q19.data");
 
 fn designs(i: &str) -> IResult<&str, Vec<String>> {
-    let (input, designs) = separated_list1(tag("\n"), alpha1.map(|s: &str| s.to_owned()))(i)?;
+    let (input, designs) =
+        separated_list1(tag("\n"), alpha1.map(|s: &str| s.to_owned())).parse(i)?;
     Ok((input, designs))
 }
 
@@ -22,12 +23,13 @@ fn towels(i: &str) -> IResult<&str, Vec<String>> {
     let (input, towels) = terminated(
         separated_list1(tag(", "), alpha1.map(|s: &str| s.to_owned())),
         newline,
-    )(i)?;
+    )
+    .parse(i)?;
     Ok((input, towels))
 }
 
 fn parser(i: &str) -> IResult<&str, (Vec<String>, Vec<String>)> {
-    let (input, (mut towels, _, designs)) = tuple((towels, newline, designs))(i)?;
+    let (input, (mut towels, _, designs)) = (towels, newline, designs).parse(i)?;
     towels.sort_by_key(|s| usize::MAX - s.len());
     Ok((input, (towels, designs)))
 }

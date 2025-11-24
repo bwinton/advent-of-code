@@ -3,12 +3,11 @@
 
 use aoc::util::Direction;
 use nom::{
-    AsChar, IResult,
+    AsChar, IResult, Parser,
     branch::alt,
     bytes::complete::{tag, take_while_m_n},
     character::complete::{newline, space1, u32},
     multi::separated_list1,
-    sequence::tuple,
 };
 
 static INPUT: &str = include_str!("data/q18.data");
@@ -16,7 +15,7 @@ static INPUT: &str = include_str!("data/q18.data");
 type Instruction = (Direction, usize);
 
 fn direction(i: &str) -> IResult<&str, Direction> {
-    let (input, value) = alt((tag("L"), tag("R"), tag("U"), tag("D")))(i)?;
+    let (input, value) = alt((tag("L"), tag("R"), tag("U"), tag("D"))).parse(i)?;
     let direction = match value.chars().next().unwrap() {
         'L' => Direction::West,
         'R' => Direction::East,
@@ -30,10 +29,11 @@ fn direction(i: &str) -> IResult<&str, Direction> {
 }
 
 fn colour(i: &str) -> IResult<&str, Instruction> {
-    let (input, (length, direction)) = tuple((
+    let (input, (length, direction)) = (
         take_while_m_n(5, 5, AsChar::is_hex_digit),
         take_while_m_n(1, 1, AsChar::is_hex_digit),
-    ))(i)?;
+    )
+        .parse(i)?;
     let direction = match direction {
         "0" => Direction::East,
         "1" => Direction::South,
@@ -49,12 +49,12 @@ fn colour(i: &str) -> IResult<&str, Instruction> {
 
 fn instruction(i: &str) -> IResult<&str, (Instruction, Instruction)> {
     let (input, (direction, _, length, _, _, colour, _)) =
-        tuple((direction, space1, u32, space1, tag("(#"), colour, tag(")")))(i)?;
+        (direction, space1, u32, space1, tag("(#"), colour, tag(")")).parse(i)?;
     Ok((input, ((direction, length as usize), colour)))
 }
 
 fn parser(i: &str) -> IResult<&str, Vec<(Instruction, Instruction)>> {
-    let (input, instructions) = separated_list1(newline, instruction)(i)?;
+    let (input, instructions) = separated_list1(newline, instruction).parse(i)?;
     Ok((input, instructions))
 }
 
