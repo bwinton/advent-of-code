@@ -2,6 +2,7 @@
 
 // modules
 mod q01;
+mod q02;
 
 #[macro_use]
 extern crate aoc;
@@ -14,7 +15,7 @@ extern crate indoc;
 // extern crate itertools;
 
 fn main() {
-    let days = q_vec!(q01,);
+    let days = q_vec!(q01, q02,);
 
     aoc::main(&days)
 }
