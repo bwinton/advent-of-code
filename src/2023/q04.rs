@@ -49,8 +49,7 @@ fn process_data_b(data: &str) -> usize {
         }
     }
 
-    let rv = cards.values().sum();
-    rv
+    cards.values().sum()
 }
 
 //-----------------------------------------------------

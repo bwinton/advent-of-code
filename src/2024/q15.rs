@@ -172,7 +172,7 @@ fn move_boxes_vertical(
                 .collect();
             let mut new_line = vec![];
 
-            if squares.iter().any(|&square| square == Object::Wall) {
+            if squares.contains(&Object::Wall) {
                 // We can't move this line of boxes, so continue.
                 return;
             }
