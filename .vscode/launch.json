@@ -26,15 +26,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable '2015'",
+            "name": "Debug executable '2025'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=2015",
+                    "--bin=2025",
                     "--package=adventofcode"
                 ],
                 "filter": {
-                    "name": "2015",
+                    "name": "2025",
                     "kind": "bin"
                 }
             },
@@ -44,353 +44,22 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable '2015'",
+            "name": "Debug unit tests in executable '2025",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=2015",
+                    "--bin=2025",
                     "--package=adventofcode"
                 ],
                 "filter": {
-                    "name": "2015",
+                    "name": "2025",
                     "kind": "bin"
                 }
             },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2016'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2016",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2016",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2016'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2016",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2016",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2017'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2017",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2017",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2017'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2017",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2017",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2018'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2018",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2018",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2018'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2018",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2018",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2019'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2019",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2019",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2019'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2019",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2019",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2020'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2020",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2020",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2020'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2020",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2020",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2021'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2021",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2021",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2021'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2021",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2021",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2022'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2022",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2022",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2022'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2022",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2022",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2023'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2023",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2023",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2023'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2023",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2023",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug executable '2024'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=2024",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2024",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable '2024'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=2024",
-                    "--package=adventofcode"
-                ],
-                "filter": {
-                    "name": "2024",
-                    "kind": "bin"
-                }
-            },
-            "args": ["21::a"],
+            "args": [
+                "3::b"
+            ],
             "cwd": "${workspaceFolder}"
         },
         {
@@ -408,7 +77,9 @@
                     "kind": "bin"
                 }
             },
-            "args": ["-i"],
+            "args": [
+                "-i"
+            ],
             "cwd": "${workspaceFolder}",
             "program": "${workspaceRoot}/target/debug/next"
         },
