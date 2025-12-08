@@ -9,6 +9,7 @@ static INPUT: &str = include_str!("data/q08.data");
 
 type Circuits = Vec<HashSet<Point3>>;
 type Distances = HashMap<i64, Vec<(Point3, Point3)>>;
+
 fn parse(data: &str) -> (Circuits, Distances) {
     let mut boxes = vec![];
     for line in data.lines() {
@@ -27,28 +28,32 @@ fn parse(data: &str) -> (Circuits, Distances) {
     (circuits, distances)
 }
 
+fn merge(circuits: &mut Circuits, first: &Point3, second: &Point3) {
+    // find the vec that contains the second, and move all of its items into the vec that contains the first.
+    let first_index = circuits
+        .iter()
+        .find_position(|boxes| boxes.contains(first))
+        .unwrap()
+        .0;
+    let second_index = circuits
+        .iter()
+        .find_position(|boxes| boxes.contains(second))
+        .unwrap()
+        .0;
+    if first_index != second_index {
+        let additions = circuits[second_index].clone();
+        circuits[first_index].extend(&additions);
+        circuits.remove(second_index);
+    }
+}
+
 fn process_a(data: &str, count: usize) -> usize {
     let (mut circuits, distances) = parse(data);
     let mut processed = count;
     'outer: for distance in distances.keys().sorted() {
         let pairs = distances.get(distance).unwrap();
         for (first, second) in pairs {
-            // find the vec that contains the second, and move all of its items into the vec that contains the first.
-            let first_index = circuits
-                .iter()
-                .find_position(|boxes| boxes.contains(first))
-                .unwrap()
-                .0;
-            let second_index = circuits
-                .iter()
-                .find_position(|boxes| boxes.contains(second))
-                .unwrap()
-                .0;
-            if first_index != second_index {
-                let additions = circuits[second_index].clone();
-                circuits[first_index].extend(&additions);
-                circuits.remove(second_index);
-            }
+            merge(&mut circuits, first, second);
             processed -= 1;
             if processed == 0 {
                 break 'outer;
@@ -74,22 +79,7 @@ fn process_data_b(data: &str) -> i64 {
     'outer: for distance in distances.keys().sorted() {
         let pairs = distances.get(distance).unwrap();
         for (first, second) in pairs {
-            // find the vec that contains the second, and move all of its items into the vec that contains the first.
-            let first_index = circuits
-                .iter()
-                .find_position(|boxes| boxes.contains(first))
-                .unwrap()
-                .0;
-            let second_index = circuits
-                .iter()
-                .find_position(|boxes| boxes.contains(second))
-                .unwrap()
-                .0;
-            if first_index != second_index {
-                let additions = circuits[second_index].clone();
-                circuits[first_index].extend(&additions);
-                circuits.remove(second_index);
-            }
+            merge(&mut circuits, first, second);
             if circuits.len() == 1 {
                 rv = first.0 * second.0;
                 break 'outer;
@@ -165,6 +155,6 @@ fn b() {
 984,92,344
 425,690,689"
         )),
-        25272
+        25_272
     );
 }
