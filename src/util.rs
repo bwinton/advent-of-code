@@ -16,6 +16,15 @@ pub fn ring(point: Point2, depth: usize, min: Point2, max: Point2) -> Vec<Point2
     rv
 }
 
+pub fn distance_2(first: Point2, second: Point2) -> i64 {
+    ((first.0 - second.0).pow(2) + (first.1 - second.1).pow(2)).isqrt()
+}
+
+pub fn distance_3(first: Point3, second: Point3) -> i64 {
+    ((first.0 - second.0).pow(2) + (first.1 - second.1).pow(2) + (first.2 - second.2).pow(2))
+        .isqrt()
+}
+
 pub fn point_to_index(point: Point2, width: i64) -> usize {
     (point.1 * width + point.0) as usize
 }

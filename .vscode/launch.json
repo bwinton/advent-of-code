@@ -58,7 +58,7 @@
                 }
             },
             "args": [
-                "3::b"
+                "8::a"
             ],
             "cwd": "${workspaceFolder}"
         },
