@@ -38,7 +38,9 @@
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": [
+                "9b"
+            ],
             "cwd": "${workspaceFolder}"
         },
         {
@@ -58,7 +60,7 @@
                 }
             },
             "args": [
-                "8::a"
+                "9::b"
             ],
             "cwd": "${workspaceFolder}"
         },
