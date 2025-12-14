@@ -98,7 +98,7 @@ fn get_next<I: Iterator>(input: &mut [I]) -> Option<Vec<I::Item>> {
 
 fn step(state: &[Vec<bool>], rules: &[Rule]) -> Vec<Vec<bool>> {
     let mut pieces = Vec::new();
-    let size = if state.len() % 2 == 0 { 2 } else { 3 };
+    let size = if state.len().is_multiple_of(2) { 2 } else { 3 };
     let active_rules: Vec<_> = rules.iter().filter(|r| r.size == size).collect();
 
     for rows in state.chunks(size) {

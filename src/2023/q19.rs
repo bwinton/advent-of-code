@@ -90,7 +90,7 @@ impl Rating<'_> {
     }
 }
 
-fn condition(i: &str) -> IResult<&str, Rule> {
+fn condition(i: &str) -> IResult<&str, Rule<'_>> {
     // a<2006:qkq OR rfg
     let (input, (variable, op, value, _, destination)) =
         (alpha1, one_of("<>"), u32, tag(":"), alpha1).parse(i)?;
@@ -105,13 +105,13 @@ fn condition(i: &str) -> IResult<&str, Rule> {
     ))
 }
 
-fn default(i: &str) -> IResult<&str, Rule> {
+fn default(i: &str) -> IResult<&str, Rule<'_>> {
     // rfg
     let (input, destination) = alpha1(i)?;
     Ok((input, Rule::Default { destination }))
 }
 
-fn workflow(i: &str) -> IResult<&str, Workflow> {
+fn workflow(i: &str) -> IResult<&str, Workflow<'_>> {
     // px{a<2006:qkq,m>2090:A,rfg}
     let (input, (name, _, rules, _, _)) = (
         alpha1,
@@ -124,7 +124,7 @@ fn workflow(i: &str) -> IResult<&str, Workflow> {
     Ok((input, Workflow { name, rules }))
 }
 
-fn rating(i: &str) -> IResult<&str, Rating> {
+fn rating(i: &str) -> IResult<&str, Rating<'_>> {
     // {x=1102,m=1249,a=1825,s=2027}
     let (input, (_, x, _, m, _, a, _, s, _, _)) = (
         tag("{x="),
@@ -148,7 +148,7 @@ fn rating(i: &str) -> IResult<&str, Rating> {
     Ok((input, Rating { values }))
 }
 
-fn parser(i: &str) -> IResult<&str, (HashMap<&str, Workflow>, Vec<Rating>)> {
+fn parser(i: &str) -> IResult<&str, (HashMap<&str, Workflow<'_>>, Vec<Rating<'_>>)> {
     let (input, (workflows, _, ratings)) = (many1(workflow), newline, many1(rating)).parse(i)?;
     let workflows = HashMap::from_iter(workflows.into_iter().map(|item| (item.name, item)));
     Ok((input, (workflows, ratings)))

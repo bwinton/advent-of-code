@@ -12,7 +12,7 @@ fn factors_iter() -> impl Iterator<Item = HashSet<usize>> {
         let mut factors = HashSet::new();
         let upper_limit = (curr as f64).sqrt() as usize + 1;
         for i in 1..upper_limit {
-            if curr % i == 0 {
+            if curr.is_multiple_of(i) {
                 factors.insert(i);
                 factors.insert(curr / i);
             }

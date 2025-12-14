@@ -35,13 +35,12 @@ impl Hand {
             .map(|(a, b)| (b, a))
             .collect();
         card_values.reverse();
-        if jokers && card_values[0].0 != 5 {
-            if let Some(joker_pos) = card_values.iter().position(|&(_, value)| value == 0) {
+        if jokers && card_values[0].0 != 5
+            && let Some(joker_pos) = card_values.iter().position(|&(_, value)| value == 0) {
                 let update_index = if joker_pos == 0 { 1 } else { 0 };
                 card_values[update_index].0 += card_values[joker_pos].0;
                 card_values.remove(joker_pos);
             }
-        }
         Self {
             cards,
             card_values,

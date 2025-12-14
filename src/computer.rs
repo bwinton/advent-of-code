@@ -27,7 +27,7 @@ pub struct Half {
     register: char,
 }
 impl Half {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, register)) = (tag("hlf "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
@@ -44,7 +44,7 @@ pub struct Triple {
     register: char,
 }
 impl Triple {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, register)) = (tag("tpl "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
@@ -61,7 +61,7 @@ pub struct Increment {
     register: char,
 }
 impl Increment {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, register)) = (tag("inc "), single_letter).parse(i)?;
         Ok((input, Rc::new(Self { register })))
     }
@@ -78,7 +78,7 @@ pub struct Jump {
     offset: i64,
 }
 impl Jump {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, offset)) = (tag("jmp "), i64).parse(i)?;
         Ok((input, Rc::new(Self { offset })))
     }
@@ -96,7 +96,7 @@ pub struct JumpEven {
     offset: i64,
 }
 impl JumpEven {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, register, _, offset)) =
             (tag("jie "), single_letter, tag(", "), i64).parse(i)?;
         Ok((input, Rc::new(Self { register, offset })))
@@ -119,7 +119,7 @@ pub struct JumpOne {
     offset: i64,
 }
 impl JumpOne {
-    pub fn build(i: &str) -> InstructionResult {
+    pub fn build(i: &'_ str) -> InstructionResult<'_> {
         let (input, (_, register, _, offset)) =
             (tag("jio "), single_letter, tag(", "), i64).parse(i)?;
         Ok((input, Rc::new(Self { register, offset })))

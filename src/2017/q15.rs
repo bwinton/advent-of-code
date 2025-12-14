@@ -22,7 +22,7 @@ impl Generator {
 
     fn next(&mut self) -> u16 {
         self.value = self.value.wrapping_mul(self.factor) % 2_147_483_647;
-        while self.value % self.multiple != 0 {
+        while !self.value.is_multiple_of(self.multiple) {
             self.value = self.value.wrapping_mul(self.factor) % 2_147_483_647;
         }
         self.value as u16

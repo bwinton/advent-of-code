@@ -18,7 +18,7 @@ struct Element<'a> {
     quantity: usize,
 }
 
-fn element(i: &str) -> IResult<&str, Element> {
+fn element(i: &str) -> IResult<&str, Element<'_>> {
     let (input, (quantity, _, symbol)) = (u64, tag(" "), alpha1).parse(i)?;
     Ok((
         input,
@@ -29,7 +29,7 @@ fn element(i: &str) -> IResult<&str, Element> {
     ))
 }
 
-fn rule(i: &str) -> IResult<&str, (Element, Vec<Element>)> {
+fn rule(i: &str) -> IResult<&str, (Element<'_>, Vec<Element<'_>>)> {
     let (input, (sources, _, dest, _)) = (
         separated_list1(tag(", "), element),
         tag(" => "),
@@ -40,7 +40,7 @@ fn rule(i: &str) -> IResult<&str, (Element, Vec<Element>)> {
     Ok((input, (dest, sources)))
 }
 
-fn parser(i: &str) -> IResult<&str, HashMap<&str, (usize, Vec<Element>)>> {
+fn parser(i: &str) -> IResult<&str, HashMap<&str, (usize, Vec<Element<'_>>)>> {
     let (input, rules) = many1(rule).parse(i)?;
     let mut rv = HashMap::new();
     for (key, value) in rules {

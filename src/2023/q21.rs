@@ -41,8 +41,8 @@ fn calculate_moves(
         let mut next = HashSet::new();
         for position in curr {
             for direction in Direction::all() {
-                if let Some(test) = direction.move_pos(position, 1, None, None) {
-                    if test.0 >= bounds.0.0
+                if let Some(test) = direction.move_pos(position, 1, None, None)
+                    && test.0 >= bounds.0.0
                         && test.0 < bounds.1.0
                         && test.1 >= bounds.0.1
                         && test.1 < bounds.1.1
@@ -52,7 +52,6 @@ fn calculate_moves(
                         next.insert(test);
                         seen.insert(test, step + 1);
                     }
-                }
             }
         }
         curr = next;

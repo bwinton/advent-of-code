@@ -62,8 +62,8 @@ impl Ord for Node {
     fn cmp(&self, other: &Self) -> Ordering {
         match (self, other) {
             (Node::Value(a), Node::Value(b)) => a.cmp(b),
-            (Node::Value(_), Node::List(b)) => compare_lists(&[self.clone()], b),
-            (Node::List(a), Node::Value(_)) => compare_lists(a, &[other.clone()]),
+            (Node::Value(_), Node::List(b)) => compare_lists(std::slice::from_ref(self), b),
+            (Node::List(a), Node::Value(_)) => compare_lists(a, std::slice::from_ref(other)),
             (Node::List(a), Node::List(b)) => compare_lists(a, b),
         }
     }

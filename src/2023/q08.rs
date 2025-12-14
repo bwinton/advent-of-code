@@ -47,7 +47,7 @@ fn paths(i: &str) -> IResult<&str, HashMap<&str, (&str, &str)>> {
     Ok((input, HashMap::from_iter(paths)))
 }
 
-fn parser(i: &str) -> IResult<&str, (Vec<char>, Paths)> {
+fn parser(i: &str) -> IResult<&str, (Vec<char>, Paths<'_>)> {
     let (input, (directions, _, paths)) = (directions, many1(line_ending), paths).parse(i)?;
     Ok((input, (directions, paths)))
 }

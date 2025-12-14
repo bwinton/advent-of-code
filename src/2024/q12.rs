@@ -27,11 +27,10 @@ impl Region {
         for cell in &self.plots {
             let mut add = 4;
             for direction in Direction::all() {
-                if let Some(next) = direction.move_pos(*cell, 1, None, None) {
-                    if self.plots.contains(&next) {
+                if let Some(next) = direction.move_pos(*cell, 1, None, None)
+                    && self.plots.contains(&next) {
                         add -= 1;
                     }
-                }
             }
             rv += add;
         }

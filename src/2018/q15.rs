@@ -188,16 +188,14 @@ impl Board {
         let mut rv = vec![];
         for direction in DIRECTIONS {
             let (x, y) = direction.get_cell(x, y);
-            if let Kind::Goblin { .. } = kind {
-                if let Kind::Elf { hp } = self.cells[y][x] {
+            if let Kind::Goblin { .. } = kind
+                && let Kind::Elf { hp } = self.cells[y][x] {
                     rv.push((hp, y, x));
                 }
-            }
-            if let Kind::Elf { .. } = kind {
-                if let Kind::Goblin { hp } = self.cells[y][x] {
+            if let Kind::Elf { .. } = kind
+                && let Kind::Goblin { hp } = self.cells[y][x] {
                     rv.push((hp, y, x));
                 }
-            }
         }
         rv.sort_unstable();
         rv.first().map(|x| (x.0, x.2, x.1))

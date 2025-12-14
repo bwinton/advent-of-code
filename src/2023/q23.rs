@@ -129,8 +129,8 @@ fn graph_to_grid(
         point = next_perimeter(point);
     }
 
-    for x in 1..6 {
-        places[5][x] = point;
+    for place in places[5].iter_mut().skip(1) {
+        *place = point;
         point = next_perimeter(point);
     }
 

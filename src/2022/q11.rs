@@ -139,7 +139,7 @@ fn process_data(data: &str, iterations: i32, extra_worry: bool) -> usize {
                     item /= 3;
                 }
                 let item = item % divisor;
-                let next = if item % monkey.test == 0 {
+                let next = if item.is_multiple_of(monkey.test) {
                     monkey.true_branch
                 } else {
                     monkey.false_branch

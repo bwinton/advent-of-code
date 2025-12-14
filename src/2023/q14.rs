@@ -110,7 +110,7 @@ fn process_data_b(data: &str) -> usize {
         let key = map.keys().cloned().collect::<Vec<_>>();
         if let Some((i, cycle_sum)) = seen.get(&key) {
             // We should break when we hit the loop, and get the nth next value.
-            if (CYCLE_COUNT - cycle) % (cycle - i) == 0 {
+            if (CYCLE_COUNT - cycle).is_multiple_of(cycle - i) {
                 rv = *cycle_sum;
                 break;
             }

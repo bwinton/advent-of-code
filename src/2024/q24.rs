@@ -30,12 +30,12 @@ fn gate(i: &str) -> IResult<&str, (&str, bool)> {
     Ok((input, (gate, value == "1")))
 }
 
-fn gates(i: &str) -> IResult<&str, Initial> {
+fn gates(i: &str) -> IResult<&str, Initial<'_>> {
     let (input, gates) = many1(gate).parse(i)?;
     Ok((input, gates.into_iter().collect()))
 }
 
-fn connection(i: &str) -> IResult<&str, (&str, Connection)> {
+fn connection(i: &str) -> IResult<&str, (&str, Connection<'_>)> {
     // x00 AND y00 -> z00
 
     let (input, (a, op, b, _, c, _)) = (
@@ -57,12 +57,12 @@ fn connection(i: &str) -> IResult<&str, (&str, Connection)> {
     Ok((input, (c, connection)))
 }
 
-fn connections(i: &str) -> IResult<&str, HashMap<&str, Connection>> {
+fn connections(i: &str) -> IResult<&str, HashMap<&str, Connection<'_>>> {
     let (input, connections) = many1(connection).parse(i)?;
     Ok((input, connections.into_iter().collect()))
 }
 
-fn parser(i: &str) -> IResult<&str, (Initial, HashMap<&str, Connection>)> {
+fn parser(i: &str) -> IResult<&str, (Initial<'_>, HashMap<&str, Connection<'_>>)> {
     let (input, (initial, _, connections)) = (gates, newline, connections).parse(i)?;
     Ok((input, (initial, connections)))
 }

@@ -11,7 +11,7 @@ static LENGTH_B: usize = 35_651_584;
 
 fn get_checksum(input: &str) -> String {
     let mut rv: Vec<char> = input.chars().collect();
-    while rv.len() % 2 == 0 {
+    while rv.len().is_multiple_of(2) {
         let mut new = Vec::new();
         for pair in rv.chunks(2) {
             if pair[0] == pair[1] {

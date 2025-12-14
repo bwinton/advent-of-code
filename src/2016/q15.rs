@@ -18,7 +18,7 @@ struct Disc {
 
 impl Disc {
     fn is_valid(&self, time: usize) -> bool {
-        (time + self.number + self.current) % self.positions == 0
+        (time + self.number + self.current).is_multiple_of(self.positions)
     }
 }
 

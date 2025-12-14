@@ -58,7 +58,7 @@ impl State {
                 break;
             }
             let mut time = (missing / robots) as usize;
-            if missing % robots != 0 {
+            if !missing.is_multiple_of(robots) {
                 // If there's a remaineder, add an extra minute to account for it.
                 time += 1;
             }
@@ -125,7 +125,7 @@ impl State {
                     break;
                 }
                 let mut time = (missing / robots) as usize;
-                if missing % robots != 0 {
+                if !missing.is_multiple_of(robots) {
                     // If there's a remaineder, add an extra minute to account for it.
                     time += 1;
                 }

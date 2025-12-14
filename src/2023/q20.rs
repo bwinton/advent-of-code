@@ -74,7 +74,7 @@ impl<'a> Gate<'a> {
     }
 }
 
-fn gate(i: &str) -> IResult<&str, Gate> {
+fn gate(i: &str) -> IResult<&str, Gate<'_>> {
     // broadcaster -> a, b, c
     let (input, (gate_type, name, _, outputs)) = (
         opt(one_of("&%")),
@@ -103,7 +103,7 @@ fn gate(i: &str) -> IResult<&str, Gate> {
     ))
 }
 
-fn parser(i: &str) -> IResult<&str, HashMap<&str, Gate>> {
+fn parser(i: &str) -> IResult<&str, HashMap<&str, Gate<'_>>> {
     let (input, gates) = separated_list1(newline, gate).parse(i)?;
     let mut gates = HashMap::from_iter(gates.into_iter().map(|gate| (gate.name, gate)));
     for (key, gate) in gates.clone() {

@@ -17,7 +17,7 @@ fn stone_count(stone: String, iterations: i32, cache: &mut HashMap<(String, i32)
     let mut rv;
     if stone == *"0" {
         rv = stone_count("1".to_owned(), iterations - 1, cache);
-    } else if stone.len() % 2 == 0 {
+    } else if stone.len().is_multiple_of(2) {
         let clone = stone.clone();
         let (left, right) = clone.split_at(stone.len() / 2);
         rv = stone_count(left.to_owned(), iterations - 1, cache);

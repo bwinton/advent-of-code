@@ -264,10 +264,10 @@ fn process_data_b(data: &str) -> usize {
     let mut curr = PassportBuilder::new();
     for line in data.lines() {
         if line.trim().is_empty() {
-            if let Some(passport) = curr.build() {
-                if passport.is_valid() {
-                    rv.push(passport);
-                }
+            if let Some(passport) = curr.build()
+                && passport.is_valid()
+            {
+                rv.push(passport);
             }
             curr = PassportBuilder::new();
             continue;
@@ -280,11 +280,10 @@ fn process_data_b(data: &str) -> usize {
         }
     }
     // Handle the last one.
-    if let Some(passport) = curr.build() {
-        if passport.is_valid() {
+    if let Some(passport) = curr.build()
+        && passport.is_valid() {
             rv.push(passport);
         }
-    }
 
     rv.len()
 }
