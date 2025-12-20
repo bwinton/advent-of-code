@@ -299,10 +299,11 @@ fn move_one_state(
 
     let output = move_p(&output);
     if output.is_err()
-        && let Err(_output) = output {
-            println!("/nPARSING ERROR:/n {:?}", &_output);
-            return None;
-        }
+        && let Err(_output) = output
+    {
+        println!("/nPARSING ERROR:/n {:?}", &_output);
+        return None;
+    }
     match output.unwrap().1 {
         MoveResult::Room(room) => {
             next.room = room;
@@ -334,9 +335,10 @@ fn run_machine(data: Vec<i128>) -> String {
     outputs.clear();
     let output = move_p(&output);
     if output.is_err()
-        && let Err(_output) = output {
-            return "-1".to_owned();
-        }
+        && let Err(_output) = output
+    {
+        return "-1".to_owned();
+    }
     let room = output.unwrap().1.into_room().unwrap();
 
     // Explore all the rooms!

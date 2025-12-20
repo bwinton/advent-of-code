@@ -32,52 +32,60 @@ impl Operation {
         match self {
             Operation::Plus(a, b) => {
                 if let Value::Monkey(name) = &a
-                    && values.contains_key(name) {
-                        *a = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *a = Value::Number(values[name]);
+                }
                 if let Value::Monkey(name) = &b
-                    && values.contains_key(name) {
-                        *b = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *b = Value::Number(values[name]);
+                }
                 if let (Value::Number(a), Value::Number(b)) = (a, b) {
                     return Some(Operation::Number(*a + *b));
                 }
             }
             Operation::Minus(a, b) => {
                 if let Value::Monkey(name) = &a
-                    && values.contains_key(name) {
-                        *a = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *a = Value::Number(values[name]);
+                }
                 if let Value::Monkey(name) = &b
-                    && values.contains_key(name) {
-                        *b = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *b = Value::Number(values[name]);
+                }
                 if let (Value::Number(a), Value::Number(b)) = (a, b) {
                     return Some(Operation::Number(*a - *b));
                 }
             }
             Operation::Times(a, b) => {
                 if let Value::Monkey(name) = &a
-                    && values.contains_key(name) {
-                        *a = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *a = Value::Number(values[name]);
+                }
                 if let Value::Monkey(name) = &b
-                    && values.contains_key(name) {
-                        *b = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *b = Value::Number(values[name]);
+                }
                 if let (Value::Number(a), Value::Number(b)) = (a, b) {
                     return Some(Operation::Number(*a * *b));
                 }
             }
             Operation::Divide(a, b) => {
                 if let Value::Monkey(name) = &a
-                    && values.contains_key(name) {
-                        *a = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *a = Value::Number(values[name]);
+                }
                 if let Value::Monkey(name) = &b
-                    && values.contains_key(name) {
-                        *b = Value::Number(values[name]);
-                    }
+                    && values.contains_key(name)
+                {
+                    *b = Value::Number(values[name]);
+                }
                 if let (Value::Number(a), Value::Number(b)) = (a, b) {
                     return Some(Operation::Number(*a / *b));
                 }

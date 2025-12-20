@@ -167,9 +167,10 @@ fn process_data_b(data: &str) -> (String, i32) {
     for line in data.lines() {
         let instruction: Instruction = line.parse().unwrap();
         if let Some(new) = instruction.execute(&mut regs)
-            && new.1 > max.1 {
-                max = new;
-            }
+            && new.1 > max.1
+        {
+            max = new;
+        }
         instructions.push(instruction);
     }
     max

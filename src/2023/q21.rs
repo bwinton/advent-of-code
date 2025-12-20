@@ -43,15 +43,15 @@ fn calculate_moves(
             for direction in Direction::all() {
                 if let Some(test) = direction.move_pos(position, 1, None, None)
                     && test.0 >= bounds.0.0
-                        && test.0 < bounds.1.0
-                        && test.1 >= bounds.0.1
-                        && test.1 < bounds.1.1
-                        && !board.contains(&test)
-                        && !seen.contains_key(&test)
-                    {
-                        next.insert(test);
-                        seen.insert(test, step + 1);
-                    }
+                    && test.0 < bounds.1.0
+                    && test.1 >= bounds.0.1
+                    && test.1 < bounds.1.1
+                    && !board.contains(&test)
+                    && !seen.contains_key(&test)
+                {
+                    next.insert(test);
+                    seen.insert(test, step + 1);
+                }
             }
         }
         curr = next;

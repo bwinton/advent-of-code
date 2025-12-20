@@ -46,11 +46,13 @@ fn parse_data(data: &str) -> (Vec<Vec<Cell>>, HashMap<Point2, i64>) {
         path.push(curr);
         for direction in Direction::all() {
             if let Some(next) = direction.move_pos(curr, 1, min, max)
-                && next != prev && map[next.1 as usize][next.0 as usize] == Cell::Empty {
-                    prev = curr;
-                    curr = next;
-                    break;
-                }
+                && next != prev
+                && map[next.1 as usize][next.0 as usize] == Cell::Empty
+            {
+                prev = curr;
+                curr = next;
+                break;
+            }
         }
     }
     path.push(end);

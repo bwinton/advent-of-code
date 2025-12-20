@@ -69,21 +69,25 @@ fn parse_data(data: &str) -> (HashMap<Point2, (Direction, Direction)>, Point2) {
 fn get(start: Point2, map: &mut HashMap<Point2, (Direction, Direction)>) {
     let mut start_cell = vec![];
     if let Some((a, b)) = map.get(&(start.0, start.1.overflowing_sub(1).0))
-        && (*a == Direction::South || *b == Direction::South) {
-            start_cell.push(Direction::North);
-        }
+        && (*a == Direction::South || *b == Direction::South)
+    {
+        start_cell.push(Direction::North);
+    }
     if let Some((a, b)) = map.get(&(start.0, start.1 + 1))
-        && (*a == Direction::North || *b == Direction::North) {
-            start_cell.push(Direction::South);
-        }
+        && (*a == Direction::North || *b == Direction::North)
+    {
+        start_cell.push(Direction::South);
+    }
     if let Some((a, b)) = map.get(&(start.0.overflowing_sub(1).0, start.1))
-        && (*a == Direction::East || *b == Direction::East) {
-            start_cell.push(Direction::West);
-        }
+        && (*a == Direction::East || *b == Direction::East)
+    {
+        start_cell.push(Direction::West);
+    }
     if let Some((a, b)) = map.get(&(start.0 + 1, start.1))
-        && (*a == Direction::West || *b == Direction::West) {
-            start_cell.push(Direction::East);
-        }
+        && (*a == Direction::West || *b == Direction::West)
+    {
+        start_cell.push(Direction::East);
+    }
     *map.get_mut(&start).unwrap() = start_cell.into_iter().collect_tuple().unwrap();
 }
 

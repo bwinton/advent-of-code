@@ -89,10 +89,10 @@ fn process_data_a(data: &str) -> usize {
         // Otherwise, we can step or turn.
         if let Some(next) = direction.move_pos(curr, 1, min, max)
             && !seen.contains(&(next, direction))
-                && map[next.1 as usize][next.0 as usize] == Cell::Empty
-            {
-                heap.push((Reverse(score.0 + 1), direction, next));
-            }
+            && map[next.1 as usize][next.0 as usize] == Cell::Empty
+        {
+            heap.push((Reverse(score.0 + 1), direction, next));
+        }
         heap.push((Reverse(score.0 + 1000), direction.turn_left(), curr));
         heap.push((Reverse(score.0 + 1000), direction.turn_right(), curr));
     }

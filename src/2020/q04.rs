@@ -281,9 +281,10 @@ fn process_data_b(data: &str) -> usize {
     }
     // Handle the last one.
     if let Some(passport) = curr.build()
-        && passport.is_valid() {
-            rv.push(passport);
-        }
+        && passport.is_valid()
+    {
+        rv.push(passport);
+    }
 
     rv.len()
 }

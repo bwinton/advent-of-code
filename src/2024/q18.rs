@@ -47,9 +47,10 @@ fn find_path(map: &[Vec<bool>]) -> Option<usize> {
         seen.insert(curr);
         for direction in Direction::all() {
             if let Some(next) = direction.move_pos(curr, 1, Some(origin), Some(bounds))
-                && !map[next.1 as usize][next.0 as usize] {
-                    heap.push((Reverse(score.0 + 1), next));
-                }
+                && !map[next.1 as usize][next.0 as usize]
+            {
+                heap.push((Reverse(score.0 + 1), next));
+            }
         }
     }
     None
